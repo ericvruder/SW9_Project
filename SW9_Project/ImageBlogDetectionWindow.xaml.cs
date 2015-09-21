@@ -10,21 +10,15 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace SW9_Project {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ImageBlogDetection.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-        public MainWindow() {
+    public partial class ImageBlogDetectionWindow : Window {
+        public ImageBlogDetectionWindow() {
             InitializeComponent();
-        }
-
-        private void imageBlobDetection_Click(object sender, RoutedEventArgs e) {
-            ImageBlogDetectionWindow detectionWindow = new ImageBlogDetectionWindow();
-            detectionWindow.Show();
         }
     }
 }
