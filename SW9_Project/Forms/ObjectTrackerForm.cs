@@ -31,16 +31,17 @@ namespace SW9_Project {
 
         private void ObjectTrackerForm_Load(object sender, EventArgs e) {
             InitializeCaptureDevices();
-            Application.Idle += processFrameAndUpdateGUI;       // add process image function to the application's list of tasks
+            //Application.Idle += processFrameAndUpdateGUI;       // add process image function to the application's list of tasks
             blnCapturingInProcess = true;
         }
 
         private bool InitializeCaptureDevices() {
             try {
-                capWebcam = new Capture();
+                //capWebcam = new Capture();
                 kinectRGBSensor = KinectSensor.KinectSensors[0];
                 kinectRGBSensor.ColorStream.Enable();
                 kinectRGBSensor.ColorFrameReady += KinectRGBSensor_ColorFrameReady;
+                kinectRGBSensor.Start();
                 return true;
             } catch (Exception ex) {
                 MessageBox.Show("unable to read from cam, error: " + Environment.NewLine + Environment.NewLine +
@@ -54,6 +55,7 @@ namespace SW9_Project {
         private void KinectRGBSensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e) {
             using (ColorImageFrame receivedFrame = e.OpenColorImageFrame()) {
                 if(receivedFrame != null) {
+                    processFrameAndUpdateGUI(new Image<Bgr, byte>(ImageToBitmap(receivedFrame)));
                 }
 
             }
@@ -73,16 +75,9 @@ namespace SW9_Project {
             return bmap;
         }
 
-        private Mat GetCaptureFrame() {
-            return capWebcam.QueryFrame();
-        }
+        void processFrameAndUpdateGUI(Image<Bgr, byte> frame) {
 
-        void processFrameAndUpdateGUI(object sender, EventArgs arg) {
-
-
-            Mat imgOriginal = new Mat();
-
-            imgOriginal = GetCaptureFrame();
+            Mat imgOriginal = frame.Mat;
 
             if (imgOriginal == null) {
                 MessageBox.Show("unable to read from webcam" + Environment.NewLine + Environment.NewLine +
@@ -134,11 +129,11 @@ namespace SW9_Project {
         ///////////////////////////////////////////////////////////////////////////////////////////
         private void btnPauseOrResume_Click(object sender, EventArgs e) {
             if (blnCapturingInProcess == true) {                    // if we are currently processing an image, user just choose pause, so . . .
-                Application.Idle -= processFrameAndUpdateGUI;       // remove the process image function from the application's list of tasks
+                //Application.Idle -= processFrameAndUpdateGUI;       // remove the process image function from the application's list of tasks
                 blnCapturingInProcess = false;                      // update flag variable
                 btnPauseOrResume.Text = " Resume ";                 // update button text
             } else {                                                // else if we are not currently processing an image, user just choose resume, so . . .
-                Application.Idle += processFrameAndUpdateGUI;       // add the process image function to the application's list of tasks
+                //Application.Idle += processFrameAndUpdateGUI;       // add the process image function to the application's list of tasks
                 blnCapturingInProcess = true;                       // update flag variable
                 btnPauseOrResume.Text = " Pause ";                  // new button will offer pause option
             }
