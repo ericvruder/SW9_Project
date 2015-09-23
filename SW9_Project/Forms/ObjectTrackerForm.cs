@@ -8,10 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Emgu.CV;                  //
-using Emgu.CV.CvEnum;           // usual Emgu CV imports
-using Emgu.CV.Structure;        //
-using Emgu.CV.UI;               //
+using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
+
+using Microsoft.Kinect;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace SW9_Project {
     public partial class ObjectTrackerForm : Form {
@@ -20,26 +25,64 @@ namespace SW9_Project {
         }
 
         Capture capWebcam;
+        KinectSensor kinectRGBSensor;
         bool blnCapturingInProcess = false;
+        bool captureDeviceChanged = true;
 
         private void ObjectTrackerForm_Load(object sender, EventArgs e) {
-            try {
-                capWebcam = new Capture();
-            } catch (Exception ex) {
-                MessageBox.Show("unable to read from webcam, error: " + Environment.NewLine + Environment.NewLine +
-                                ex.Message + Environment.NewLine + Environment.NewLine +
-                                "exiting program");
-                Environment.Exit(0);
-                return;
-            }
+            InitializeCaptureDevices();
             Application.Idle += processFrameAndUpdateGUI;       // add process image function to the application's list of tasks
             blnCapturingInProcess = true;
         }
 
-        void processFrameAndUpdateGUI(object sender, EventArgs arg) {
-            Mat imgOriginal;
+        private bool InitializeCaptureDevices() {
+            try {
+                capWebcam = new Capture();
+                kinectRGBSensor = KinectSensor.KinectSensors[0];
+                kinectRGBSensor.ColorStream.Enable();
+                kinectRGBSensor.ColorFrameReady += KinectRGBSensor_ColorFrameReady;
+                return true;
+            } catch (Exception ex) {
+                MessageBox.Show("unable to read from cam, error: " + Environment.NewLine + Environment.NewLine +
+                                ex.Message + Environment.NewLine + Environment.NewLine +
+                                "exiting program");
+                Environment.Exit(0);
+                return false;
+            }
+        }
 
-            imgOriginal = capWebcam.QueryFrame();
+        private void KinectRGBSensor_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e) {
+            using (ColorImageFrame receivedFrame = e.OpenColorImageFrame()) {
+                if(receivedFrame != null) {
+                }
+
+            }
+        }
+
+        Bitmap ImageToBitmap(ColorImageFrame Image) {
+            byte[] pixeldata = new byte[Image.PixelDataLength];
+            Image.CopyPixelDataTo(pixeldata);
+            Bitmap bmap = new Bitmap(Image.Width, Image.Height, PixelFormat.Format32bppRgb);
+            BitmapData bmapdata = bmap.LockBits(
+                new Rectangle(0, 0, Image.Width, Image.Height),
+                ImageLockMode.WriteOnly,
+                bmap.PixelFormat);
+            IntPtr ptr = bmapdata.Scan0;
+            Marshal.Copy(pixeldata, 0, ptr, Image.PixelDataLength);
+            bmap.UnlockBits(bmapdata);
+            return bmap;
+        }
+
+        private Mat GetCaptureFrame() {
+            return capWebcam.QueryFrame();
+        }
+
+        void processFrameAndUpdateGUI(object sender, EventArgs arg) {
+
+
+            Mat imgOriginal = new Mat();
+
+            imgOriginal = GetCaptureFrame();
 
             if (imgOriginal == null) {
                 MessageBox.Show("unable to read from webcam" + Environment.NewLine + Environment.NewLine +
@@ -47,6 +90,8 @@ namespace SW9_Project {
                 Environment.Exit(0);
                 return;
             }
+
+            //Mat t = new Image<Gray, ushort>(new Bitmap());
 
             Mat imgHSV = new Mat(imgOriginal.Size, DepthType.Cv8U, 3);
 
