@@ -27,16 +27,16 @@
             this.tlpOuter = new System.Windows.Forms.TableLayoutPanel();
             this.tlpInner = new System.Windows.Forms.TableLayoutPanel();
             this.txtXYRadius = new System.Windows.Forms.TextBox();
-            this.ibOriginal = new Emgu.CV.UI.ImageBox();
-            this.ibThresh = new Emgu.CV.UI.ImageBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnPauseOrResume = new System.Windows.Forms.Button();
             this.sourceCombo = new System.Windows.Forms.ComboBox();
+            this.ibOriginal = new Emgu.CV.UI.ImageBox();
+            this.ibThresh = new Emgu.CV.UI.ImageBox();
             this.tlpOuter.SuspendLayout();
             this.tlpInner.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibThresh)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpOuter
@@ -84,30 +84,6 @@
             this.txtXYRadius.TabIndex = 1;
             this.txtXYRadius.WordWrap = false;
             // 
-            // ibOriginal
-            // 
-            this.ibOriginal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ibOriginal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ibOriginal.Enabled = false;
-            this.ibOriginal.Location = new System.Drawing.Point(3, 3);
-            this.ibOriginal.Name = "ibOriginal";
-            this.ibOriginal.Size = new System.Drawing.Size(434, 306);
-            this.ibOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.ibOriginal.TabIndex = 2;
-            this.ibOriginal.TabStop = false;
-            // 
-            // ibThresh
-            // 
-            this.ibThresh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ibThresh.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ibThresh.Enabled = false;
-            this.ibThresh.Location = new System.Drawing.Point(443, 3);
-            this.ibThresh.Name = "ibThresh";
-            this.ibThresh.Size = new System.Drawing.Size(435, 306);
-            this.ibThresh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.ibThresh.TabIndex = 2;
-            this.ibThresh.TabStop = false;
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.AutoSize = true;
@@ -152,6 +128,30 @@
             this.sourceCombo.Size = new System.Drawing.Size(121, 28);
             this.sourceCombo.TabIndex = 2;
             // 
+            // ibOriginal
+            // 
+            this.ibOriginal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ibOriginal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ibOriginal.Enabled = false;
+            this.ibOriginal.Location = new System.Drawing.Point(3, 3);
+            this.ibOriginal.Name = "ibOriginal";
+            this.ibOriginal.Size = new System.Drawing.Size(434, 306);
+            this.ibOriginal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.ibOriginal.TabIndex = 2;
+            this.ibOriginal.TabStop = false;
+            // 
+            // ibThresh
+            // 
+            this.ibThresh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ibThresh.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ibThresh.Enabled = false;
+            this.ibThresh.Location = new System.Drawing.Point(443, 3);
+            this.ibThresh.Name = "ibThresh";
+            this.ibThresh.Size = new System.Drawing.Size(435, 306);
+            this.ibThresh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.ibThresh.TabIndex = 2;
+            this.ibThresh.TabStop = false;
+            // 
             // ObjectTrackerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,10 +164,10 @@
             this.tlpOuter.ResumeLayout(false);
             this.tlpInner.ResumeLayout(false);
             this.tlpInner.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ibThresh)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ibThresh)).EndInit();
             this.ResumeLayout(false);
 
         }

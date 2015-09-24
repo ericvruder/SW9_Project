@@ -27,7 +27,6 @@ namespace SW9_Project {
         Capture capWebcam;
         KinectSensor kinectRGBSensor;
         bool blnCapturingInProcess = false;
-        bool captureDeviceChanged = true;
 
         private void ObjectTrackerForm_Load(object sender, EventArgs e) {
             InitializeCaptureDevices();
@@ -46,7 +45,7 @@ namespace SW9_Project {
 
         private bool InitializeCaptureDevices() {
             try {
-                //capWebcam = new Capture();
+                capWebcam = new Capture();
                 kinectRGBSensor = KinectSensor.KinectSensors[0];
                 kinectRGBSensor.ColorStream.Enable();
                 kinectRGBSensor.Start();

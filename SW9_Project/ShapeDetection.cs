@@ -172,34 +172,18 @@ namespace SW9_Project {
             }
 
             return drawn;
+        }
 
-            /*
-            originalImageBox.Image = img;
-            this.Text = msgBuilder.ToString();
+        private List<Triangle2DF> DetectTriangles() {
+            return null;
+        }
 
-            #region draw triangles and rectangles
-            Image<Bgr, Byte> triangleRectangleImage = img.CopyBlank();
-            foreach (Triangle2DF triangle in triangleList)
-                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
-            foreach (RotatedRect box in boxList)
-                triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
-            triangleRectangleImageBox.Image = triangleRectangleImage;
-            #endregion
+        private List<RotatedRect> DetectRectangles() {
+            return null;
+        }
 
-            #region draw circles
-            Image<Bgr, Byte> circleImage = img.CopyBlank();
-            foreach (CircleF circle in circles)
-                circleImage.Draw(circle, new Bgr(Color.Brown), 2);
-            circleImageBox.Image = circleImage;
-            #endregion
-
-            #region draw lines
-            Image<Bgr, Byte> lineImage = img.CopyBlank();
-            foreach (LineSegment2D line in lines)
-                lineImage.Draw(line, new Bgr(Color.Green), 2);
-            lineImageBox.Image = lineImage;
-            #endregion
-    */
+        private List<CircleF> DetectCircles() {
+            return null;
         }
     }
 }

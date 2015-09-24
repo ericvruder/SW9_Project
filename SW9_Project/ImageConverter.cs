@@ -25,7 +25,7 @@ namespace SW9_Project {
             return bmap;
         }
 
-        public static Bitmap DepthToBitmap(DepthImageFrame Image)
+        public static Bitmap ImageToBitmap(DepthImageFrame Image)
         {
             byte[] pixeldata = new byte[Image.PixelDataLength];
             Bitmap bmap = new Bitmap(Image.Width, Image.Height, PixelFormat.Format16bppRgb565);
