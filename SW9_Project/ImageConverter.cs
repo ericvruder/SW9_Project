@@ -27,11 +27,12 @@ namespace SW9_Project {
 
         public static Bitmap ImageToBitmap(DepthImageFrame Image)
         {
-            byte[] pixeldata = new byte[Image.PixelDataLength];
+            short[] pixeldata = new short[Image.PixelDataLength];
+            Image.CopyPixelDataTo(pixeldata);
             Bitmap bmap = new Bitmap(Image.Width, Image.Height, PixelFormat.Format16bppRgb565);
             BitmapData bmapdata = bmap.LockBits(
-                new Rectangle(0, 0, Image.Width, Image.Height),
-                ImageLockMode.WriteOnly,
+                new Rectangle(0, 0, Image.Width, Image.Height), 
+                ImageLockMode.WriteOnly, 
                 bmap.PixelFormat);
             IntPtr ptr = bmapdata.Scan0;
             Marshal.Copy(pixeldata, 0, ptr, Image.PixelDataLength);
