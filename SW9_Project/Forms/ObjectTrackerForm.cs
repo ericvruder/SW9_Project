@@ -34,9 +34,20 @@ namespace SW9_Project {
             blnCapturingInProcess = true;
         }
 
-        private void NextFrame(object sender, EventArgs e) {
-            using (ColorImageFrame receivedFrame = kinectRGBSensor.ColorStream.OpenNextFrame(0)) {
-                if (receivedFrame != null) {
+        //private void NextFrame(object sender, EventArgs e) {
+        //    using (ColorImageFrame receivedFrame = kinectRGBSensor.ColorStream.OpenNextFrame(0)) {
+        //        if (receivedFrame != null) {
+        //            processFrameAndUpdateGUI(new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame)));
+        //        }
+
+        //    }
+        //}
+        private void NextFrame(object sender, EventArgs e)
+        {
+            using (DepthImageFrame receivedFrame = kinectRGBSensor.DepthStream.OpenNextFrame(0))
+            {
+                if (receivedFrame != null)
+                {
                     processFrameAndUpdateGUI(new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame)));
                 }
 
@@ -48,6 +59,7 @@ namespace SW9_Project {
                 capWebcam = new Capture();
                 kinectRGBSensor = KinectSensor.KinectSensors[0];
                 kinectRGBSensor.ColorStream.Enable();
+                kinectRGBSensor.DepthStream.Enable();
                 kinectRGBSensor.Start();
                 return true;
             } catch (Exception ex) {
