@@ -59,7 +59,7 @@ namespace SW9_Project {
                 capWebcam = new Capture();
                 kinectRGBSensor = KinectSensor.KinectSensors[0];
                 kinectRGBSensor.ColorStream.Enable();
-                kinectRGBSensor.DepthStream.Enable();
+                kinectRGBSensor.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30)
                 kinectRGBSensor.Start();
                 return true;
             } catch (Exception ex) {
