@@ -36,10 +36,16 @@ namespace SW9_Project {
 
         private void ProcessFrameAndUpdateGUI(object sender, EventArgs e) {
 
-            Image<Bgr, byte> image = captureManager.GetNextFrame();
+            try {
 
-            ibOriginal.Image = image.Mat;
-            ibThresh.Image = detector.DetectShapes(image);
+                Image<Bgr, byte> image = captureManager.GetNextFrame();
+
+                ibOriginal.Image = image.Mat;
+                ibThresh.Image = detector.DetectShapes(image);
+            }
+            catch(Exception) {
+
+            }
         }
 
 
