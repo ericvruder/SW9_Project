@@ -25,20 +25,30 @@ namespace SW9_Project {
             return bmap;
         }
 
+        /*
         public static Bitmap ImageToBitmap(DepthImageFrame image)
         {
+<<<<<<< HEAD
             byte[] pixeldata = new byte[image.PixelDataLength];
             Bitmap bmap = new Bitmap(image.Width, image.Height, PixelFormat.Format16bppRgb565);
 
             BitmapData bmapdata = bmap.LockBits(
                 new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.WriteOnly,
+=======
+            short[] pixeldata = new short[Image.PixelDataLength];
+            Image.CopyPixelDataTo(pixeldata);
+            Bitmap bmap = new Bitmap(Image.Width, Image.Height, PixelFormat.Format16bppRgb565);
+            BitmapData bmapdata = bmap.LockBits(
+                new Rectangle(0, 0, Image.Width, Image.Height), 
+                ImageLockMode.WriteOnly, 
+>>>>>>> b3d1b9fe6a6e3bd9d3a45a7b3464f26920897811
                 bmap.PixelFormat);
             IntPtr ptr = bmapdata.Scan0;
             Marshal.Copy(pixeldata, 0, ptr, image.PixelDataLength);
             bmap.UnlockBits(bmapdata);
             return bmap;
-        }
+        } */
 
     }
 }
