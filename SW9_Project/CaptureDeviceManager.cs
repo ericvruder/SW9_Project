@@ -13,13 +13,14 @@ namespace SW9_Project {
 
         KinectSensor kinectSensor;
         Capture capWebcam;
+        bool depth = true;
 
          public bool InitializeCaptureDevices() {
             try {
                 capWebcam = new Capture();
                 kinectSensor = KinectSensor.KinectSensors[0];
                 kinectSensor.ColorStream.Enable();
-                kinectSensor.DepthStream.Enable();
+                kinectSensor.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
                 kinectSensor.Start();
                 return true;
             } catch (Exception ex) {
@@ -32,10 +33,18 @@ namespace SW9_Project {
         }
 
         public Image<Bgr, byte> GetNextFrame() {
+
+            if (depth) {
+                using(DepthImageFrame receivedFrame = kinectSensor.DepthStream.OpenNextFrame(0)) {
+                    return new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame));
+                }
+            }
+
             using (ColorImageFrame receivedFrame = kinectSensor.ColorStream.OpenNextFrame(0)) {
                 return new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame));
             }
 
         }
+        
     }
 }

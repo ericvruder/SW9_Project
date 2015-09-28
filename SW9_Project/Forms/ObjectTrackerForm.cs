@@ -36,17 +36,10 @@ namespace SW9_Project {
 
         private void ProcessFrameAndUpdateGUI(object sender, EventArgs e) {
 
-            using (DepthImageFrame receivedFrame = kinectSensor.DepthStream.OpenNextFrame(0)) {
-                if (receivedFrame != null) {
-                    processFrameAndUpdateGUI(new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame)));
-                }
+            Image<Bgr, byte> image = captureManager.GetNextFrame();
 
-                Image<Bgr, byte> image = captureManager.GetNextFrame();
-
-                ibOriginal.Image = image.Mat;
-                ibThresh.Image = detector.DetectShapes(image);
-
-            }
+            ibOriginal.Image = image.Mat;
+            ibThresh.Image = detector.DetectShapes(image);
         }
 
 
