@@ -37,17 +37,26 @@ namespace SW9_Project {
         private void ProcessFrameAndUpdateGUI(object sender, EventArgs e) {
 
             try {
-
+                bool IR = false;
                 Image<Bgr, byte> image = captureManager.GetNextFrame();
-
-                ibOriginal.Image = image.Mat;
-                ibThresh.Image = detector.DetectShapes(image);
+                if (!IR)
+                {
+                    ibOriginal.Image = image.Mat;
+                    ibThresh.Image = detector.DetectShapes(image);
+                }
+                else
+                {
+                    //test IR idea
+                    Image<Gray, byte> grayImage = image.Convert<Gray, Byte>();
+                    Image<Gray, byte> img1 = AmplifyLow(grayImage);
+                    Image<Gray, byte> img2 = AmplifyHigh(grayImage);
+                    ibOriginal.Image = img1;
+                    Image<Bgr, byte> img3 = img1.Convert<Bgr, byte>().Copy();
+                    ibThresh.Image = img2; // img2;
+                    //ibThresh.Image = detector.DetectShapes(img1.Convert<Bgr, byte>()); // img2;
+                    //detector.DetectShapes(img1.Convert<Bgr,byte>());
+                }
                 
-                /*//test IR idea
-                Image <Gray,Byte> grayImage = image.Convert<Gray, Byte>();
-                ibOriginal.Image = AmplifyLow(grayImage);
-                ibThresh.Image = AmplifyHigh(grayImage);
-                */
             }
             catch(Exception) {
 
@@ -61,7 +70,7 @@ namespace SW9_Project {
              * Image <Gray,Byte> grayImage = ColordImage.Convert<Gray, Byte>();
              * imageBox1.Image = grayImage;
              */
-            Image<Bgr, byte> image2 = image;
+            Image<Bgr, byte> image2 = image.Copy();
             for (int y = 0; y < image2.Size.Height; y++)
 			{
                 for (int x = 0; x < image2.Size.Width; x++)
@@ -78,7 +87,7 @@ namespace SW9_Project {
 
         public Image<Gray,byte> AmplifyLow(Image<Gray,byte> image)
         {
-            Image<Gray, byte> image2 = image;
+            Image<Gray, byte> image2 = image.Copy();
             for (int y = 0; y < image2.Size.Height; y++)
             {
                 for (int x = 0; x < image2.Size.Width; x++)
@@ -101,7 +110,7 @@ namespace SW9_Project {
 
         public Image<Gray, byte> AmplifyHigh(Image<Gray, byte> image)
         {
-            Image<Gray, byte> image2 = image;
+            Image<Gray, byte> image2 = image.Copy();
             for (int y = 0; y < image2.Size.Height; y++)
             {
                 for (int x = 0; x < image2.Size.Width; x++)
