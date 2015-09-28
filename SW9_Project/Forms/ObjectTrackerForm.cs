@@ -24,49 +24,26 @@ namespace SW9_Project {
             InitializeComponent();
         }
 
-        Capture capWebcam;
-        KinectSensor kinectRGBSensor;
+        CaptureDeviceManager captureManager = new CaptureDeviceManager();
         bool blnCapturingInProcess = false;
+        ShapeDetection detector = new ShapeDetection();
 
         private void ObjectTrackerForm_Load(object sender, EventArgs e) {
-            InitializeCaptureDevices();
-            Application.Idle += NextFrame;
+            captureManager.InitializeCaptureDevices();
+            Application.Idle += ProcessFrameAndUpdateGUI;
             blnCapturingInProcess = true;
         }
 
-        private void NextFrame(object sender, EventArgs e) {
-            using (ColorImageFrame receivedFrame = kinectRGBSensor.ColorStream.OpenNextFrame(0)) {
-                if (receivedFrame != null) {
-                    processFrameAndUpdateGUI(new Image<Bgr, byte>(ImageConverter.ImageToBitmap(receivedFrame)));
-                }
+        private void ProcessFrameAndUpdateGUI(object sender, EventArgs e) {
 
-            }
-        }
+            Image<Bgr, byte> image = captureManager.GetNextFrame();
 
-        private bool InitializeCaptureDevices() {
-            try {
-                capWebcam = new Capture();
-                kinectRGBSensor = KinectSensor.KinectSensors[0];
-                kinectRGBSensor.ColorStream.Enable();
-                kinectRGBSensor.Start();
-                return true;
-            } catch (Exception ex) {
-                MessageBox.Show("unable to read from cam, error: " + Environment.NewLine + Environment.NewLine +
-                                ex.Message + Environment.NewLine + Environment.NewLine +
-                                "exiting program");
-                Environment.Exit(0);
-                return false;
-            }
+            ibOriginal.Image = image.Mat;
+            ibThresh.Image = detector.DetectShapes(image);
         }
 
 
-        ShapeDetection detector = new ShapeDetection();
-        void processFrameAndUpdateGUI(Image<Bgr, byte> frame) {
-
-            ibOriginal.Image = frame.Mat;
-            ibThresh.Image = detector.DetectShapes(frame);
-
-        }
+ 
 
         ///////////////////////////////////////////////////////////////////////////////////////////
         private void btnPauseOrResume_Click(object sender, EventArgs e) {
