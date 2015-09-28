@@ -42,10 +42,84 @@ namespace SW9_Project {
 
                 ibOriginal.Image = image.Mat;
                 ibThresh.Image = detector.DetectShapes(image);
+                
+                /*//test IR idea
+                Image <Gray,Byte> grayImage = image.Convert<Gray, Byte>();
+                ibOriginal.Image = AmplifyLow(grayImage);
+                ibThresh.Image = AmplifyHigh(grayImage);
+                */
             }
             catch(Exception) {
 
             }
+        }
+
+        public Image<Bgr, byte> ToGrayscale(Image<Bgr,byte> image)
+        {
+            /* Use this instead!!!
+             * Image <Bgr,Byte> ColordImage = cap.QueryFrame();
+             * Image <Gray,Byte> grayImage = ColordImage.Convert<Gray, Byte>();
+             * imageBox1.Image = grayImage;
+             */
+            Image<Bgr, byte> image2 = image;
+            for (int y = 0; y < image2.Size.Height; y++)
+			{
+                for (int x = 0; x < image2.Size.Width; x++)
+			    {
+			        double b = image2[y,x].Blue;
+                    double g = image2[y,x].Green;
+                    double r = image2[y,x].Red;
+                    double avg = (b+g+r) / 3;
+                    image2[y,x] = new Bgr(avg,avg,avg);
+			    }
+			}
+            return image2;
+        }
+
+        public Image<Gray,byte> AmplifyLow(Image<Gray,byte> image)
+        {
+            Image<Gray, byte> image2 = image;
+            for (int y = 0; y < image2.Size.Height; y++)
+            {
+                for (int x = 0; x < image2.Size.Width; x++)
+                {
+                    //Low-pass filter
+                    //everything above 128 is ignored. To us that means it is 255
+                    if (image2[y,x].Intensity >= 128)
+                    {
+                        image2[y, x] = new Gray(255);
+                    }
+                    else
+                    {
+                        image2[y, x] = new Gray(image2[y, x].Intensity * 2);  //amplifying to make 128 bits strech across 256.
+                    }
+                }
+            }
+            return image2;
+
+        }
+
+        public Image<Gray, byte> AmplifyHigh(Image<Gray, byte> image)
+        {
+            Image<Gray, byte> image2 = image;
+            for (int y = 0; y < image2.Size.Height; y++)
+            {
+                for (int x = 0; x < image2.Size.Width; x++)
+                {
+                    //High-pass filter
+                    //everything below 128 is ignored. To us that means it is 0
+                    if (image2[y, x].Intensity <= 128)
+                    {
+                        image2[y, x] = new Gray(0);
+                    }
+                    else
+                    {
+                        image2[y, x] = new Gray((image2[y, x].Intensity - 128  ) * 2);  //amplifying to make 128 bits strech across 256.
+                    }
+                }
+            }
+            return image2;
+
         }
 
 
