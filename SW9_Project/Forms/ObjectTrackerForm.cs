@@ -41,7 +41,7 @@ namespace SW9_Project {
                 Image<Bgr, byte> image = captureManager.GetNextFrame();
 
                 ibOriginal.Image = image.Mat;
-                ibThresh.Image = detector.DetectShapes(image);
+                ibThresh.Image = detector.DetectShapes<Bgr>(image);
             }
             catch(Exception) {
 
