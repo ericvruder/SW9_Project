@@ -56,7 +56,6 @@ namespace SW9_Project {
                     //ibThresh.Image = detector.DetectShapes(img1.Convert<Bgr, byte>()); // img2;
                     //detector.DetectShapes(img1.Convert<Bgr,byte>());
                 }
-                
             }
             catch(Exception) {
 
