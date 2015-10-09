@@ -1,10 +1,12 @@
 package com.nui.android;
 
 import android.annotation.SuppressLint;
+import android.net.*;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -34,7 +36,8 @@ public class Main extends AppCompatActivity {
     private View mContentView;
     private View mControlsView;
     private boolean mVisible;
-
+    private Network network;
+    private JTest jtest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +60,54 @@ public class Main extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.dummy_button).setOnTouchListener(DummyMessage);
+        network = new Network();
+        JTest jtest = new JTest();
+        //network.mSocket.connect();
+
     }
+    @Override
+    protected void onPause(){
+        network.mSocket.close();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        network.mSocket.connect();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop(){
+        if (network.mSocket.connected())
+        network.mSocket.close();
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        network.mSocket.close();
+        while(network.mSocket.connected()){
+            network.mSocket.close();
+            Log.i("_OBP", "closing");
+        }
+        super.onBackPressed();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -75,6 +124,14 @@ public class Main extends AppCompatActivity {
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
+    private final View.OnTouchListener DummyMessage = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            network.SendObject(jtest);
+        return mDelayHideTouchListener.onTouch(view,motionEvent);
+        }
+    };
+
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -165,4 +222,17 @@ public class Main extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    private class JTest{
+        private int count;
+        public void Increase(){
+            count++;
+        }
+        JTest(){
+            count = 0;
+        }
+
+    }
 }
+
+
