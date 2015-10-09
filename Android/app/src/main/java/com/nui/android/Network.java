@@ -19,30 +19,37 @@ import com.google.gson.Gson;
 
 
 public class Network {
+
     public Socket mySocket;
 
     Network()
     {
-        mySocket = mSocket;
+        mSocket.connect();
     }
 
-    public void SendObject (Class obj)
+    public void SendObject (Object obj)
     {
         Gson gson = new Gson();
-        gson.toJson(obj);
+        String msg = gson.toJson(obj);
 
         // send it on our connection
-
+        mSocket.emit("JSON msg",msg);
+        System.out.println(msg);
     }
 
     public Socket mSocket;
     {
         try {
-            mSocket = IO.socket("127.0.0.1:21");
-
-        } catch (java.net.URISyntaxException e) {}
+            //mSocket = IO.socket("http://127.0.0.1:21");
+            mSocket = IO.socket("http://192.168.1.3:21");
+        }
+        catch (java.net.URISyntaxException e) {
+            System.err.println("Socket Error");
+        }
 
     }
 
 
 }
+
+
