@@ -30,7 +30,7 @@ namespace SW9_Project {
         private void button2_Click(object sender, EventArgs e) {
             AllocConsole();
             Console.WriteLine("Testing");
-            Server t = new Server();
+            Connection.StartService();
         }
     }
 }

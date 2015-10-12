@@ -17,40 +17,20 @@ namespace SW9_Project {
                 return allUsers;
             }
         }
-
-        private Socket userSocket = null;
-        private bool userAlive = true;
+        
 
         public User() {
             AllUsers.Add(this);
         }
-
-        public void AddMobileConnection(Socket socketConnection) {
-            userSocket = socketConnection;
-            Task.Factory.StartNew(() => { ManageMobileConnection(); });
+        
+        public static User FindUser(string something) {
+            //TODO: FIX THIS! :D
+            return new User();
         }
 
-        private void ManageMobileConnection(){
-            try {
-                Console.WriteLine("User connected! Address: " + userSocket.RemoteEndPoint);
-                NetworkStream stream = new NetworkStream(userSocket);
-                StreamReader sr = new StreamReader(stream);
-                StreamWriter sw = new StreamWriter(stream);
-                sw.AutoFlush = true;
-                sw.WriteLine("Received your connection!");
-                while (true) {
-                    string readLine = sr.ReadLine();
-                    if (readLine == "quit") { break; }
-                    Console.WriteLine(readLine);
-                }
-                sw.Close();
-                sr.Close();
-                stream.Close();
-            } catch (Exception e) {
-                Console.WriteLine(e.Message);
-            } finally {
-                userSocket.Close();
-            }
+        public void SendData(GestureData data) {
+
         }
+        
     }
 }
