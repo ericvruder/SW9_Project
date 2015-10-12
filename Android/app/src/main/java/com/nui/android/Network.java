@@ -1,15 +1,11 @@
 package com.nui.android;
 import android.os.Bundle;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-//network
-//import java.net.InetAddress;
-//import java.net.Socket;
-//import java.net.UnknownHostException;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.io.PrintWriter;
+import android.util.Log;
+
 //JSON
 import com.google.gson.Gson;
 /**
@@ -20,35 +16,55 @@ import com.google.gson.Gson;
 
 public class Network {
 
-    public Socket mySocket;
+    String TAG = "Network";
 
-    Network()
-    {
-        mSocket.connect();
+    Socket clientSocket;
+    String host;
+    int port;
+
+    Gson gsonConverter;
+
+    PrintWriter out;
+
+    public Network(){
+        this("192.168.1.129", 34123);
     }
 
-    public void SendObject (Object obj)
-    {
-        Gson gson = new Gson();
-        String msg = gson.toJson(obj);
+    public Network(String host, int port){
+        gsonConverter = new Gson();
 
-        // send it on our connection
-        mSocket.emit("JSON msg",msg);
-        System.out.println(msg);
+        this.host = host;
+        this.port = port;
+        Thread connectionThread = new Thread(){
+            public void run(){
+                SetupConnection();
+            }
+        };
+        connectionThread.start();
     }
 
-    public Socket mSocket;
-    {
+    private void SetupConnection(){
         try {
-            //mSocket = IO.socket("http://127.0.0.1:21");
-            mSocket = IO.socket("http://192.168.1.3:21");
+            clientSocket = new Socket(host, port);
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
         }
-        catch (java.net.URISyntaxException e) {
-            System.err.println("Socket Error");
+        catch (Exception e){
+            Log.i(TAG, "Could not open a socket to " + host +":" + port);
         }
-
     }
 
+    private void SendMessage(String message){
+        try {
+            out.println(message);
+            out.flush();
+        }catch (Exception e){
+            Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+        }
+    }
+
+    public void SendData(GestureData data){
+        SendMessage(gsonConverter.toJson(data));
+    }
 
 }
 

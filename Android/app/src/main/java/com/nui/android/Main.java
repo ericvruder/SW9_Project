@@ -63,51 +63,27 @@ public class Main extends AppCompatActivity {
         findViewById(R.id.dummy_button).setOnTouchListener(DummyMessage);
         network = new Network();
         JTest jtest = new JTest();
-        //network.mSocket.connect();
 
     }
     @Override
     protected void onPause(){
-        network.mSocket.close();
         super.onPause();
     }
 
     @Override
     protected void onResume(){
-        network.mSocket.connect();
         super.onResume();
     }
 
     @Override
     protected void onStop(){
-        if (network.mSocket.connected())
-        network.mSocket.close();
         super.onStop();
     }
 
     @Override
     public void onBackPressed() {
-        network.mSocket.close();
-        while(network.mSocket.connected()){
-            network.mSocket.close();
-            Log.i("_OBP", "closing");
-        }
         super.onBackPressed();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -127,8 +103,8 @@ public class Main extends AppCompatActivity {
     private final View.OnTouchListener DummyMessage = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            network.SendObject(jtest);
-        return mDelayHideTouchListener.onTouch(view,motionEvent);
+            network.SendData(new GestureData("TestName"));
+            return mDelayHideTouchListener.onTouch(view,motionEvent);
         }
     };
 
