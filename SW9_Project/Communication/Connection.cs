@@ -39,6 +39,7 @@ namespace SW9_Project {
             
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
+            Console.WriteLine("Now listening on port " + port);
             Task.Factory.StartNew(() => {
                 while (alive) {
                     Socket socket = listener.AcceptSocket();
