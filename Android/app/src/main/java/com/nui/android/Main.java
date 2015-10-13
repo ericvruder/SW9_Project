@@ -103,7 +103,7 @@ public class Main extends AppCompatActivity {
     private final View.OnTouchListener DummyMessage = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            network.SendData(new GestureData("TestName"));
+            network.SendData(new MobileGesture("MobileGesture"));
             return mDelayHideTouchListener.onTouch(view,motionEvent);
         }
     };

@@ -27,7 +27,7 @@ public class Network {
     PrintWriter out;
 
     public Network(){
-        this("192.168.1.129", 34123);
+        this("192.168.1.129", 8000);
     }
 
     public Network(String host, int port){
@@ -62,7 +62,7 @@ public class Network {
         }
     }
 
-    public void SendData(GestureData data){
+    public void SendData(MobileGesture data){
         SendMessage(gsonConverter.toJson(data));
     }
 

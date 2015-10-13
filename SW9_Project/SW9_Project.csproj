@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\GestureData.cs" />
+    <Compile Include="Model\MobileGesture.cs" />
     <Compile Include="Image Processing\CaptureDeviceManager.cs" />
     <Compile Include="Communication\Connection.cs" />
     <Compile Include="Forms\MainForm.cs">
@@ -106,7 +106,6 @@
       <DependentUpon>ObjectTrackerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Image Processing\ImageConverter.cs" />
-    <Compile Include="MobileData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Image Processing\ShapeDetection.cs" />

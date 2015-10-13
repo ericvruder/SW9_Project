@@ -52,19 +52,20 @@ namespace SW9_Project {
             this.user = user;
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
-                NetworkStream stream = new NetworkStream(socket);
-                StreamReader sr = new StreamReader(stream);
-                StreamWriter sw = new StreamWriter(stream);
-                sw.AutoFlush = true;
-                sw.WriteLine("Received your connection!");
-                while (true) {
-                    string readLine = sr.ReadLine();
-                    if (readLine == "quit") { break; }
-                    Console.WriteLine(readLine);
+
+                using (NetworkStream stream = new NetworkStream(socket))
+                using (StreamReader sr = new StreamReader(stream))
+                using (StreamWriter sw = new StreamWriter(stream)) {
+                    sw.AutoFlush = true;
+                    sw.WriteLine("Received your connection!");
+                    while (true) {
+                        string readLine = sr.ReadLine();
+                        if (readLine == "quit") { break; }
+                        Console.WriteLine(readLine);
+                        user.SendData(new MobileGesture(readLine));
+                    }
                 }
-                sw.Close();
-                sr.Close();
-                stream.Close();
+
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
             } finally {
