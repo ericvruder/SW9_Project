@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 
 
 
-public class Network {
+public class Network implements IServer {
 
     String TAG = "Network";
 
@@ -53,7 +53,7 @@ public class Network {
         }
     }
 
-    private void SendMessage(String message){
+    public void SendMessage(String message){
         try {
             out.println(message);
             out.flush();
@@ -62,9 +62,18 @@ public class Network {
         }
     }
 
-    public void SendData(MobileGesture data){
+    public void SendData(AccelerometerData data){
         SendMessage(gsonConverter.toJson(data));
     }
+
+    public void Pause(){
+        //TODO: IMPLEMENT
+    }
+
+    public void Resume(){
+        //TODO: IMPLEMENT
+    }
+
 
 }
 
