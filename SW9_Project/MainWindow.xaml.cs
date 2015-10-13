@@ -32,8 +32,10 @@ namespace SW9_Project {
         }
 
         private void button_Click(object sender, RoutedEventArgs e) {
-            AllocConsole();
-            Connection.StartService();
+            Task.Factory.StartNew(() => {
+                AllocConsole();
+                Connection.StartService();
+            });
         }
     }
 }

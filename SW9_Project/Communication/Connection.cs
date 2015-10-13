@@ -66,8 +66,12 @@ namespace SW9_Project {
                         if (readLine == "quit") { break; }
                         Console.WriteLine(readLine);
                         dynamic jO = JsonConvert.DeserializeObject(readLine);
-                        if(jO.Type == "AccelerometerData") {
-                            AccelerometerData data = new AccelerometerData(jO.X, jO.Y, jO.Z, jO.Time);
+                        if (jO.Type == "AccelerometerData") {
+                            float x = Convert.ToSingle(jO.X);
+                            float y = Convert.ToSingle(jO.Y);
+                            float z = Convert.ToSingle(jO.Z);
+                            long time = Convert.ToInt64(jO.Time);
+                            AccelerometerData data = new AccelerometerData(x, y, z, time);
                             user.ParseMobileData(data);
                         }
                     }
