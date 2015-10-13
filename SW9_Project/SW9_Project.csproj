@@ -4,13 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{76B3AAF2-4BC7-4295-BFEF-FC4EB86970A8}</ProjectGuid>
+    <ProjectGuid>{3F2FB401-A2C7-4296-99E9-6766480E4BC8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SW9_Project</RootNamespace>
     <AssemblyName>SW9_Project</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,127 +35,74 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Emgu.CV">
-      <HintPath>..\Emgu\Emgu.CV.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Contrib">
-      <HintPath>..\Emgu\Emgu.CV.Contrib.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Cuda">
-      <HintPath>..\Emgu\Emgu.CV.Cuda.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.DebuggerVisualizers.VS2015">
-      <HintPath>..\Emgu\Emgu.CV.DebuggerVisualizers.VS2015.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.ML">
-      <HintPath>..\Emgu\Emgu.CV.ML.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.OCR">
-      <HintPath>..\Emgu\Emgu.CV.OCR.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Shape">
-      <HintPath>..\Emgu\Emgu.CV.Shape.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Stitching">
-      <HintPath>..\Emgu\Emgu.CV.Stitching.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.Superres">
-      <HintPath>..\Emgu\Emgu.CV.Superres.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI">
-      <HintPath>..\Emgu\Emgu.CV.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.UI.GL">
-      <HintPath>..\Emgu\Emgu.CV.UI.GL.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.CV.VideoStab">
-      <HintPath>..\Emgu\Emgu.CV.VideoStab.dll</HintPath>
-    </Reference>
-    <Reference Include="Emgu.Util">
-      <HintPath>..\Emgu\Emgu.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Kinect, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Communication\Connection.cs" />
+    <Compile Include="Model\User.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\MobileGesture.cs" />
-    <Compile Include="Image Processing\CaptureDeviceManager.cs" />
-    <Compile Include="Communication\Connection.cs" />
-    <Compile Include="Forms\MainForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ObjectTrackerForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ObjectTrackerForm.Designer.cs">
-      <DependentUpon>ObjectTrackerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Image Processing\ImageConverter.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Image Processing\ShapeDetection.cs" />
-    <Compile Include="Model\User.cs" />
-    <EmbeddedResource Include="Forms\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ObjectTrackerForm.resx">
-      <DependentUpon>ObjectTrackerForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="cvextern.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="msvcp120.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="msvcr120.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="opencv_ffmpeg300.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
