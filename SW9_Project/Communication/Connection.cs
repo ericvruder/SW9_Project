@@ -8,6 +8,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 namespace SW9_Project {
     class Connection {
         
@@ -62,7 +64,11 @@ namespace SW9_Project {
                         string readLine = sr.ReadLine();
                         if (readLine == "quit") { break; }
                         Console.WriteLine(readLine);
-                        user.SendData(new MobileGesture(readLine));
+                        dynamic jO = JsonConvert.DeserializeObject(readLine);
+                        if(jO.Type == "AccelerometerData") {
+                            AccelerometerData data = new AccelerometerData(jO.X, jO.Y, jO.Z, jO.Time);
+                            user.ParseMobileData(data);
+                        }
                     }
                 }
 

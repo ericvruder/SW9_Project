@@ -28,7 +28,7 @@ namespace SW9_Project {
             return new User();
         }
 
-        public void SendData(MobileGesture data) {
+        public void ParseMobileData(AccelerometerData data) {
 
         }
         
