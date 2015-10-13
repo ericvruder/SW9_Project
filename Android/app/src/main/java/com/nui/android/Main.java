@@ -36,7 +36,11 @@ public class Main extends AppCompatActivity {
     private View mContentView;
     private View mControlsView;
     private boolean mVisible;
+
     private Network network;
+
+    private AccelerometerMonitor accelerometerMonitor;
+
     private JTest jtest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +65,25 @@ public class Main extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(DummyMessage);
+
         network = new Network();
+
+        accelerometerMonitor = new AccelerometerMonitor(network, this);
+
         JTest jtest = new JTest();
 
     }
     @Override
     protected void onPause(){
+        accelerometerMonitor.Pause();
+        network.Pause();
         super.onPause();
     }
 
     @Override
     protected void onResume(){
+        accelerometerMonitor.Resume();
+        network.Resume();
         super.onResume();
     }
 
@@ -103,7 +115,7 @@ public class Main extends AppCompatActivity {
     private final View.OnTouchListener DummyMessage = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            network.SendData(new MobileGesture("MobileGesture"));
+            network.SendMessage("Testing");
             return mDelayHideTouchListener.onTouch(view,motionEvent);
         }
     };
