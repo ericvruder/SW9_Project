@@ -64,7 +64,7 @@ public class Main extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(DummyMessage);
 
-        network = new Network(true);
+        network = new Network(false);
 
         //sensorMonitor = new AccelerometerMonitor(network, this);
         //sensorMonitor = new RotationMonitor(network,this);
