@@ -1,0 +1,118 @@
+% !TEX root = rapport.tex
+
+\lstdefinelanguage{CSharp}
+{
+ morecomment = [l]{//}, 
+ morecomment = [l]{///},
+ morecomment = [s]{/*}{*/},
+ morestring=[b]", 
+ morestring=[b]', 
+ sensitive = true,
+ morekeywords = [1]
+ {
+   abstract,  event,  new,  struct, var,
+   as,  explicit,  null,  switch,
+   base,  extern,  object,  this,
+   bool,  false,  operator,  throw,
+   break,  finally,  out,  true,
+   byte,  fixed,  override,  try,
+   case,  float,  params,  typeof,
+   catch,  for,  private,  uint,
+   char,  foreach,  protected,  ulong,
+   checked,  goto,  public,  unchecked,
+   class,  if,  readonly,  unsafe,
+   const,  implicit,  ref,  ushort,
+   continue,  in,  return,  using,
+   decimal,  int,  sbyte,  virtual,
+   default,  interface,  sealed,  volatile,
+   delegate,  internal,  short,  void,
+   do,  is,  sizeof,  while,
+   double,  lock,  stackalloc,   
+   else,  long,  static, yield,
+   enum,  namespace,  string
+   },
+ morekeywords = [2]
+ {
+  String, Color, List, KeyPressEventArgs, KeyEventArgs, ControllerArgs 
+  Console, DateTime, Form,
+  Homepage, Login, EditProblem, ReportProblem, ProblemList, ProblemControl, VandalismControl, RoadControl, SentReports, ProblemDetails,
+  Homepageform, LoginForm, NewReport, ReportList, ExistingUserControl, NewUserControl, ProblemControl, RoadControl, VandalismControl,
+  Problem, ProblemCollection, ProblemTypeRoad, ProblemTypeVandalism, Resident, Worker, Images, ProblemHistory, WorkerComment, Area,
+  DataManager, NeighbourhoodwatchEntities, EntityObject, EntityState,
+  PointLatLng, DensityPoint, DensityCluster, DensityAlgorithm,
+  WorkerType, Department, PD_Severity, PD_Severety, PD_Type, PD_EnvType, PD_RoadUsability, PD_RoadMaterial, PD_RoadType, PD_VandalismType,
+  },
+%morekeywords = [3]
+%{
+%abstract, as, base, break, case,
+%catch, checked, class, const, continue,
+%default, delegate, do, else, enum,
+%event, explicit, extern, false,
+%finally, fixed, for, foreach, goto, if,
+%implicit, in, interface, internal, is,
+%lock, namespace, new, null, operator,
+%out, override, params, private,
+%protected, public, readonly, ref,
+%return, sealed, sizeof, stackalloc,
+%static, struct, switch, this, throw,
+%true, try, typeof, unchecked, unsafe,
+%using, virtual, volatile, while, bool,
+%byte, char, decimal, double, float,
+%int, lock, object, sbyte, short, string,
+%uint, ulong, ushort, void,
+%from, where, select, group, into, orderby,
+%join, let, in, on, equals, by,
+%ascending, descending},
+%morecomment=[l]{//},
+%morecomment=[s]{/*}{*/},
+%morecomment=[l][keywordstyle4]{\#},
+%morestring=[b]",
+%morestring=[b]',
+%}
+}
+
+\lstset{ % Sets default values for the listing environments
+	backgroundcolor=\color{black!3!},
+	tabsize=2,
+	basicstyle=\footnotesize,%\scriptsize,
+	escapechar=§,
+	columns=fixed,
+	showstringspaces=false,
+	extendedchars=true,
+	breaklines=true,
+	breakatwhitespace=true,
+	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=tb,
+	framextopmargin=6pt,
+	framexbottommargin=6pt,
+%	frame=lrb, 
+	xleftmargin=\fboxsep, xrightmargin=-\fboxsep,
+	rulecolor=\color{black!15!},
+	showtabs=false,
+	showspaces=false,
+	showstringspaces=false,
+	identifierstyle=\ttfamily,
+	keywordstyle=\ttfamily \color[rgb]{0,0,1}, % Standard keywords
+%	keywordstyle=[3]\ttfamily \color[rgb]{0,0,1}, % More standard keywords
+	keywordstyle=[2]\ttfamily \color[rgb]{0.17,0.57,0.69}, % My keywords
+	commentstyle=\ttfamily \color[rgb]{0.133,0.545,0.133},
+	stringstyle=\ttfamily \color[rgb]{0.64,0.08,0.08},
+	numbers=left, numberstyle=\tiny, numbersep=5pt,
+	escapeinside={@@}{@@},
+	language=CSharp
+}
+
+% Indstillinger til caption
+\DeclareCaptionFont{white}{\color{black}}
+\DeclareCaptionFormat{listing}{%
+  \parbox{\textwidth}{\colorbox{black!10!}{\parbox{\textwidth}{\hspace{8pt}#1#2#3}}}}
+\captionsetup[lstlisting]{format=listing, labelfont=bf, textfont=white, singlelinecheck=false, margin=0pt, skip=6pt}
+
+\lstnewenvironment{code}[1][]%
+  {\minipage{\linewidth} 
+   \lstset{basicstyle=\ttfamily\scriptsize,frame=single,#1}}
+  {\endminipage}
+
+\makeatletter
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\ttfamily\normalsize\fontfamily{pcr}\selectfont}
+\makeatother

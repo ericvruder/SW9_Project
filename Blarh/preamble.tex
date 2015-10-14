@@ -1,0 +1,198 @@
+% !TEX root = rapport.tex
+
+\documentclass[a4paper,12pt, twoside, openright]{memoir}
+
+% Giver mulighed for at styre captions for figurer, tabeller og lignende
+\usepackage[justification=centerlast, font=it,labelfont=bf]{caption}
+
+% Udskriver side antal med \pageref{LastPage}
+\usepackage{lastpage}
+\usepackage{longtable}
+
+% Table of Contents opsætning
+\usepackage{tocloft}
+\setlength{\cftpartnumwidth}{1.2cm}
+
+%Til tabular positioning
+\usepackage{float}
+%\restylefloat{table}
+
+%Theoms and definitions
+\usepackage{amsthm}
+\newtheorem{mydef}{Definition}
+
+\usepackage{booktabs}
+
+% Pakke så vi kan bruge farver
+\usepackage[table]{xcolor} %Same package, but working on tables
+
+%more colors
+\usepackage{color}
+
+% Todo notes - [disable] slår todo fra
+%\usepackage[disable]{todonotes}
+\usepackage{todonotes}
+%\setlength{\marginparwidth}{2,2cm}
+
+% Dansk sprog
+\usepackage[english]{babel}
+
+% Retter problemet med at skriften ikke vises korrekt - source: http://dsanta.users.ch/resources/type1.html
+\usepackage{ae,aecompl}
+
+% Font indstillinger
+% Hjælper med orddeling ved æ, ø og å. Sætter fontene til at være ps-fonte, i stedet for bmp
+\usepackage[utf8]{inputenc}% Brug af æ, ø og å
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{fourier}
+
+% Pakke til billeder
+\usepackage{graphicx}
+
+% Pakker til sub-billeder (side-by-side)
+%\usepackage{caption}
+%\usepackage{subcaption}
+
+
+% Pakke til at kunne sætte tekst op ved siden af billeder
+\usepackage{wrapfig}
+
+% Pakke til rammer
+\usepackage{framed}
+
+% Pakker til at vise kildekode
+\usepackage{color}
+\usepackage{listings}
+\input{csharp}
+
+% Pakker til matematik
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Pakke til landskab visning
+%\usepackage{lscape}
+
+% Til rotation af tekst
+\usepackage{rotating}
+
+% Til advancerede tabeller
+\usepackage{multirow}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	TILFØJ IKKE PAKKER HERUNDER - NEDENSTÅENDE SKAL LOADES SIDST!	   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Sætter [hyphens]-option når hyperref kalder url pakken. Dette gøres for korrekt at kunne  breake lange links.
+\PassOptionsToPackage{hyphens}{url}
+
+% PDF links og bookmarks (\usepackage{bookmark} fixer bookmark strukturen)
+\usepackage[bookmarksdepth=3, hidelinks]{hyperref} % http://ctan.org/pkg/hyperref
+\usepackage{bookmark} % http://ctan.org/pkg/bookmark
+
+% Clever references - ja, det er mega smarte (automatiske henvisninger)
+% Se her hvordan det benyttes: http://www.howtotex.com/packages/automatic-clever-references-with-cleveref
+\usepackage{cleveref}
+\crefname{paragraph}{\S}{\S\S} % default is {paragraph}{paragraphs}
+
+% Padding mellem tabel-rækker
+\renewcommand{\arraystretch}{1.4}
+
+% Margin mellem items i itemize
+\usepackage{enumitem}
+\setlist{noitemsep,topsep=10pt,parsep=2pt,partopsep=2pt}
+
+% Kommando der skal bruges hvis vi ønsker en caption OVER en figur - skal indsættes under centrerings-kommandoen
+% Eks. \customtopcaption{Denne figur viser...}
+\newcommand{\customtopcaption}[1]
+{
+	\textit{#1\medskip}
+}
+
+% TODO GROUP
+\newcommand{\grouptodo}[2]
+{
+     \stepcounter{grouptodocounter}\todo[size=\footnotesize, color=LimeGreen!35]{\textbf{\colorbox{Black}{\color{White}\thegrouptodocounter: #1:} } #2}
+}
+
+% TODO STEFAN
+\newcommand{\stefan}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=NavyBlue!35]{\textbf{\color{NavyBlue}{\thetodocounter: Stefan:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=NavyBlue!35]{\textbf{\color{NavyBlue}{\thetodocounter: Stefan:} } #2}}
+}
+
+% TODO KAYSEN
+\newcommand{\kaysen}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=Green!35]{\textbf{\color{Green}{\thetodocounter: Kaysen:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=Green!35]{\textbf{\color{Green}{\thetodocounter: Kaysen:} } #2}}
+}
+
+% TODO HIEU
+\newcommand{\hieu}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=Orange!35]{\textbf{\color{Orange}{\thetodocounter: Hieu:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=Orange!35]{\textbf{\color{Orange}{\thetodocounter: Hieu: }} #2}}
+}
+
+% TODO MIKKEL
+\newcommand{\mikkel}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=BlueGreen!35]{\textbf{\color{BlueGreen}{\thetodocounter: Mikkel:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=BlueGreen!35]{\textbf{\color{BlueGreen}{\thetodocounter: Mikkel:} } #2}}
+}
+
+% TODO JONAS
+\newcommand{\jonas}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=Red!35]{\textbf{\color{Red}{\thetodocounter: Jonas:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=Red!35]{\textbf{\color{Red}{\thetodocounter: Jonas:} } #2}}
+}
+
+% TODO MARK
+\newcommand{\marka}[2][ ]
+{
+  \ifthenelse{\equal{#1}{inline}}
+    {\stepcounter{todocounter}\todo[inline, size=\footnotesize, color=CarnationPink!35]{\textbf{\color{CarnationPink}{\thetodocounter: Mark:} } #2}}
+    {\stepcounter{todocounter}\todo[size=\footnotesize, color=CarnationPink!35]{\textbf{\color{CarnationPink}{\thetodocounter: Mark:} } #2}}
+}
+
+% Custom kommando til at ændre Bibliography således den vises som "part" i ToC
+\renewcommand{\bibsection}{%
+\chapter*{\bibname} % Her kan man ændre overskrift-typen til Bibliography - * angiver at den ikke skal vises i ToC
+\bibmark
+\ifnobibintoc\else
+\phantomsection % Dummy-sektion så hyperref ved hvor bibliography-links skal henvise til
+\addcontentsline{toc}{part}{\bibname} % Tilføj til ToC
+\fi
+\prebibhook}
+
+% Til at lave en tekstboks
+\definecolor{prettyboxgray}{RGB}{238,238,238}
+\newenvironment{prettybox}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \fcolorbox{white}{prettyboxgray}}%
+  \color{black}\MakeFramed {\FrameRestore}}%
+{\endMakeFramed}
+
+\definecolor{red}{HTML}{F4CCCC}
+\definecolor{blue}{HTML}{C9DAF8}
+\definecolor{green}{HTML}{D9EAD3}
+\definecolor{grey}{HTML}{F3F3F3}
+
+% Inkluder makroer
+\input{macroes}
+
+% Margin
+\setlrmarginsandblock{3.5cm}{2.5cm}{*}
+% \setlrmarginsandblock{Indbinding}{Kant}{Ratio}
+\setulmarginsandblock{2.5cm}{3.0cm}{*} % \setulmarginsandblock{Top}{Bund}{Ratio}
+\checkandfixthelayout % Laver forskellige beregninger og sætter de almindelige længder op til brug ikke memoir pakker
+
+% Sørger for LaTeX ikke strækker teksten ved at forhindre der bliver tilføjet linieskift, hvis siden ikke er fyldt helt ud.
+\raggedbottom
