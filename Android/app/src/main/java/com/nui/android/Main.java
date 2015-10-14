@@ -66,8 +66,8 @@ public class Main extends AppCompatActivity {
 
         network = new Network(false);
 
-        //sensorMonitor = new AccelerometerMonitor(network, this);
-        //sensorMonitor = new RotationMonitor(network,this);
+        sensorMonitor = new AccelerometerMonitor(network, this);
+        sensorMonitor = new RotationMonitor(network,this);
 
         JTest jtest = new JTest();
 
@@ -81,8 +81,8 @@ public class Main extends AppCompatActivity {
 
     @Override
     protected void onResume(){
-        //sensorMonitor.Resume();
         network.Resume();
+        sensorMonitor.Resume();
         super.onResume();
     }
 

@@ -50,7 +50,7 @@ public class Network implements IServer {
 
     public Network(final Boolean unicastDiscover){
         //Wont be using the paramenter, but it keeps it seperated.
-
+        gsonConverter = new Gson();
         Thread NetworkDiscoveryThread = new Thread(){
             public void run(){
                 FindServer(unicastDiscover);
@@ -154,10 +154,11 @@ public class Network implements IServer {
                 Log.i(TAG, ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
                 //Check if the message is correct
                 String message = new String(receivePacket.getData()).trim();
+                Log.i(TAG," ->" + message);
                 if (message.equals("DISCOVER_IS903SERVER_RESPONSE")) {
                     //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
                     //Controller_Base.setServerIp(receivePacket.getAddress());
-                    this.host = receivePacket.getAddress().toString();
+                    this.host = receivePacket.getAddress().getHostAddress();
                     this.port = 8000; // can be implemented better.
                     cLoop = false;
                 }
@@ -193,12 +194,16 @@ public class Network implements IServer {
     }
 
     public void SendData(MobileData data){
+        if (clientSocket == null)
+            return;
+        if (!this.clientSocket.isConnected()) //should prevent some crashes if the network isn't connected.
+            return;
         try {
             String t = gsonConverter.toJson(data);
             SendMessage(t);
         }
         catch (Exception e){
-            Log.i("!", e.getMessage());
+            Log.i("!", " "+ e.getMessage()); // java.lang.NullPointerException: println needs a message
         }
     }
 
