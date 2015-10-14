@@ -64,10 +64,10 @@ public class Main extends AppCompatActivity {
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(DummyMessage);
 
-        network = new Network();
+        network = new Network(true);
 
         //sensorMonitor = new AccelerometerMonitor(network, this);
-        sensorMonitor = new RotationMonitor(network,this);
+        //sensorMonitor = new RotationMonitor(network,this);
 
         JTest jtest = new JTest();
 
@@ -81,7 +81,7 @@ public class Main extends AppCompatActivity {
 
     @Override
     protected void onResume(){
-        sensorMonitor.Resume();
+        //sensorMonitor.Resume();
         network.Resume();
         super.onResume();
     }
