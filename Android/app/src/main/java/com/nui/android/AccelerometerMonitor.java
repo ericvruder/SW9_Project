@@ -9,15 +9,7 @@ import android.hardware.SensorManager;
 /**
  * Created by ericv on 10/13/2015.
  */
-public class AccelerometerMonitor implements SensorEventListener{
-
-    IServer server;
-
-    private SensorManager senSensorManager;
-    private Sensor senAccelerometer;
-
-    private long lastUpdate = 0;
-    private long lastUpdateThreshold = 100;
+public class AccelerometerMonitor extends SensorMonitor{
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -41,18 +33,7 @@ public class AccelerometerMonitor implements SensorEventListener{
 
     }
 
-    public void Pause(){
-        senSensorManager.unregisterListener(this);
-    }
-
-    public void Resume(){
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
     public AccelerometerMonitor(IServer server, Context context){
-        this.server = server;
-        senSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+        super(server,context, Sensor.TYPE_ACCELEROMETER);
     }
 }

@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SW9_Project"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="247.103">
+        Title="MainWindow" Height="350" Width="191.524">
     <Grid>
-        <Button x:Name="button" Content="TCP Connection" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="219" Click="button_Click"/>
+        <Button x:Name="button" Content="TCP Connection" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="164" Click="button_Click"/>
+        <Button x:Name="button1" Content="Blank Screen" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="164" Click="button1_Click"/>
 
     </Grid>
 </Window>

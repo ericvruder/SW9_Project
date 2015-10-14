@@ -37,5 +37,9 @@ namespace SW9_Project {
                 Connection.StartService();
             });
         }
+
+        private void button1_Click(object sender, RoutedEventArgs e) {
+            
+        }
     }
 }

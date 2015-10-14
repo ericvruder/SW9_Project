@@ -12,9 +12,22 @@ namespace SW9_Project {
         public float Z { get; set; }
         public long Time { get; set; }
 
-        public AccelerometerData(float x, float y, float z, long time) {
+
+        private AccelerometerData() {
+            Type = "AccelerometerData";
+        }
+
+        public AccelerometerData(float x, float y, float z, long time) : this() {
             X = x; Y = y; Z = z;
             Time = time;
+        }
+
+        public AccelerometerData(dynamic jsonObject) : this() {
+            X = Convert.ToSingle(jsonObject.X);
+            Y = Convert.ToSingle(jsonObject.Y);
+            Z = Convert.ToSingle(jsonObject.Z);
+            Time = Convert.ToInt64(jsonObject.Time);
+
         }
 
     }

@@ -1,12 +1,10 @@
 package com.nui.android;
 
 import android.annotation.SuppressLint;
-import android.net.*;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -39,7 +37,7 @@ public class Main extends AppCompatActivity {
 
     private Network network;
 
-    private AccelerometerMonitor accelerometerMonitor;
+    private SensorMonitor sensorMonitor;
 
     private JTest jtest;
     @Override
@@ -68,21 +66,22 @@ public class Main extends AppCompatActivity {
 
         network = new Network();
 
-        accelerometerMonitor = new AccelerometerMonitor(network, this);
+        //sensorMonitor = new AccelerometerMonitor(network, this);
+        sensorMonitor = new RotationMonitor(network,this);
 
         JTest jtest = new JTest();
 
     }
     @Override
     protected void onPause(){
-        accelerometerMonitor.Pause();
+        sensorMonitor.Pause();
         network.Pause();
         super.onPause();
     }
 
     @Override
     protected void onResume(){
-        accelerometerMonitor.Resume();
+        sensorMonitor.Resume();
         network.Resume();
         super.onResume();
     }

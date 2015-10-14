@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace SW9_Project {
     abstract class MobileData {
+        public string Type { get; set; }
     }
 }

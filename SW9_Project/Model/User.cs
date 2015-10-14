@@ -28,7 +28,7 @@ namespace SW9_Project {
             return new User();
         }
 
-        public void ParseMobileData(AccelerometerData data) {
+        public void ParseMobileData(MobileData data) {
 
         }
         

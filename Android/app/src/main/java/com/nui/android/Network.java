@@ -62,8 +62,14 @@ public class Network implements IServer {
         }
     }
 
-    public void SendData(AccelerometerData data){
-        SendMessage(gsonConverter.toJson(data));
+    public void SendData(MobileData data){
+        try {
+            String t = gsonConverter.toJson(data);
+            SendMessage(t);
+        }
+        catch (Exception e){
+            Log.i("!", e.getMessage());
+        }
     }
 
     public void Pause(){

@@ -11,8 +11,6 @@ public class AccelerometerData extends MobileData{
     public float Y;
     public float Z;
 
-    public long Time;
-
     public AccelerometerData(float x, float y, float z, long time){
         X = x; Y = y; Z = z;
         Time = time;
