@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import android.util.Log;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
+import java.net.SocketAddress;
 import java.util.Enumeration;
 
 //JSON
@@ -56,7 +57,13 @@ public class Network implements IServer {
                 FindServer(unicastDiscover);
             }
         };
-        NetworkDiscoveryThread.start();
+       // NetworkDiscoveryThread.start();
+        Thread TcpDis = new Thread(){
+            public void run(){
+                FindServerTcp();
+            }
+        };
+        TcpDis.start();
     }
 
     private void FindServer(boolean unicast){
@@ -172,6 +179,114 @@ public class Network implements IServer {
         Log.w(TAG,"Done broadcasting");
         SetupConnection();
         Log.w(TAG, "Network Setup complete.");
+    }
+
+    private void FindServerTcp(){
+        byte[] ipAddr;
+        DatagramSocket c;
+        Socket s;
+        Socket r;
+        final int bport = 49255; //this port is outside IANA registartion range, so probably won't annoy anyone.
+        // Find the server using UDP broadcast
+        try {
+            //Open a random port to send the package
+
+            c = new DatagramSocket(bport);
+            c.setBroadcast(true);
+            long startTime = System.nanoTime();
+            byte[] sendData = "DISCOVER_IS903SEVER_REQUEST".getBytes();
+            //byte[] sendData2 = "255Flood".getBytes();
+
+
+            // Broadcast the message over all the network interfaces
+
+            Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
+
+                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                    continue; // Don't want to broadcast to the loopback interface
+                }
+
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    InetAddress broadcast = interfaceAddress.getBroadcast();
+
+                    if (broadcast == null) {
+                        continue;
+                    }
+
+                    ipAddr = broadcast.getAddress();
+
+                    for(int i=1; i<255; i++) {
+                        ipAddr[2] = (byte)i;
+                        broadcast = InetAddress.getByAddress(ipAddr);
+
+                            for(int j=1; j<255; j++) {
+                                ipAddr[3] = (byte) j;
+                                broadcast = InetAddress.getByAddress(ipAddr);
+                                Thread TcpThread = new Thread(){
+                                    public void run(){
+                                        FireTcp(broadcast.getHostAddress(),bport);
+                                    }
+                                };
+                                // Send the broadcast package!
+                                try {
+
+                                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, bport);
+                                    c.send(sendPacket);
+                                } catch (Exception e) {
+                                    Log.w(TAG, "Failed to send package to " + broadcast.toString());
+                                }
+
+                                System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
+                            }
+
+
+                    }
+                }
+            }
+
+            System.out.println(getClass().getName() + ">>> Done looping over all network interfaces. Now waiting for a reply!");
+            Log.i(TAG, ">>> Done looping over all network interfaces. Now waiting for a reply!");
+            long estimatedTime = System.nanoTime() - startTime;
+            //System.out.println(getClass().getName() + ">>> Time elapsed: " + (estimatedTime/1000000000.0) + "seconds");
+            Log.w(TAG,">>> Time elapsed: " + (estimatedTime/1000000000.0) + "seconds");
+            //Wait for a response
+            byte[] recvBuf = new byte[15000];
+            DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+            boolean cLoop = true;
+            while(cLoop) {
+                c.receive(receivePacket);
+
+                //We have a response
+                System.out.println(getClass().getName() + ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
+                Log.i(TAG, ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
+                //Check if the message is correct
+                String message = new String(receivePacket.getData()).trim();
+                Log.i(TAG," ->" + message);
+                if (message.equals("DISCOVER_IS903SERVER_RESPONSE")) {
+                    //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
+                    //Controller_Base.setServerIp(receivePacket.getAddress());
+                    this.host = receivePacket.getAddress().getHostAddress();
+                    this.port = 8000; // can be implemented better.
+                    cLoop = false;
+                }
+            }
+
+            //Close the port!
+            c.close();
+        } catch (Exception e) {
+            Log.e(TAG, "UDP socket failed: " + e.toString());
+        }
+        Log.w(TAG,"Done broadcasting");
+        SetupConnection();
+        Log.w(TAG, "Network Setup complete.");
+    }
+
+    private boolean FireTcp(String ip, int port){
+        Socket s;
+        Socket r;
+        return false;
     }
 
     private void SetupConnection(){
