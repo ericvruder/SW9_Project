@@ -126,7 +126,6 @@ namespace SW9_Project
                                 {
                                     System.Drawing.Rectangle box = CvInvoke.BoundingRectangle(contour);
                                     openCVImg.Draw(box, new Bgr(System.Drawing.Color.Red), 2);
-                                    //CvInvoke.DrawContours(openCVImg, contours, i, new MCvScalar(255, 0, 0));
                                     blobCount++;
                                 }
                             }
