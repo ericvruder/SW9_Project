@@ -14,11 +14,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SW9_Project {
+namespace SW9_Project
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window
+    {
 
 
         [DllImport("Kernel32")]
@@ -27,19 +29,28 @@ namespace SW9_Project {
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
 
-        public MainWindow() {
+        public MainWindow()
+        {
             InitializeComponent();
         }
 
-        private void button_Click(object sender, RoutedEventArgs e) {
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
             Task.Factory.StartNew(() => {
                 AllocConsole();
                 Connection.StartService();
             });
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e) {
-            
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void buttonKinect(object sender, RoutedEventArgs e)
+        {
+            KinectWindow KinectWindow = new KinectWindow();
+            KinectWindow.Show();
         }
     }
 }
