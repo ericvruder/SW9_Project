@@ -27,6 +27,7 @@ public class Network implements IServer {
     Socket clientSocket;
     String host;
     int port;
+    static String tcpIp;
 
     Gson gsonConverter;
 
@@ -216,7 +217,8 @@ public class Network implements IServer {
                     }
 
                     ipAddr = broadcast.getAddress();
-
+                    Thread[] threads = new Thread[255*255];
+                    ThreadGroup tg = new ThreadGroup("TG");
                     for(int i=1; i<255; i++) {
                         ipAddr[2] = (byte)i;
                         broadcast = InetAddress.getByAddress(ipAddr);
@@ -224,24 +226,25 @@ public class Network implements IServer {
                             for(int j=1; j<255; j++) {
                                 ipAddr[3] = (byte) j;
                                 broadcast = InetAddress.getByAddress(ipAddr);
-                                Thread TcpThread = new Thread(){
-                                    public void run(){
-                                        FireTcp(broadcast.getHostAddress(),bport);
-                                    }
-                                };
-                                // Send the broadcast package!
-                                try {
 
-                                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, bport);
-                                    c.send(sendPacket);
-                                } catch (Exception e) {
-                                    Log.w(TAG, "Failed to send package to " + broadcast.toString());
-                                }
-
+                                Thread t = new Thread(tg, new TCPDiscover(broadcast.getHostAddress(),bport));
+                                threads[(i*255)+j] = t;
+                                t.start();
                                 System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                             }
 
 
+                    }
+                    for(int ti = 0; ti < threads.length; ti++) {
+                        threads[ti].join();
+                    }
+                    if (tcpIp != ""){
+                        System.out.println(getClass().getName() + ">>> Found IP: " + tcpIp);
+                        Log.i(TAG, ">>> Found IP: " + tcpIp);
+                    }
+                    else{
+                        System.out.println(getClass().getName() + ">>> NO SERVER DISCOVERED!");
+                        Log.i(TAG, ">>> NO SERVER DISCOVERED!");
                     }
                 }
             }
@@ -283,11 +286,6 @@ public class Network implements IServer {
         Log.w(TAG, "Network Setup complete.");
     }
 
-    private boolean FireTcp(String ip, int port){
-        Socket s;
-        Socket r;
-        return false;
-    }
 
     private void SetupConnection(){
         try {
