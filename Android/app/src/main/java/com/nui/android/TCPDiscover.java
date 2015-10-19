@@ -24,15 +24,20 @@ public class TCPDiscover implements Runnable {
         try {
             tSocket = new Socket(ipaddr, port);
             //out = new PrintWriter(clientSocket.getOutputStream(), true);
+            System.out.println(getClass().getName() + ">>> Request packet sent to: " + ipaddr);
         }
         catch (Exception e ){
-            Thread.currentThread().interrupt();
+            System.out.println(getClass().getName() + ">>> No connection: " + ipaddr);
+            return;
+            //Thread.currentThread().interrupt();
         }
 
         if (tSocket.isConnected())
         {
+            System.out.println(getClass().getName() + ">>> KILL EVERYTHING!!!!!: " + ipaddr);
             Network.tcpIp = ipaddr;
             Thread.currentThread().getThreadGroup().interrupt();
         }
+        return;
     }
 }

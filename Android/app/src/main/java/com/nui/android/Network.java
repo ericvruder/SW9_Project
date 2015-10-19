@@ -229,13 +229,26 @@ public class Network implements IServer {
 
                                 Thread t = new Thread(tg, new TCPDiscover(broadcast.getHostAddress(),bport));
                                 threads[(i*255)+j] = t;
-                                t.start();
-                                System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
+                                //t.start();
+                                //System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                             }
 
 
                     }
-                    for(int ti = 0; ti < threads.length; ti++) {
+                    for(int ti = 256; ti < threads.length; ti++) {
+                        if (threads[ti] == null)
+                            continue;
+                        threads[ti].start();
+
+
+
+                    }
+                    for(int ti = 256; ti < threads.length; ti++) {
+                        if (threads[ti] == null)
+                            continue;
+                        //t.start();
+                        //System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
+
                         threads[ti].join();
                     }
                     if (tcpIp != ""){
