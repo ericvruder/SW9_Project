@@ -29,17 +29,15 @@ namespace SW9_Project {
 
         public MainWindow() {
             InitializeComponent();
-        }
 
-        private void button_Click(object sender, RoutedEventArgs e) {
             Task.Factory.StartNew(() => {
                 AllocConsole();
                 Connection.StartService();
             });
-        }
 
-        private void button1_Click(object sender, RoutedEventArgs e) {
-            
+            CanvasWindow canvas = new CanvasWindow();
+            canvas.Show();
+
         }
     }
 }

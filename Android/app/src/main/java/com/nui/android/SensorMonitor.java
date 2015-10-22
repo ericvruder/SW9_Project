@@ -10,7 +10,7 @@ import android.hardware.SensorManager;
  */
 public abstract class SensorMonitor implements SensorEventListener {
 
-    protected SensorManager manager;
+    private static SensorManager manager;
     protected Sensor sensor;
 
     IServer server;
