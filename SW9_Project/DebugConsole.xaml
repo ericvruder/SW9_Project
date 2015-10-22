@@ -1,0 +1,25 @@
+﻿<Window x:Class="SW9_Project.DebugConsole"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SW9_Project"
+        mc:Ignorable="d"
+        Title="DebugConsole" Height="602.575" Width="1306.868">
+    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Name="parentGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" Name="imageGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Name="rgbKinect" />
+            <Image Grid.Column="1" Name="skeletonKinect" />
+        </Grid>
+        <TextBlock Grid.Row="1" Grid.Column="0" Name="consoleTextBlock" />
+    </Grid>
+          
+</Window>
