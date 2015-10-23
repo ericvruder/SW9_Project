@@ -17,11 +17,10 @@ import com.google.gson.Gson;
  * Created by Elias on 08-10-2015.
  */
 
-
-
 public class Network implements IServer {
 
     String TAG = "Network";
+    private static final String SERVER_IP = "10.0.0.14";
 
     Socket clientSocket;
     String host;
@@ -32,7 +31,7 @@ public class Network implements IServer {
     PrintWriter out;
 
     public Network(){
-        this("192.168.1.129", 8000);
+        this(SERVER_IP, 8000);
     }
 
     public Network(String host, int port){
