@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Timers;
+using System.Threading;
 
 namespace SW9_Project {
     class KinectManager {
@@ -20,19 +21,110 @@ namespace SW9_Project {
         double xScale, yScale;
 
         public KinectManager(IDrawingBoard board) {
+
+            calibrationValues = new List<Tuple<double, double>>();
             this.board = board;
+
             DiscoverKinectSensor();
-            Calibrate();
+            StartKinect();
+            System.Threading.Thread.Sleep(5000);
+
+            Thread s = new Thread(Calibrate);
+            s.SetApartmentState(ApartmentState.STA);
+            s.Start();
+        }
+        
+
+        List<Tuple<double,double>> calibrationValues;
+
+        bool calibrating = true, gathering = false;
+
+        private enum Corner { TopLeft, TopRight, BottomLeft, BottomRight }
+
+        private List<Tuple<double, double>> GetCornerMeasurments(Corner corner) {
+
+            
+            //board.DrawNotice("Please point at the " + corner + " corner", 5);
+            MessageWindow t = new MessageWindow("Please point at the " + corner + " corner");
+            t.Show();
+            System.Threading.Thread.Sleep(2000);
+            gathering = true;
+            System.Threading.Thread.Sleep(4000);
+            gathering = false;
+            t.Close();
+
+            List<Tuple<double, double>> result = new List<Tuple<double, double>>();
+            double x = 0, y = 0;
+            lock (calibrationValues) {
+                foreach(var cv in calibrationValues) {
+                    result.Add(new Tuple<double, double>(cv.Item1, cv.Item2));
+                    x += cv.Item1; y += cv.Item2;
+                }
+                x = x / calibrationValues.Count;
+                y = y / calibrationValues.Count;
+                calibrationValues.Clear();
+            }
+
+            
+            //List<Tuple<double, double>> results = new List<Tuple<double, double>>(x,y);
+
+            return result;
         }
 
         private void Calibrate() {
 
-            Timer pointingTimer = new Timer();
-            pointingTimer.Interval = 5000;
+            List<List<Tuple<double, double>>> list = new List<List<Tuple<double, double>>>();
+
+            list.Add(GetCornerMeasurments(Corner.TopLeft));
+            list.Add(GetCornerMeasurments(Corner.TopRight));
+            list.Add(GetCornerMeasurments(Corner.BottomRight));
+            list.Add(GetCornerMeasurments(Corner.BottomLeft));
+            
+          
+
+            CanvasWindow h = new CanvasWindow(true);
+            h.Show();
+
+            IDrawingBoard t = h;
+            
+            foreach (var j in list) {
+                foreach (var g in j) {
+                    t.AddDot(g.Item1, g.Item2);
+                }
+            }
+
+            //System.Threading.Thread.Sleep(1000000);
+
+            /*
+            List<Tuple<double, double>> tl = GetCornerMeasurments(Corner.TopLeft);
+            List<Tuple<double, double>> tr = GetCornerMeasurments(Corner.TopRight);
+            List<Tuple<double, double>> br = GetCornerMeasurments(Corner.BottomRight);
+            List<Tuple<double, double>> bl = GetCornerMeasurments(Corner.BottomLeft);*/
 
 
-            xScale = 2500;
-            yScale = 2500;//TODO: Create a calibration routine
+            /*
+            double x = 0, y = 0;
+            foreach (var value in calibrationValues) {
+                x += value.Item1;
+                y += value.Item2;
+            }
+            x = (x / calibrationValues.Count);
+            y = (y / calibrationValues.Count);
+
+            double w = board.Width() / 2, h = board.Height() / 2;
+
+            xScale = w / x; yScale = h / y;
+
+            xScale = 3000;
+            yScale = 3000;
+             
+
+            calibrating = false;
+            lock (calibrationValues) {
+                calibrationValues.Clear();
+            }
+            */
+
         }
 
         private bool StartKinect() {
@@ -67,7 +159,13 @@ namespace SW9_Project {
                     Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
                     if (playerSkeleton != null) {
                         Joint rightHand = playerSkeleton.Joints[JointType.HandRight];
-                        board.PointAt(xScale * rightHand.Position.X, yScale * rightHand.Position.Y);
+                        if (calibrating && gathering) {
+                            lock (calibrationValues) {
+                                calibrationValues.Add(new Tuple<double, double>(rightHand.Position.X, rightHand.Position.Y));
+                            }
+                        } else {
+                            board.PointAt(xScale * rightHand.Position.X, yScale * rightHand.Position.Y);
+                        }
                     }
                 }
             }
@@ -85,36 +183,6 @@ namespace SW9_Project {
             if (this.kinectSensor == null) {
                 connectedStatus = "Found none Kinect Sensors connected to USB";
                 return;
-            }
-
-            // You can use the kinectSensor.Status to check for status
-            // and give the user some kind of feedback
-            switch (kinectSensor.Status) {
-                case KinectStatus.Connected:
-                    {
-                        connectedStatus = "Status: Connected";
-                        break;
-                    }
-                case KinectStatus.Disconnected:
-                    {
-                        connectedStatus = "Status: Disconnected";
-                        break;
-                    }
-                case KinectStatus.NotPowered:
-                    {
-                        connectedStatus = "Status: Connect the power";
-                        break;
-                    }
-                default:
-                    {
-                        connectedStatus = "Status: Error";
-                        break;
-                    }
-            }
-
-            // Init the found and connected device
-            if (kinectSensor.Status == KinectStatus.Connected) {
-                StartKinect();
             }
         }
 

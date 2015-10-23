@@ -10,7 +10,10 @@ namespace SW9_Project {
         void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid);
         void PointAt(double xFromMid, double yFromMid);
         void PullShape(double xFromMid, double yFromMid);
-        void DrawNotice(string message, int secondsToShow);
+        double Height();
+        double Width();
+
+        void AddDot(double x, double y);
 
     }
 }

@@ -24,11 +24,11 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
-        public CanvasWindow() {
+        public CanvasWindow(bool debugging) {
 
             InitializeComponent();
 
-            kinectManager = new KinectManager(this);
+            if (!debugging) { kinectManager = new KinectManager(this); }
         }
 
         public Shape CreateEllipse() {
@@ -48,11 +48,6 @@ namespace SW9_Project {
         private bool shown = false;
 
         public void PointAt(double xFromMid, double yFromMid) {
-
-            if (!shown) {
-                shown = true;
-                DrawNotice("Testing", 10);
-            }
 
             if (pointingCircle == null) {
                 pointingCircle = CreateEllipse();
@@ -81,36 +76,23 @@ namespace SW9_Project {
             Canvas.SetBottom(shapeToMove, y);
         }
 
-        public void DrawNotice(string message, int secondsToShow) {
-            DispatcherTimer t = new DispatcherTimer();
-
-            t.Interval = TimeSpan.FromSeconds(secondsToShow);
-
-            //FontSize = "66.667" Foreground = "#FFF31616" FontWeight = "Bold" />
-            Label notice = new Label();
-            notice.Content = message;
-            notice.FontSize = 70.0;
-            notice.Foreground = Brushes.DarkRed;
-            notice.FontWeight = FontWeights.Bold;
-            canvas.Children.Add(notice);
-            Canvas.SetBottom(notice, (canvas.ActualHeight / 2) + (notice.ActualHeight /2));
-            Canvas.SetLeft(notice, (canvas.ActualWidth / 2) + (notice.ActualWidth /2));
-
-            t.Tick += (sender, e) => NoticeTimeElapse(sender, e, notice);
-            //t.Elapsed += (sender, e) => NoticeTimeElapse(sender, e, notice);
-            t.Start();
+        public new double Height() {
+            return canvas.ActualHeight;
         }
 
-        private void NoticeTimeElapse(object sender, EventArgs e, Label notice) {
+        public new double Width() {
+            return canvas.ActualWidth;
+        }
 
-            Action RemoveChild = () => { canvas.Children.Remove(notice); };
-            Dispatcher.BeginInvoke(RemoveChild, DispatcherPriority.Send, null);
-
-            /*
-            this.Dispatcher.InvokeAsync((Action)(() => {
-                canvas.Children.Remove(notice);
-            }));
-            */
+        public void AddDot(double x, double y) {
+            Ellipse ellipse = new Ellipse();
+            ellipse.Fill = Brushes.Blue;
+            ellipse.StrokeThickness = 0.5;
+            ellipse.Stroke = Brushes.Black;
+            ellipse.Height = 100;
+            ellipse.Width = 100;
+            canvas.Children.Add(ellipse);
+            MoveShape(ellipse, x, y);
         }
     }
 }
