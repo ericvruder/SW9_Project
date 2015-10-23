@@ -8,8 +8,12 @@
         Title="CanvasWindow" 
         Height="724"
         Width="1200"
+        WindowStyle="None"
+        WindowState="Maximized"
+        
         >
     <Grid>
-        <Canvas x:Name="canvas"/>
+        <Canvas x:Name="canvas">
+        </Canvas>
     </Grid>
 </Window>

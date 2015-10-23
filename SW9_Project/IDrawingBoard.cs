@@ -10,8 +10,7 @@ namespace SW9_Project {
         void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid);
         void PointAt(double xFromMid, double yFromMid);
         void PullShape(double xFromMid, double yFromMid);
-        void SetScalingFactor(double x, double y);
-
+        void DrawNotice(string message, int secondsToShow);
 
     }
 }

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using System.Timers;
 
 namespace SW9_Project {
     class KinectManager {
@@ -16,6 +17,8 @@ namespace SW9_Project {
         string connectedStatus = "";
         IDrawingBoard board;
 
+        double xScale, yScale;
+
         public KinectManager(IDrawingBoard board) {
             this.board = board;
             DiscoverKinectSensor();
@@ -23,7 +26,13 @@ namespace SW9_Project {
         }
 
         private void Calibrate() {
-            board.SetScalingFactor(1000.0, 1000.0); //TODO: Create a calibration routine
+
+            Timer pointingTimer = new Timer();
+            pointingTimer.Interval = 5000;
+
+
+            xScale = 2500;
+            yScale = 2500;//TODO: Create a calibration routine
         }
 
         private bool StartKinect() {
@@ -58,9 +67,7 @@ namespace SW9_Project {
                     Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
                     if (playerSkeleton != null) {
                         Joint rightHand = playerSkeleton.Joints[JointType.HandRight];
-                        Console.WriteLine(rightHand.Position.X + ", " + rightHand.Position.Y);
-                        board.PointAt(rightHand.Position.X, rightHand.Position.Y);
-                        //handPosition = new Vector2((((0.5f * rightHand.Position.X) + 0.5f) * (640)), (((-0.5f * rightHand.Position.Y) + 0.5f) * (480)));
+                        board.PointAt(xScale * rightHand.Position.X, yScale * rightHand.Position.Y);
                     }
                 }
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,14 +12,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SW9_Project {
     /// <summary>
     /// Interaction logic for CanvasWindow.xaml
     /// </summary>
     public partial class CanvasWindow : Window, IDrawingBoard {
-
-        double xScale, yScale;
 
         Shape pointingCircle;
 
@@ -45,13 +45,16 @@ namespace SW9_Project {
             return ellipse;
         }
 
-        public void SetScalingFactor(double x, double y) {
-            xScale = x;
-            yScale = y;
-        }
+        private bool shown = false;
 
         public void PointAt(double xFromMid, double yFromMid) {
-            if(pointingCircle == null) {
+
+            if (!shown) {
+                shown = true;
+                DrawNotice("Testing", 10);
+            }
+
+            if (pointingCircle == null) {
                 pointingCircle = CreateEllipse();
             }
             MoveShape(pointingCircle, xFromMid, yFromMid);
@@ -71,12 +74,43 @@ namespace SW9_Project {
             double x = (canvas.ActualWidth / 2) - (shapeToMove.Width / 2);
             double y = (canvas.ActualHeight / 2) - (shapeToMove.Height / 2);
 
-            x += (xScale * xFromMid);
-            y += (yScale * yFromMid);
+            x += xFromMid;
+            y += yFromMid;
 
             Canvas.SetLeft(shapeToMove, x);
             Canvas.SetBottom(shapeToMove, y);
         }
-       
+
+        public void DrawNotice(string message, int secondsToShow) {
+            DispatcherTimer t = new DispatcherTimer();
+
+            t.Interval = TimeSpan.FromSeconds(secondsToShow);
+
+            //FontSize = "66.667" Foreground = "#FFF31616" FontWeight = "Bold" />
+            Label notice = new Label();
+            notice.Content = message;
+            notice.FontSize = 70.0;
+            notice.Foreground = Brushes.DarkRed;
+            notice.FontWeight = FontWeights.Bold;
+            canvas.Children.Add(notice);
+            Canvas.SetBottom(notice, (canvas.ActualHeight / 2) + (notice.ActualHeight /2));
+            Canvas.SetLeft(notice, (canvas.ActualWidth / 2) + (notice.ActualWidth /2));
+
+            t.Tick += (sender, e) => NoticeTimeElapse(sender, e, notice);
+            //t.Elapsed += (sender, e) => NoticeTimeElapse(sender, e, notice);
+            t.Start();
+        }
+
+        private void NoticeTimeElapse(object sender, EventArgs e, Label notice) {
+
+            Action RemoveChild = () => { canvas.Children.Remove(notice); };
+            Dispatcher.BeginInvoke(RemoveChild, DispatcherPriority.Send, null);
+
+            /*
+            this.Dispatcher.InvokeAsync((Action)(() => {
+                canvas.Children.Remove(notice);
+            }));
+            */
+        }
     }
 }
