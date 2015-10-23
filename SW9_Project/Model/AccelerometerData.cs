@@ -11,7 +11,7 @@ namespace SW9_Project {
         public float Y { get; set; }
         public float Z { get; set; }
         public long Time { get; set; }
-
+        public long LastUpdate { get; set; }
 
         private AccelerometerData() {
             Type = "AccelerometerData";
@@ -27,7 +27,25 @@ namespace SW9_Project {
             Y = Convert.ToSingle(jsonObject.Y);
             Z = Convert.ToSingle(jsonObject.Z);
             Time = Convert.ToInt64(jsonObject.Time);
+        }
 
+        /// <summary>
+        /// This method should be paired with some Kinect depth data
+        /// to see if a throw is towards the screen or away from the screen.
+        /// </summary>
+        /// <returns>True if throw recognized</returns>
+        public bool IsThrown()
+        {
+            float accelationSquareRoot = (X * X + Y * Y + Z * Z) / (9.80665f * 9.80665f);
+            if (accelationSquareRoot >= 2)
+            {
+                if (Time - LastUpdate < 4E9) 
+                    return false; // Won't recognize a throw within a 4 second interval
+                LastUpdate = Time;
+                // Throw recognized
+                return true;
+            }
+            return false;
         }
 
     }
