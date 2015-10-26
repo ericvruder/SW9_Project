@@ -71,12 +71,24 @@ namespace SW9_Project {
             double x = (canvas.ActualWidth / 2) - (shapeToMove.Width / 2);
             double y = (canvas.ActualHeight / 2) - (shapeToMove.Height / 2);
 
-            x += (xScale * xFromMid);
-            y += (yScale * yFromMid);
+            //x += (xScale * xFromMid);
+            //y += (yScale * yFromMid);
+            x = Scale(xScale, .25f, xFromMid);
+            y = Scale(yScale, .26f, yFromMid);
 
             Canvas.SetLeft(shapeToMove, x);
             Canvas.SetBottom(shapeToMove, y);
         }
-       
+
+        private static double Scale(double maxPixel, float maxSkeleton, double position)
+        {
+            double value = ((((maxPixel / maxSkeleton) / 2) * position) + (maxPixel / 2));
+            if (value > maxPixel)
+                return maxPixel;
+            if (value < 0)
+                return 0;
+            return value;
+        }
+
     }
 }
