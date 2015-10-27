@@ -79,21 +79,6 @@ namespace SW9_Project {
             list.Add(GetCornerMeasurments(Corner.TopRight));
             list.Add(GetCornerMeasurments(Corner.BottomRight));
             list.Add(GetCornerMeasurments(Corner.BottomLeft));
-            
-          
-
-            CanvasWindow h = new CanvasWindow(true);
-            h.Show();
-
-            IDrawingBoard t = h;
-            
-            foreach (var j in list) {
-                foreach (var g in j) {
-                    t.AddDot(g.Item1, g.Item2);
-                }
-            }
-
-            //System.Threading.Thread.Sleep(1000000);
 
             /*
             List<Tuple<double, double>> tl = GetCornerMeasurments(Corner.TopLeft);
@@ -159,6 +144,7 @@ namespace SW9_Project {
                     Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
                     if (playerSkeleton != null) {
                         Joint rightHand = playerSkeleton.Joints[JointType.HandRight];
+                        Console.WriteLine(rightHand.Position.X + ", " + rightHand.Position.Y);
                         if (calibrating && gathering) {
                             lock (calibrationValues) {
                                 calibrationValues.Add(new Tuple<double, double>(rightHand.Position.X, rightHand.Position.Y));
