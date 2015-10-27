@@ -35,7 +35,7 @@ namespace SW9_Project {
                 Connection.StartService();
             });
 
-            CanvasWindow canvas = new CanvasWindow();
+            CanvasWindow canvas = new CanvasWindow(false);
             canvas.Show();
 
         }
