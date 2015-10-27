@@ -79,14 +79,14 @@
     <Compile Include="DebugConsole.xaml.cs">
       <DependentUpon>DebugConsole.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Gesture.cs" />
-    <Compile Include="GestureController.cs" />
-    <Compile Include="GestureEnumTypes.cs" />
-    <Compile Include="GestureEventArgs.cs" />
+    <Compile Include="Gestures\Gesture.cs" />
+    <Compile Include="Gestures\GestureController.cs" />
+    <Compile Include="Gestures\GestureEnumTypes.cs" />
+    <Compile Include="Gestures\GestureEventArgs.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IDrawingBoard.cs" />
     <Compile Include="IRelativeGestureSegment.cs" />
-    <Compile Include="JoinedHandsSegment.cs" />
+    <Compile Include="Gestures\JoinedHandsSegment.cs" />
     <Compile Include="KinectManager.cs" />
     <Compile Include="MessageWindow.xaml.cs">
       <DependentUpon>MessageWindow.xaml</DependentUpon>
@@ -95,8 +95,8 @@
     <Compile Include="Model\MobileData.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\RotationData.cs" />
-    <Compile Include="SwingRightSegments.cs" />
-    <Compile Include="WaveRightSegments.cs" />
+    <Compile Include="Gestures\SwingRightSegments.cs" />
+    <Compile Include="Gestures\WaveRightSegments.cs" />
     <Page Include="Calibration Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,6 +158,9 @@
     <Resource Include="Resources\large-red-circle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
