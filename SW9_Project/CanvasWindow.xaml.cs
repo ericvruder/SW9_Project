@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,13 +14,46 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
+        Rectangle[,] grid;
+        int gridHeight = 10, gridWidth = 10;
+
         double xScale = 2000, yScale = 2000;
 
-        public CanvasWindow(bool debugging) {
-
+        public CanvasWindow() {
             InitializeComponent();
+            kinectManager = new KinectManager(this);
+        }
 
-            if (!debugging) { kinectManager = new KinectManager(this); }
+        private void CreateGrid() {
+            CreateGrid(gridHeight, gridWidth);
+        }
+
+        private void CreateGrid(int width, int height) {
+            gridHeight = height;
+            gridWidth = width;
+            double squareHeight = canvas.ActualHeight / height;
+            double squareWidth = canvas.ActualWidth / width;
+
+            grid = new Rectangle[width, height];
+
+            for(int i = 0; i < width; i++) {
+                for(int j = 0; j < height; j++) {
+                    grid[i, j] = CreateRectangle(squareWidth, squareHeight);
+                    Canvas.SetTop(grid[i, j], j * squareHeight);
+                    Canvas.SetLeft(grid[i, j], i * squareWidth);
+                }
+            }
+        }
+
+        Rectangle lastCell;
+        private void ColorCell(double height, double width) {
+            int newSquareX = (int)Math.Round(height + (canvas.ActualHeight /2) / gridHeight, MidpointRounding.AwayFromZero), 
+                newSquareY = (int)Math.Round(width + (canvas.ActualWidth / 2) / gridWidth, MidpointRounding.AwayFromZero);
+//            Rectangle newRect = grid[newSquareX, newSquareY];
+            if (lastCell == null) {
+
+            }
+
         }
 
         public Shape CreateEllipse() {
@@ -37,7 +70,18 @@ namespace SW9_Project {
             return ellipse;
         }
 
-        private bool shown = false;
+        private Rectangle CreateRectangle(double width, double height) {
+            Rectangle rectangle = new Rectangle();
+            rectangle.StrokeThickness = 1;
+            rectangle.Fill = Brushes.Transparent;
+            rectangle.Stroke = Brushes.Black;
+            rectangle.Height = height;
+            rectangle.Width = width;
+
+            canvas.Children.Add(rectangle);
+
+            return rectangle;
+        }
 
         public void PointAt(double xFromMid, double yFromMid) {
 
@@ -45,6 +89,8 @@ namespace SW9_Project {
                 pointingCircle = CreateEllipse();
             }
             MoveShape(pointingCircle, xFromMid, yFromMid);
+            ColorCell(xFromMid, yFromMid);
+            
         }
 
         public void PullShape(double xFromMid, double yFromMid) {
@@ -80,23 +126,9 @@ namespace SW9_Project {
             return value;
         }
 
-        public new double Height() {
-            return canvas.ActualHeight;
+        private void canvas_Loaded(object sender, RoutedEventArgs e) {
+            CreateGrid();
         }
-
-        public new double Width() {
-            return canvas.ActualWidth;
-        }
-
-        public void AddDot(double x, double y) {
-            Ellipse ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Blue;
-            ellipse.StrokeThickness = 0.5;
-            ellipse.Stroke = Brushes.Black;
-            ellipse.Height = 100;
-            ellipse.Width = 100;
-            canvas.Children.Add(ellipse);
-            MoveShape(ellipse, x, y);
-        }
+        
     }
 }
