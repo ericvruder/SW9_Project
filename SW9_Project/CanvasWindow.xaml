@@ -8,8 +8,8 @@
         Title="CanvasWindow" 
         Height="724"
         Width="1200"
-        WindowStyle="None"
-        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow"
+        WindowState="Normal"
         
         >
     <Grid>

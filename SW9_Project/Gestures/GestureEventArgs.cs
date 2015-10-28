@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Kinect;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,10 +17,12 @@ namespace SW9_Project
         /// </summary>
         /// <param name="type">The gesture type.</param>
         /// <param name="trackingID">The tracking ID.</param>
-        public GestureEventArgs(string name, int trackingId)
+        public GestureEventArgs(string name, int trackingId, SkeletonPoint pos)
         {
             this.TrackingId = trackingId;
             this.GestureName = name;
+            this.Position = pos;
+            this.Time = DateTime.Now;
         }
 
         /// <summary>
@@ -37,5 +40,9 @@ namespace SW9_Project
         /// The tracking ID.
         /// </value>
         public int TrackingId { get; set; }
+
+        public SkeletonPoint Position { get; set; }
+
+        public DateTime Time { get; set; }
     }
 }

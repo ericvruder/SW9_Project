@@ -85,7 +85,7 @@ namespace SW9_Project
                 {
                     if (this.GestureRecognized != null)
                     {
-                        this.GestureRecognized(this, new GestureEventArgs(this.name, data.TrackingId));
+                        this.GestureRecognized(this, new GestureEventArgs(this.name, data.TrackingId, data.Joints[JointType.HandLeft].Position));
                         this.Reset();
                     }
                 }

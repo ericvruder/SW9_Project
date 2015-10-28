@@ -67,12 +67,19 @@ namespace SW9_Project {
                     Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
                     if (playerSkeleton != null) {
                         
-                        Joint rightHand = playerSkeleton.Joints[JointType.HandRight];
+                        Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
+                        //Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
+                        //Joint HipLeft = playerSkeleton.Joints[JointType.HipLeft];
+                        //Console.Clear();
+                        //Console.Write(
+                        //    "HandLeft: x: "+HandLeft.Position.X+" y:"+HandLeft.Position.Y+" z:"+HandLeft.Position.Z+"\n" +
+                        //    "HipLeft: x: " + HipLeft.Position.X + " y:" + HipLeft.Position.Y + " z:" + HipLeft.Position.Z + "\n"
+                        //    );
 
-                        board.PointAt(rightHand.Position.X, rightHand.Position.Y);
+                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                         gestureController.UpdateAllGestures(playerSkeleton);
 
-                        board.PointAt(rightHand.Position.X, rightHand.Position.Y);
+                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                     }
                 }
             }
@@ -95,15 +102,6 @@ namespace SW9_Project {
 
         private void RegisterGestures()
         {
-            IRelativeGestureSegment[] joinedhandsSegments = new IRelativeGestureSegment[20];
-            JoinedHandsSegment1 joinedhandsSegment = new JoinedHandsSegment1();
-            for (int i = 0; i < 20; i++)
-            {
-                // gesture consists of the same thing 10 times 
-                joinedhandsSegments[i] = joinedhandsSegment;
-            }
-            gestureController.AddGesture("JoinedHands", joinedhandsSegments);
-
             IRelativeGestureSegment[] waveRightSegments = new IRelativeGestureSegment[6];
             WaveRightSegment1 waveRightSegment1 = new WaveRightSegment1();
             WaveRightSegment2 waveRightSegment2 = new WaveRightSegment2();
@@ -154,15 +152,15 @@ namespace SW9_Project {
             {
                 case "WaveRight":
                     Gesture = "Wave Right";
-                    Console.WriteLine("Wave Right Hand");
-                    break;
-                case "JoinedHands":
-                    Gesture = "Joined Hands";
-                    Console.WriteLine("Joined Hands");
+                    Console.WriteLine("Recognized: " + e.GestureName +
+                                      " at position: " + e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z +
+                                      " at time: " + e.Time);
                     break;
                 case "SwingRight":
                     Gesture = "Swing Right";
-                    Console.WriteLine("Swing Right");
+                    //Console.WriteLine("Recognized: "+ e.GestureName +
+                    //                  " at position: "+ e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z + 
+                    //                  " at time: " + e.Time);
                     break;
 
                 default:

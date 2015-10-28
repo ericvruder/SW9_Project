@@ -84,13 +84,18 @@ namespace SW9_Project {
             return rectangle;
         }
 
+        Point pointFromMid = new Point();
+
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
                 pointingCircle = CreateEllipse();
             }
-            MoveShape(pointingCircle, xFromMid, yFromMid);
-            ColorCell(xFromMid, yFromMid);
+
+            pointFromMid = GetPoint(xFromMid, yFromMid);
+
+            MoveShape(pointingCircle, pointFromMid.X, pointFromMid.Y);
+            ColorCell(pointFromMid.X, pointFromMid.Y);
             
         }
 
@@ -104,17 +109,20 @@ namespace SW9_Project {
 
         private void MoveShape(Shape shapeToMove, double xFromMid, double yFromMid) {
 
-            double x = (canvas.ActualWidth / 2) - (shapeToMove.Width / 2);
-            double y = (canvas.ActualHeight / 2) - (shapeToMove.Height / 2);
-            //x += (xScale * xFromMid);
-            //y += (yScale * yFromMid);
-            x = Scale(xScale, .25f, xFromMid);
-            y = Scale(yScale, .26f, yFromMid);
-            //x += xFromMid;
-            //y += yFromMid;
-
+            double x = xFromMid - (shapeToMove.Width / 2);
+            double y = yFromMid - (shapeToMove.Height / 2);
+            
             Canvas.SetLeft(shapeToMove, x);
             Canvas.SetBottom(shapeToMove, y);
+        }
+
+        public Point GetPoint(double xFromMid, double yFromMid)
+        {
+            double x = Scale(xScale, .25f, xFromMid);
+            double y = Scale(yScale, .26f, yFromMid);
+            Point p = new Point(x, y);
+
+            return p;
         }
         
         private static double Scale(double maxPixel, float maxSkeleton, double position)
