@@ -18,7 +18,7 @@ namespace SW9_Project
                     if (skeleton.Joints[JointType.ElbowLeft].Position.Z < skeleton.Joints[JointType.ShoulderLeft].Position.Z)
                     {
                         // If right hand is ready to make a gesture towards the screen
-                        if (skeleton.Joints[JointType.HandRight].Position.Z > skeleton.Joints[JointType.ShoulderLeft].Position.Z - 0.1)
+                        if (skeleton.Joints[JointType.HandRight].Position.Z > skeleton.Joints[JointType.ShoulderLeft].Position.Z + 0.1)
                         {
                             return GesturePartResult.Succeed;
                         }

@@ -152,13 +152,15 @@ namespace SW9_Project {
             {
                 case "WaveRight":
                     Gesture = "Wave Right";
-                    Console.WriteLine("Wave Right Hand");
+                    Console.WriteLine("Recognized: " + e.GestureName +
+                                      " at position: " + e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z +
+                                      " at time: " + e.Time);
                     break;
                 case "SwingRight":
                     Gesture = "Swing Right";
-                    Console.WriteLine("Recognized: "+ e.GestureName +
-                                      " at position: "+ e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z + 
-                                      " at time: " + e.Time);
+                    //Console.WriteLine("Recognized: "+ e.GestureName +
+                    //                  " at position: "+ e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z + 
+                    //                  " at time: " + e.Time);
                     break;
 
                 default:
