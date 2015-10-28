@@ -16,8 +16,7 @@ namespace SW9_Project {
 
         Rectangle[,] grid;
         int gridHeight = 10, gridWidth = 10;
-
-        double xScale = 2000, yScale = 2000;
+        double squareHeight = 0, squareWidth = 0;
 
         Point pointFromMid = new Point();
 
@@ -28,73 +27,65 @@ namespace SW9_Project {
 
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
+
+            Shape t = ShapeFactory.CreateCircle(100);
+            canvas.Children.Add(t);
+            Canvas.SetBottom(t, (canvas.ActualHeight / 2) - (100 / 2));
+            Canvas.SetLeft(t, (canvas.ActualWidth / 2) - (100 / 2));
         }
 
         private void CreateGrid(int width, int height) {
             gridHeight = height;
             gridWidth = width;
-            double squareHeight = canvas.ActualHeight / height;
-            double squareWidth = canvas.ActualWidth / width;
+            squareHeight = canvas.ActualHeight / height;
+            squareWidth = canvas.ActualWidth / width;
 
             grid = new Rectangle[width, height];
 
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    grid[i, j] = CreateRectangle(squareWidth, squareHeight);
-                    Canvas.SetTop(grid[i, j], j * squareHeight);
+                    grid[i, j] = ShapeFactory.CreateGridCell(squareWidth, squareHeight);
+                    canvas.Children.Add(grid[i, j]);
+                    Canvas.SetBottom(grid[i, j], j * squareHeight);
                     Canvas.SetLeft(grid[i, j], i * squareWidth);
                 }
             }
         }
 
-        Rectangle lastCell;
-        private void ColorCell(double height, double width) {
-            int newSquareX = (int)Math.Round(height + (canvas.ActualHeight /2) / gridHeight, MidpointRounding.AwayFromZero), 
-                newSquareY = (int)Math.Round(width + (canvas.ActualWidth / 2) / gridWidth, MidpointRounding.AwayFromZero);
-//            Rectangle newRect = grid[newSquareX, newSquareY];
-            if (lastCell == null) {
+        private Rectangle GetCell(Point p) {
 
+
+            int x = (int)Math.Floor(p.X / squareWidth);
+            int y = (int)Math.Floor(p.Y / squareHeight);
+
+            if (x >= gridWidth) { x = gridWidth - 1; }
+            if (y >= gridHeight) { y = gridHeight - 1; }
+
+            return grid[x, y]; 
+
+        }
+
+        Rectangle currentCell;
+        private void ColorCell(Point toColor) {
+            
+            if (currentCell != null) {
+                currentCell.Fill = Brushes.Transparent;
             }
-
-        }
-
-        public Shape CreateEllipse() {
-
-            Ellipse ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Red;
-            ellipse.StrokeThickness = 1;
-            ellipse.Stroke = Brushes.Black;
-            ellipse.Height = 100;
-            ellipse.Width = 100;
-
-            canvas.Children.Add(ellipse);
-
-            return ellipse;
-        }
-
-        private Rectangle CreateRectangle(double width, double height) {
-            Rectangle rectangle = new Rectangle();
-            rectangle.StrokeThickness = 1;
-            rectangle.Fill = Brushes.Transparent;
-            rectangle.Stroke = Brushes.Black;
-            rectangle.Height = height;
-            rectangle.Width = width;
-
-            canvas.Children.Add(rectangle);
-
-            return rectangle;
+            currentCell = GetCell(toColor);
+            currentCell.Fill = Brushes.Yellow;
         }
 
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
-                pointingCircle = CreateEllipse();
+                pointingCircle = ShapeFactory.CreatePointer();
             }
 
             pointFromMid = GetPoint(xFromMid, yFromMid);
 
-            MoveShape(pointingCircle, pointFromMid.X, pointFromMid.Y);
-            ColorCell(pointFromMid.X, pointFromMid.Y);
+            
+            MoveShape(pointingCircle, pointFromMid);
+            ColorCell(pointFromMid);
             
         }
 
@@ -102,23 +93,30 @@ namespace SW9_Project {
             throw new NotImplementedException();
         }
 
-        public void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid) {
+        public void ReceiveShape(Shape shapeToMove, double x, double y) {
             throw new NotImplementedException();
         }
 
-        private void MoveShape(Shape shapeToMove, double xFromMid, double yFromMid) {
+        private void MoveShape(Shape shapeToMove, Point p) {
 
-            double x = xFromMid - (shapeToMove.Width / 2);
-            double y = yFromMid - (shapeToMove.Height / 2);
+            double x = p.X - (shapeToMove.Width / 2);
+            double y = p.Y - (shapeToMove.Height / 2);
             
             Canvas.SetLeft(shapeToMove, x);
             Canvas.SetBottom(shapeToMove, y);
         }
 
+        private void canvas_SizeChanged(object sender, SizeChangedEventArgs e) {
+            if(canvas.Children.Count != 0) {
+                canvas.Children.RemoveRange(0, canvas.Children.Count);
+            }
+            CreateGrid();
+        }
+
         public Point GetPoint(double xFromMid, double yFromMid)
         {
-            double x = Scale(xScale, .25f, xFromMid);
-            double y = Scale(yScale, .26f, yFromMid);
+            double x = Scale(canvas.ActualWidth, .25f, xFromMid);
+            double y = Scale(canvas.ActualHeight, .26f, yFromMid);
             Point p = new Point(x, y);
 
             return p;

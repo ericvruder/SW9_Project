@@ -16,8 +16,6 @@ namespace SW9_Project {
         Timer _clearTimer;
         Logger logger = new Logger();
 
-        double xScale, yScale;
-
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
@@ -78,9 +76,7 @@ namespace SW9_Project {
                         //    "HipLeft: x: " + HipLeft.Position.X + " y:" + HipLeft.Position.Y + " z:" + HipLeft.Position.Z + "\n"
                         //    );
 
-                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                         gestureController.UpdateAllGestures(playerSkeleton);
-
                         board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                     }
                 }
