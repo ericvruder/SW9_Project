@@ -14,8 +14,6 @@ namespace SW9_Project {
         private GestureController gestureController;
         Timer _clearTimer;
 
-        double xScale, yScale;
-
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;

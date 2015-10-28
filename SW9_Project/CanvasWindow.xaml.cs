@@ -18,8 +18,6 @@ namespace SW9_Project {
         int gridHeight = 10, gridWidth = 10;
         double squareHeight = 0, squareWidth = 0;
 
-        double xScale = 2000, yScale = 2000;
-
         public CanvasWindow() {
             InitializeComponent();
             kinectManager = new KinectManager(this);
@@ -27,6 +25,11 @@ namespace SW9_Project {
 
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
+
+            Shape t = ShapeFactory.CreateCircle(100);
+            canvas.Children.Add(t);
+            Canvas.SetBottom(t, (canvas.ActualHeight / 2) - (100 / 2));
+            Canvas.SetLeft(t, (canvas.ActualWidth / 2) - (100 / 2));
         }
 
         private void CreateGrid(int width, int height) {
@@ -39,54 +42,35 @@ namespace SW9_Project {
 
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    grid[i, j] = CreateRectangle(squareWidth, squareHeight);
+                    grid[i, j] = ShapeFactory.CreateGridCell(squareWidth, squareHeight);
+                    canvas.Children.Add(grid[i, j]);
                     Canvas.SetBottom(grid[i, j], j * squareHeight);
                     Canvas.SetLeft(grid[i, j], i * squareWidth);
                 }
             }
         }
 
+        private Rectangle GetCell(Point p) {
+
+
+            int x = (int)Math.Floor(p.X / squareWidth);
+            int y = (int)Math.Floor(p.Y / squareHeight);
+
+            if (x >= gridWidth) { x = gridWidth - 1; }
+            if (y >= gridHeight) { y = gridHeight - 1; }
+
+            return grid[x, y]; 
+
+        }
+
         Rectangle currentCell;
         private void ColorCell(Point toColor) {
-
-            int x = (int)Math.Floor(toColor.X / squareWidth);
-            int y = (int)Math.Floor(toColor.Y / squareHeight);
-
-            if(x >= gridWidth) { x = gridWidth - 1; }
-            if(y >= gridHeight) { y = gridHeight - 1; }
             
             if (currentCell != null) {
                 currentCell.Fill = Brushes.Transparent;
             }
-            currentCell = grid[x, y];
+            currentCell = GetCell(toColor);
             currentCell.Fill = Brushes.Yellow;
-        }
-
-        public Shape CreateEllipse() {
-
-            Ellipse ellipse = new Ellipse();
-            ellipse.Fill = Brushes.Red;
-            ellipse.StrokeThickness = 1;
-            ellipse.Stroke = Brushes.Black;
-            ellipse.Height = 100;
-            ellipse.Width = 100;
-
-            canvas.Children.Add(ellipse);
-
-            return ellipse;
-        }
-
-        private Rectangle CreateRectangle(double width, double height) {
-            Rectangle rectangle = new Rectangle();
-            rectangle.StrokeThickness = 1;
-            rectangle.Fill = Brushes.Transparent;
-            rectangle.Stroke = Brushes.Black;
-            rectangle.Height = height;
-            rectangle.Width = width;
-
-            canvas.Children.Add(rectangle);
-
-            return rectangle;
         }
 
         Point pointFromMid = new Point();
@@ -94,7 +78,7 @@ namespace SW9_Project {
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
-                pointingCircle = CreateEllipse();
+                pointingCircle = ShapeFactory.CreatePointer();
             }
 
             pointFromMid = GetPoint(xFromMid, yFromMid);
@@ -109,7 +93,7 @@ namespace SW9_Project {
             throw new NotImplementedException();
         }
 
-        public void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid) {
+        public void ReceiveShape(Shape shapeToMove, double x, double y) {
             throw new NotImplementedException();
         }
 

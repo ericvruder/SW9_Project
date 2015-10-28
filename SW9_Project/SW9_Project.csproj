@@ -92,17 +92,17 @@
     <Compile Include="Gestures\GestureController.cs" />
     <Compile Include="Gestures\GestureEnumTypes.cs" />
     <Compile Include="Gestures\GestureEventArgs.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Gestures\Techniques\JoinedHandsSegment.cs" />
     <Compile Include="Gestures\Techniques\SwingRightSegments.cs" />
     <Compile Include="Gestures\Techniques\WaveRightSegments.cs" />
-    <Compile Include="IDrawingBoard.cs" />
+    <Compile Include="Drawing\IDrawingBoard.cs" />
     <Compile Include="IRelativeGestureSegment.cs" />
     <Compile Include="KinectManager.cs" />
     <Compile Include="Model\AccelerometerData.cs" />
     <Compile Include="Model\MobileData.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\RotationData.cs" />
+    <Compile Include="Drawing\ShapeFactory.cs" />
     <Page Include="CanvasWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
