@@ -76,9 +76,7 @@ namespace SW9_Project {
                         //    "HipLeft: x: " + HipLeft.Position.X + " y:" + HipLeft.Position.Y + " z:" + HipLeft.Position.Z + "\n"
                         //    );
 
-                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                         gestureController.UpdateAllGestures(playerSkeleton);
-
                         board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                     }
                 }

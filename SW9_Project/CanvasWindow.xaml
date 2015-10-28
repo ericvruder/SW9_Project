@@ -13,7 +13,7 @@
         
         >
     <Grid>
-        <Canvas x:Name="canvas" Loaded="canvas_Loaded">
+        <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged">
         </Canvas>
     </Grid>
 </Window>
