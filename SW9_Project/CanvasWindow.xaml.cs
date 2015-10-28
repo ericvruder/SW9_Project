@@ -16,6 +16,7 @@ namespace SW9_Project {
 
         Rectangle[,] grid;
         int gridHeight = 10, gridWidth = 10;
+        double squareHeight = 0, squareWidth = 0;
 
         double xScale = 2000, yScale = 2000;
 
@@ -31,8 +32,8 @@ namespace SW9_Project {
         private void CreateGrid(int width, int height) {
             gridHeight = height;
             gridWidth = width;
-            double squareHeight = canvas.ActualHeight / height;
-            double squareWidth = canvas.ActualWidth / width;
+            squareHeight = canvas.ActualHeight / height;
+            squareWidth = canvas.ActualWidth / width;
 
             grid = new Rectangle[width, height];
 
@@ -45,15 +46,15 @@ namespace SW9_Project {
             }
         }
 
-        Rectangle lastCell;
+        Rectangle currentCell;
         private void ColorCell(double height, double width) {
-            int newSquareX = (int)Math.Round(height + (canvas.ActualHeight /2) / gridHeight, MidpointRounding.AwayFromZero), 
-                newSquareY = (int)Math.Round(width + (canvas.ActualWidth / 2) / gridWidth, MidpointRounding.AwayFromZero);
-//            Rectangle newRect = grid[newSquareX, newSquareY];
-            if (lastCell == null) {
-
+            int x = (int)Math.Ceiling(width / squareWidth);
+            int y = (int)Math.Ceiling(height / squareHeight);
+            if (currentCell != null) {
+                currentCell.Fill = Brushes.Transparent;
             }
-
+            currentCell = grid[x, y];
+            currentCell.Fill = Brushes.LightYellow;
         }
 
         public Shape CreateEllipse() {
