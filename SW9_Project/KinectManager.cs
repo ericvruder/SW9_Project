@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Kinect;
 using System.ComponentModel;
 using System.Timers;
+using SW9_Project.Logging;
 
 namespace SW9_Project {
     class KinectManager {
@@ -13,6 +14,7 @@ namespace SW9_Project {
         IDrawingBoard board;
         private GestureController gestureController;
         Timer _clearTimer;
+        Logger logger = new Logger();
 
         double xScale, yScale;
 
@@ -148,23 +150,12 @@ namespace SW9_Project {
 
         private void OnGestureRecognized(object sender, GestureEventArgs e)
         {
-            switch (e.GestureName)
-            {
-                case "WaveRight":
-                    Gesture = "Wave Right";
-                    Console.WriteLine("Recognized: " + e.GestureName +
-                                      " at position: " + e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z +
-                                      " at time: " + e.Time);
-                    break;
-                case "SwingRight":
-                    Gesture = "Swing Right";
-                    //Console.WriteLine("Recognized: "+ e.GestureName +
-                    //                  " at position: "+ e.Position.X + ", " + e.Position.Y + ", " + e.Position.Z + 
-                    //                  " at time: " + e.Time);
-                    break;
+            logger.LogGesture(e.GestureName, board.GetPoint(e.Position.X, e.Position.Y), e.Time);
 
-                default:
-                    break;
+            if(e.GestureName == "SwingRight")
+            {
+                // Swing with right hand recognized
+
             }
 
             _clearTimer.Start();

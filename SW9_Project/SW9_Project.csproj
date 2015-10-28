@@ -105,6 +105,7 @@
     <Compile Include="IDrawingBoard.cs" />
     <Compile Include="IRelativeGestureSegment.cs" />
     <Compile Include="KinectManager.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="MessageWindow.xaml.cs">
       <DependentUpon>MessageWindow.xaml</DependentUpon>
     </Compile>
@@ -174,9 +175,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logging\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
       <Visible>False</Visible>

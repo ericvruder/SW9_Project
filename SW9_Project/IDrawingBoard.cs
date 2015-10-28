@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Shapes;
 
 namespace SW9_Project {
@@ -10,6 +11,6 @@ namespace SW9_Project {
         void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid);
         void PointAt(double xFromMid, double yFromMid);
         void PullShape(double xFromMid, double yFromMid);
-
+        Point GetPoint(double xFromMid, double yFromMid);
     }
 }

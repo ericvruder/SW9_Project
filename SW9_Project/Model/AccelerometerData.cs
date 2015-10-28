@@ -27,6 +27,7 @@ namespace SW9_Project {
             Y = Convert.ToSingle(jsonObject.Y);
             Z = Convert.ToSingle(jsonObject.Z);
             Time = Convert.ToInt64(jsonObject.Time);
+
         }
 
         /// <summary>

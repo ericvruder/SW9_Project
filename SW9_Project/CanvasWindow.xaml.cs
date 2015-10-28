@@ -19,6 +19,8 @@ namespace SW9_Project {
 
         double xScale = 2000, yScale = 2000;
 
+        Point pointFromMid = new Point();
+
         public CanvasWindow() {
             InitializeComponent();
             kinectManager = new KinectManager(this);
@@ -82,8 +84,6 @@ namespace SW9_Project {
 
             return rectangle;
         }
-
-        Point pointFromMid = new Point();
 
         public void PointAt(double xFromMid, double yFromMid) {
 
