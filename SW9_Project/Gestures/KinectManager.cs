@@ -101,12 +101,15 @@ namespace SW9_Project {
 
         private void RegisterGestures()
         {
-            IRelativeGestureSegment[] swingRightSegments = new IRelativeGestureSegment[2];
-            SwingRightSegment1 swingRightSegment1 = new SwingRightSegment1();
-            SwingRightSegment2 swingRightSegment2 = new SwingRightSegment2();
-            swingRightSegments[0] = swingRightSegment1;
-            swingRightSegments[1] = swingRightSegment2;
-            gestureController.AddGesture("ThrowPush", swingRightSegments);
+            IRelativeGestureSegment[] ThrowPush = new IRelativeGestureSegment[2];
+            ThrowPush[0] = new SwingRightSegment1();
+            ThrowPush[1] = new SwingRightSegment2();
+            gestureController.AddGesture("ThrowPush", ThrowPush);
+
+            IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
+            ThrowPull[0] = new SwingRightSegment2();
+            ThrowPull[1] = new SwingRightSegment1();
+            gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -144,6 +147,10 @@ namespace SW9_Project {
                 KinectGesture thrown = new KinectGesture("circle", GestureType.Throw, GestureDirection.Push, pointer);
                 GestureParser.AddKinectGesture(thrown);
 
+            }
+            else if(e.GestureName == "ThrowPull") {
+                KinectGesture pull = new KinectGesture("circle", GestureType.Throw, GestureDirection.Pull, pointer);
+                GestureParser.AddKinectGesture(pull);
             }
 
             _clearTimer.Start();

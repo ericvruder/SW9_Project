@@ -86,8 +86,14 @@ namespace SW9_Project {
             ColorCell(pointer);
             if (GestureParser.AwaitingGesture != null) {
                 lock (GestureParser.AwaitingGesture) {
-                    ReceiveShape("circle", GestureParser.AwaitingGesture.Pointer);
-                    GestureParser.AwaitingGesture = null;
+                    if (GestureParser.AwaitingGesture.Direction == GestureDirection.Push) {
+                        ReceiveShape("circle", GestureParser.AwaitingGesture.Pointer);
+                        GestureParser.AwaitingGesture = null;
+                    }
+                    else if(GestureParser.AwaitingGesture.Direction == GestureDirection.Pull) {
+                        PullShape(GestureParser.AwaitingGesture.Pointer);
+                        GestureParser.AwaitingGesture = null;
+                    }
                 }
             }
             
