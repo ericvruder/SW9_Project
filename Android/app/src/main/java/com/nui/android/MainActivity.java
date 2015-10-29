@@ -38,14 +38,13 @@ public class MainActivity extends BaseActivity {
         sendMessageButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                network.SendMessage("Testing");
                 return true;
             }
         });
 
-        network = new Network(false);
+        network = new Network();
         sensorMonitor = new AccelerometerMonitor(network, this);
-        sensorMonitor = new RotationMonitor(network,this);
+        //sensorMonitor = new RotationMonitor(network,this);
     }
 
     @Override

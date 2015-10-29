@@ -3,7 +3,6 @@ package com.nui.android;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
@@ -16,16 +15,30 @@ public class AccelerometerMonitor extends SensorMonitor{
 
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             long curTime = System.currentTimeMillis();
-            if((curTime - lastUpdate) > lastUpdateThreshold){
-                lastUpdate = curTime;
-                float x = event.values[0];
-                float y = event.values[1];
-                float z = event.values[2];
-
-                AccelerometerData data = new AccelerometerData(x, y, z, curTime);
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            if(IsThrown(x,y,z,curTime)){
+                ThrowGesture data = new ThrowGesture("circle");
                 server.SendData(data);
             }
         }
+    }
+
+    private boolean IsThrown(float x, float y, float z, long curTime){
+
+        float accelationSquareRoot = (x * x + y * y + z * z)
+                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        if (accelationSquareRoot >= 2) //
+        {
+            long timeDiff = curTime - lastUpdate;
+            if (timeDiff < 4000) {
+                return false;
+            }
+            lastUpdate = curTime;
+            return true;
+        }
+        return false;
     }
 
     @Override

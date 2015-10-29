@@ -32,7 +32,7 @@ public class RotationMonitor extends SensorMonitor {
                 }*/
                 float pitch = event.values[1];
                 float roll = event.values[2];
-                server.SendData(new RotationData(pitch,roll,lastUpdate));
+                server.SendData(new RotationGesture(pitch,roll,lastUpdate));
             }
         }
     }
@@ -48,7 +48,7 @@ public class RotationMonitor extends SensorMonitor {
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
         float pitch = orientation[1] * FROM_RADS_TO_DEGS;
         float roll = orientation[2] * FROM_RADS_TO_DEGS;
-        server.SendData(new RotationData(pitch, roll, lastUpdate));
+        server.SendData(new RotationGesture(pitch, roll, lastUpdate));
     }
 
     @Override

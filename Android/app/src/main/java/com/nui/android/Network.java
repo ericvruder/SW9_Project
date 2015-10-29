@@ -1,5 +1,4 @@
 package com.nui.android;
-import android.os.Bundle;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -20,7 +19,7 @@ import com.google.gson.Gson;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "10.0.0.14";
+    private static final String SERVER_IP = "192.168.1.10";
 
     Socket clientSocket;
     String host;
@@ -192,7 +191,7 @@ public class Network implements IServer {
         }
     }
 
-    public void SendData(MobileData data){
+    public void SendData(MobileGesture data){
         if (clientSocket == null)
             return;
         if (!this.clientSocket.isConnected()) //should prevent some crashes if the network isn't connected.
