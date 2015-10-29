@@ -72,7 +72,7 @@ namespace SW9_Project {
         }
         
         Point pointer = new Point();
-        
+
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
@@ -82,11 +82,14 @@ namespace SW9_Project {
 
             pointer = GetPoint(xFromMid, yFromMid);
 
-            if(draw) {
-                ReceiveShape("circle", pointer);
-            }
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
+            if (GestureParser.AwaitingGesture != null) {
+                lock (GestureParser.AwaitingGesture) {
+                    ReceiveShape("circle", GestureParser.AwaitingGesture.Pointer);
+                    GestureParser.AwaitingGesture = null;
+                }
+            }
             
         }
 
@@ -159,14 +162,6 @@ namespace SW9_Project {
 
         private void canvas_Loaded(object sender, RoutedEventArgs e) {
             CreateGrid();
-            Timer t = new Timer();
-            t.Interval = 10000;
-            t.Elapsed += T_Elapsed;
-            t.Start();
-        }
-        bool draw = false;
-        private void T_Elapsed(object sender, ElapsedEventArgs e) {
-            draw = true;
         }
     }
 }

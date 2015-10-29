@@ -87,7 +87,11 @@
     <Compile Include="CanvasWindow.xaml.cs">
       <DependentUpon>CanvasWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\Cell.cs" />
+    <Compile Include="GestureParser.cs" />
+    <Compile Include="GestureType.cs" />
+    <Compile Include="KinectGesture.cs" />
+    <Compile Include="MobileGesture.cs" />
+    <Compile Include="Drawing\Cell.cs" />
     <Compile Include="Communication\Connection.cs" />
     <Compile Include="Gestures\Gesture.cs" />
     <Compile Include="Gestures\GestureController.cs" />
@@ -102,8 +106,6 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Model\AccelerometerData.cs" />
     <Compile Include="Model\MobileData.cs" />
-    <Compile Include="Model\User.cs" />
-    <Compile Include="Model\RotationData.cs" />
     <Compile Include="Drawing\ShapeFactory.cs" />
     <Page Include="CanvasWindow.xaml">
       <SubType>Designer</SubType>

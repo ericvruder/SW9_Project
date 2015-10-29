@@ -5,6 +5,7 @@ using Microsoft.Kinect;
 using System.ComponentModel;
 using System.Timers;
 using SW9_Project.Logging;
+using System.Windows;
 
 namespace SW9_Project {
     class KinectManager {
@@ -144,13 +145,15 @@ namespace SW9_Project {
             }
         }
 
-        private void OnGestureRecognized(object sender, GestureEventArgs e)
-        {
-            logger.LogGesture(e.GestureName, board.GetPoint(e.Position.X, e.Position.Y), e.Time);
+        private void OnGestureRecognized(object sender, GestureEventArgs e) { 
+
+            Point pointer = board.GetPoint(e.Position.X, e.Position.Y);
+            logger.LogGesture(e.GestureName, pointer, e.Time);
 
             if(e.GestureName == "SwingRight")
             {
-                // Swing with right hand recognized
+                KinectGesture thrown = new KinectGesture("circle", GestureType.Throw, pointer);
+                GestureParser.AddKinectGesture(thrown);
 
             }
 

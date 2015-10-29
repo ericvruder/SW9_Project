@@ -14,7 +14,6 @@ namespace SW9_Project {
     class Connection {
         
         Socket socket;
-        User user;
 
         private static List<Connection> allConnections;
         private static bool alive = true;
@@ -27,12 +26,11 @@ namespace SW9_Project {
             }
         }
 
-        public Connection(User user, Socket socket) {
-            this.user = user;
+        public Connection(Socket socket) {
             this.socket = socket;
 
             Task.Factory.StartNew(() => {
-                ManageMobileConnection(user);
+                ManageMobileConnection();
             });
 
         }
@@ -67,14 +65,13 @@ namespace SW9_Project {
             Task.Factory.StartNew(() => {
                 while (alive) {
                     Socket socket = listener.AcceptSocket();
-                    AllConnections.Add(new Connection(User.FindUser("something"), socket));
+                    AllConnections.Add(new Connection(socket));
                 }
                 listener.Stop();
             });
         }
 
-        private void ManageMobileConnection(User user) {
-            this.user = user;
+        private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
 
@@ -88,11 +85,8 @@ namespace SW9_Project {
                         if (readLine == "quit") { break; }
                         Console.WriteLine(readLine);
                         dynamic jO = JsonConvert.DeserializeObject(readLine);
-                        if (jO.Type == "AccelerometerData") {
-                            user.ParseMobileData(new AccelerometerData(jO));
-                        }
-                        if(jO.Type == "RotationData") {
-                            user.ParseMobileData(new RotationData(jO));
+                        if (jO.Type == "ThrowGesture") {
+                            GestureParser.AddMobileGesture(new MobileGesture(jO));
                         }
                     }
                 }
