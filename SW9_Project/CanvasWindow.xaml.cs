@@ -19,6 +19,8 @@ namespace SW9_Project {
         int gridHeight = 10, gridWidth = 10;
         double squareHeight = 0, squareWidth = 0;
 
+        Point pointFromMid = new Point();
+
         public CanvasWindow() {
             InitializeComponent();
             kinectManager = new KinectManager(this);
@@ -68,9 +70,9 @@ namespace SW9_Project {
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
         }
-
+        
         Point pointer = new Point();
-
+        
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
