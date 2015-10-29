@@ -10,11 +10,13 @@ namespace SW9_Project {
 
         public string Shape;
         public GestureType Type;
+        public GestureDirection Direction;
         public Point Pointer;
         public DateTime Timestamp;
 
-        public KinectGesture(string shape, GestureType type, Point p) {
+        public KinectGesture(string shape, GestureType type, GestureDirection direction, Point p) {
             Type = type;
+            Direction = direction;
             Pointer = p;
             Timestamp = DateTime.Now;
         }

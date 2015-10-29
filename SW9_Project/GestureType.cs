@@ -8,4 +8,7 @@ namespace SW9_Project {
     enum GestureType {
         Throw, Pinch, Tilt, Swipe
     }
+    enum GestureDirection {
+        Pull, Push
+    }
 }

@@ -101,23 +101,12 @@ namespace SW9_Project {
 
         private void RegisterGestures()
         {
-            IRelativeGestureSegment[] waveRightSegments = new IRelativeGestureSegment[6];
-            WaveRightSegment1 waveRightSegment1 = new WaveRightSegment1();
-            WaveRightSegment2 waveRightSegment2 = new WaveRightSegment2();
-            waveRightSegments[0] = waveRightSegment1;
-            waveRightSegments[1] = waveRightSegment2;
-            waveRightSegments[2] = waveRightSegment1;
-            waveRightSegments[3] = waveRightSegment2;
-            waveRightSegments[4] = waveRightSegment1;
-            waveRightSegments[5] = waveRightSegment2;
-            gestureController.AddGesture("WaveRight", waveRightSegments);
-
             IRelativeGestureSegment[] swingRightSegments = new IRelativeGestureSegment[2];
             SwingRightSegment1 swingRightSegment1 = new SwingRightSegment1();
             SwingRightSegment2 swingRightSegment2 = new SwingRightSegment2();
             swingRightSegments[0] = swingRightSegment1;
             swingRightSegments[1] = swingRightSegment2;
-            gestureController.AddGesture("SwingRight", swingRightSegments);
+            gestureController.AddGesture("ThrowPush", swingRightSegments);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -150,9 +139,9 @@ namespace SW9_Project {
             Point pointer = board.GetPoint(e.Position.X, e.Position.Y);
             logger.LogGesture(e.GestureName, pointer, e.Time);
 
-            if(e.GestureName == "SwingRight")
+            if(e.GestureName == "ThrowPush")
             {
-                KinectGesture thrown = new KinectGesture("circle", GestureType.Throw, pointer);
+                KinectGesture thrown = new KinectGesture("circle", GestureType.Throw, GestureDirection.Push, pointer);
                 GestureParser.AddKinectGesture(thrown);
 
             }
