@@ -12,6 +12,16 @@ using System.Windows.Shapes;
 namespace SW9_Project {
     static class ShapeFactory {
 
+        public static Shape CreateShape(string shape, double size) {
+            switch (shape) {
+                case "circle": return CreateCircle(size);
+                case "square": return CreateSquare(size);
+                case "triangle": return CreateTriangle(size);
+                case "pentagon": return CreatePentagon(size);
+                default: return CreateStar(size, 5);
+            }
+        }
+
         public static Ellipse CreatePointer() {
 
             Ellipse ellipse = new Ellipse();
@@ -20,7 +30,6 @@ namespace SW9_Project {
             ellipse.Stroke = Brushes.Black;
             ellipse.Height = 50;
             ellipse.Width = 50;
-
             return ellipse;
         }
 

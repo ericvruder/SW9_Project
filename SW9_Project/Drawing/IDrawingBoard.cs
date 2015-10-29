@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Shapes;
+
 
 namespace SW9_Project {
     interface IDrawingBoard {
-        void ReceiveShape(Shape shapeToMove, double xFromMid, double yFromMid);
+        void ReceiveShape(string shape, Point p);
         void PointAt(double xFromMid, double yFromMid);
-        void PullShape(double xFromMid, double yFromMid);
+        Shape PullShape(Point p);
 
     }
 }
