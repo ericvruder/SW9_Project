@@ -57,6 +57,15 @@ public class Network implements IServer {
         NetworkDiscoveryThread.start();
     }
 
+    public void Reconnect() {
+        Thread connectionThread = new Thread(){
+            public void run(){
+                SetupConnection();
+            }
+        };
+        connectionThread.start();
+    }
+
     private void FindServer(boolean unicast){
         byte[] ipAddr;
         DatagramSocket c;

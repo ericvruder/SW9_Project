@@ -30,8 +30,15 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.activity_tilt_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),PointAndThrowActivity.class);
+                Intent i = new Intent(getApplicationContext(), PointAndThrowActivity.class);
                 startActivity(i);
+            }
+        });
+
+        findViewById(R.id.reconnect_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                network.Reconnect();
             }
         });
 
