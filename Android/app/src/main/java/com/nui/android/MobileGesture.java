@@ -7,6 +7,7 @@ public abstract class MobileGesture {
 
     public String Type;
     public String Shape;
+    public String Direction;
     public long Time;
 
 }
