@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Timers;
 using SW9_Project.Logging;
 using System.Windows;
+using Microsoft.Kinect.Toolkit.Interaction;
+using SW9_Project.Gestures;
 
 namespace SW9_Project {
     class KinectManager {
@@ -16,6 +18,8 @@ namespace SW9_Project {
         private GestureController gestureController;
         Timer _clearTimer;
         Logger logger = new Logger();
+        private InteractionStream _interactionStream;
+        private UserInfo[] userInfos;
 
         public KinectManager(IDrawingBoard board) {
             
@@ -31,7 +35,8 @@ namespace SW9_Project {
         private bool StartKinect() {
 
             //kinectSensor.ColorStream.Enable();
-            kinectSensor.DepthStream.Range = DepthRange.Near;
+            //kinectSensor.DepthStream.Range = DepthRange.Near;
+            kinectSensor.DepthStream.Enable();
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.5f,
                 Correction = 0.5f,
@@ -47,6 +52,9 @@ namespace SW9_Project {
             // register the gestures for this demo
             RegisterGestures();
 
+            userInfos = new UserInfo[InteractionFrame.UserInfoArrayLength];
+            _interactionStream = new InteractionStream(kinectSensor, new InteractionClient());
+            _interactionStream.InteractionFrameReady += InteractionStreamOnInteractionFrameReady;
             kinectSensor.AllFramesReady += KinectSensor_AllFramesReady;
             try {
                 kinectSensor.Start();
@@ -65,6 +73,8 @@ namespace SW9_Project {
                     Skeleton[] skeletonData = new Skeleton[skeletonFrame.SkeletonArrayLength];
 
                     skeletonFrame.CopySkeletonDataTo(skeletonData);
+                    _interactionStream.ProcessSkeleton(skeletonData, kinectSensor.AccelerometerGetCurrentReading(), skeletonFrame.Timestamp);
+                    
                     Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
                     if (playerSkeleton != null) {
                         
@@ -80,6 +90,14 @@ namespace SW9_Project {
                         gestureController.UpdateAllGestures(playerSkeleton);
                         board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
                     }
+                }
+            }
+
+            using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
+            {
+                if(depthFrame != null)
+                {
+                    _interactionStream.ProcessDepth(depthFrame.GetRawPixelData(), depthFrame.Timestamp);
                 }
             }
         }
@@ -154,6 +172,91 @@ namespace SW9_Project {
             }
 
             _clearTimer.Start();
+        }
+
+        private void InteractionStreamOnInteractionFrameReady(object sender, InteractionFrameReadyEventArgs e)
+        {
+            using (InteractionFrame frame = e.OpenInteractionFrame())
+            {
+                if (frame != null)
+                {
+                    if (this.userInfos == null)
+                    {
+                        this.userInfos = new UserInfo[InteractionFrame.UserInfoArrayLength];
+                    }
+
+                    frame.CopyInteractionDataTo(this.userInfos);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+
+
+            foreach (UserInfo userInfo in this.userInfos)
+            {
+                foreach (InteractionHandPointer handPointer in userInfo.HandPointers)
+                {
+                    string action = null;
+
+                    switch (handPointer.HandEventType)
+                    {
+                        case InteractionHandEventType.Grip:
+                            action = "gripped";
+                            break;
+
+                        case InteractionHandEventType.GripRelease:
+                            action = "released";
+
+                            break;
+                    }
+
+                    if (action != null)
+                    {
+                        string handSide = "unknown";
+
+                        switch (handPointer.HandType)
+                        {
+                            case InteractionHandType.Left:
+                                handSide = "left";
+                                break;
+
+                            case InteractionHandType.Right:
+                                handSide = "right";
+                                break;
+                        }
+
+                        if (handSide == "left")
+                        {
+                            if (action == "released")
+                            {
+                                // left hand released code here
+                                Console.WriteLine("Left hand release");
+                            }
+                            else
+                            {
+                                // left hand gripped code here
+                                Console.WriteLine("Left hand grip");
+                            }
+                        }
+                        else
+                        {
+                            if (action == "released")
+                            {
+                                // right hand released code here
+                                Console.WriteLine("Right hand release");
+                            }
+                            else
+                            {
+                                // right hand gripped code here
+                                Console.WriteLine("Right hand grip");
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
