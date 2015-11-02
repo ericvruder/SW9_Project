@@ -158,7 +158,7 @@ namespace SW9_Project {
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
 
             Point pointer = board.GetPoint(e.Position.X, e.Position.Y);
-            logger.LogGesture(e.GestureName, pointer, e.Time);
+            logger.LogKinectGesture(e.GestureName, pointer, e.Time);
 
             if(e.GestureName == "ThrowPush")
             {
