@@ -2,7 +2,9 @@ package com.nui.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,6 +17,8 @@ public class MainActivity extends BaseActivity {
     private Button sendMessageButton;
     private Network network;
     private SensorMonitor sensorMonitor;
+    GestureDetectorCompat swipeDetector;
+    ScaleGestureDetector pinchDetector;
 
     @Override
     protected int getLayoutResourceId() {
@@ -51,8 +55,18 @@ public class MainActivity extends BaseActivity {
 
         network = new Network();
         sensorMonitor = new AccelerometerMonitor(network, this);
+        SwipeGestureListener swipeGestureListener = new SwipeGestureListener(network);
+        swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
+        pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(network, swipeGestureListener));
         //sensorMonitor = new RotationMonitor(network,this);
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.swipeDetector.onTouchEvent(event);
+        this.pinchDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 
     @Override
     protected void onPause(){

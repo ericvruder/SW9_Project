@@ -29,10 +29,10 @@ public class AccelerometerMonitor extends SensorMonitor{
 
         float accelationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-        if (accelationSquareRoot >= 2) //
+        if (accelationSquareRoot >= 5) //
         {
             long timeDiff = curTime - lastUpdate;
-            if (timeDiff < 4000) {
+            if (timeDiff < 1000) {
                 return false;
             }
             lastUpdate = curTime;
