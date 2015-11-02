@@ -15,7 +15,7 @@ namespace SW9_Project {
     class Connection {
         
         Socket socket;
-        Logger logger;
+        Logger logger = new Logger();
 
         private static List<Connection> allConnections;
         private static bool alive = true;
@@ -87,9 +87,9 @@ namespace SW9_Project {
                         if (readLine == "quit") { break; }
                         Console.WriteLine(readLine);
                         dynamic jO = JsonConvert.DeserializeObject(readLine);
+                        logger.LogMobileGesture(Convert.ToString(jO.Type), DateTime.Now);
                         if (jO.Type == "ThrowGesture") {
                             GestureParser.AddMobileGesture(new MobileGesture(jO));
-                            logger.LogMobileGesture(jO.Type, DateTime.Now);
                         }
                     }
                 }
