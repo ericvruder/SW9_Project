@@ -14,7 +14,6 @@ namespace SW9_Project {
         string connectedStatus = "";
         IDrawingBoard board;
         private GestureController gestureController;
-        Timer _clearTimer;
         Logger logger = new Logger();
 
         public KinectManager(IDrawingBoard board) {
@@ -23,9 +22,7 @@ namespace SW9_Project {
 
             DiscoverKinectSensor();
             StartKinect();
-
-            _clearTimer = new Timer(2000);
-            _clearTimer.Elapsed += new ElapsedEventHandler(clearTimer_Elapsed);
+            
         }
 
         private bool StartKinect() {
@@ -109,33 +106,11 @@ namespace SW9_Project {
             IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
             ThrowPull[0] = new SwingRightSegment2();
             ThrowPull[1] = new SwingRightSegment1();
-            gestureController.AddGesture("ThrowPull", ThrowPull);
+            //gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        void clearTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            Gesture = "";
-            _clearTimer.Stop();
-        }
-
-        private string _gesture;
-        public String Gesture
-        {
-            get { return _gesture; }
-
-            private set
-            {
-                if (_gesture == value)
-                    return;
-
-                _gesture = value;
-
-                if (this.PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Gesture"));
-            }
-        }
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
 
@@ -152,8 +127,7 @@ namespace SW9_Project {
                 KinectGesture pull = new KinectGesture("circle", GestureType.Throw, GestureDirection.Pull, pointer);
                 GestureParser.AddKinectGesture(pull);
             }
-
-            _clearTimer.Start();
+            
         }
     }
 }
