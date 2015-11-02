@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using SW9_Project.Logging;
 
 namespace SW9_Project {
     class Connection {
         
         Socket socket;
+        Logger logger;
 
         private static List<Connection> allConnections;
         private static bool alive = true;
@@ -87,6 +89,7 @@ namespace SW9_Project {
                         dynamic jO = JsonConvert.DeserializeObject(readLine);
                         if (jO.Type == "ThrowGesture") {
                             GestureParser.AddMobileGesture(new MobileGesture(jO));
+                            logger.LogMobileGesture(jO.Type, DateTime.Now);
                         }
                     }
                 }
