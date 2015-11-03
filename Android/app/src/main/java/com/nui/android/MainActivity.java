@@ -1,6 +1,5 @@
 package com.nui.android;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
@@ -16,7 +15,8 @@ public class MainActivity extends BaseActivity {
 
     private Button sendMessageButton;
     private Network network;
-    private SensorMonitor sensorMonitor;
+    private SensorMonitor acceloremeterSensor;
+    private RotationMonitor rotationSensor;
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
 
@@ -34,8 +34,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.activity_tilt_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PointAndThrowActivity.class);
-                startActivity(i);
+                finishActivity(0);
             }
         });
 
@@ -54,11 +53,11 @@ public class MainActivity extends BaseActivity {
         });
 
         network = new Network();
-        sensorMonitor = new AccelerometerMonitor(network, this);
         SwipeGestureListener swipeGestureListener = new SwipeGestureListener(network);
+        rotationSensor = new RotationMonitor(network, this);
+        acceloremeterSensor = new AccelerometerMonitor(network, rotationSensor, this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(network, swipeGestureListener));
-        //sensorMonitor = new RotationMonitor(network,this);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event){
@@ -70,7 +69,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onPause(){
-        sensorMonitor.Pause();
+        acceloremeterSensor.Pause();
         network.Pause();
         super.onPause();
     }
@@ -78,7 +77,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume(){
         network.Resume();
-        sensorMonitor.Resume();
+        acceloremeterSensor.Resume();
         super.onResume();
     }
 
