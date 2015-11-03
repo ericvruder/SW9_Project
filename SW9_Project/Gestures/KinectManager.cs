@@ -19,6 +19,7 @@ namespace SW9_Project {
         Logger logger = new Logger();
         private InteractionStream _interactionStream;
         private UserInfo[] userInfos;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public KinectManager(IDrawingBoard board) {
             
@@ -64,6 +65,12 @@ namespace SW9_Project {
 
         }
 
+        /// <summary>
+        /// This event is fired when all frames of the Kinect are ready.
+        /// This includes depth, color and skeleton frames.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void KinectSensor_AllFramesReady(object sender, AllFramesReadyEventArgs e) {
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame()) {
                 if (skeletonFrame != null) {
@@ -76,16 +83,17 @@ namespace SW9_Project {
                     if (playerSkeleton != null) {
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
-                        //Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
-                        //Joint HipLeft = playerSkeleton.Joints[JointType.HipLeft];
-                        //Console.Clear();
-                        //Console.Write(
-                        //    "HandLeft: x: "+HandLeft.Position.X+" y:"+HandLeft.Position.Y+" z:"+HandLeft.Position.Z+"\n" +
-                        //    "HipLeft: x: " + HipLeft.Position.X + " y:" + HipLeft.Position.Y + " z:" + HipLeft.Position.Z + "\n"
-                        //    );
-
+                        Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
                         gestureController.UpdateAllGestures(playerSkeleton);
-                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y);
+
+                        // Left handed
+                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y); // This is used for the throw technique
+                        //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for all other techniques
+
+                        // Right handed
+                        //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for the throw technique
+                        //board.PointAt(HandLeft.Position.X, HandLeft.Position.Y); // This is used for all other techniques
+
                     }
                 }
             }
@@ -126,9 +134,6 @@ namespace SW9_Project {
             ThrowPull[1] = new SwingRightSegment1();
             //gestureController.AddGesture("ThrowPull", ThrowPull);
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
 
