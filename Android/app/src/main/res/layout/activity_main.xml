@@ -24,7 +24,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tilt"
+            android:text="Quit"
             android:id="@+id/activity_tilt_button"
             android:layout_gravity="left|bottom" />
 
