@@ -28,8 +28,8 @@ namespace SW9_Project {
             ellipse.Fill = Brushes.Red;
             ellipse.StrokeThickness = 1;
             ellipse.Stroke = Brushes.Black;
-            ellipse.Height = 50;
-            ellipse.Width = 50;
+            ellipse.Height = 25;
+            ellipse.Width = 25;
             return ellipse;
         }
 

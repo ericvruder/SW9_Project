@@ -16,7 +16,7 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        int gridHeight = 10, gridWidth = 10;
+        int gridHeight = 20, gridWidth = 20;
         double squareHeight = 0, squareWidth = 0;
 
         Point pointFromMid = new Point();
@@ -78,6 +78,7 @@ namespace SW9_Project {
             if (pointingCircle == null) {
                 pointingCircle = ShapeFactory.CreatePointer();
                 canvas.Children.Add(pointingCircle);
+                Canvas.SetZIndex(pointingCircle, 1);
             }
 
             pointer = GetPoint(xFromMid, yFromMid);
