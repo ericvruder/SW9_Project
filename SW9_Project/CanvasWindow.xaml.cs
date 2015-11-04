@@ -1,4 +1,6 @@
+using SW9_Project.Drawing;
 using System;
+using System.Collections.Generic;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +18,7 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
+        List<Target> targets = new List<Target>();
         int gridHeight = 20, gridWidth = 20;
         double squareHeight = 0, squareWidth = 0;
 
@@ -28,6 +31,7 @@ namespace SW9_Project {
 
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
+            CreateTargets(20);
         }
 
         private void CreateGrid(int width, int height) {
@@ -45,6 +49,18 @@ namespace SW9_Project {
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
                     Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
                 }
+            }
+        }
+
+        private void CreateTargets(int length)
+        {
+            Random randomizer = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                Cell cell = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
+                Target target = new Target(cell);
+                target.targetCell.GridCell.Fill = Brushes.MediumVioletRed;
+                targets.Add(target);
             }
         }
 

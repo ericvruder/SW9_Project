@@ -21,7 +21,6 @@ namespace SW9_Project {
     /// </summary>
     public partial class MainWindow : Window {
 
-
         [DllImport("Kernel32")]
         public static extern void AllocConsole();
 
