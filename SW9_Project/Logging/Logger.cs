@@ -11,12 +11,16 @@ namespace SW9_Project.Logging
     class Logger
     {  
 
-        private static string logFilePath;
+        private static string logFilePath = "log-default.txt";
 
-        public Logger(): this("log-default.txt") { }
-        public Logger(string filePath)
+        public Logger(): this(logFilePath, false) { }
+        public Logger(bool flush): this(logFilePath, flush) { }
+        public Logger(string filePath): this(filePath, false) { }
+        public Logger(string filePath, bool flush)
         {
             logFilePath = filePath;
+            if(flush)
+                Logger.flush();
         }
 
         public static string filePath
