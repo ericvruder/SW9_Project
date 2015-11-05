@@ -44,22 +44,22 @@ namespace SW9_Project {
             return bytes;
         }
 
-        public static void StartService(int port = 8000) {
-
+        private static void StartService() {
             UdpClient dispatcher = new UdpClient(49255);
-            Task.Factory.StartNew(() =>
-            {
+            Task.Factory.StartNew(() => {
                 byte[] response;
                 //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
                 response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
-                while (alive)
-                {
+                while (alive) {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
                     Console.Write("receive data from " + remoteEP.ToString());
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
             });
+        }
+
+        public static void StartService(int port = 8000) { 
 
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
@@ -83,12 +83,9 @@ namespace SW9_Project {
                     sw.AutoFlush = true;
                     sw.WriteLine("Received your connection!");
                     while (true) {
-                        string readLine = sr.ReadLine();
-                        if (readLine == "quit") { break; }
-                        Console.WriteLine(readLine);
-                        dynamic jO = JsonConvert.DeserializeObject(readLine);
+                        dynamic jO = JsonConvert.DeserializeObject(sr.ReadLine());
                         logger.LogMobileGesture(Convert.ToString(jO.Type), DateTime.Now);
-                        if (jO.Type == "ThrowGesture") {
+                        if(jO.GetType().GetProperty("Type") != null) {
                             GestureParser.AddMobileGesture(new MobileGesture(jO));
                         }
                     }

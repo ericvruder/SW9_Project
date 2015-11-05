@@ -23,32 +23,10 @@ public class AccelerometerMonitor extends SensorMonitor {
                 ThrowGesture data = new ThrowGesture("circle");
                 server.SendData(data);
             }
-            else if(IsTilt(x,y,z,curTime)){
-                String direction = "";
-                if(rMonitor.IsForwardTilt()) { direction = "push"; }
-                else { direction = "pull"; }
-                TiltGesture data = new TiltGesture("circle", direction);
-                server.SendData(data);
-            }
         }
     }
 
     private boolean IsThrown(float x, float y, float z, long curTime){
-
-        float accelationSquareRoot = (x * x + y * y + z * z)
-                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-        if (accelationSquareRoot >= 5) //
-        {
-            long timeDiff = curTime - lastUpdate;
-            if (timeDiff < 1000) {
-                return false;
-            }
-            lastUpdate = curTime;
-            return true;
-        }
-        return false;
-    }
-    private boolean IsTilt(float x, float y, float z, long curTime){
 
         float accelationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);

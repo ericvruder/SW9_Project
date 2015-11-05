@@ -14,15 +14,15 @@ namespace SW9_Project {
         public MobileGesture(dynamic jsonObject) {
             Shape = jsonObject["Shape"];
             switch ((string)jsonObject["Type"]) {
-                case "Throw": Type = GestureType.Throw; break;
-                case "Pinch": Type = GestureType.Pinch; break;
-                case "Tilt": Type = GestureType.Tilt; break;
-                case "Swipe": Type = GestureType.Swipe; break;
+                case "ThrowGesture": Type = GestureType.Throw; break;
+                case "PinchGesture": Type = GestureType.Pinch; break;
+                case "TiltGesture": Type = GestureType.Tilt; break;
+                case "SwipeGesture": Type = GestureType.Swipe; break;
                 default: break;
             }
             switch ((string)jsonObject["Direction"]) {
-                case "Pull": Direction = GestureDirection.Pull; break;
-                case "Push": Direction = GestureDirection.Push; break;
+                case "Pull": case "pull": Direction = GestureDirection.Pull; break;
+                case "Push": case "push": Direction = GestureDirection.Push; break;
                 default: break;
             }
             Timestamp = DateTime.Now;

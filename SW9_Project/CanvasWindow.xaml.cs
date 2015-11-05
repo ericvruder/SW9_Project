@@ -16,21 +16,33 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        int gridHeight = 20, gridWidth = 20;
+        int gridHeight = 10, gridWidth = 10;
         double squareHeight = 0, squareWidth = 0;
-
-        Point pointFromMid = new Point();
+        static CanvasWindow window;
 
         public CanvasWindow() {
+            window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
         }
 
+        private void AddTestShapes() {
+            for(int i = 105; i < canvas.ActualWidth; i += 200) {
+                for(int j = 104; j < canvas.ActualHeight; j += 200) {
+                    ReceiveShape("circle", new Point(i, j));
+                }
+            }
+        }
+
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
+            AddTestShapes();
         }
 
         private void CreateGrid(int width, int height) {
+            if(grid != null) {
+                canvas.Children.Clear();
+            }
             gridHeight = height;
             gridWidth = width;
             squareHeight = canvas.ActualHeight / height;
@@ -71,7 +83,7 @@ namespace SW9_Project {
             currentCell.Fill = Brushes.Yellow;
         }
         
-        Point pointer = new Point();
+        protected Point pointer = new Point();
 
         public void PointAt(double xFromMid, double yFromMid) {
 
@@ -85,19 +97,17 @@ namespace SW9_Project {
 
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
-            if (GestureParser.AwaitingGesture != null) {
-                lock (GestureParser.AwaitingGesture) {
-                    if (GestureParser.AwaitingGesture.Direction == GestureDirection.Push) {
-                        ReceiveShape("circle", GestureParser.AwaitingGesture.Pointer);
-                        GestureParser.AwaitingGesture = null;
-                    }
-                    else if(GestureParser.AwaitingGesture.Direction == GestureDirection.Pull) {
-                        PullShape(GestureParser.AwaitingGesture.Pointer);
-                        GestureParser.AwaitingGesture = null;
-                    }
-                }
+            KinectGesture gesture = GestureParser.AwaitingGesture;
+            if (gesture?.Direction == GestureDirection.Push) {
+                ReceiveShape(gesture.Shape, gesture.Pointer);
             }
-            
+            else if(gesture?.Direction == GestureDirection.Pull) {
+                PullShape(gesture.Pointer);
+            } 
+        }
+
+        public static Point GetCurrentPoint() {
+            return window.pointer;
         }
 
         public Shape PullShape(Point p) {
@@ -110,13 +120,11 @@ namespace SW9_Project {
 
         public void ReceiveShape(string shape, Point p) {
             Cell cell = GetCell(p);
-            if(cell.Shape != null) {
-                canvas.Children.Remove(cell.Shape);
-            }
+            canvas.Children.Remove(cell?.Shape);
             double size = squareHeight < squareWidth ? squareHeight : squareWidth;
             Shape t = ShapeFactory.CreateShape(shape, size);
-            double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.ActualWidth / 2);
-            double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.ActualHeight / 2);
+            double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.Width / 2);
+            double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.Height / 2);
 
             canvas.Children.Add(t);
             cell.Shape = t;
