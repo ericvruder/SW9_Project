@@ -20,5 +20,20 @@ namespace SW9_Project {
             Pointer = p;
             Timestamp = DateTime.Now;
         }
+        public KinectGesture(GestureType type, GestureDirection direction, Point p) : this(null, type, direction, p) { }
+        public KinectGesture(string shape, GestureDirection direction, Point p) {
+            Shape = shape;
+            Direction = direction;
+            Pointer = p;
+            Timestamp = DateTime.Now;
+        }
+
+        public KinectGesture(string shape) {
+            Shape = shape;
+            Type = GestureParser.GetTypeContext();
+            Direction = GestureParser.GetDirectionContext();
+            Pointer = CanvasWindow.GetCurrentPoint();
+            Timestamp = DateTime.Now;
+        }
     }
 }

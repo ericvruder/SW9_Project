@@ -132,7 +132,7 @@ namespace SW9_Project {
             IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
             ThrowPull[0] = new SwingRightSegment2();
             ThrowPull[1] = new SwingRightSegment1();
-            //gestureController.AddGesture("ThrowPull", ThrowPull);
+            gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
@@ -142,12 +142,12 @@ namespace SW9_Project {
 
             if(e.GestureName == "ThrowPush")
             {
-                KinectGesture thrown = new KinectGesture("circle", GestureType.Throw, GestureDirection.Push, pointer);
+                KinectGesture thrown = new KinectGesture(GestureType.Throw, GestureDirection.Push, pointer);
                 GestureParser.AddKinectGesture(thrown);
 
             }
             else if(e.GestureName == "ThrowPull") {
-                KinectGesture pull = new KinectGesture("circle", GestureType.Throw, GestureDirection.Pull, pointer);
+                KinectGesture pull = new KinectGesture(GestureType.Throw, GestureDirection.Pull, pointer);
                 GestureParser.AddKinectGesture(pull);
             }
             
@@ -211,12 +211,12 @@ namespace SW9_Project {
                         {
                             if (action == "released")
                             {
-                                // left hand released code here
+                                GestureParser.AddKinectGesture(new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint()));
                                 Console.WriteLine("Left hand release");
                             }
                             else
                             {
-                                // left hand gripped code here
+                                GestureParser.AddKinectGesture(new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint()));
                                 Console.WriteLine("Left hand grip");
                             }
                         }

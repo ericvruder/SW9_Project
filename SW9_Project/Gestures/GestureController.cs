@@ -50,6 +50,13 @@ namespace SW9_Project
             this.gestures.Add(gesture);
         }
 
+        public void ClearAllGestures() {
+            foreach(Gesture g in this.gestures) {
+                g.GestureRecognized -= OnGestureRecognized;
+            }
+            this.gestures.Clear();
+        }
+
         /// <summary>
         /// Handles the GestureRecognized event of the g control.
         /// </summary>
