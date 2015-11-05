@@ -31,7 +31,7 @@ namespace SW9_Project {
 
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
-            CreateTargets(20);
+            CreateTargets(1);
         }
 
         private void CreateGrid(int width, int height) {

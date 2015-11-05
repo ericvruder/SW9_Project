@@ -29,6 +29,13 @@ namespace SW9_Project.Logging
             set { if (value.Length > 0) Logger.logFilePath = value; }
         }
 
+        public void LogMessage(string msg)
+        {
+            log(msg);
+
+            Console.WriteLine(msg);
+        }
+
         public void LogKinectGesture(string gestureName, Point pointer, DateTime time)
         {
             string message = "KINECT GESTURE" +
