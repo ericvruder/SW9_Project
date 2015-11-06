@@ -18,12 +18,8 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-<<<<<<< HEAD
         List<Target> targets = new List<Target>();
-        int gridHeight = 20, gridWidth = 20;
-=======
         int gridHeight = 10, gridWidth = 10;
->>>>>>> master
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
 
@@ -43,11 +39,8 @@ namespace SW9_Project {
 
         private void CreateGrid() {
             CreateGrid(gridHeight, gridWidth);
-<<<<<<< HEAD
             CreateTargets(1);
-=======
             AddTestShapes();
->>>>>>> master
         }
 
         private void CreateGrid(int width, int height) {
