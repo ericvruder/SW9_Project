@@ -9,20 +9,32 @@ using System.Windows;
 namespace SW9_Project.Logging
 {
     class Logger
-    {  
+    {
 
-        private static string logFilePath;
+        int userID;
+        private static string testLogFilePath = "log/test.txt";
 
-        public Logger(): this("log-default.txt") { }
-        public Logger(string filePath)
+        public Logger(): this(testLogFilePath, false) { }
+        public Logger(bool flush): this(testLogFilePath, flush) { }
+        public Logger(string filePath): this(filePath, false) { }
+        public Logger(string filePath, bool flush)
         {
-            logFilePath = filePath;
+            testLogFilePath = filePath;
+            if(flush)
+                Logger.flush();
         }
 
         public static string filePath
         {
-            get { return Logger.logFilePath; }
-            set { if (value.Length > 0) Logger.logFilePath = value; }
+            get { return Logger.testLogFilePath; }
+            set { if (value.Length > 0) Logger.testLogFilePath = value; }
+        }
+
+        public void LogMessage(string msg)
+        {
+            log(msg);
+
+            Console.WriteLine(msg);
         }
 
         public void LogKinectGesture(string gestureName, Point pointer, DateTime time)
