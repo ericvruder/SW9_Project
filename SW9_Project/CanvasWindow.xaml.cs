@@ -1,4 +1,3 @@
-using SW9_Project.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Timers;
@@ -18,12 +17,14 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        List<Target> targets = new List<Target>(); // maybe this should be just a single target object if we are not going to do multiple targets.
-        int gridHeight = 10, gridWidth = 10;
+        Cell target;
+        GridSize currentSize;
+        int gridHeight, gridWidth;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
 
         public CanvasWindow() {
+            currentSize = GridSize.Large;
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
@@ -37,9 +38,12 @@ namespace SW9_Project {
             }
         }
 
-        private void CreateGrid() {
-            CreateGrid(gridHeight, gridWidth);
-            CreateTargets(1);
+        private void CreateGrid(GridSize size) {
+            if(size == GridSize.Large) {
+                CreateGrid(15,10);
+            } else {
+                CreateGrid(30, 20);
+            }
             AddTestShapes();
         }
 
@@ -60,20 +64,15 @@ namespace SW9_Project {
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
                     Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
+                    Canvas.SetZIndex(grid[i, j].GridCell, 5);
                 }
             }
         }
 
-        private void CreateTargets(int length)
+        private void CreateTarget()
         {
             Random randomizer = new Random();
-            for (int i = 0; i < length; i++)
-            {
-                Cell cell = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
-                Target target = new Target(cell);
-                target.targetCell.GridCell.Fill = Brushes.MediumVioletRed;
-                targets.Add(target);
-            }
+            target = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
         }
 
         private Cell GetCell(Point p) {
@@ -88,6 +87,8 @@ namespace SW9_Project {
             return grid[x, y]; 
 
         }
+
+        private enum GridSize { Small, Large }
 
         Rectangle currentCell;
         private void ColorCell(Point toColor) {
@@ -108,9 +109,9 @@ namespace SW9_Project {
                 canvas.Children.Add(pointingCircle);
                 Canvas.SetZIndex(pointingCircle, 1);
             }
+            target.GridCell.Fill = Brushes.Purple;
 
             pointer = GetPoint(xFromMid, yFromMid);
-
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
@@ -119,7 +120,30 @@ namespace SW9_Project {
             }
             else if(gesture?.Direction == GestureDirection.Pull) {
                 PullShape(gesture.Pointer);
-            } 
+            }
+            if (gesture != null) {
+                CheckForTestChanges();
+            }
+        }
+
+        private void CheckForTestChanges() {
+            Cell currCell = GetCell(pointer);
+            if(currCell == target) {
+                target.GridCell.Fill = Brushes.Transparent;
+                TestSuite.CurrentTest.TargetHit();
+                if (TestSuite.CurrentTest.Done) {
+                    TestSuite.CurrentTest = null;
+                    //TODO: ADD LOGGING OF TEST DONE
+                }
+                else if (TestSuite.CurrentTest.NextSize) {
+                    
+                }
+            }
+        }
+
+        private void StartNewTest() {
+            TestSuite.StartNewTest(GestureDirection.Pull);
+            CreateTarget();
         }
 
         public static Point GetCurrentPoint() {
@@ -169,7 +193,7 @@ namespace SW9_Project {
             if(canvas.Children.Count != 0) {
                 canvas.Children.RemoveRange(0, canvas.Children.Count);
             }
-            CreateGrid();
+            CreateGrid(currentSize);
         }
 
         public Point GetPoint(double xFromMid, double yFromMid)
@@ -180,7 +204,13 @@ namespace SW9_Project {
 
             return p;
         }
-        
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            if(e.Key == System.Windows.Input.Key.Space) {
+                StartNewTest();
+            }
+        }
+
         private static double Scale(double maxPixel, float maxSkeleton, double position)
         {
             double value = ((((maxPixel / maxSkeleton) / 2) * position) + (maxPixel / 2));
@@ -192,7 +222,7 @@ namespace SW9_Project {
         }
 
         private void canvas_Loaded(object sender, RoutedEventArgs e) {
-            CreateGrid();
+            CreateGrid(currentSize);
         }
     }
 }

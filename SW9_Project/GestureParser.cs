@@ -38,7 +38,6 @@ namespace SW9_Project {
         public static void SetTypeContext(GestureType type) {
             typeContext = type;
         }
-
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
             switch (receivedGesture.Type) {

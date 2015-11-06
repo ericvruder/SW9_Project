@@ -90,7 +90,6 @@
     <Compile Include="CanvasWindow.xaml.cs">
       <DependentUpon>CanvasWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Drawing\Target.cs" />
     <Compile Include="GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
     <Compile Include="GestureType.cs" />
@@ -112,6 +111,7 @@
     <Compile Include="Model\AccelerometerData.cs" />
     <Compile Include="Model\MobileData.cs" />
     <Compile Include="Drawing\ShapeFactory.cs" />
+    <Compile Include="TestSuite.cs" />
     <Page Include="CanvasWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
