@@ -18,7 +18,7 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        List<Target> targets = new List<Target>();
+        List<Target> targets = new List<Target>(); // maybe this should be just a single target object if we are not going to do multiple targets.
         int gridHeight = 10, gridWidth = 10;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
