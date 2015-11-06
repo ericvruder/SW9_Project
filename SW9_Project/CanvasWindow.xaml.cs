@@ -22,11 +22,12 @@ namespace SW9_Project {
         Cell target;
         GridSize currentSize;
         int gridHeight, gridWidth;
+        int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
 
         public CanvasWindow() {
-            currentSize = GridSize.Large;
+            currentSize = GridSize.Small;
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
@@ -42,9 +43,9 @@ namespace SW9_Project {
 
         private void CreateGrid(GridSize size) {
             if(size == GridSize.Large) {
-                CreateGrid(15,10);
+                CreateGrid(lgWidth,lgHeight);
             } else {
-                CreateGrid(30, 20);
+                CreateGrid(sgWidth, sgHeight);
             }
             AddTestShapes();
         }
@@ -76,6 +77,7 @@ namespace SW9_Project {
         {
             Random randomizer = new Random();
             target = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
+            target.GridCell.Fill = Brushes.Purple;
         }
 
         public Cell GetCell(Point p) {
@@ -112,7 +114,9 @@ namespace SW9_Project {
                 canvas.Children.Add(pointingCircle);
                 Canvas.SetZIndex(pointingCircle, 1);
             }
-            target.GridCell.Fill = Brushes.Purple;
+            if (target != null) {
+                target.GridCell.Fill = Brushes.Purple;
+            }
 
             pointer = GetPoint(xFromMid, yFromMid);
             MoveShape(pointingCircle, pointer);
@@ -133,14 +137,29 @@ namespace SW9_Project {
             Cell currCell = GetCell(pointer);
             if(currCell == target) {
                 target.GridCell.Fill = Brushes.Transparent;
+
+                Logger.CurrentLogger.CurrentTargetHit();
                 TestSuite.CurrentTest.TargetHit();
+
                 if (TestSuite.CurrentTest.Done) {
                     TestSuite.CurrentTest = null;
-                    //TODO: ADD LOGGING OF TEST DONE
+                    Logger.CurrentLogger.EndUser();
+                    return;
                 }
-                else if (TestSuite.CurrentTest.NextSize) {
-                    
+
+                if (TestSuite.CurrentTest.NextSize) {
+                    Logger.CurrentLogger.EndCurrentSizeTest();
+                    CreateGrid(GridSize.Large);
+                    Logger.CurrentLogger.StartNewSizeTest(gridHeight, gridWidth, squareHeight, squareWidth);
                 }
+                if (TestSuite.CurrentTest.NextGesture) {
+                    Logger.CurrentLogger.EndCurrentGestureTest();
+                    Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
+                }
+
+                Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
+                CreateTarget();
+
             }
         }
 

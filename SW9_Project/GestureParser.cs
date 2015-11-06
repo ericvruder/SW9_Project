@@ -124,6 +124,7 @@ namespace SW9_Project {
                                 waitingKinectGesture = receivedGesture;
                             } else {
                                 ClearGestures();
+
                             }
                         } break;
                 }

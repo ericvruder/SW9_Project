@@ -147,9 +147,9 @@ namespace SW9_Project.Logging
         /// <param name="shape"></param>
         /// <param name="gridX"></param>
         /// <param name="gridY"></param>
-        public void AddNewTarget(Shape shape, int gridX, int gridY)
+        public void AddNewTarget(String shape, int gridX, int gridY)
         {
-            string message = "New " + shape.ToString() + " target added. " +
+            string message = "New " + shape + " target added. " +
                              " X = " + gridX + " Y = " + gridY;
             Log(message);
         }
