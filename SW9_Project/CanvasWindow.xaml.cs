@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 using SW9_Project.Logging;
+using System.Threading.Tasks;
 
 namespace SW9_Project {
     /// <summary>
@@ -27,6 +28,7 @@ namespace SW9_Project {
         static CanvasWindow window;
 
         public CanvasWindow() {
+            GestureParser.Initialize(this);
             currentSize = GridSize.Small;
             window = this;
             InitializeComponent();
@@ -147,13 +149,25 @@ namespace SW9_Project {
                     return;
                 }
 
+                bool nextGesture = TestSuite.CurrentTest.NextGesture;
+
+                if (nextGesture) {
+                    Logger.CurrentLogger.EndCurrentGestureTest();
+                }
+
                 if (TestSuite.CurrentTest.NextSize) {
                     Logger.CurrentLogger.EndCurrentSizeTest();
                     CreateGrid(GridSize.Large);
                     Logger.CurrentLogger.StartNewSizeTest(gridHeight, gridWidth, squareHeight, squareWidth);
                 }
-                if (TestSuite.CurrentTest.NextGesture) {
-                    Logger.CurrentLogger.EndCurrentGestureTest();
+                if (nextGesture) {
+                    VideoWindow tutorialWindow = null;
+                    System.Threading.Thread.Sleep(100);
+                    Task.Factory.StartNew(() => {
+                        tutorialWindow = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
+                    });
+                    while (!tutorialWindow.DoneShowing) ;
+
                     Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
                 }
 
@@ -164,6 +178,7 @@ namespace SW9_Project {
         }
 
         private void StartNewTest() {
+            Logger.CurrentLogger.NewUser();
             TestSuite.StartNewTest(GestureDirection.Pull);
             CreateTarget();
         }

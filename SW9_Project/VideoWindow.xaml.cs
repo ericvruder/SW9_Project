@@ -19,7 +19,7 @@ namespace SW9_Project
     /// </summary>
     public partial class VideoWindow : Window
     {
-        bool DoneShowing { get; set; }
+        public bool DoneShowing { get; set; }
 
         public VideoWindow(GestureDirection direction, GestureType type)
         {

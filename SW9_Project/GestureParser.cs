@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SW9_Project.Logging;
 
 namespace SW9_Project {
     static class GestureParser {
@@ -13,6 +14,12 @@ namespace SW9_Project {
 
         static private GestureDirection directionContext = GestureDirection.Pull;
         static private GestureType typeContext = GestureType.Throw;
+
+        static private IDrawingBoard board;
+
+        static public void Initialize(IDrawingBoard _board) {
+            board = _board;
+        }
 
         static public KinectGesture AwaitingGesture {
             get {
@@ -40,6 +47,7 @@ namespace SW9_Project {
         }
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
+            Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
             switch (receivedGesture.Type) {
                 case GestureType.Swipe:
                     {
@@ -95,6 +103,7 @@ namespace SW9_Project {
         }
 
         static public void AddKinectGesture(KinectGesture receivedGesture) {
+            Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
             if (typeContext == receivedGesture.Type) {
                 switch (receivedGesture.Type) {
                     case GestureType.Pinch: {

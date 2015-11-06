@@ -211,13 +211,11 @@ namespace SW9_Project {
                             {
                                 KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
                                 GestureParser.AddKinectGesture(kinectGesture);
-                                Logger.CurrentLogger.AddNewKinectGesture(kinectGesture, board.GetCell(kinectGesture.Pointer));
                             }
                             else
                             {
                                 KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
                                 GestureParser.AddKinectGesture(kinectGesture);
-                                Logger.CurrentLogger.AddNewKinectGesture(kinectGesture, board.GetCell(kinectGesture.Pointer));
                             }
                         }
                         else
