@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SW9_Project.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -27,8 +28,11 @@ namespace SW9_Project {
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
 
+        Logger logger = new Logger();
+
         public MainWindow() {
             InitializeComponent();
+            logger.NewUser();
 
             Task.Factory.StartNew(() => {
                 AllocConsole();

@@ -9,13 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
-using SW9_Project.Logging;
 
 namespace SW9_Project {
     class Connection {
         
         Socket socket;
-        Logger logger = new Logger();
 
         private static List<Connection> allConnections;
         private static bool alive = true;
@@ -84,7 +82,6 @@ namespace SW9_Project {
                     sw.WriteLine("Received your connection!");
                     while (true) {
                         dynamic jO = JsonConvert.DeserializeObject(sr.ReadLine());
-                        logger.LogMobileGesture(Convert.ToString(jO.Type), DateTime.Now);
                         if(jO.GetType().GetProperty("Type") != null) {
                             GestureParser.AddMobileGesture(new MobileGesture(jO));
                         }

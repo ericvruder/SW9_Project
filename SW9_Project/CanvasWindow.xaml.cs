@@ -57,6 +57,7 @@ namespace SW9_Project {
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
                     grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight));
+                    grid[i, j].X = j; grid[i, j].Y = i;
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
                     Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
@@ -76,7 +77,7 @@ namespace SW9_Project {
             }
         }
 
-        private Cell GetCell(Point p) {
+        public Cell GetCell(Point p) {
 
 
             int x = (int)Math.Floor(p.X / squareWidth);
