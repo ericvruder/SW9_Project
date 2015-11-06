@@ -7,6 +7,7 @@ using System.Timers;
 using System.Windows;
 using Microsoft.Kinect.Toolkit.Interaction;
 using SW9_Project.Gestures;
+using SW9_Project.Logging;
 
 namespace SW9_Project {
     class KinectManager {
@@ -208,13 +209,15 @@ namespace SW9_Project {
                         {
                             if (action == "released")
                             {
-                                GestureParser.AddKinectGesture(new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint()));
-                                Console.WriteLine("Left hand release");
+                                KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
+                                GestureParser.AddKinectGesture(kinectGesture);
+                                Logger.CurrentLogger.AddNewKinectGesture(kinectGesture, board.GetCell(kinectGesture.Pointer));
                             }
                             else
                             {
-                                GestureParser.AddKinectGesture(new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint()));
-                                Console.WriteLine("Left hand grip");
+                                KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
+                                GestureParser.AddKinectGesture(kinectGesture);
+                                Logger.CurrentLogger.AddNewKinectGesture(kinectGesture, board.GetCell(kinectGesture.Pointer));
                             }
                         }
                         else
@@ -222,12 +225,12 @@ namespace SW9_Project {
                             if (action == "released")
                             {
                                 // right hand released code here
-                                Console.WriteLine("Right hand release");
+                                //Console.WriteLine("Right hand release");
                             }
                             else
                             {
                                 // right hand gripped code here
-                                Console.WriteLine("Right hand grip");
+                                //Console.WriteLine("Right hand grip");
                             }
                         }
                     }

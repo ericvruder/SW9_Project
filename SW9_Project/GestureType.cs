@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SW9_Project {
-    enum GestureType {
+    public enum GestureType {
         Throw, Pinch, Tilt, Swipe
     }
-    enum GestureDirection {
+    public enum GestureDirection {
         Pull, Push
     }
 }
