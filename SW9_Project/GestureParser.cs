@@ -17,7 +17,7 @@ namespace SW9_Project {
         static public KinectGesture AwaitingGesture {
             get {
                 KinectGesture t = awaitingGesture;
-                awaitingGesture = null;
+                awaitingGesture = t;
                 return t;
             }
             set { awaitingGesture = value; }
