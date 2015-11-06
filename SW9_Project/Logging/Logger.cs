@@ -17,11 +17,22 @@ namespace SW9_Project.Logging
         private static string commentLogFilePath = directory + "-comment.txt";
 
         int userID;
-        IDrawingBoard board;
+
+        public static Logger CurrentLogger;
 
         public Logger()
         {
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
         }
+
+        public static void Initialize() {
+            if(CurrentLogger == null) {
+                CurrentLogger = new Logger();
+            }
+        }
+        
 
         public static string testFilePath
         {
@@ -156,14 +167,14 @@ namespace SW9_Project.Logging
         /// Log a kinect gesture
         /// </summary>
         /// <param name="gesture"></param>
-        public void AddNewKinectGesture(KinectGesture gesture)
+        public void AddNewKinectGesture(KinectGesture gesture, Cell cell)
         {
             string message = "KINECT GESTURE" + 
                              " Type: " + gesture.Type.ToString() +
                              " Direction: " + gesture.Direction.ToString() +
                              " Shape: " + gesture.Shape + 
                              " Pointer: X = " + gesture.Pointer.X + " Y = " + gesture.Pointer.Y +
-                             " Cell: X = " + board.GetCell(gesture.Pointer).X + " Y = " + board.GetCell(gesture.Pointer).Y;
+                             " Cell: X = " + cell.X + " Y = " + cell.Y;
 
             Log(message);
         }

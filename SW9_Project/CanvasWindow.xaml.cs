@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+using SW9_Project.Logging;
+
 namespace SW9_Project {
     /// <summary>
     /// Interaction logic for CanvasWindow.xaml
