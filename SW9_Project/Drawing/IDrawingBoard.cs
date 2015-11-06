@@ -13,5 +13,6 @@ namespace SW9_Project {
         void PointAt(double xFromMid, double yFromMid);
         Shape PullShape(Point p);
         Point GetPoint(double xFromMid, double yFromMid);
+        Cell GetCell(Point p);
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Kinect;
 using System.ComponentModel;
 using System.Timers;
-using SW9_Project.Logging;
 using System.Windows;
 using Microsoft.Kinect.Toolkit.Interaction;
 using SW9_Project.Gestures;
@@ -16,7 +15,6 @@ namespace SW9_Project {
         string connectedStatus = "";
         IDrawingBoard board;
         private GestureController gestureController;
-        Logger logger = new Logger();
         private InteractionStream _interactionStream;
         private UserInfo[] userInfos;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -138,7 +136,6 @@ namespace SW9_Project {
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
 
             Point pointer = board.GetPoint(e.Position.X, e.Position.Y);
-            logger.LogKinectGesture(e.GestureName, pointer, e.Time);
 
             if(e.GestureName == "ThrowPush")
             {
