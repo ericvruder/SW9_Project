@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
@@ -202,15 +203,32 @@ namespace SW9_Project.Logging
         /// <param name="msg"></param>
         private void Log(string msg)
         {
-            try {
-                if (msg.Length > 0)
-                {
-                    sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
-                    sw.Flush();
-                }
-            } catch(IOException e)
+            const int MAX_RETRY = 10;
+            const int DELAY_MS = 1000;
+            bool result = false;
+            int retry = 0;
+            bool keepRetry = true;
+
+            while (keepRetry && !result && retry < MAX_RETRY)
             {
-                Console.WriteLine(e.ToString());
+                try
+                {
+                    if (msg.Length > 0)
+                    {
+                        sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
+                        sw.Flush();
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine(e.ToString());
+                    Thread.Sleep(DELAY_MS);
+                    retry++;
+
+                } catch (Exception e)
+                {
+                    keepRetry = false;
+                }
             }
         }
 
