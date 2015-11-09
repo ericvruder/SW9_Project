@@ -78,7 +78,7 @@ namespace SW9_Project {
             GestureParser.SetTypeContext(gestureTypeList[0]);
             VideoWindow window = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
-            gestureTypeList.Remove(0);
+            gestureTypeList.RemoveAt(0);
         }
 
         List<GestureType> gestureTypeList;

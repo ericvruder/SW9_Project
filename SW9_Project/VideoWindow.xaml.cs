@@ -13,6 +13,7 @@ namespace SW9_Project
         public VideoWindow(GestureDirection direction, GestureType type)
         {
             InitializeComponent();
+            this.Title = type + " " + direction;
             DoneShowing = false;
             this.Show();
 
