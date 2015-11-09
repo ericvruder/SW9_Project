@@ -15,6 +15,7 @@ namespace SW9_Project.Logging
         private static string directory = "log/";
         private static string testLogFilePath = directory + "-test.txt";
         private static string commentLogFilePath = directory + "-comment.txt";
+        StreamWriter sw = File.AppendText(Logger.testFilePath);
 
         int userID;
 
@@ -199,15 +200,17 @@ namespace SW9_Project.Logging
         /// Write message to the log file
         /// </summary>
         /// <param name="msg"></param>
-        private static void Log(string msg)
+        private void Log(string msg)
         {
-            if (msg.Length > 0)
-            {
-                using (StreamWriter sw = File.AppendText(Logger.testFilePath))
+            try {
+                if (msg.Length > 0)
                 {
                     sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
                     sw.Flush();
                 }
+            } catch(IOException e)
+            {
+                Console.WriteLine(e.ToString());
             }
         }
 
