@@ -206,9 +206,24 @@ namespace SW9_Project {
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             if(e.Key == System.Windows.Input.Key.Up) {
                 currentTest = new TestSuite(GestureDirection.Push, this);
-            }
-            else if (e.Key == System.Windows.Input.Key.Down) {
+            } else if (e.Key == System.Windows.Input.Key.Down) {
                 currentTest = new TestSuite(GestureDirection.Pull, this);
+            } 
+            
+            else if (e.Key == System.Windows.Input.Key.Q) {
+                GestureParser.SetTypeContext(GestureType.Swipe);
+            } else if (e.Key == System.Windows.Input.Key.W) {
+                GestureParser.SetTypeContext(GestureType.Throw);
+            } else if (e.Key == System.Windows.Input.Key.E) {
+                GestureParser.SetTypeContext(GestureType.Pinch);
+            } else if (e.Key == System.Windows.Input.Key.R) {
+                GestureParser.SetTypeContext(GestureType.Tilt);
+            } 
+            
+            else if (e.Key == System.Windows.Input.Key.A) {
+                GestureParser.SetDirectionContext(GestureDirection.Push);
+            } else if (e.Key == System.Windows.Input.Key.S) {
+                GestureParser.SetDirectionContext(GestureDirection.Pull);
             }
         }
 
