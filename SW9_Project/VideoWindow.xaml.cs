@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace SW9_Project
 {
@@ -25,6 +14,18 @@ namespace SW9_Project
         {
             InitializeComponent();
             DoneShowing = false;
+            this.Show();
+
+            string videoDirectory = @"C:\Users\bml\Desktop\techniques_videos-inst\";
+            string video = direction.ToString() + "_" + type.ToString() + ".mp4";
+
+            videoMediaElement.Source = new Uri(videoDirectory+video, UriKind.Absolute);
+
+            videoMediaElement.MediaEnded += (sender, args) =>
+            {
+                this.Hide();
+            };
         }
+
     }
 }
