@@ -4,90 +4,84 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SW9_Project.Logging;
+
 namespace SW9_Project {
     class TestSuite {
 
-        List<GestureType> gestureTypes;
-        GestureType currentType;
-        GestureDirection currentDirection, firstDirection;
-        int numberOfHitsPerGesture = 5;
-        int currentHits = 0;
-        bool nextGesture = false, nextDirection = false, nextSize = false, done = false, bothSizes = false;
+        private static int sgHeight, sgWidth, lgHeight, lgWidth;
+        private static double canvasHeight, canvasWidth;
 
-        public bool NextGesture {
-            get {
-                bool t = nextGesture;
-                nextGesture = false;
-                return t;
-            }
+        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
+            sgHeight = sHeight;
+            sgWidth = sWidth;
+            lgHeight = lHeight;
+            lgWidth = lWidth;
+            canvasHeight = cnvasHeight;
+            canvasWidth = cnvasWidth;
         }
-        public bool NextDirection {
-            get {
-                bool t = nextDirection;
-                nextDirection = false;
-                return t;
-            }
-        }
-        public bool NextSize {
-            get {
-                bool t = nextSize;
-                nextSize = false;
-                return t;
-            }
-        }
-        public bool Done { get { return done; } }
-        public GestureType CurrrentType { get { return currentType;} }
 
-        public TestSuite(GestureDirection firstDirection) {
-            this.firstDirection = firstDirection;
-            this.currentDirection = firstDirection;
-            gestureTypes = GetRandomGestureList();
+        IDrawingBoard board;
+
+        public TestSuite(GestureDirection direction, IDrawingBoard board) {
+            this.board = board;
+            Logger.CurrentLogger.NewUser();
+            Logger.CurrentLogger.StartNewSizeTest(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
+            gestureTypeList = GetRandomGestureList();
+            GestureParser.SetDirectionContext(direction);
+            board.CreateTarget(GestureParser.GetDirectionContext());
             ChangeGesture();
         }
 
-        public static void StartNewTest(GestureDirection direction) {
-            CurrentTest = new TestSuite(direction);
-        }
-
-        public static TestSuite CurrentTest;
-
+        private int currentHits = 0;
+        private bool doneFirstDirection = false, doneFirstSize = false;
         public void TargetHit() {
-            if(++currentHits == numberOfHitsPerGesture) {
+            Logger.CurrentLogger.CurrentTargetHit();
+            if(++currentHits >= 5) {
                 currentHits = 0;
-                if(gestureTypes.Count != 0) {
+                Logger.CurrentLogger.EndCurrentGestureTest();
+                if(gestureTypeList.Count != 0) {
                     ChangeGesture();
                 }
-                else if(currentDirection == firstDirection) {
-                    gestureTypes = GetRandomGestureList();
-                    if(firstDirection == GestureDirection.Pull) {
-                        currentDirection = GestureDirection.Push;
-                    }
-                    else {
-                        currentDirection = GestureDirection.Pull;
-                    }
-                    nextDirection = true;
+                else if (!doneFirstDirection) {
+                    doneFirstDirection = true;
+                    ChangeDirection();
                     ChangeGesture();
                 }
-                else if (!bothSizes) {
-                    gestureTypes = GetRandomGestureList();
-                    currentDirection = firstDirection;
+                else if (!doneFirstSize) {
+                    doneFirstDirection = false;
+                    doneFirstSize = true;
+                    ChangeDirection();
+                    Logger.CurrentLogger.EndCurrentSizeTest();
+                    Logger.CurrentLogger.StartNewSizeTest(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
                     ChangeGesture();
-                    bothSizes = true;
-                    nextSize = true;
-                    nextDirection = true;
                 }
                 else {
-                    done = true;
+                    Logger.CurrentLogger.EndCurrentSizeTest();
+                    Logger.CurrentLogger.EndUser();
+                    return;
                 }
+                
             }
+            Cell target = board.CreateTarget(GestureParser.GetDirectionContext());
+            Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
         }
 
-        private void ChangeGesture() {
-            currentType = gestureTypes[0];
-            GestureParser.SetTypeContext(gestureTypes[0]);
-            gestureTypes.Remove(0);
-            nextGesture = true;
+
+        private void ChangeDirection() {
+            gestureTypeList = GetRandomGestureList();
+            GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
+            GestureParser.SetDirectionContext(direction);
+
         }
+        private void ChangeGesture() {
+            GestureParser.SetTypeContext(gestureTypeList[0]);
+            VideoWindow window = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
+            Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
+            gestureTypeList.Remove(0);
+        }
+
+        List<GestureType> gestureTypeList;
 
         private List<GestureType> GetRandomGestureList() {
 

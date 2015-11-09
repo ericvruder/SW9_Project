@@ -12,8 +12,8 @@ namespace SW9_Project {
         static private MobileGesture waitingMobileGesture;
         static private KinectGesture awaitingGesture;
 
-        static private GestureDirection directionContext = GestureDirection.Pull;
-        static private GestureType typeContext = GestureType.Throw;
+        static private GestureDirection directionContext = GestureDirection.Push;
+        static private GestureType typeContext = GestureType.Swipe;
 
         static private IDrawingBoard board;
 

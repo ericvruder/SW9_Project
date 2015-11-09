@@ -14,5 +14,7 @@ namespace SW9_Project {
         Shape PullShape(Point p);
         Point GetPoint(double xFromMid, double yFromMid);
         Cell GetCell(Point p);
+        Cell CreateTarget(GestureDirection direction);
+        void CreateGrid(GridSize size);
     }
 }

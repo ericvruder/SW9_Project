@@ -30,6 +30,7 @@ namespace SW9_Project {
             ellipse.Stroke = Brushes.Black;
             ellipse.Height = 25;
             ellipse.Width = 25;
+            
             return ellipse;
         }
 

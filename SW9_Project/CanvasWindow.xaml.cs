@@ -10,6 +10,8 @@ using SW9_Project.Logging;
 using System.Threading.Tasks;
 
 namespace SW9_Project {
+
+    public enum GridSize { Small, Large }
     /// <summary>
     /// Interaction logic for CanvasWindow.xaml
     /// </summary>
@@ -23,9 +25,10 @@ namespace SW9_Project {
         Cell target;
         GridSize currentSize;
         int gridHeight, gridWidth;
-        int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
+        public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
+        TestSuite currentTest;
 
         public CanvasWindow() {
             GestureParser.Initialize(this);
@@ -43,13 +46,13 @@ namespace SW9_Project {
             }
         }
 
-        private void CreateGrid(GridSize size) {
+        public void CreateGrid(GridSize size) {
             if(size == GridSize.Large) {
                 CreateGrid(lgWidth,lgHeight);
             } else {
                 CreateGrid(sgWidth, sgHeight);
             }
-            AddTestShapes();
+            //AddTestShapes();
         }
 
         private void CreateGrid(int width, int height) {
@@ -70,16 +73,17 @@ namespace SW9_Project {
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
                     Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
-                    Canvas.SetZIndex(grid[i, j].GridCell, 5);
+                    Canvas.SetZIndex(grid[i, j].GridCell, 0);
                 }
             }
         }
 
-        private void CreateTarget()
+        public Cell CreateTarget(GestureDirection direction)
         {
             Random randomizer = new Random();
             target = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
             target.GridCell.Fill = Brushes.Purple;
+            return target;
         }
 
         public Cell GetCell(Point p) {
@@ -94,8 +98,6 @@ namespace SW9_Project {
             return grid[x, y]; 
 
         }
-
-        private enum GridSize { Small, Large }
 
         Rectangle currentCell;
         private void ColorCell(Point toColor) {
@@ -114,7 +116,7 @@ namespace SW9_Project {
             if (pointingCircle == null) {
                 pointingCircle = ShapeFactory.CreatePointer();
                 canvas.Children.Add(pointingCircle);
-                Canvas.SetZIndex(pointingCircle, 1);
+                Canvas.SetZIndex(pointingCircle, 10000);
             }
             if (target != null) {
                 target.GridCell.Fill = Brushes.Purple;
@@ -124,63 +126,20 @@ namespace SW9_Project {
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
+
+            if(gesture != null) {
+                Cell currCell = GetCell(pointer);
+                if(currCell == target) {
+                    target.GridCell.Fill = Brushes.Transparent;
+                    currentTest.TargetHit();
+                }
+            }
             if (gesture?.Direction == GestureDirection.Push) {
                 ReceiveShape(gesture.Shape, gesture.Pointer);
             }
             else if(gesture?.Direction == GestureDirection.Pull) {
                 PullShape(gesture.Pointer);
             }
-            if (gesture != null) {
-                CheckForTestChanges();
-            }
-        }
-
-        private void CheckForTestChanges() {
-            Cell currCell = GetCell(pointer);
-            if(currCell == target) {
-                target.GridCell.Fill = Brushes.Transparent;
-
-                Logger.CurrentLogger.CurrentTargetHit();
-                TestSuite.CurrentTest.TargetHit();
-
-                if (TestSuite.CurrentTest.Done) {
-                    TestSuite.CurrentTest = null;
-                    Logger.CurrentLogger.EndUser();
-                    return;
-                }
-
-                bool nextGesture = TestSuite.CurrentTest.NextGesture;
-
-                if (nextGesture) {
-                    Logger.CurrentLogger.EndCurrentGestureTest();
-                }
-
-                if (TestSuite.CurrentTest.NextSize) {
-                    Logger.CurrentLogger.EndCurrentSizeTest();
-                    CreateGrid(GridSize.Large);
-                    Logger.CurrentLogger.StartNewSizeTest(gridHeight, gridWidth, squareHeight, squareWidth);
-                }
-                if (nextGesture) {
-                    VideoWindow tutorialWindow = null;
-                    System.Threading.Thread.Sleep(100);
-                    Task.Factory.StartNew(() => {
-                        tutorialWindow = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
-                    });
-                    while (!tutorialWindow.DoneShowing) ;
-
-                    Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
-                }
-
-                Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
-                CreateTarget();
-
-            }
-        }
-
-        private void StartNewTest() {
-            Logger.CurrentLogger.NewUser();
-            TestSuite.StartNewTest(GestureDirection.Pull);
-            CreateTarget();
         }
 
         public static Point GetCurrentPoint() {
@@ -202,6 +161,7 @@ namespace SW9_Project {
             Shape t = ShapeFactory.CreateShape(shape, size);
             double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.Width / 2);
             double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.Height / 2);
+            Canvas.SetZIndex(t, 500);
 
             canvas.Children.Add(t);
             cell.Shape = t;
@@ -231,6 +191,7 @@ namespace SW9_Project {
                 canvas.Children.RemoveRange(0, canvas.Children.Count);
             }
             CreateGrid(currentSize);
+            TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
         }
 
         public Point GetPoint(double xFromMid, double yFromMid)
@@ -243,8 +204,11 @@ namespace SW9_Project {
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
-            if(e.Key == System.Windows.Input.Key.Space) {
-                StartNewTest();
+            if(e.Key == System.Windows.Input.Key.Up) {
+                currentTest = new TestSuite(GestureDirection.Push, this);
+            }
+            else if (e.Key == System.Windows.Input.Key.Down) {
+                currentTest = new TestSuite(GestureDirection.Pull, this);
             }
         }
 
