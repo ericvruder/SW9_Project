@@ -217,6 +217,7 @@ namespace SW9_Project.Logging
                     {
                         sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
                         sw.Flush();
+                        result = true;
                     }
                 }
                 catch (IOException e)
