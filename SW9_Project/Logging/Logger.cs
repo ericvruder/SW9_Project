@@ -72,8 +72,8 @@ namespace SW9_Project.Logging
                         ids.Add(Int32.Parse(m.Value));
                     }
                 }
-
-                userID = ids.Max() + 1;
+                int x = ids.Count() == 0 ? 0 : ids.Max();
+                userID = x + 1;
             }
             else
             {
@@ -225,8 +225,8 @@ namespace SW9_Project.Logging
                     Console.WriteLine(e.ToString());
                     Thread.Sleep(DELAY_MS);
                     retry++;
-
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     keepRetry = false;
                 }
