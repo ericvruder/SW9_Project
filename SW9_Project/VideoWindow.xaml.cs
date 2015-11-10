@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace SW9_Project
@@ -17,15 +19,18 @@ namespace SW9_Project
             DoneShowing = false;
             this.Show();
 
-            string videoDirectory = @"C:\Users\bml\Desktop\techniques_videos-inst\";
+            string videoDirectory = @"techniques/";
             string video = direction.ToString() + "_" + type.ToString() + ".mp4";
 
-            videoMediaElement.Source = new Uri(videoDirectory+video, UriKind.Absolute);
+            videoMediaElement.Source = new Uri(CreateAbsolutePathTo(videoDirectory + video), UriKind.Relative);
 
             videoMediaElement.MediaEnded += (sender, args) =>
             {
                 this.Hide();
             };
+        }
+        private static string CreateAbsolutePathTo(string mediaFile) {
+            return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
         }
 
     }
