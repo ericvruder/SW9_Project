@@ -5,20 +5,57 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView
-        android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textColor="#33b5e5"
-        android:textStyle="bold"
-        android:textSize="50sp"
-        android:gravity="center" />
+
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
     <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:fitsSystemWindows="true">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_marginBottom="0dp">
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="150dp"
+                    android:id="@+id/circle"
+                    android:src="@drawable/circle"
+                    android:scaleType="fitCenter"
+                    />
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="150dp"
+                    android:id="@+id/square"
+                    android:src="@drawable/square"
+                    android:scaleType="fitCenter"/>
+            </TableRow>
+            <TableRow>
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="150dp"
+                    android:id="@+id/pentagon"
+                    android:src="@drawable/pentagon"
+                    android:scaleType="fitCenter"/>
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="150dp"
+                    android:id="@+id/triangle"
+                    android:src="@drawable/triangle"
+                    android:scaleType="fitCenter"/>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/fullscreen_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="#33b5e5"
+            android:textStyle="bold"
+            android:textSize="50sp"
+            android:gravity="center" />
 
         <Button
             style="?android:attr/buttonStyleSmall"

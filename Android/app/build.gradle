@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/images'] } }
 }
 
 dependencies {
@@ -24,6 +25,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.google.code.gson:gson:2.4'  //2.31 at jcenter, 2.4 at marvencentral, see depencendy in project gradle.
+    compile 'com.google.code.gson:gson:2.4'
+    //2.31 at jcenter, 2.4 at marvencentral, see depencendy in project gradle.
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
 }
