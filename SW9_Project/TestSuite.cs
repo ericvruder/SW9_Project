@@ -22,12 +22,14 @@ namespace SW9_Project {
         }
 
         IDrawingBoard board;
+        GridSize currentSize;
 
         public TestSuite(GestureDirection direction, IDrawingBoard board) {
             this.board = board;
+            Random r = new Random();
+            currentSize = r.Next(2) == 0 ? GridSize.Small : GridSize.Large;
             Logger.CurrentLogger.NewUser();
-            Logger.CurrentLogger.StartNewSizeTest(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
-            gestureTypeList = GetRandomGestureList();
+            ChangeSize();
             GestureParser.SetDirectionContext(direction);
             board.CreateTarget(GestureParser.GetDirectionContext());
             ChangeGesture();
@@ -42,22 +44,21 @@ namespace SW9_Project {
                 Logger.CurrentLogger.EndCurrentGestureTest();
                 if(gestureTypeList.Count != 0) {
                     ChangeGesture();
-                }
-                else if (!doneFirstDirection) {
-                    doneFirstDirection = true;
-                    ChangeDirection();
+                } 
+                else if (!doneFirstSize) {
+                    doneFirstSize = true;
+                    ChangeSize();
                     ChangeGesture();
                 }
-                else if (!doneFirstSize) {
-                    doneFirstDirection = false;
-                    doneFirstSize = true;
-                    ChangeDirection();
-                    Logger.CurrentLogger.EndCurrentSizeTest();
-                    Logger.CurrentLogger.StartNewSizeTest(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
+                else if (!doneFirstDirection) {
+                    doneFirstSize = false;
+                    doneFirstDirection = true;
+                    GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
+                    GestureParser.SetDirectionContext(direction);
+                    ChangeSize();
                     ChangeGesture();
                 }
                 else {
-                    Logger.CurrentLogger.EndCurrentSizeTest();
                     Logger.CurrentLogger.EndUser();
                     return;
                 }
@@ -68,10 +69,16 @@ namespace SW9_Project {
         }
 
 
-        private void ChangeDirection() {
+        private void ChangeSize() {
+            currentSize = currentSize == GridSize.Large ? GridSize.Small : GridSize.Large;
+            board.CreateGrid(currentSize);
             gestureTypeList = GetRandomGestureList();
-            GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
-            GestureParser.SetDirectionContext(direction);
+            if (currentSize == GridSize.Large) {
+                Logger.CurrentLogger.ChangeSize(lgHeight, lgWidth, canvasHeight / lgHeight, canvasWidth / lgWidth);
+            }
+            else {
+                Logger.CurrentLogger.ChangeSize(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
+            }
 
         }
         private void ChangeGesture() {

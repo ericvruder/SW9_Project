@@ -104,20 +104,13 @@ namespace SW9_Project.Logging
         /// <param name="gridWidth"></param>
         /// <param name="cellHeight"></param>
         /// <param name="cellWidth"></param>
-        public void StartNewSizeTest(int gridHeight, int gridWidth, double cellHeight, double cellWidth)
+        public void ChangeSize(int gridHeight, int gridWidth, double cellHeight, double cellWidth)
         {
-            string message = "Started new size test." + 
+            string message = "Changed grid size." +
                              " Grid height: " + gridHeight +
-                             " Grid width: " + gridWidth;
-            Log(message);
-        }
-
-        /// <summary>
-        /// Log the end of a size test
-        /// </summary>
-        public void EndCurrentSizeTest()
-        {
-            string message = "Size test ended.";
+                             " Grid width: " + gridWidth +
+                             " Cell height: " + cellHeight +
+                             " Cell width: " + cellWidth;
             Log(message);
         }
 
