@@ -2,11 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="#0099cc" tools:context=".Main">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-
-
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
@@ -48,6 +43,9 @@
             </TableRow>
         </TableLayout>
 
+        <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
         <TextView
             android:id="@+id/fullscreen_content"
             android:layout_width="match_parent"
