@@ -1,5 +1,7 @@
 package com.nui.android;
 
+import android.app.Activity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -12,9 +14,12 @@ import java.util.TimerTask;
 public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     IServer server;
-    public SwipeGestureListener(IServer server){
+    MainActivity mainActivity;
+
+    public SwipeGestureListener(IServer server, MainActivity mainActivity){
         super();
         this.server = server;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -22,6 +27,7 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         return true;
     }
     boolean pinching = false;
+
     public void Pinching(){
         if(!pinching) {
             pinching = true;
@@ -36,13 +42,16 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         }
     }
 
+    @Override
     public boolean onFling(MotionEvent firstEvent, MotionEvent secondEvent, float vx, float vy){
         if(!pinching) {
             float diff = firstEvent.getY() - secondEvent.getY();
             if (diff >= 100f) {
-                server.SendData(new SwipeGesture("push", "circle"));
+                server.SendData(new SwipeGesture("push", mainActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() push " + mainActivity.GetSelectedShape() );
             } else if (diff <= -100f) {
-                server.SendData(new SwipeGesture("pull", "circle"));
+                server.SendData(new SwipeGesture("pull", mainActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() pull " + mainActivity.GetSelectedShape());
             }
         }
         return true;
