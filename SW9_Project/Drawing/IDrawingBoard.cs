@@ -12,7 +12,9 @@ namespace SW9_Project {
         void PointAt(double xFromMid, double yFromMid);
         Point GetPoint(double xFromMid, double yFromMid);
         Cell GetCell(Point p);
-        Cell CreateTarget(GestureDirection direction);
+        void CreatePushTarget(int x, int y);
+        void CreatePullTargets(int x1, int y1, int x2, int y2);
         void CreateGrid(GridSize size);
+        void StopTest();
     }
 }
