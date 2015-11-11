@@ -2,6 +2,7 @@ package com.nui.android;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -66,11 +67,15 @@ public class MainActivity extends BaseActivity {
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(network, swipeGestureListener, this));
 
+        //Drawable d1 = getResources().getDrawable(R.drawable.circle);
+        Drawable d = ContextCompat.getDrawable(this, R.drawable.circle);
         circle = (ImageView) findViewById(R.id.circle);
         square = (ImageView) findViewById(R.id.square);
         triangle = (ImageView) findViewById(R.id.triangle);
         pentagon = (ImageView) findViewById(R.id.pentagon);
         fullscreen_content = (TextView) findViewById(R.id.fullscreen_content);
+
+        circle.setImageDrawable(d);
 
 
         fullscreen_content.setOnTouchListener(new View.OnTouchListener() {
@@ -82,12 +87,13 @@ public class MainActivity extends BaseActivity {
 
         });
 
-
         circle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Circle";
-                return false;
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+                return true;
             }
 
         });
@@ -96,7 +102,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Square";
-                return false;
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+                return true;
             }
 
         });
@@ -105,7 +113,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Triangle";
-                return false;
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+                return true;
             }
 
         });
@@ -114,7 +124,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Pentagon";
-                return false;
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+                return true;
             }
 
         });
@@ -126,13 +138,14 @@ public class MainActivity extends BaseActivity {
         return this.shape;
     }
 
-
+    /*
     @Override
     public boolean onTouchEvent(MotionEvent event){
         this.swipeDetector.onTouchEvent(event);
         this.pinchDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
+    */
 
 
     @Override
