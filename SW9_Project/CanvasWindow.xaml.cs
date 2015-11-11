@@ -26,7 +26,7 @@ namespace SW9_Project {
         Cell target, nextTarget;
         GridSize currentSize;
         int gridHeight, gridWidth;
-        public static int sgHeight = 12, sgWidth = 18, lgHeight = 9, lgWidth = 16;
+        public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
         //public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
         //public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
