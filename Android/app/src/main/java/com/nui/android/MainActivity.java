@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -21,12 +21,16 @@ public class MainActivity extends BaseActivity {
     private Network network;
     private SensorMonitor acceloremeterSensor;
     private RotationMonitor rotationSensor;
-    private ImageView circle;
-    private ImageView square;
-    private ImageView triangle;
-    private ImageView pentagon;
-    private TextView fullscreen_content;
+    private ImageView circleView;
+    private ImageView squareView;
     public String shape;
+
+    private final Random random = new Random();
+    private int TopShapeTop;
+    private int TopShapeBottom;
+    private int BottomShapeTop;
+    private int BottomShapeBottom;
+
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
 
@@ -67,72 +71,69 @@ public class MainActivity extends BaseActivity {
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(network, swipeGestureListener, this));
 
-        //Drawable d1 = getResources().getDrawable(R.drawable.circle);
-        Drawable d = ContextCompat.getDrawable(this, R.drawable.circle);
-        circle = (ImageView) findViewById(R.id.circle);
-        square = (ImageView) findViewById(R.id.square);
-        triangle = (ImageView) findViewById(R.id.triangle);
-        pentagon = (ImageView) findViewById(R.id.pentagon);
-        fullscreen_content = (TextView) findViewById(R.id.fullscreen_content);
+        Drawable drawableCircle = ContextCompat.getDrawable(this, R.drawable.circle);
+        Drawable drawableSquare = ContextCompat.getDrawable(this, R.drawable.square);
+        circleView = (ImageView) findViewById(R.id.circle);
+        squareView = (ImageView) findViewById(R.id.square);
 
-        circle.setImageDrawable(d);
+        circleView.setImageDrawable(drawableCircle);
+        squareView.setImageDrawable(drawableSquare);
 
 
-        fullscreen_content.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                shape = null;
-                return false;
-            }
 
-        });
-
-        circle.setOnTouchListener(new View.OnTouchListener() {
+        circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Circle";
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
+
+                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    if (random.nextBoolean()) {
+                        TopShapeTop = circleView.getTop();
+                        TopShapeBottom = circleView.getBottom();
+                        BottomShapeTop = squareView.getTop();
+                        BottomShapeBottom = squareView.getBottom();
+
+                        circleView.setTop(BottomShapeTop);
+                        circleView.setBottom(BottomShapeBottom);
+                        squareView.setTop(TopShapeTop);
+                        squareView.setBottom(TopShapeBottom);
+                    }
+                    Log.d("MAIN", "Circle Touch");
+                }
                 return true;
             }
 
         });
 
-        square.setOnTouchListener(new View.OnTouchListener() {
+        squareView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = "Square";
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
-                return true;
-            }
 
-        });
+                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    if (random.nextBoolean()) {
+                        TopShapeTop = circleView.getTop();
+                        TopShapeBottom = circleView.getBottom();
+                        BottomShapeTop = squareView.getTop();
+                        BottomShapeBottom = squareView.getBottom();
 
-        triangle.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                shape = "Triangle";
-                swipeDetector.onTouchEvent(event);
-                pinchDetector.onTouchEvent(event);
-                return true;
-            }
-
-        });
-
-        pentagon.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                shape = "Pentagon";
-                swipeDetector.onTouchEvent(event);
-                pinchDetector.onTouchEvent(event);
+                        circleView.setTop(BottomShapeTop);
+                        circleView.setBottom(BottomShapeBottom);
+                        squareView.setTop(TopShapeTop);
+                        squareView.setBottom(TopShapeBottom);
+                    }
+                    Log.d("MAIN", "Square Touch");
+                }
                 return true;
             }
 
         });
 
     }
-
 
     public String GetSelectedShape(){
         return this.shape;
