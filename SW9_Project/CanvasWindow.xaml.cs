@@ -25,12 +25,21 @@ namespace SW9_Project {
         Cell target;
         GridSize currentSize;
         int gridHeight, gridWidth;
-        public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
+        public static int sgHeight = 12, sgWidth = 18, lgHeight = 9, lgWidth = 16;
+        //public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
+        //public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
         TestSuite currentTest;
+        List<String> shapes;
+        Brush targetColor = Brushes.DarkGray;
 
         public CanvasWindow() {
+            shapes = new List<String>();
+            shapes.Add("circle");
+            shapes.Add("square");
+            shapes.Add("triangle");
+            shapes.Add("pentagon");
             GestureParser.Initialize(this);
             currentSize = GridSize.Small;
             window = this;
@@ -41,7 +50,7 @@ namespace SW9_Project {
         private void AddTestShapes() {
             for(int i = 105; i < canvas.ActualWidth; i += 200) {
                 for(int j = 104; j < canvas.ActualHeight; j += 200) {
-                    ReceiveShape("circle", new Point(i, j));
+                    PushShape("circle", new Point(i, j));
                 }
             }
         }
@@ -52,12 +61,14 @@ namespace SW9_Project {
             } else {
                 CreateGrid(sgWidth, sgHeight);
             }
-            //AddTestShapes();
         }
 
         private void CreateGrid(int width, int height) {
             if(grid != null) {
                 canvas.Children.Clear();
+            }
+            if(pointingCircle != null) {
+                canvas.Children.Add(pointingCircle);
             }
             gridHeight = height;
             gridWidth = width;
@@ -78,11 +89,23 @@ namespace SW9_Project {
             }
         }
 
+        private List<Cell> targets;
+        private Random randomizer = new Random();
+
         public Cell CreateTarget(GestureDirection direction)
         {
-            Random randomizer = new Random();
+            if(targets == null) { targets = new List<Cell>(); }
+
+            double size = squareWidth > squareHeight ? squareHeight : squareWidth;
+            string shape = shapes[randomizer.Next(shapes.Count)];
+
             target = GetCell(new Point(randomizer.Next((int)canvas.ActualWidth), randomizer.Next((int)canvas.ActualHeight)));
-            target.GridCell.Fill = Brushes.Purple;
+            target.GridCell.Fill = targetColor;
+            PushShape(shape, target);
+
+            if (direction == GestureDirection.Push) {
+                target.Shape.Fill = Brushes.Black;
+            }
             return target;
         }
 
@@ -119,7 +142,7 @@ namespace SW9_Project {
                 Canvas.SetZIndex(pointingCircle, 10000);
             }
             if (target != null) {
-                target.GridCell.Fill = Brushes.Purple;
+                target.GridCell.Fill = targetColor;
             }
 
             pointer = GetPoint(xFromMid, yFromMid);
@@ -135,7 +158,7 @@ namespace SW9_Project {
                 }
             }
             if (gesture?.Direction == GestureDirection.Push) {
-                ReceiveShape(gesture.Shape, gesture.Pointer);
+                PushShape(gesture.Shape, gesture.Pointer);
             }
             else if(gesture?.Direction == GestureDirection.Pull) {
                 PullShape(gesture.Pointer);
@@ -146,7 +169,7 @@ namespace SW9_Project {
             return window.pointer;
         }
 
-        public Shape PullShape(Point p) {
+        private Shape PullShape(Point p) {
             Cell cell = GetCell(p);
             Shape returnShape = cell.Shape;
             canvas.Children.Remove(returnShape);
@@ -154,8 +177,12 @@ namespace SW9_Project {
             return returnShape;
         }
 
-        public void ReceiveShape(string shape, Point p) {
-            Cell cell = GetCell(p);
+        private void PushShape(string shape, Point p) {
+            PushShape(shape, GetCell(p));
+
+        }
+
+        private void PushShape(string shape, Cell cell) {
             canvas.Children.Remove(cell?.Shape);
             double size = squareHeight < squareWidth ? squareHeight : squareWidth;
             Shape t = ShapeFactory.CreateShape(shape, size);
@@ -176,7 +203,7 @@ namespace SW9_Project {
 
             double x = p.X - (shapeToMove.Width / 2);
             double y = p.Y - (shapeToMove.Height / 2);
-            if (shapeToMove.Width == 0 || shapeToMove.Height == 0) {
+            if (Double.IsNaN(shapeToMove.Width) || Double.IsNaN(shapeToMove.Height)) {
                 double size = squareWidth < squareHeight ? squareWidth : squareHeight;
                 x = p.X - (size / 2);
                 y = p.Y - (size / 2);
@@ -224,6 +251,11 @@ namespace SW9_Project {
                 GestureParser.SetDirectionContext(GestureDirection.Push);
             } else if (e.Key == System.Windows.Input.Key.S) {
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
+            }
+            else if(e.Key == System.Windows.Input.Key.Z) {
+                CreateGrid(GridSize.Small);
+            }else if(e.Key == System.Windows.Input.Key.X) {
+                CreateGrid(GridSize.Large);
             }
         }
 
