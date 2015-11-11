@@ -26,6 +26,7 @@ namespace SW9_Project
 
             videoMediaElement.MediaEnded += (sender, args) =>
             {
+                this.DoneShowing = true;
                 this.Hide();
             };
         }

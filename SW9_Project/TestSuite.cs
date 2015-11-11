@@ -23,6 +23,7 @@ namespace SW9_Project {
 
         IDrawingBoard board;
         GridSize currentSize;
+        bool runningTest = true;
 
         public TestSuite(GestureDirection direction, IDrawingBoard board) {
             this.board = board;
@@ -38,34 +39,35 @@ namespace SW9_Project {
         private int currentHits = 0;
         private bool doneFirstDirection = false, doneFirstSize = false;
         public void TargetHit() {
-            Logger.CurrentLogger.CurrentTargetHit();
-            if(++currentHits >= 5) {
-                currentHits = 0;
-                Logger.CurrentLogger.EndCurrentGestureTest();
-                if(gestureTypeList.Count != 0) {
-                    ChangeGesture();
-                } 
-                else if (!doneFirstSize) {
-                    doneFirstSize = true;
-                    ChangeSize();
-                    ChangeGesture();
+            if (runningTest) {
+                Logger.CurrentLogger.CurrentTargetHit();
+                if (++currentHits >= 5) {
+                    currentHits = 0;
+                    Logger.CurrentLogger.EndCurrentGestureTest();
+                    if (gestureTypeList.Count != 0) {
+                        ChangeGesture();
+                    } else if (!doneFirstSize) {
+                        doneFirstSize = true;
+                        ChangeSize();
+                        ChangeGesture();
+                    } else if (!doneFirstDirection) {
+                        doneFirstSize = false;
+                        doneFirstDirection = true;
+                        GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
+                        GestureParser.SetDirectionContext(direction);
+                        ChangeSize();
+                        ChangeGesture();
+                    } else {
+                        runningTest = false;
+                        Logger.CurrentLogger.EndUser();
+                        ThankYou ty = new ThankYou();
+                        return;
+                    }
+
                 }
-                else if (!doneFirstDirection) {
-                    doneFirstSize = false;
-                    doneFirstDirection = true;
-                    GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
-                    GestureParser.SetDirectionContext(direction);
-                    ChangeSize();
-                    ChangeGesture();
-                }
-                else {
-                    Logger.CurrentLogger.EndUser();
-                    return;
-                }
-                
+                Cell target = board.CreateTarget(GestureParser.GetDirectionContext());
+                Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
             }
-            Cell target = board.CreateTarget(GestureParser.GetDirectionContext());
-            Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
         }
 
 
