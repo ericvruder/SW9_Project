@@ -32,13 +32,13 @@ namespace SW9_Project {
             Logger.CurrentLogger.NewUser();
             ChangeSize();
             GestureParser.SetDirectionContext(direction);
-            board.CreateTarget(GestureParser.GetDirectionContext());
+            board.CreatePushTarget(790,440);
             ChangeGesture();
         }
 
         private int currentHits = 0;
         private bool doneFirstDirection = false, doneFirstSize = false;
-        public void TargetHit() {
+        public void TargetHit(bool hit) {
             if (runningTest) {
                 Logger.CurrentLogger.CurrentTargetHit();
                 if (++currentHits >= 5) {
@@ -61,12 +61,12 @@ namespace SW9_Project {
                         runningTest = false;
                         Logger.CurrentLogger.EndUser();
                         ThankYou ty = new ThankYou();
+                        board.StopTest();
                         return;
                     }
 
                 }
-                Cell target = board.CreateTarget(GestureParser.GetDirectionContext());
-                Logger.CurrentLogger.AddNewTarget("circle", target.X, target.Y);
+                board.CreatePushTarget(1200,300);
             }
         }
 
