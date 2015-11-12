@@ -132,29 +132,23 @@ namespace SW9_Project.Logging
         /// </summary>
         public void EndCurrentGestureTest()
         {
-            string message = "Gesture test enden.";
-            Log(message);
-        }
-
-        /// <summary>
-        /// Log the creation of a new target on the canvas
-        /// </summary>
-        /// <param name="shape"></param>
-        /// <param name="gridX"></param>
-        /// <param name="gridY"></param>
-        public void AddNewTarget(String shape, int gridX, int gridY)
-        {
-            string message = "New " + shape + " target added. " +
-                             " X = " + gridX + " Y = " + gridY;
+            string message = "Gesture test ended.";
             Log(message);
         }
 
         /// <summary>
         /// Log that target has been hit
         /// </summary>
-        public void CurrentTargetHit()
+        public void CurrentTargetHit(bool hit, Cell target, Point p, bool correctShape)
         {
-            string message = "Target hit!";
+            string result = "";
+            if(hit) {
+                result = "Target hit!";
+            }
+            if (!hit) {
+                result = correctShape ? "Target missed!" : "Incorrect shape chosen!";
+            }
+            string message = result + " Target postion: (" + target.X + "," + target.Y + "). Pointer position: (" + p.ToString() + ").";
             Log(message);
         }
 
