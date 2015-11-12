@@ -11,6 +11,7 @@ namespace SW9_Project {
 
         private static int sgHeight, sgWidth, lgHeight, lgWidth;
         private static double canvasHeight, canvasWidth;
+        private static int attemptsPerGesture = 10;
 
         public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
             sgHeight = sHeight;
@@ -36,9 +37,10 @@ namespace SW9_Project {
             ChangeGesture();
         }
 
+        List<Target> targetSequences = new List<Target>();
         private int currentHits = 0;
         private bool doneFirstDirection = false, doneFirstSize = false;
-        public void TargetHit(bool hit) {
+        /*public void TargetHit(bool hit) {
             if (runningTest) {
                 Logger.CurrentLogger.CurrentTargetHit();
                 if (++currentHits >= 5) {
@@ -67,6 +69,11 @@ namespace SW9_Project {
 
                 }
                 board.CreatePushTarget(1200,300);
+            }
+        }*/
+
+        public void TargetHit(bool hit) {
+            if (runningTest) {
             }
         }
 
