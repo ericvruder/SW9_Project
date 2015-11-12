@@ -37,7 +37,7 @@ namespace SW9_Project {
         public static Rectangle CreateGridCell(double width, double height) {
             Rectangle rectangle = new Rectangle();
             rectangle.StrokeThickness = 1;
-            rectangle.Fill = Brushes.Transparent;
+            rectangle.Fill = Brushes.White;
             rectangle.Stroke = Brushes.Black;
             rectangle.Height = height;
             rectangle.Width = width;

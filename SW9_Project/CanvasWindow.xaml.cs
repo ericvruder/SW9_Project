@@ -125,7 +125,7 @@ namespace SW9_Project {
         private void ColorCell(Point toColor) {
             
             if (currentCell != null) {
-                currentCell.Fill = Brushes.Transparent;
+                currentCell.Fill = Brushes.White;
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
@@ -208,13 +208,13 @@ namespace SW9_Project {
             }
             DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             da.Completed += Da_Completed;
-            targetColor = Brushes.Transparent;
+            targetColor = Brushes.White;
             cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
         }
         private void Da_Completed(object sender, EventArgs e) {
             Cell t = target;
             target = null;
-            t.GridCell.Fill = Brushes.Transparent;
+            t.GridCell.Fill = Brushes.White;
             targetColor = Brushes.DarkGray;
         }
 

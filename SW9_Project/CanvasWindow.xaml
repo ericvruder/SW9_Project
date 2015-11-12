@@ -10,10 +10,11 @@
         Width="1200"
         WindowStyle="SingleBorderWindow"
         WindowState="Normal" KeyDown="Window_KeyDown"
+        Background="Black"
         
         >
     <Grid>
-        <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged">
+        <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="100, 60,100,60">
         </Canvas>
     </Grid>
 </Window>
