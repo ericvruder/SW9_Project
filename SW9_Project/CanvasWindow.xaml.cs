@@ -23,7 +23,8 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        Cell target, nextTarget;
+        Cell target;
+        Target nextTarget;
         GridSize currentSize;
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
@@ -82,9 +83,9 @@ namespace SW9_Project {
 
         private Random randomizer = new Random();
 
-        public void CreatePushTarget(int x, int y)
+        public void CreatePushTarget(Target target)
         {
-            nextTarget = GetCell(new Point(x,y));
+            nextTarget = target;
             
         }
 
@@ -95,7 +96,8 @@ namespace SW9_Project {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
 
-                    target = nextTarget;
+                    CreateGrid(nextTarget.Size);
+                    target = GetCell(new Point(nextTarget.X, nextTarget.Y));
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
@@ -105,7 +107,8 @@ namespace SW9_Project {
             }
         }
 
-        public void CreatePullTargets(int x1, int y1, int x2, int y2) {
+        public void CreatePullTargets(Target t1, Target t2) {
+            throw new NotImplementedException();
         }
 
         public Cell GetCell(Point p) {
@@ -153,16 +156,22 @@ namespace SW9_Project {
 
             if(gesture != null) {
                 Cell currCell = GetCell(pointer);
+                bool hit = currCell == target ? true : false;
+                bool correctShape = true; //TODO: FIX! 
+                currentTest.TargetHit(hit, correctShape, target, pointer);
+                PushShape(gesture.Shape, currCell);
+                TargetHit(currCell, hit);
+                /*
                 if(currCell == target) {
-                    currentTest.TargetHit(true);
+                    currentTest.TargetHit(true, target, pointer);
                     PushShape(gesture.Shape, currCell);
                     TargetHit(currCell, true);
                 }
                 else {
-                    currentTest.TargetHit(false);
+                    currentTest.TargetHit(false, target, pointer);
                     PushShape(gesture.Shape, currCell);
                     TargetHit(currCell, false);
-                }
+                }*/
             } 
         }
 
@@ -252,13 +261,19 @@ namespace SW9_Project {
         public void StopTest() {
             runningTest = false;
         }
-
+        
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             if(e.Key == System.Windows.Input.Key.Up) {
-                currentTest = new TestSuite(GestureDirection.Push, this);
+                if(currentTest == null) {
+                    currentTest = new TestSuite(this);
+                }
+                currentTest.StartTest(GestureDirection.Push);
                 runningTest = true;
             } else if (e.Key == System.Windows.Input.Key.Down) {
-                currentTest = new TestSuite(GestureDirection.Pull, this);
+                if (currentTest == null) {
+                    currentTest = new TestSuite(this);
+                }
+                currentTest.StartTest(GestureDirection.Pull);
                 runningTest = true;
             } 
             
