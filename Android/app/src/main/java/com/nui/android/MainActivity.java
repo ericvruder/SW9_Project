@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity {
         circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = "Circle";
+                shape = "circle";
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
@@ -101,6 +101,8 @@ public class MainActivity extends BaseActivity {
                         squareView.setBottom(TopShapeBottom);
                     }
                     Log.d("MAIN", "Circle Touch");
+                    network.SendData(new ThrowGesture(shape));
+                    network.SendData(new TiltGesture(shape));
                 }
                 return true;
             }
@@ -110,7 +112,7 @@ public class MainActivity extends BaseActivity {
         squareView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = "Square";
+                shape = "square";
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
@@ -127,6 +129,8 @@ public class MainActivity extends BaseActivity {
                         squareView.setBottom(TopShapeBottom);
                     }
                     Log.d("MAIN", "Square Touch");
+                    network.SendData(new ThrowGesture(shape));
+                    network.SendData(new TiltGesture(shape));
                 }
                 return true;
             }
