@@ -26,7 +26,7 @@ namespace SW9_Project {
         Cell target, nextTarget;
         GridSize currentSize;
         int gridHeight, gridWidth;
-        public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
+        public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
         //public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
         //public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
@@ -296,6 +296,19 @@ namespace SW9_Project {
 
         private void canvas_Loaded(object sender, RoutedEventArgs e) {
             CreateGrid(currentSize);
+        }
+
+        private bool _inStateChange;
+        protected override void OnStateChanged(EventArgs e) {
+            if (WindowState == WindowState.Maximized && !_inStateChange) {
+                _inStateChange = true;
+                WindowState = WindowState.Normal;
+                WindowStyle = WindowStyle.None;
+                WindowState = WindowState.Maximized;
+                ResizeMode = ResizeMode.NoResize;
+                _inStateChange = false;
+            }
+            base.OnStateChanged(e);
         }
     }
 }
