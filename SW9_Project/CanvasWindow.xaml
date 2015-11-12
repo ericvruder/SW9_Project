@@ -14,7 +14,7 @@
         
         >
     <Grid>
-        <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="100, 60,100,60">
+        <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
     </Grid>
 </Window>
