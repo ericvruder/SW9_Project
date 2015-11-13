@@ -38,6 +38,7 @@ namespace SW9_Project {
         Brush targetColor = Brushes.DarkGray;
 
         public CanvasWindow() {
+
             shapes = new List<String>();
             shapes.Add("circle");
             shapes.Add("square");
@@ -187,25 +188,19 @@ namespace SW9_Project {
 
             if(gesture != null) {
                 Cell currCell = GetCell(pointer);
-                bool hit = currCell == target ? true : false;
-                bool correctShape = true; //TODO: FIX! 
+                bool hit = currCell == target;
+                bool correctShape = true;
+                string shape = target.Shape is Ellipse ? "circle" : "square";
+                if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
+                    correctShape = shape == gesture.Shape;
+                }
                 currentTest.TargetHit(hit, correctShape, target, pointer);
                 if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                     //nextShape = connection.GetNextShape();
                 }
+                if (hit && !correctShape) { hit = false; }
                 //PushShape(gesture.Shape, currCell);
                 TargetHit(target, hit);
-                /*
-                if(currCell == target) {
-                    currentTest.TargetHit(true, target, pointer);
-                    PushShape(gesture.Shape, currCell);
-                    TargetHit(currCell, true);
-                }
-                else {
-                    currentTest.TargetHit(false, target, pointer);
-                    PushShape(gesture.Shape, currCell);
-                    TargetHit(currCell, false);
-                }*/
             } 
         }
 

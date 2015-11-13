@@ -179,6 +179,10 @@
     <Content Include="sequences\0_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="sequences\1_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="sequences\2_sequence.txt" />
     <Content Include="techniques\Pull_Grab.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
