@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SW9_Project.Logging;
+using System.Windows.Shapes;
 
 namespace SW9_Project {
     static class GestureParser {
@@ -109,13 +110,14 @@ namespace SW9_Project {
                     case GestureType.Pinch: {
                             if(directionContext == GestureDirection.Pull && receivedGesture.Direction == GestureDirection.Pull) {
                                 ClearGestures();
-                                AwaitingGesture = new KinectGesture("circle");
+                                string shape = "";
+                                shape = board.GetCell(receivedGesture.Pointer)?.Shape is Ellipse ? "circle" : "square";
+                                AwaitingGesture = new KinectGesture(shape);
                             }
                             else if (waitingMobileGesture?.Type == GestureType.Pinch) {
                                 if(receivedGesture.Direction != directionContext) { break; }
-                                string shape = waitingMobileGesture.Shape;
                                 ClearGestures();
-                                AwaitingGesture = new KinectGesture(shape);
+                                AwaitingGesture = new KinectGesture(waitingMobileGesture.Shape);
                             } else {
                                 ClearGestures();
                             }
@@ -125,9 +127,8 @@ namespace SW9_Project {
                                 ClearGestures();
                             }
                             else if (waitingMobileGesture?.Type == GestureType.Throw) {
-                                string shape = waitingMobileGesture.Shape;
                                 ClearGestures();
-                                AwaitingGesture = new KinectGesture(shape);
+                                AwaitingGesture = new KinectGesture(waitingMobileGesture.Shape);
                             } else if (waitingMobileGesture == null) {
                                 ClearGestures();
                                 waitingKinectGesture = receivedGesture;
