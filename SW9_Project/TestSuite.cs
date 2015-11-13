@@ -38,6 +38,7 @@ namespace SW9_Project {
             GestureParser.SetDirectionContext(direction);
             targetSequence = GetNextSequence();
             gestureTypeList = GetRandomGestureList();
+            board.CreateTarget(targetSequence.Dequeue());
             ChangeGesture();
 
         }
@@ -47,7 +48,7 @@ namespace SW9_Project {
         public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer) {
             Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, correctShape);
             if(targetSequence.Count != 0) {
-                board.CreatePushTarget(targetSequence.Dequeue());
+                board.CreateTarget(targetSequence.Dequeue());
             }
             else if(gestureTypeList.Count != 0) {
                 ChangeGesture();

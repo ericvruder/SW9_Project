@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        network = new Network();
+        network = new Network(this);
         SwipeGestureListener swipeGestureListener = new SwipeGestureListener(network, this);
         rotationSensor = new RotationMonitor(network, this);
         acceloremeterSensor = new AccelerometerMonitor(network, rotationSensor, this);
@@ -137,6 +137,22 @@ public class MainActivity extends BaseActivity {
 
         });
 
+    }
+
+    public void StartPullTest(){
+
+    }
+
+    public void StartPushTest(){
+
+    }
+
+    public String NextShape(){
+        return "circle";
+    }
+
+    public boolean ReadyToStart(){
+        return true;
     }
 
     public String GetSelectedShape(){

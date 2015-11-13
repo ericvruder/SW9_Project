@@ -23,7 +23,7 @@ namespace SW9_Project {
         KinectManager kinectManager;
 
         Cell[,] grid;
-        Cell target;
+        Cell target, extraTarget;
         Target nextTarget;
         GridSize currentSize;
         int gridHeight, gridWidth;
@@ -32,6 +32,7 @@ namespace SW9_Project {
         //public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
+        static Connection connection;
         TestSuite currentTest;
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
@@ -45,6 +46,11 @@ namespace SW9_Project {
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
+        }
+
+        public static void SetConnection(Connection _connection) {
+            connection = _connection;
+
         }
 
         public void CreateGrid(GridSize size) {
@@ -83,21 +89,30 @@ namespace SW9_Project {
 
         private Random randomizer = new Random();
 
-        public void CreatePushTarget(Target target)
-        {
+        public void CreateTarget(Target target) {
             nextTarget = target;
             
         }
 
         bool runningTest = false;
+        string nextShape = "";
         public void DrawNextTargets() {
             if (runningTest) {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
-
                     CreateGrid(nextTarget.Size);
-                    target = GetCell(new Point(nextTarget.X, nextTarget.Y));
+
+                    if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                        if (nextShape == "") { nextShape = connection.GetNextShape(); }
+                        shape = nextShape;
+                        string extraShape = shape == "circle" ? "square" : "circle";
+                        extraTarget = GetCell(new Point(1, 2)); //TODO: FIX
+                        extraTarget.GridCell.Fill = targetColor;
+                        PushShape(extraShape, extraTarget);
+                    }
+
+                    target = grid[nextTarget.X, nextTarget.Y];
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
@@ -105,10 +120,6 @@ namespace SW9_Project {
 
                 }
             }
-        }
-
-        public void CreatePullTargets(Target t1, Target t2) {
-            throw new NotImplementedException();
         }
 
         public Cell GetCell(Point p) {
@@ -146,6 +157,9 @@ namespace SW9_Project {
             if (target != null) {
                 target.GridCell.Fill = targetColor;
             }
+            if(extraTarget != null) {
+                extraTarget.GridCell.Fill = targetColor;
+            }
 
             DrawNextTargets();
 
@@ -159,8 +173,11 @@ namespace SW9_Project {
                 bool hit = currCell == target ? true : false;
                 bool correctShape = true; //TODO: FIX! 
                 currentTest.TargetHit(hit, correctShape, target, pointer);
-                PushShape(gesture.Shape, currCell);
-                TargetHit(currCell, hit);
+                if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                    nextShape = connection.GetNextShape();
+                }
+                //PushShape(gesture.Shape, currCell);
+                TargetHit(target, hit);
                 /*
                 if(currCell == target) {
                     currentTest.TargetHit(true, target, pointer);
@@ -222,6 +239,9 @@ namespace SW9_Project {
         }
         private void Da_Completed(object sender, EventArgs e) {
             Cell t = target;
+            if(nextTarget == null) {
+                runningTest = false;
+            }
             target = null;
             t.GridCell.Fill = Brushes.White;
             targetColor = Brushes.DarkGray;
@@ -257,10 +277,6 @@ namespace SW9_Project {
 
             return p;
         }
-
-        public void StopTest() {
-            runningTest = false;
-        }
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             if(e.Key == System.Windows.Input.Key.Up) {
@@ -268,12 +284,14 @@ namespace SW9_Project {
                     currentTest = new TestSuite(this);
                 }
                 currentTest.StartTest(GestureDirection.Push);
+                connection?.StartTest(GestureDirection.Push);
                 runningTest = true;
             } else if (e.Key == System.Windows.Input.Key.Down) {
                 if (currentTest == null) {
                     currentTest = new TestSuite(this);
                 }
                 currentTest.StartTest(GestureDirection.Pull);
+                connection?.StartTest(GestureDirection.Pull);
                 runningTest = true;
             } 
             
