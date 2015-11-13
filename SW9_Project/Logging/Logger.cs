@@ -29,11 +29,19 @@ namespace SW9_Project.Logging
             }
             sw = File.AppendText(Logger.testFilePath);
         }
+        private static int sgHeight, sgWidth, lgHeight, lgWidth;
+        private static double canvasHeight, canvasWidth;
 
-        public static void Initialize() {
-            if(CurrentLogger == null) {
+        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
+            if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
             }
+            sgHeight = sHeight;
+            sgWidth = sWidth;
+            lgHeight = lHeight;
+            lgWidth = lWidth;
+            canvasHeight = cnvasHeight;
+            canvasWidth = cnvasWidth;
         }
         
 
@@ -105,7 +113,7 @@ namespace SW9_Project.Logging
         /// <param name="gridWidth"></param>
         /// <param name="cellHeight"></param>
         /// <param name="cellWidth"></param>
-        public void ChangeSize(int gridHeight, int gridWidth, double cellHeight, double cellWidth)
+        private void ChangeSize(int gridHeight, int gridWidth, double cellHeight, double cellWidth)
         {
             string message = "Changed grid size." +
                              " Grid height: " + gridHeight +
@@ -113,6 +121,14 @@ namespace SW9_Project.Logging
                              " Cell height: " + cellHeight +
                              " Cell width: " + cellWidth;
             Log(message);
+        }
+
+        public void ChangeSize(GridSize size) {
+            if(size == GridSize.Large) {
+                ChangeSize(lgHeight, lgWidth, canvasHeight / lgHeight, canvasWidth / lgWidth);
+            } else {
+                ChangeSize(sgHeight, sgWidth, canvasHeight / sgHeight, canvasWidth / sgWidth);
+            }
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace SW9_Project {
 
         public static Shape CreateShape(string shape, double size) {
             switch (shape) {
-                case "circle": return CreateCircle(size);
+                case "circle": return CreateCircle(size * 0.8);
                 case "square": return CreateSquare(size * 0.8);
                 case "triangle": return CreateTriangle(size);
                 case "pentagon": return CreatePentagon(size);

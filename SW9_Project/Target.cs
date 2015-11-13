@@ -36,7 +36,7 @@ namespace SW9_Project {
                     string[] targetInfo = line.Split(',');
                     int x = Int32.Parse(targetInfo[0].Trim());
                     int y = Int32.Parse(targetInfo[1].Trim());
-                    GridSize size = targetInfo[2].Trim() == "L" ? GridSize.Large : GridSize.Small;
+                    GridSize size = String.Compare(targetInfo[2].Trim(), "L", true) == 0 ? GridSize.Large : GridSize.Small;
                     targets.Enqueue(new Target(x, y, size));
                 }
             }

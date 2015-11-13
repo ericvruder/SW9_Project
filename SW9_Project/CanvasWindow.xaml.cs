@@ -60,6 +60,7 @@ namespace SW9_Project {
             } else {
                 CreateGrid(sgWidth, sgHeight);
             }
+            currentSize = size;
         }
 
         private void CreateGrid(int width, int height) {
@@ -102,6 +103,9 @@ namespace SW9_Project {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
+                    if(currentSize != nextTarget.Size) {
+                        Logger.CurrentLogger.ChangeSize(nextTarget.Size);
+                    }
                     CreateGrid(nextTarget.Size);
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {/*
@@ -286,6 +290,7 @@ namespace SW9_Project {
             }
             CreateGrid(currentSize);
             TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
+            Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
         }
 
         public Point GetPoint(double xFromMid, double yFromMid)
