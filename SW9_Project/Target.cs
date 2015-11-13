@@ -30,12 +30,23 @@ namespace SW9_Project {
                 TargetSequences.Add(EigthSequence());
                 
             }
-            return TargetSequences.ElementAt(sequenceNumber);
+            return TargetSequences.ElementAt(0);
         }
 
         static Queue<Target> FirstSequence() {
             Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
+            list.Enqueue(new Target(6, 4, GridSize.Large));
+            list.Enqueue(new Target(4, 2, GridSize.Large));
+            list.Enqueue(new Target(16, 7, GridSize.Small));
+            list.Enqueue(new Target(2, 1, GridSize.Large));
+            list.Enqueue(new Target(9, 3, GridSize.Small));
+            list.Enqueue(new Target(1, 2, GridSize.Small));
+            list.Enqueue(new Target(5, 8, GridSize.Small));
+            list.Enqueue(new Target(8, 3, GridSize.Large));
+            list.Enqueue(new Target(4, 9, GridSize.Small));
+            list.Enqueue(new Target(6, 4, GridSize.Large));
+            list.Enqueue(new Target(2, 1, GridSize.Large));
+            list.Enqueue(new Target(17, 5, GridSize.Small));
             return list;
         }
         static Queue<Target> SecondSequence() {

@@ -54,6 +54,9 @@ namespace SW9_Project {
                 ChangeGesture();
                 targetSequence = GetNextSequence();
             }
+            else {
+                ThankYou ty = new ThankYou();
+            }
         }
 
         private Queue<Target> GetNextSequence() {

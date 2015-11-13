@@ -78,7 +78,7 @@ namespace SW9_Project {
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
                     grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight));
-                    grid[i, j].X = j; grid[i, j].Y = i;
+                    grid[i, j].X = i; grid[i, j].Y = j;
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
                     Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
@@ -103,13 +103,30 @@ namespace SW9_Project {
                     string shape = shapes[randomizer.Next(shapes.Count)];
                     CreateGrid(nextTarget.Size);
 
-                    if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                    if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {/*
                         if (nextShape == "") { nextShape = connection.GetNextShape(); }
                         shape = nextShape;
+                        nextShape = "";*/
                         string extraShape = shape == "circle" ? "square" : "circle";
-                        extraTarget = GetCell(new Point(1, 2)); //TODO: FIX
+                        int t = nextTarget.Size == GridSize.Large ? 1 : 2;
+                        List<int> xPossibilities = new List<int>();
+                        List<int> yPossibilities = new List<int>();
+
+                        for(int i = 0; i < gridWidth; i++) {
+                            if(i < nextTarget.X - t || i > nextTarget.X + t) {
+                                xPossibilities.Add(i);
+                            }
+                        }
+                        for(int i = 0; i < gridHeight; i++) {
+                            if(i < nextTarget.Y -t || i > nextTarget.Y + t) {
+                                yPossibilities.Add(i);
+                            }
+                        }
+                        int x = xPossibilities[randomizer.Next(xPossibilities.Count)], y = yPossibilities[randomizer.Next(yPossibilities.Count)];
+                        extraTarget = grid[x,y];
                         extraTarget.GridCell.Fill = targetColor;
                         PushShape(extraShape, extraTarget);
+                        extraTarget.Shape.Fill = Brushes.Black;
                     }
 
                     target = grid[nextTarget.X, nextTarget.Y];
@@ -174,7 +191,7 @@ namespace SW9_Project {
                 bool correctShape = true; //TODO: FIX! 
                 currentTest.TargetHit(hit, correctShape, target, pointer);
                 if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
-                    nextShape = connection.GetNextShape();
+                    //nextShape = connection.GetNextShape();
                 }
                 //PushShape(gesture.Shape, currCell);
                 TargetHit(target, hit);
@@ -229,15 +246,20 @@ namespace SW9_Project {
             }
             else {
                 cell.Shape.Fill = Brushes.Red;
-                canvas.Children.Remove(target.Shape);
-                target.Shape = null;
             }
             DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
-            da.Completed += Da_Completed;
+            da.Completed += (sender, e) => Da_Completed(sender, e, target);
             targetColor = Brushes.White;
             cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
+
+            if(extraTarget != null) {
+                canvas.Children.Remove(extraTarget.Shape);
+                extraTarget.Shape = null;
+            }
+
+            
         }
-        private void Da_Completed(object sender, EventArgs e) {
+        private void Da_Completed(object sender, EventArgs e, Cell cell) {
             Cell t = target;
             if(nextTarget == null) {
                 runningTest = false;
@@ -245,6 +267,8 @@ namespace SW9_Project {
             target = null;
             t.GridCell.Fill = Brushes.White;
             targetColor = Brushes.DarkGray;
+            canvas.Children.Remove(cell.Shape);
+            cell.Shape = null;
         }
 
         private void MoveShape(Shape shapeToMove, Point p) {
@@ -292,6 +316,7 @@ namespace SW9_Project {
                 }
                 currentTest.StartTest(GestureDirection.Pull);
                 connection?.StartTest(GestureDirection.Pull);
+                nextShape = connection?.GetNextShape();
                 runningTest = true;
             } 
             
