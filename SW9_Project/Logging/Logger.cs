@@ -16,7 +16,7 @@ namespace SW9_Project.Logging
         private static string directory = "log/";
         private static string testLogFilePath = directory + "-test.txt";
         private static string commentLogFilePath = directory + "-comment.txt";
-        StreamWriter sw = File.AppendText(Logger.testFilePath);
+        StreamWriter sw; //FIX
 
         int userID;
 
@@ -27,6 +27,7 @@ namespace SW9_Project.Logging
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
             }
+            sw = File.AppendText(Logger.testFilePath);
         }
 
         public static void Initialize() {
@@ -165,7 +166,7 @@ namespace SW9_Project.Logging
                              " Pointer: X = " + gesture.Pointer.X + " Y = " + gesture.Pointer.Y +
                              " Cell: X = " + cell.X + " Y = " + cell.Y;
 
-            Log(message);
+            LogComment(message);
         }
 
         /// <summary>
@@ -179,7 +180,7 @@ namespace SW9_Project.Logging
                              " Direction: " + gesture.Direction.ToString() +
                              " Shape: " + gesture.Shape;
 
-            Log(message);
+            LogComment(message);
 
             Console.WriteLine(message);
         }

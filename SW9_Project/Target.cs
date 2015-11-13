@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,69 +21,25 @@ namespace SW9_Project {
         public static Queue<Target> GetTargetSequence(int sequenceNumber) {
             if(TargetSequences == null) {
                 TargetSequences = new List<Queue<Target>>();
-                TargetSequences.Add(FirstSequence());
-                TargetSequences.Add(SecondSequence());
-                TargetSequences.Add(ThirdSequence());
-                TargetSequences.Add(FourthSequence());
-                TargetSequences.Add(FifthSequence());
-                TargetSequences.Add(SixthSequence());
-                TargetSequences.Add(SeventhSequence());
-                TargetSequences.Add(EigthSequence());
+                TargetSequences.Add(LoadSequence(0));
                 
             }
             return TargetSequences.ElementAt(0);
         }
 
-        static Queue<Target> FirstSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(6, 4, GridSize.Large));
-            list.Enqueue(new Target(4, 2, GridSize.Large));
-            list.Enqueue(new Target(16, 7, GridSize.Small));
-            list.Enqueue(new Target(2, 1, GridSize.Large));
-            list.Enqueue(new Target(9, 3, GridSize.Small));
-            list.Enqueue(new Target(1, 2, GridSize.Small));
-            list.Enqueue(new Target(5, 8, GridSize.Small));
-            list.Enqueue(new Target(8, 3, GridSize.Large));
-            list.Enqueue(new Target(4, 9, GridSize.Small));
-            list.Enqueue(new Target(6, 4, GridSize.Large));
-            list.Enqueue(new Target(2, 1, GridSize.Large));
-            list.Enqueue(new Target(17, 5, GridSize.Small));
-            return list;
-        }
-        static Queue<Target> SecondSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> ThirdSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> FourthSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> FifthSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> SixthSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> SeventhSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
-        }
-        static Queue<Target> EigthSequence() {
-            Queue<Target> list = new Queue<Target>();
-            list.Enqueue(new Target(1, 2, GridSize.Large));
-            return list;
+        static Queue<Target> LoadSequence(int sequenceNumber) {
+            Queue<Target> targets = new Queue<Target>();
+            using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
+                string line = "";
+                while((line = sr.ReadLine()) != null) {
+                    string[] targetInfo = line.Split(',');
+                    int x = Int32.Parse(targetInfo[0].Trim());
+                    int y = Int32.Parse(targetInfo[1].Trim());
+                    GridSize size = targetInfo[2].Trim() == "l" ? GridSize.Large : GridSize.Small;
+                    targets.Enqueue(new Target(x, y, size));
+                }
+            }
+            return targets;
         }
     }
 }
