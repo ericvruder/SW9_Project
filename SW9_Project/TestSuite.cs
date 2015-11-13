@@ -27,12 +27,14 @@ namespace SW9_Project {
 
         public TestSuite(IDrawingBoard board) {
             this.board = board;
-            Logger.CurrentLogger.NewUser();
+            UserID = Logger.CurrentLogger.NewUser();
             sequences = new List<int>();
             for(int i = 0; i < 8; i++) {
                 sequences.Add(i);
             }
         }
+
+        public int UserID { get; }
 
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);

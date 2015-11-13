@@ -20,7 +20,6 @@ namespace SW9_Project {
         public MainWindow() {
             
             InitializeComponent();
-            Logger.Initialize();
 
             Task.Factory.StartNew(() => {
                 AllocConsole();
