@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace SW9_Project {
-    class Connection {
-        
+    public class Connection {
+
         Socket socket;
 
         private static List<Connection> allConnections;
         private static bool alive = true;
 
-        public static List<Connection> AllConnections { get {
-                if(allConnections == null) {
+        public static List<Connection> AllConnections {
+            get {
+                if (allConnections == null) {
                     allConnections = new List<Connection>();
                 }
                 return allConnections;
@@ -35,8 +36,7 @@ namespace SW9_Project {
 
         }
 
-        static byte[] GetBytes(string str)
-        {
+        static byte[] GetBytes(string str) {
             byte[] bytes = new byte[str.Length * sizeof(char)];
             System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
@@ -57,7 +57,7 @@ namespace SW9_Project {
             });
         }
 
-        public static void StartService(int port = 8000) { 
+        public static void StartService(int port = 8000) {
 
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
@@ -70,20 +70,28 @@ namespace SW9_Project {
                 listener.Stop();
             });
         }
-
+        StreamWriter sw;
+        bool ready = false;
         private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
 
                 using (NetworkStream stream = new NetworkStream(socket))
                 using (StreamReader sr = new StreamReader(stream))
-                using (StreamWriter sw = new StreamWriter(stream)) {
+                using (sw = new StreamWriter(stream)) {
                     sw.AutoFlush = true;
                     sw.WriteLine("Received your connection!");
                     while (true) {
-                        dynamic jO = JsonConvert.DeserializeObject(sr.ReadLine());
-                        if(jO.GetType().GetProperty("Type") != null) {
-                            GestureParser.AddMobileGesture(new MobileGesture(jO));
+                        String line = sr.ReadLine();
+                        if (line.Contains("nextshape:")) {
+                            nextShape = line.Split(':')[1];
+                        } else if (line.Contains("ready:")) {
+
+                        } else {
+                            dynamic jO = JsonConvert.DeserializeObject(line);
+                            if (jO.GetType().GetProperty("Type") != null) {
+                                GestureParser.AddMobileGesture(new MobileGesture(jO));
+                            }
                         }
                     }
                 }
@@ -93,6 +101,23 @@ namespace SW9_Project {
             } finally {
                 socket.Close();
             }
+        }
+
+        public void StartTest(GestureDirection direction) {
+            String test = direction == GestureDirection.Pull ? "startpull" : "startpush";
+            sw.WriteLine("direction"); 
+            sw.Flush();
+        }
+        String nextShape = "";
+        public string GetNextShape() {
+            sw.Write("nextshape");
+            String response = "";
+            while(nextShape == "") {
+                Thread.Sleep(50);
+            }
+            response = nextShape;
+            nextShape = "";
+            return response;
         }
     }
 }

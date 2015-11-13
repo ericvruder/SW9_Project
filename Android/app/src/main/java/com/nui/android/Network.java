@@ -1,5 +1,8 @@
 package com.nui.android;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -26,15 +29,18 @@ public class Network implements IServer {
     int port;
 
     Gson gsonConverter;
+    MainActivity activity;
 
     PrintWriter out;
 
-    public Network(){
-        this(SERVER_IP, 8000);
+    public Network(MainActivity activity){
+        this(SERVER_IP, 8000, activity);
     }
 
-    public Network(String host, int port){
+    public Network(String host, int port, MainActivity activity){
         gsonConverter = new Gson();
+
+        this.activity = activity;
 
         this.host = host;
         this.port = port;
@@ -181,14 +187,36 @@ public class Network implements IServer {
         Log.w(TAG, "Network Setup complete.");
     }
 
-    private void SetupConnection(){
+    private void SetupConnection() {
         try {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
+            StartListener((clientSocket.getInputStream()));
+
+        } catch (Exception e) {
+            Log.i(TAG, "Could not open a socket to " + host + ":" + port);
         }
-        catch (Exception e){
-            Log.i(TAG, "Could not open a socket to " + host +":" + port);
-        }
+    }
+
+    private void StartListener(InputStream inputStream){
+        BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        try {
+            while ((line = r.readLine()) != null) {
+                if(line.equals("startpull")) {
+                    activity.StartPullTest();
+                }
+                else if(line.equals("startpush")){
+                    activity.StartPushTest();
+                }
+                else if(line.equals("nextshape")){
+                    SendMessage("nextshape:" + activity.NextShape());
+                }
+                else if(line.equals("ready")){
+                    SendMessage("ready:"+activity.ReadyToStart());
+                }
+            }
+        }catch(Exception e){}
     }
 
     public void SendMessage(String message){

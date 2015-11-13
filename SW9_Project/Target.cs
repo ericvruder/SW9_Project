@@ -19,6 +19,7 @@ namespace SW9_Project {
 
         public static Queue<Target> GetTargetSequence(int sequenceNumber) {
             if(TargetSequences == null) {
+                TargetSequences = new List<Queue<Target>>();
                 TargetSequences.Add(FirstSequence());
                 TargetSequences.Add(SecondSequence());
                 TargetSequences.Add(ThirdSequence());
