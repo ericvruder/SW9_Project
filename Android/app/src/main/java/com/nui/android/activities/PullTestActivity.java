@@ -1,13 +1,12 @@
 package com.nui.android.activities;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.nui.android.R;
+import com.nui.android.Shape;
 
 import java.util.Random;
 
@@ -21,10 +20,8 @@ public class PullTestActivity extends BaseActivity {
     private ImageView squareView;
 
     private final Random random = new Random();
-    private int TopShapeTop;
-    private int TopShapeBottom;
-    private int BottomShapeTop;
-    private int BottomShapeBottom;
+    private int count;
+    private static int MAX_COUNT = 2;
 
     @Override
     protected int getLayoutResourceId() {
@@ -35,37 +32,44 @@ public class PullTestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Drawable drawableCircle = ContextCompat.getDrawable(this, R.drawable.circle);
-        Drawable drawableSquare = ContextCompat.getDrawable(this, R.drawable.square);
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
+        count = 0;
 
-        circleView.setImageDrawable(drawableCircle);
-        squareView.setImageDrawable(drawableSquare);
+        // If the starting shape should NOT be randomized, remove following if-else
+        if(random.nextBoolean()) {
+            circleView.setVisibility(View.INVISIBLE);
+            squareView.setVisibility(View.VISIBLE);
+            nextShape = Shape.Square;
+        } else {
+            circleView.setVisibility(View.VISIBLE);
+            squareView.setVisibility(View.INVISIBLE);
+            nextShape = Shape.Circle;
+        }
+
+        NextShape();
 
         circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = "circle";
+                shape = Shape.Circle;
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (random.nextBoolean()) {
-                        TopShapeTop = circleView.getTop();
-                        TopShapeBottom = circleView.getBottom();
-                        BottomShapeTop = squareView.getTop();
-                        BottomShapeBottom = squareView.getBottom();
-
-                        circleView.setTop(BottomShapeTop);
-                        circleView.setBottom(BottomShapeBottom);
-                        squareView.setTop(TopShapeTop);
-                        squareView.setBottom(TopShapeBottom);
+                    if(count > MAX_COUNT || random.nextBoolean()) {
+                        count = 0;
+                        circleView.setVisibility(View.INVISIBLE);
+                        squareView.setVisibility(View.VISIBLE);
+                        nextShape = Shape.Square;
+                    } else {
+                        count++;
+                        nextShape = Shape.Circle;
                     }
+                    NextShape();
                 }
-
                 return true;
             }
 
@@ -74,26 +78,24 @@ public class PullTestActivity extends BaseActivity {
         squareView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = "square";
+                shape = Shape.Square;
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (random.nextBoolean()) {
-                        TopShapeTop = circleView.getTop();
-                        TopShapeBottom = circleView.getBottom();
-                        BottomShapeTop = squareView.getTop();
-                        BottomShapeBottom = squareView.getBottom();
-
-                        circleView.setTop(BottomShapeTop);
-                        circleView.setBottom(BottomShapeBottom);
-                        squareView.setTop(TopShapeTop);
-                        squareView.setBottom(TopShapeBottom);
+                    if(count > MAX_COUNT || random.nextBoolean()) {
+                        count = 0;
+                        squareView.setVisibility(View.INVISIBLE);
+                        circleView.setVisibility(View.VISIBLE);
+                        nextShape = Shape.Circle;
+                    } else {
+                        count++;
+                        nextShape = Shape.Square;
                     }
+                    NextShape();
                 }
-
                 return true;
             }
 
