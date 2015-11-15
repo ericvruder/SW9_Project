@@ -20,6 +20,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /**
+         * Dummy/simulation/test buttons
+         */
         findViewById(R.id.start_pull_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
