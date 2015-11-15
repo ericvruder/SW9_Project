@@ -24,7 +24,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.12";
+    private static final String SERVER_IP = "192.168.1.10";
 
     Socket clientSocket;
     String host;
