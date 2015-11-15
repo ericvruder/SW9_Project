@@ -20,7 +20,7 @@ public class AccelerometerMonitor extends SensorMonitor {
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
             if(IsThrown(x,y,z,curTime)){
-                ThrowGesture data = new ThrowGesture("circle");
+                ThrowGesture data = new ThrowGesture(Shape.Circle);
                 server.SendData(data);
             }
         }
