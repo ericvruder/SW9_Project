@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#0099cc" tools:context=".Main">
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="THIS IS PULL"/>
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="230dp"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/circle"
+                    android:src="@drawable/circle"
+                    android:scaleType="fitCenter"
+                    android:visibility="invisible" />
+                <ImageView
+                    android:layout_weight="0.5"
+                    android:layout_height="230dp"
+                    android:layout_marginTop="230dp"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/square"
+                    android:src="@drawable/square"
+                    android:scaleType="fitCenter"/>
+            </RelativeLayout>
+
+    </FrameLayout>
+
+</FrameLayout>
