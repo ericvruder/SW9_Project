@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
@@ -17,6 +19,7 @@ import com.nui.android.PinchGestureListener;
 import com.nui.android.R;
 import com.nui.android.RotationMonitor;
 import com.nui.android.SensorMonitor;
+import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
@@ -35,6 +38,7 @@ public abstract class BaseActivity extends Activity {
     private RotationMonitor rotationSensor;
 
     public String shape;
+    public String nextShape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +74,8 @@ public abstract class BaseActivity extends Activity {
     }
 
     public String NextShape(){
-        return "circle";
+        Log.d("BASE", "Next shape: " + nextShape);
+        return Shape.Circle;
     }
 
     public boolean ReadyToStart(){
