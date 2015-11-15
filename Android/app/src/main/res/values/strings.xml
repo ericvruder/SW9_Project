@@ -3,4 +3,7 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="reconnect_action">Reconnect</string>
+    <string name="close_app_action">Close App</string>
 </resources>
