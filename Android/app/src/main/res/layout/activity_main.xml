@@ -22,49 +22,19 @@
     <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:layout_weight="0.5"
-                    android:layout_height="230dp"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/circle"
-                    android:src="@drawable/circle"
-                    android:scaleType="fitCenter" />
-                <ImageView
-                    android:layout_weight="0.5"
-                    android:layout_height="230dp"
-                    android:layout_marginTop="230dp"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/square"
-                    android:src="@drawable/square"
-                    android:scaleType="fitCenter"/>
-            </RelativeLayout>
-
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quit"
-            android:id="@+id/activity_tilt_button"
-            android:layout_gravity="left|bottom" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send message"
-            android:id="@+id/send_message"
-            android:layout_gravity="center_horizontal|bottom" />
-
+            android:text="start push test"
+            android:id="@+id/start_push_test"
+            android:layout_gravity="center_horizontal" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reconnect"
-            android:id="@+id/reconnect_button"
-            android:layout_gravity="right|bottom" />
-
+            android:text="start pull test"
+            android:id="@+id/start_pull_test"
+            android:layout_gravity="center" />
     </FrameLayout>
 
 </FrameLayout>
