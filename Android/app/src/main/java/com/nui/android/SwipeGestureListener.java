@@ -1,9 +1,10 @@
 package com.nui.android;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+
+import com.nui.android.activities.BaseActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,19 +15,14 @@ import java.util.TimerTask;
 public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     IServer server;
-    MainActivity mainActivity;
+    BaseActivity baseActivity;
+    boolean pinching = false;
 
-    public SwipeGestureListener(IServer server, MainActivity mainActivity){
+    public SwipeGestureListener(IServer server, BaseActivity baseActivity){
         super();
         this.server = server;
-        this.mainActivity = mainActivity;
+        this.baseActivity = baseActivity;
     }
-
-    @Override
-    public boolean onDown(MotionEvent event){
-        return true;
-    }
-    boolean pinching = false;
 
     public void Pinching(){
         if(!pinching) {
@@ -43,15 +39,20 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
     }
 
     @Override
+    public boolean onDown(MotionEvent event){
+        return true;
+    }
+
+    @Override
     public boolean onFling(MotionEvent firstEvent, MotionEvent secondEvent, float vx, float vy){
         if(!pinching) {
             float diff = firstEvent.getY() - secondEvent.getY();
             if (diff >= 100f) {
-                server.SendData(new SwipeGesture("push", mainActivity.GetSelectedShape()));
-                Log.d("SWIPE", "onFling() push " + mainActivity.GetSelectedShape() );
+                server.SendData(new SwipeGesture("push", baseActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() push " + baseActivity.GetSelectedShape() );
             } else if (diff <= -100f) {
-                server.SendData(new SwipeGesture("pull", mainActivity.GetSelectedShape()));
-                Log.d("SWIPE", "onFling() pull " + mainActivity.GetSelectedShape());
+                server.SendData(new SwipeGesture("pull", baseActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() pull " + baseActivity.GetSelectedShape());
             }
         }
         return true;
