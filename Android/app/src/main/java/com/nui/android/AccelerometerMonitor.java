@@ -5,6 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
+import com.nui.android.activities.BaseActivity;
+
 /**
  * Created by ericv on 10/13/2015.
  */
@@ -20,13 +22,13 @@ public class AccelerometerMonitor extends SensorMonitor {
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
             if(IsThrown(x,y,z,curTime)){
-                ThrowGesture data = new ThrowGesture(Shape.Circle);
+                ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
                 server.SendData(data);
             }
         }
     }
 
-    private boolean IsThrown(float x, float y, float z, long curTime){
+    public boolean IsThrown(float x, float y, float z, long curTime){
 
         float accelationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
