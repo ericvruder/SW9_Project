@@ -1,6 +1,8 @@
 package com.nui.android;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -95,7 +97,11 @@ public class Network implements IServer {
             StartListener((clientSocket.getInputStream()));
 
         } catch (Exception e) {
-            Log.i(TAG, "Could not open a socket to " + host + ":" + port);
+            if(e instanceof IOException || e instanceof EOFException){
+                Reconnect();
+            } else {
+                Log.i(TAG, "Could not open a socket to " + host + ":" + port);
+            }
         }
     }
 
@@ -137,7 +143,11 @@ public class Network implements IServer {
                 }
             }
         } catch(Exception e) {
-            Log.e(TAG, e.getMessage());
+            if(e instanceof IOException || e instanceof EOFException) {
+                Reconnect();
+            } else {
+                Log.e(TAG, e.getMessage());
+            }
         }
     }
 
@@ -146,7 +156,11 @@ public class Network implements IServer {
             out.println(message);
             out.flush();
         }catch (Exception e){
-            Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+            if(e instanceof IOException || e instanceof EOFException) {
+                Reconnect();
+            } else {
+                Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+            }
         }
     }
 
@@ -160,7 +174,11 @@ public class Network implements IServer {
             SendMessage(t);
         }
         catch (Exception e){
-            Log.i("!", " "+ e.getMessage()); // java.lang.NullPointerException: println needs a message
+            if(e instanceof IOException || e instanceof EOFException) {
+                Reconnect();
+            } else {
+                Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
+            }
         }
     }
 
