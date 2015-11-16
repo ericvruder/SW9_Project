@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 using SW9_Project.Logging;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
+using System.Threading;
 
 namespace SW9_Project {
 
@@ -198,12 +199,11 @@ namespace SW9_Project {
                 if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
                     correctShape = shape == gesture.Shape;
                 }
-                currentTest.TargetHit(hit, correctShape, target, pointer);
-                if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
-                    //nextShape = connection.GetNextShape();
+                else if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                    correctShape = shape == nextShape;
                 }
+                currentTest.TargetHit(hit, correctShape, target, pointer);
                 if (hit && !correctShape) { hit = false; }
-                //PushShape(gesture.Shape, currCell);
                 TargetHit(target, hit);
             } 
         }
@@ -240,11 +240,17 @@ namespace SW9_Project {
             
         }
         private void TargetHit(Cell cell, bool hit) {
+            connection?.SwitchShapes();
             if (hit) {
                 cell.Shape.Fill = Brushes.Green;
             }
             else {
                 cell.Shape.Fill = Brushes.Red;
+            }
+
+            if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                connection?.SwitchShapes();
+                nextShape = connection?.GetNextShape();
             }
             DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             da.Completed += (sender, e) => Da_Completed(sender, e, target);
