@@ -75,6 +75,7 @@ namespace SW9_Project {
         private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
+                CanvasWindow.SetConnection(this);
 
                 using (NetworkStream stream = new NetworkStream(socket))
                 using (StreamReader sr = new StreamReader(stream))
@@ -106,7 +107,8 @@ namespace SW9_Project {
 
         public void StartTest(GestureDirection direction) {
             String test = direction == GestureDirection.Pull ? "startpull" : "startpush";
-            sw.WriteLine("direction"); 
+            sw.WriteLine(test);
+            sw.Flush();
         }
 
         public void SwitchShapes() {
