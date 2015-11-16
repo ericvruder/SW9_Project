@@ -15,13 +15,11 @@ import java.util.TimerTask;
 public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     IServer server;
-    BaseActivity baseActivity;
     boolean pinching = false;
 
-    public SwipeGestureListener(IServer server, BaseActivity baseActivity){
+    public SwipeGestureListener(IServer server){
         super();
         this.server = server;
-        this.baseActivity = baseActivity;
     }
 
     public void Pinching(){
@@ -48,11 +46,11 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         if(!pinching) {
             float diff = firstEvent.getY() - secondEvent.getY();
             if (diff >= 100f) {
-                server.SendData(new SwipeGesture("push", baseActivity.GetSelectedShape()));
-                Log.d("SWIPE", "onFling() push " + baseActivity.GetSelectedShape() );
+                server.SendData(new SwipeGesture("push", BaseActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() push " + BaseActivity.GetSelectedShape());
             } else if (diff <= -100f) {
-                server.SendData(new SwipeGesture("pull", baseActivity.GetSelectedShape()));
-                Log.d("SWIPE", "onFling() pull " + baseActivity.GetSelectedShape());
+                server.SendData(new SwipeGesture("pull", BaseActivity.GetSelectedShape()));
+                Log.d("SWIPE", "onFling() pull " + BaseActivity.GetSelectedShape());
             }
         }
         return true;

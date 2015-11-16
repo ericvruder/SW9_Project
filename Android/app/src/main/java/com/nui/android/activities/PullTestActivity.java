@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.nui.android.Network;
 import com.nui.android.R;
 import com.nui.android.Shape;
 
@@ -35,6 +36,7 @@ public class PullTestActivity extends BaseActivity {
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
         count = 0;
+        Network.SetActivity(this);
 
         // If the starting shape should NOT be randomized, remove following if-else
         if(random.nextBoolean()) {
@@ -47,8 +49,6 @@ public class PullTestActivity extends BaseActivity {
             nextShape = Shape.Circle;
         }
 
-        NextShape();
-
         circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -58,18 +58,6 @@ public class PullTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(count > MAX_COUNT || random.nextBoolean()) {
-                        count = 0;
-                        circleView.setVisibility(View.INVISIBLE);
-                        squareView.setVisibility(View.VISIBLE);
-                        nextShape = Shape.Square;
-                    } else {
-                        count++;
-                        nextShape = Shape.Circle;
-                    }
-                    NextShape();
-                }
                 return true;
             }
 
@@ -84,23 +72,28 @@ public class PullTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(count > MAX_COUNT || random.nextBoolean()) {
-                        count = 0;
-                        squareView.setVisibility(View.INVISIBLE);
-                        circleView.setVisibility(View.VISIBLE);
-                        nextShape = Shape.Circle;
-                    } else {
-                        count++;
-                        nextShape = Shape.Square;
-                    }
-                    NextShape();
-                }
                 return true;
             }
 
         });
 
+    }
+
+    public void SwitchShape() {
+        if(count > MAX_COUNT || random.nextBoolean()) {
+            count = 0;
+            if(squareView.getVisibility() == View.INVISIBLE) {
+                squareView.setVisibility(View.VISIBLE);
+                circleView.setVisibility(View.INVISIBLE);
+                nextShape = Shape.Square;
+            } else if(circleView.getVisibility() == View.INVISIBLE) {
+                squareView.setVisibility(View.INVISIBLE);
+                circleView.setVisibility(View.VISIBLE);
+                nextShape = Shape.Circle;
+            }
+        } else {
+            count++;
+        }
     }
 
 }

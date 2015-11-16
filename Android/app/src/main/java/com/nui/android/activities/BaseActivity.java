@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
@@ -30,15 +29,15 @@ public abstract class BaseActivity extends Activity {
 
     protected abstract int getLayoutResourceId();
 
-    private Network network;
+    //private Network network;
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
     private SensorMonitor acceloremeterSensor;
     private RotationMonitor rotationSensor;
 
-    public String shape;
-    public String nextShape;
+    public static String shape;
+    public static String nextShape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +53,19 @@ public abstract class BaseActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        network = new Network(this);
-        SwipeGestureListener swipeGestureListener = new SwipeGestureListener(network, this);
-        rotationSensor = new RotationMonitor(network, this);
-        acceloremeterSensor = new AccelerometerMonitor(network, rotationSensor, this);
+
+        initNetwork();
+        SwipeGestureListener swipeGestureListener = new SwipeGestureListener(Network.getInstance());
+        rotationSensor = new RotationMonitor(Network.getInstance(), this);
+        acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), rotationSensor, this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
-        pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(network, swipeGestureListener, this));
-        touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(network, this));
+        pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(Network.getInstance(), swipeGestureListener));
+        touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(Network.getInstance()));
+    }
+
+    protected void initNetwork()
+    {
+        Network.initInstance(this);
     }
 
     public void StartPullTest(){
@@ -75,15 +80,15 @@ public abstract class BaseActivity extends Activity {
 
     public String NextShape(){
         Log.d("BASE", "Next shape: " + nextShape);
-        return Shape.Circle;
+        return nextShape;
     }
 
     public boolean ReadyToStart(){
         return true;
     }
 
-    public String GetSelectedShape(){
-        return this.shape;
+    public static String GetSelectedShape(){
+        return shape;
     }
 
     public void CloseApp(){
@@ -107,7 +112,7 @@ public abstract class BaseActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.reconnect_action:
-                network.Reconnect();
+                Network.getInstance().Reconnect();
                 return true;
             case R.id.close_app_action:
                 CloseApp();
@@ -120,13 +125,13 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onPause(){
         acceloremeterSensor.Pause();
-        network.Pause();
+        Network.getInstance().Pause();
         super.onPause();
     }
 
     @Override
     protected void onResume(){
-        network.Resume();
+        Network.getInstance().Resume();
         acceloremeterSensor.Resume();
         super.onResume();
     }
