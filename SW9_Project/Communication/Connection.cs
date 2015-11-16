@@ -75,12 +75,14 @@ namespace SW9_Project {
         private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
+                CanvasWindow.SetConnection(this);
 
                 using (NetworkStream stream = new NetworkStream(socket))
                 using (StreamReader sr = new StreamReader(stream))
                 using (sw = new StreamWriter(stream)) {
                     sw.AutoFlush = true;
-                    sw.WriteLine("Received your connection!");
+                    sw.WriteLine("startpush");
+                    sw.WriteLine("startpull");
                     while (true) {
                         String line = sr.ReadLine();
                         if (line.Contains("nextshape:")) {
@@ -105,12 +107,18 @@ namespace SW9_Project {
 
         public void StartTest(GestureDirection direction) {
             String test = direction == GestureDirection.Pull ? "startpull" : "startpush";
-            sw.WriteLine("direction"); 
+            sw.WriteLine(test);
             sw.Flush();
         }
+
+        public void SwitchShapes() {
+            sw.WriteLine("switch");
+            Thread.Sleep(50);
+        }
+
         String nextShape = "";
         public string GetNextShape() {
-            sw.Write("nextshape");
+            sw.WriteLine("nextshape");
             String response = "";
             while(nextShape == "") {
                 Thread.Sleep(50);
