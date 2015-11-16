@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.nui.android.Network;
 import com.nui.android.R;
 import com.nui.android.Shape;
 
@@ -35,6 +36,7 @@ public class PushTestActivity extends BaseActivity {
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
         count = 0;
+        Network.SetActivity(this);
 
         circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -44,15 +46,6 @@ public class PushTestActivity extends BaseActivity {
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
-
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(count > MAX_COUNT || random.nextBoolean()) {
-                        count = 0;
-                        SwitchPosition(circleView, squareView);
-                    } else {
-                        count++;
-                    }
-                }
 
                 return true;
             }
@@ -68,14 +61,6 @@ public class PushTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if(count > MAX_COUNT || random.nextBoolean()) {
-                        count = 0;
-                        SwitchPosition(circleView, squareView);
-                    } else {
-                        count++;
-                    }
-                }
                 return true;
             }
 
@@ -83,16 +68,21 @@ public class PushTestActivity extends BaseActivity {
 
     }
 
-    public void SwitchPosition(ImageView imgView1, ImageView imgView2) {
-        int TopShapeTop = imgView1.getTop();
-        int TopShapeBottom = imgView1.getBottom();
-        int BottomShapeTop = imgView2.getTop();
-        int BottomShapeBottom = imgView2.getBottom();
+    public void SwitchPosition() {
+        if(count > MAX_COUNT || random.nextBoolean()) {
+            count = 0;
+            int TopShapeTop = circleView.getTop();
+            int TopShapeBottom = circleView.getBottom();
+            int BottomShapeTop = squareView.getTop();
+            int BottomShapeBottom = squareView.getBottom();
 
-        imgView1.setTop(BottomShapeTop);
-        imgView1.setBottom(BottomShapeBottom);
-        imgView2.setTop(TopShapeTop);
-        imgView2.setBottom(TopShapeBottom);
+            circleView.setTop(BottomShapeTop);
+            circleView.setBottom(BottomShapeBottom);
+            squareView.setTop(TopShapeTop);
+            squareView.setBottom(TopShapeBottom);
+        } else {
+            count++;
+        }
     }
 
 }
