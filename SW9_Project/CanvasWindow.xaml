@@ -16,5 +16,6 @@
     <Grid>
         <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
+        <Label x:Name="testIDLabel" Content="User ID: Not Started" HorizontalAlignment="Left" Margin="40,10,0,0" VerticalAlignment="Top" Width="494" Height="45" Foreground="White" FontSize="26.667"/>
     </Grid>
 </Window>

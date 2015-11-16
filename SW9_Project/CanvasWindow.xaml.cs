@@ -303,17 +303,17 @@ namespace SW9_Project {
         }
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
-            if(e.Key == System.Windows.Input.Key.Up) {
-                if(currentTest == null) {
-                    currentTest = new TestSuite(this);
-                }
+
+            if(e.Key == System.Windows.Input.Key.Space) {
+                currentTest = new TestSuite(this);
+                testIDLabel.Content = "User ID: " + currentTest.UserID;
+            }
+
+            else if(e.Key == System.Windows.Input.Key.Up) {
                 currentTest.StartTest(GestureDirection.Push);
                 connection?.StartTest(GestureDirection.Push);
                 runningTest = true;
             } else if (e.Key == System.Windows.Input.Key.Down) {
-                if (currentTest == null) {
-                    currentTest = new TestSuite(this);
-                }
                 currentTest.StartTest(GestureDirection.Pull);
                 connection?.StartTest(GestureDirection.Pull);
                 nextShape = connection?.GetNextShape();
