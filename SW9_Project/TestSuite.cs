@@ -38,10 +38,9 @@ namespace SW9_Project {
 
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);
-            targetSequence = GetNextSequence();
             gestureTypeList = GetRandomGestureList();
-            board.CreateTarget(targetSequence.Dequeue());
             ChangeGesture();
+            board.CreateTarget(targetSequence.Dequeue());
 
         }
 
@@ -49,12 +48,12 @@ namespace SW9_Project {
 
         public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer) {
             Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, correctShape);
+            board.SetProgress(totalTargets - targetSequence.Count + 1, totalTargets);
             if(targetSequence.Count != 0) {
                 board.CreateTarget(targetSequence.Dequeue());
             }
             else if(gestureTypeList.Count != 0) {
                 ChangeGesture();
-                targetSequence = GetNextSequence();
             }
             else {
                 ThankYou ty = new ThankYou();
@@ -67,8 +66,11 @@ namespace SW9_Project {
             sequences.RemoveAt(x);
             return targets;
         }
-
+        int totalTargets = 0;
         private void ChangeGesture() {
+            targetSequence = GetNextSequence();
+            totalTargets = targetSequence.Count;
+            board.SetProgress(0, totalTargets);
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
             VideoWindow window = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
@@ -78,9 +80,9 @@ namespace SW9_Project {
 
         private Queue<GestureType> GetRandomGestureList() {
 
+            Queue<GestureType> list = new Queue<GestureType>();
             Array values = Enum.GetValues(typeof(GestureType));
             Random random = new Random();
-            Queue<GestureType> list = new Queue<GestureType>();
             while (true) {
                 GestureType randomType = (GestureType)values.GetValue(random.Next(values.Length));
                 if(!list.Contains(randomType)) {

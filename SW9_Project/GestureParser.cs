@@ -45,6 +45,7 @@ namespace SW9_Project {
 
         public static void SetTypeContext(GestureType type) {
             typeContext = type;
+            board.SetGesture(type);
         }
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
@@ -118,8 +119,9 @@ namespace SW9_Project {
                                         AwaitingGesture = new KinectGesture(shape);
                                     } else if (waitingMobileGesture?.Type == GestureType.Pinch) {
                                         if (receivedGesture.Direction != directionContext) { break; }
+                                        MobileGesture t = waitingMobileGesture;
                                         ClearGestures();
-                                        AwaitingGesture = new KinectGesture(waitingMobileGesture?.Shape);
+                                        AwaitingGesture = new KinectGesture(t.Shape);
                                     } else {
                                         ClearGestures();
                                     }
@@ -129,12 +131,13 @@ namespace SW9_Project {
                                 {
                                     if (directionContext != receivedGesture.Direction) {
                                         ClearGestures();
-                                    } else if (waitingMobileGesture?.Type == GestureType.Throw) {
-                                        ClearGestures();
-                                        AwaitingGesture = new KinectGesture(waitingMobileGesture?.Shape);
                                     } else if (waitingMobileGesture == null) {
                                         ClearGestures();
                                         waitingKinectGesture = receivedGesture;
+                                    } else if (waitingMobileGesture?.Type == GestureType.Throw) {
+                                        ClearGestures();
+                                        MobileGesture t = waitingMobileGesture;
+                                        AwaitingGesture = new KinectGesture(t.Shape);
                                     } else {
                                         ClearGestures();
 

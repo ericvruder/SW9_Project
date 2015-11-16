@@ -26,8 +26,12 @@ namespace SW9_Project {
                 TargetSequences.Add(LoadSequence(1));
                 TargetSequences.Add(LoadSequence(2));
                 TargetSequences.Add(LoadSequence(3));
+                TargetSequences.Add(LoadSequence(4));
+                TargetSequences.Add(LoadSequence(5));
+                TargetSequences.Add(LoadSequence(6));
+                TargetSequences.Add(LoadSequence(7));
             }
-            return TargetSequences.ElementAt(0);
+            return TargetSequences.ElementAt(sequenceNumber);
         }
 
         static Queue<Target> LoadSequence(int sequenceNumber) {
