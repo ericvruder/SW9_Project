@@ -64,6 +64,14 @@ namespace SW9_Project {
             currentSize = size;
         }
 
+        public void SetGesture(GestureType type) {
+            gestureLabel.Content = "Gesture: " + type;
+        }
+
+        public void SetProgress(int current, int total) {
+            progressLabel.Content = "Progress: " + current + "/" + total;
+        }
+
         private void CreateGrid(int width, int height) {
             if(grid != null) {
                 canvas.Children.Clear();
