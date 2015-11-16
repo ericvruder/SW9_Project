@@ -14,21 +14,12 @@ namespace SW9_Project.Logging
     class Logger
     {
         private static string directory = "log/";
-        private static string testLogFilePath = directory + "-test.txt";
-        private static string commentLogFilePath = directory + "-comment.txt";
-        StreamWriter sw; //FIX
+        StreamWriter testStreamWriter; //FIX
 
-        int userID;
+        int userID = 0;
 
         public static Logger CurrentLogger;
 
-        public Logger()
-        {
-            if (!Directory.Exists(directory)) {
-                Directory.CreateDirectory(directory);
-            }
-            sw = File.AppendText(Logger.testFilePath);
-        }
         private static int sgHeight, sgWidth, lgHeight, lgWidth;
         private static double canvasHeight, canvasWidth;
 
@@ -36,25 +27,15 @@ namespace SW9_Project.Logging
             if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
             }
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
             sgHeight = sHeight;
             sgWidth = sWidth;
             lgHeight = lHeight;
             lgWidth = lWidth;
             canvasHeight = cnvasHeight;
             canvasWidth = cnvasWidth;
-        }
-        
-
-        public static string testFilePath
-        {
-            get { return Logger.testLogFilePath; }
-            set { if (value.Length > 0) Logger.testLogFilePath = value; }
-        }
-
-        public static string commentFilePath
-        {
-            get { return Logger.commentLogFilePath; }
-            set { if (value.Length > 0) Logger.commentLogFilePath = value; }
         }
 
         private bool IsDirectoryEmpty(string path)
@@ -68,6 +49,7 @@ namespace SW9_Project.Logging
         /// <returns>userId</returns>
         public int NewUser()
         {
+            /*
             string pattern = @"^\d+";
             List<int> ids = new List<int>();
             Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
@@ -93,7 +75,12 @@ namespace SW9_Project.Logging
             commentFilePath = directory + userID + "-comment.txt";
 
             Log("New user registered: " + userID);
+            */
 
+
+            var tests = Directory.GetFiles(directory, "*.test");
+            userID = tests.Count() + 1;
+            testStreamWriter = new StreamWriter(directory + userID + ".test", true);
             return userID;
         }
 
@@ -219,8 +206,8 @@ namespace SW9_Project.Logging
                 {
                     if (msg.Length > 0)
                     {
-                        sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
-                        sw.Flush();
+                        testStreamWriter.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
+                        testStreamWriter.Flush();
                         result = true;
                     }
                 }
@@ -241,11 +228,12 @@ namespace SW9_Project.Logging
         /// Write comment to log file
         /// </summary>
         /// <param name="comment"></param>
-        public static void LogComment(string comment)
+        public void LogComment(string comment)
         {
             if (comment.Length > 0)
             {
-                using (StreamWriter sw = File.AppendText(Logger.commentFilePath))
+                string path = userID == 0 ? directory + "general.comment" : directory + userID + ".comment";
+                using (StreamWriter sw = new StreamWriter(path, true))
                 {
                     sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), comment);
                     sw.Flush();
