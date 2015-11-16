@@ -7,10 +7,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center">
                 <ImageView
                     android:layout_weight="0.5"
-                    android:layout_height="230dp"
+                    android:layout_height="250dp"
                     android:layout_width="wrap_content"
                     android:id="@+id/circle"
                     android:src="@drawable/circle"
@@ -18,7 +19,7 @@
                     android:visibility="invisible" />
                 <ImageView
                     android:layout_weight="0.5"
-                    android:layout_height="230dp"
+                    android:layout_height="250dp"
                     android:layout_width="wrap_content"
                     android:id="@+id/square"
                     android:src="@drawable/square"

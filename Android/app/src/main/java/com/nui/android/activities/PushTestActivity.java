@@ -1,6 +1,8 @@
 package com.nui.android.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ public class PushTestActivity extends BaseActivity {
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
+    private boolean stroke = false;
 
     @Override
     protected int getLayoutResourceId() {
@@ -47,6 +50,11 @@ public class PushTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
+                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+                }
+
                 return true;
             }
 
@@ -61,6 +69,11 @@ public class PushTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
+                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+                }
+
                 return true;
             }
 
@@ -69,6 +82,8 @@ public class PushTestActivity extends BaseActivity {
     }
 
     public void SwitchPosition() {
+        squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+        circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
         if(count > MAX_COUNT || random.nextBoolean()) {
             count = 0;
             int TopShapeTop = circleView.getTop();

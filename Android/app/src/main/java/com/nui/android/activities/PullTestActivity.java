@@ -1,6 +1,7 @@
 package com.nui.android.activities;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -58,6 +59,8 @@ public class PullTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
+                circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
+
                 return true;
             }
 
@@ -72,6 +75,8 @@ public class PullTestActivity extends BaseActivity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
+                squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
+
                 return true;
             }
 
@@ -80,6 +85,8 @@ public class PullTestActivity extends BaseActivity {
     }
 
     public void SwitchShape() {
+        squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+        circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
         if(count > MAX_COUNT || random.nextBoolean()) {
             count = 0;
             if(squareView.getVisibility() == View.INVISIBLE) {
