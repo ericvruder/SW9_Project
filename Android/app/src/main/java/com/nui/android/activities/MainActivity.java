@@ -23,6 +23,8 @@ public class MainActivity extends BaseActivity {
         /**
          * Dummy/simulation/test buttons
          */
+
+        /*
         findViewById(R.id.start_pull_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +38,7 @@ public class MainActivity extends BaseActivity {
                 StartPushTest();
             }
         });
+        */
 
     }
 
