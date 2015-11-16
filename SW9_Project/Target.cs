@@ -21,8 +21,11 @@ namespace SW9_Project {
         public static Queue<Target> GetTargetSequence(int sequenceNumber) {
             if(TargetSequences == null) {
                 TargetSequences = new List<Queue<Target>>();
+
+                TargetSequences.Add(LoadSequence(0));
                 TargetSequences.Add(LoadSequence(1));
-                
+                TargetSequences.Add(LoadSequence(2));
+                TargetSequences.Add(LoadSequence(3));
             }
             return TargetSequences.ElementAt(0);
         }
