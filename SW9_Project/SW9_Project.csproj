@@ -176,10 +176,18 @@
     <Content Include="KinectInteraction180_32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="sequences\5_sequence.txt" />
-    <Resource Include="sequences\6_sequence.txt" />
-    <Resource Include="sequences\7_sequence.txt" />
-    <Resource Include="sequences\4_sequence.txt" />
+    <Content Include="sequences\5_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sequences\6_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sequences\7_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sequences\4_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sequences\3_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
