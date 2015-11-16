@@ -15,6 +15,8 @@ import java.util.Enumeration;
 
 //JSON
 import com.google.gson.Gson;
+import com.nui.android.activities.BaseActivity;
+
 /**
  * Created by Elias on 08-10-2015.
  */
@@ -29,15 +31,15 @@ public class Network implements IServer {
     int port;
 
     Gson gsonConverter;
-    MainActivity activity;
+    BaseActivity activity;
 
     PrintWriter out;
 
-    public Network(MainActivity activity){
+    public Network(BaseActivity activity){
         this(SERVER_IP, 8000, activity);
     }
 
-    public Network(String host, int port, MainActivity activity){
+    public Network(String host, int port, BaseActivity activity){
         gsonConverter = new Gson();
 
         this.activity = activity;
@@ -64,6 +66,7 @@ public class Network implements IServer {
     }
 
     public void Reconnect() {
+        Log.d("NETWORK", "Reconnecting");
         Thread connectionThread = new Thread(){
             public void run(){
                 SetupConnection();
