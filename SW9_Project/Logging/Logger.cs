@@ -143,16 +143,13 @@ namespace SW9_Project.Logging
         /// <summary>
         /// Log that target has been hit
         /// </summary>
-        public void CurrentTargetHit(bool hit, Cell target, Point p, bool correctShape)
+        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape)
         {
-            string result = "";
-            if(hit) {
-                result = "Target hit!";
-            }
-            if (!hit) {
-                result = correctShape ? "Target missed!" : "Incorrect shape chosen!";
-            }
-            string message = result + " Target postion: (" + target.X + "," + target.Y + "). Pointer position: (" + p.ToString() + ").";
+            string result = hit ? "Target: Hit  " : "Target: Miss ";
+            string shape = correctShape ? "Shape: Correct " : "Shape: Wrong   ";
+            string cells = "TC: (" + target.X.ToString("D2") + "," + target.Y.ToString("D2") + ")" + " CC: (" + pointer.X.ToString("D2") + ", " + pointer.Y.ToString("D2") + ") ";
+            string pString = "Pointer position: (" + p.X.ToString("F1") +"," + p.Y.ToString("F1") + ").";
+            string message = result + shape + cells + pString;
             Log(message);
         }
 
@@ -206,7 +203,7 @@ namespace SW9_Project.Logging
                 {
                     if (msg.Length > 0)
                     {
-                        testStreamWriter.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), msg);
+                        testStreamWriter.WriteLine("[{1}]: {2}", DateTime.Now.ToLongTimeString(), msg);
                         testStreamWriter.Flush();
                         result = true;
                     }
