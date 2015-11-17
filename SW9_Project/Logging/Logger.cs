@@ -214,7 +214,7 @@ namespace SW9_Project.Logging
                     Thread.Sleep(DELAY_MS);
                     retry++;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     keepRetry = false;
                 }
@@ -235,7 +235,7 @@ namespace SW9_Project.Logging
                         sw.Flush();
                     }
                 }
-            } catch (Exception e) { } //TODO: FIX
+            } catch (Exception) { } //TODO: FIX
         }
 
         //private static void flush()

@@ -117,10 +117,8 @@ namespace SW9_Project {
                     }
                     CreateGrid(nextTarget.Size);
 
-                    if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {/*
-                        if (nextShape == "") { nextShape = connection.GetNextShape(); }
-                        shape = nextShape;
-                        nextShape = "";*/
+                    if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                        connection?.SetNextShape(shape);
                         string extraShape = shape == "circle" ? "square" : "circle";
                         int t = nextTarget.Size == GridSize.Large ? 1 : 2;
                         List<int> xPossibilities = new List<int>();
@@ -191,6 +189,12 @@ namespace SW9_Project {
             if(extraTarget != null) {
                 extraTarget.GridCell.Fill = targetColor;
             }
+            if(connection != null) {
+                connectedLabel.Content = "Connected!";
+            }
+            else {
+                connectedLabel.Content = "Not connected!";
+            }
 
             DrawNextTargets();
 
@@ -198,22 +202,20 @@ namespace SW9_Project {
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
-
-            if(gesture != null) {
-                Cell currCell = GetCell(pointer);
-                bool hit = currCell == target;
-                bool correctShape = true;
-                string shape = target.Shape is Ellipse ? "circle" : "square";
-                if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
-                    correctShape = shape == gesture.Shape;
+            if (runningTest) {
+                if (gesture != null) {
+                    Cell currCell = GetCell(pointer);
+                    bool hit = currCell == target;
+                    bool correctShape = true;
+                    string shape = target.Shape is Ellipse ? "circle" : "square";
+                    if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
+                        correctShape = shape == gesture.Shape;
+                    }
+                    currentTest.TargetHit(hit, correctShape, target, pointer, currCell);
+                    if (hit && !correctShape) { hit = false; }
+                    TargetHit(target, hit);
                 }
-                else if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
-                    correctShape = shape == nextShape;
-                }
-                currentTest.TargetHit(hit, correctShape, target, pointer, currCell);
-                if (hit && !correctShape) { hit = false; }
-                TargetHit(target, hit);
-            } 
+            }
         }
 
         public static Point GetCurrentPoint() {
@@ -254,11 +256,6 @@ namespace SW9_Project {
             }
             else {
                 cell.Shape.Fill = Brushes.Red;
-            }
-
-            if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
-                connection?.SwitchShapes();
-                nextShape = connection?.GetNextShape();
             }
             DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             da.Completed += (sender, e) => Da_Completed(sender, e, target);
@@ -306,6 +303,7 @@ namespace SW9_Project {
             TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
             Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
         }
+        
 
         public Point GetPoint(double xFromMid, double yFromMid)
         {
@@ -314,6 +312,10 @@ namespace SW9_Project {
             Point p = new Point(x, y);
 
             return p;
+        }
+
+        public void EndTest() {
+            runningTest = false;
         }
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -330,11 +332,10 @@ namespace SW9_Project {
             } else if (e.Key == System.Windows.Input.Key.Down) {
                 currentTest.StartTest(GestureDirection.Pull);
                 connection?.StartTest(GestureDirection.Pull);
-                nextShape = connection?.GetNextShape();
                 runningTest = true;
             } 
             
-            else if(e.Key == System.Windows.Input.Key.Left) {
+            else if( e.Key == System.Windows.Input.Key.Left) {
                 kinectManager.SetPointerHand(true);
             }
             else if(e.Key == System.Windows.Input.Key.Right) {
