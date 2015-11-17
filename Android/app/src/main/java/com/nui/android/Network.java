@@ -116,13 +116,24 @@ public class Network implements IServer {
                 else if(line.equals("startpush")){
                     activity.StartPushTest();
                 }
-                else if(line.equals("nextshape")){
+                else if(line.equals("nextshape:circle")){
                     pullTestActivity.runOnUiThread(
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    pullTestActivity.SwitchShape();
-                                    SendMessage("nextshape:" + activity.NextShape());
+                                    pullTestActivity.SetCircleShape();
+                                    //SendMessage("nextshape:" + activity.NextShape());
+                                }
+                            }
+                    );
+                }
+                else if(line.equals("nextshape:square")){
+                    pullTestActivity.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    pullTestActivity.SetSquareShape();
+                                    //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
                     );
@@ -143,11 +154,7 @@ public class Network implements IServer {
                 }
             }
         } catch(Exception e) {
-            if(e instanceof IOException || e instanceof EOFException) {
-                Reconnect();
-            } else {
-                Log.e(TAG, e.getMessage());
-            }
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -174,11 +181,7 @@ public class Network implements IServer {
             SendMessage(t);
         }
         catch (Exception e){
-            if(e instanceof IOException || e instanceof EOFException) {
-                Reconnect();
-            } else {
-                Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
-            }
+            Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
         }
     }
 
