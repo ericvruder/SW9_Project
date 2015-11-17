@@ -334,7 +334,7 @@ namespace SW9_Project {
                 runningTest = true;
             } 
             
-            else if( e.Key == System.Windows.Input.Key.Left) {
+            else if(e.Key == System.Windows.Input.Key.Left) {
                 kinectManager.SetPointerHand(true);
             }
             else if(e.Key == System.Windows.Input.Key.Right) {
