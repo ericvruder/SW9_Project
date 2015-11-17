@@ -71,13 +71,14 @@ namespace SW9_Project {
             });
         }
         StreamWriter sw;
+        StreamReader sr;
         private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
                 CanvasWindow.SetConnection(this);
 
                 using (NetworkStream stream = new NetworkStream(socket))
-                using (StreamReader sr = new StreamReader(stream))
+                using (sr = new StreamReader(stream))
                 using (sw = new StreamWriter(stream)) {
                     sw.AutoFlush = true;
                     sw.WriteLine("startpush");
@@ -88,8 +89,6 @@ namespace SW9_Project {
                         String line = sr.ReadLine();
                         if (line.Contains("nextshape:")) {
                             nextShape = line.Split(':')[1];
-                        } else if (line.Contains("ready:")) {
-
                         } else {
                             dynamic jO = JsonConvert.DeserializeObject(line);
                             if (jO.GetType().GetProperty("Type") != null) {
@@ -118,15 +117,8 @@ namespace SW9_Project {
         }
 
         String nextShape = "";
-        public string GetNextShape() {
-            sw.WriteLine("nextshape");
-            String response = "";
-            while(nextShape == "") {
-                Thread.Sleep(50);
-            }
-            response = nextShape;
-            nextShape = "";
-            return response;
+        public void SetNextShape(string shape) {
+            sw.WriteLine("nextshape:" + shape);
         }
     }
 }
