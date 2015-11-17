@@ -35,6 +35,7 @@ namespace SW9_Project {
                 canvas.Show();
                 canvas.WindowStyle = WindowStyle.None;
                 canvas.WindowState = WindowState.Maximized;
+                canvas.Topmost = true;
             } else {
                 Screen s1 = Screen.AllScreens[0];
                 System.Drawing.Rectangle r1 = s1.WorkingArea;
