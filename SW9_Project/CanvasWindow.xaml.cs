@@ -210,7 +210,7 @@ namespace SW9_Project {
                 else if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                     correctShape = shape == nextShape;
                 }
-                currentTest.TargetHit(hit, correctShape, target, pointer);
+                currentTest.TargetHit(hit, correctShape, target, pointer, currCell);
                 if (hit && !correctShape) { hit = false; }
                 TargetHit(target, hit);
             } 
@@ -333,6 +333,13 @@ namespace SW9_Project {
                 nextShape = connection?.GetNextShape();
                 runningTest = true;
             } 
+            
+            else if(e.Key == System.Windows.Input.Key.Left) {
+                kinectManager.SetPointerHand(true);
+            }
+            else if(e.Key == System.Windows.Input.Key.Right) {
+                kinectManager.SetPointerHand(false);
+            }
             
             else if (e.Key == System.Windows.Input.Key.Q) {
                 GestureParser.SetTypeContext(GestureType.Swipe);
