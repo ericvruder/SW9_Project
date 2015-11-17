@@ -93,6 +93,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
+    <Compile Include="Gestures\Techniques\SwingLeftSegments.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="KinectGesture.cs" />
     <Compile Include="MobileGesture.cs" />
