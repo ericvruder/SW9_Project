@@ -11,6 +11,8 @@ import com.nui.android.R;
  */
 public class MainActivity extends BaseActivity {
 
+    static boolean active = false;
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_main;
@@ -40,6 +42,18 @@ public class MainActivity extends BaseActivity {
         });
         */
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
     }
 
 }
