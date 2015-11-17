@@ -69,13 +69,17 @@ public abstract class BaseActivity extends Activity {
     }
 
     public void StartPullTest(){
-        Intent intent = new Intent(this, PullTestActivity.class);
-        startActivity(intent);
+        if(!PullTestActivity.active) {
+            Intent intent = new Intent(this, PullTestActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void StartPushTest(){
-        Intent intent = new Intent(this, PushTestActivity.class);
-        startActivity(intent);
+        if(!PushTestActivity.active) {
+            Intent intent = new Intent(this, PushTestActivity.class);
+            startActivity(intent);
+        }
     }
 
     public String NextShape(){
@@ -115,7 +119,8 @@ public abstract class BaseActivity extends Activity {
                 Network.getInstance().Reconnect();
                 return true;
             case R.id.close_app_action:
-                CloseApp();
+                android.os.Process.killProcess(android.os.Process.myPid());
+                //CloseApp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -124,16 +129,16 @@ public abstract class BaseActivity extends Activity {
 
     @Override
     protected void onPause(){
+        super.onPause();
         acceloremeterSensor.Pause();
         Network.getInstance().Pause();
-        super.onPause();
     }
 
     @Override
     protected void onResume(){
+        super.onResume();
         Network.getInstance().Resume();
         acceloremeterSensor.Resume();
-        super.onResume();
     }
 
     @Override

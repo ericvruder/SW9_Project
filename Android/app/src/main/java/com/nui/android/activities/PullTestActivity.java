@@ -21,6 +21,8 @@ public class PullTestActivity extends BaseActivity {
     private ImageView circleView;
     private ImageView squareView;
 
+    static boolean active = false;
+
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
@@ -40,6 +42,7 @@ public class PullTestActivity extends BaseActivity {
         Network.SetActivity(this);
 
         // If the starting shape should NOT be randomized, remove following if-else
+        /*
         if(random.nextBoolean()) {
             circleView.setVisibility(View.INVISIBLE);
             squareView.setVisibility(View.VISIBLE);
@@ -49,6 +52,8 @@ public class PullTestActivity extends BaseActivity {
             squareView.setVisibility(View.INVISIBLE);
             nextShape = Shape.Circle;
         }
+        */
+
 
         circleView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -82,6 +87,17 @@ public class PullTestActivity extends BaseActivity {
 
         });
 
+
+    }
+
+    public void SetCircleShape() {
+        circleView.setVisibility(View.VISIBLE);
+        squareView.setVisibility(View.INVISIBLE);
+    }
+
+    public void SetSquareShape() {
+        circleView.setVisibility(View.INVISIBLE);
+        squareView.setVisibility(View.VISIBLE);
     }
 
     public void SwitchShape() {
@@ -103,6 +119,17 @@ public class PullTestActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
 }
 
 
