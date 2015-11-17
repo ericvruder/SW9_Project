@@ -116,13 +116,24 @@ public class Network implements IServer {
                 else if(line.equals("startpush")){
                     activity.StartPushTest();
                 }
-                else if(line.equals("nextshape")){
+                else if(line.equals("nextshape:circle")){
                     pullTestActivity.runOnUiThread(
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    pullTestActivity.SwitchShape();
-                                    SendMessage("nextshape:" + activity.NextShape());
+                                    pullTestActivity.SetCircleShape();
+                                    //SendMessage("nextshape:" + activity.NextShape());
+                                }
+                            }
+                    );
+                }
+                else if(line.equals("nextshape:square")){
+                    pullTestActivity.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    pullTestActivity.SetSquareShape();
+                                    //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
                     );
