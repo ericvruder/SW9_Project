@@ -90,6 +90,7 @@
     <Compile Include="CanvasWindow.xaml.cs">
       <DependentUpon>CanvasWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
     <Compile Include="GestureType.cs" />

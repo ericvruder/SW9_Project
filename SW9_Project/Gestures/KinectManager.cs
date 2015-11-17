@@ -29,6 +29,12 @@ namespace SW9_Project {
             
         }
 
+        private bool LeftHand = true;
+
+        public void SetPointerHand(bool leftHand) {
+            LeftHand = leftHand;
+        }
+
         private bool StartKinect() {
 
             //kinectSensor.ColorStream.Enable();
@@ -83,10 +89,12 @@ namespace SW9_Project {
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
                         Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
+
+                        Joint Pointer = LeftHand ? HandLeft : HandRight;
                         gestureController.UpdateAllGestures(playerSkeleton);
 
                         // Left handed
-                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y); // This is used for the throw technique
+                        board.PointAt(Pointer.Position.X, Pointer.Position.Y); // This is used for the throw technique
                         //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for all other techniques
 
                         // Right handed
@@ -205,7 +213,8 @@ namespace SW9_Project {
                                 break;
                         }
 
-                        if (handSide == "left")
+                        string correct = LeftHand ? "left" : "right";
+                        if (handSide == correct)
                         {
                             if (action == "released")
                             {
