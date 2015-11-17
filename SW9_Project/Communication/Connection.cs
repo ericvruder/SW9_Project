@@ -71,7 +71,6 @@ namespace SW9_Project {
             });
         }
         StreamWriter sw;
-        bool ready = false;
         private void ManageMobileConnection() {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);

@@ -16,25 +16,28 @@ namespace SW9_Project {
             Size = size;
         }
 
-        static List<Queue<Target>> TargetSequences;
+        public bool IsValid() {
+            int xBounds = Size == GridSize.Large ? 10 : 20;
+            int yBounds = Size == GridSize.Large ? 5 : 10;
+            return !(X >= xBounds || Y >= yBounds);
+        }
 
-        public static Queue<Target> GetTargetSequence(int sequenceNumber) {
+        static Queue<Queue<Target>> TargetSequences;
+
+        public static Queue<Target> GetNextSequence() {
+            List<Queue<Target>> list = new List<Queue<Target>>();
             if(TargetSequences == null) {
-                TargetSequences = new List<Queue<Target>>();
-
-                TargetSequences.Add(LoadSequence(0));
-                TargetSequences.Add(LoadSequence(1));
-                TargetSequences.Add(LoadSequence(2));
-                TargetSequences.Add(LoadSequence(3));
-                TargetSequences.Add(LoadSequence(4));
-                TargetSequences.Add(LoadSequence(5));
-                TargetSequences.Add(LoadSequence(6));
-                TargetSequences.Add(LoadSequence(7));
+                for(int i = 0; i < 8; i++) {
+                    list.Add(LoadSequence(i));
+                }
+                list.Shuffle();
+                TargetSequences = new Queue<Queue<Target>>(list);
             }
-            return TargetSequences.ElementAt(sequenceNumber);
+            return TargetSequences.Dequeue();
         }
 
         static Queue<Target> LoadSequence(int sequenceNumber) {
+            bool valid = true;
             Queue<Target> targets = new Queue<Target>();
             using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
                 string line = "";
@@ -44,8 +47,11 @@ namespace SW9_Project {
                     int x = Int32.Parse(targetInfo[0].Trim());
                     int y = Int32.Parse(targetInfo[1].Trim());
                     GridSize size = String.Compare(targetInfo[2].Trim(), "L", true) == 0 ? GridSize.Large : GridSize.Small;
-                    targets.Enqueue(new Target(x, y, size));
+                    Target t = new Target(x, y, size);
+                    if(!t.IsValid()) { valid = false; }
+                    targets.Enqueue(t);
                 }
+                if(targets.Count != 25 || !valid) { Console.WriteLine("Target Sequence number " + sequenceNumber + " is invalid"); }
             }
             return targets;
         }

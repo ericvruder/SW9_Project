@@ -28,10 +28,6 @@ namespace SW9_Project {
         public TestSuite(IDrawingBoard board) {
             this.board = board;
             UserID = Logger.CurrentLogger.NewUser();
-            sequences = new List<int>();
-            for(int i = 0; i < 8; i++) {
-                sequences.Add(i);
-            }
         }
 
         public int UserID { get; }
@@ -48,7 +44,7 @@ namespace SW9_Project {
 
         public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer) {
             Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, correctShape);
-            board.SetProgress(totalTargets - targetSequence.Count + 1, totalTargets);
+            board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             if(targetSequence.Count != 0) {
                 board.CreateTarget(targetSequence.Dequeue());
             }
@@ -60,15 +56,9 @@ namespace SW9_Project {
             }
         }
 
-        private Queue<Target> GetNextSequence() {
-            int x = new Random().Next(sequences.Count);
-            Queue<Target> targets = Target.GetTargetSequence(x);
-            sequences.RemoveAt(x);
-            return targets;
-        }
         int totalTargets = 0;
         private void ChangeGesture() {
-            targetSequence = GetNextSequence();
+            targetSequence = Target.GetNextSequence();
             totalTargets = targetSequence.Count;
             board.SetProgress(0, totalTargets);
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
