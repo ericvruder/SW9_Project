@@ -154,11 +154,7 @@ public class Network implements IServer {
                 }
             }
         } catch(Exception e) {
-            if(e instanceof IOException || e instanceof EOFException) {
-                Reconnect();
-            } else {
-                Log.e(TAG, e.getMessage());
-            }
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -185,11 +181,7 @@ public class Network implements IServer {
             SendMessage(t);
         }
         catch (Exception e){
-            if(e instanceof IOException || e instanceof EOFException) {
-                Reconnect();
-            } else {
-                Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
-            }
+            Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
         }
     }
 

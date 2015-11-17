@@ -22,6 +22,8 @@ public class PushTestActivity extends BaseActivity {
     private ImageView circleView;
     private ImageView squareView;
 
+    static boolean active = false;
+
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
@@ -100,6 +102,17 @@ public class PushTestActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
 }
 
 
