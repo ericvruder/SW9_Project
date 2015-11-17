@@ -42,8 +42,8 @@ namespace SW9_Project {
 
         Queue<Target> targetSequence = new Queue<Target>();
 
-        public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer) {
-            Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, correctShape);
+        public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell) {
+            Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape);
             board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             if(targetSequence.Count != 0) {
                 board.CreateTarget(targetSequence.Dequeue());

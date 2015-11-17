@@ -210,7 +210,7 @@ namespace SW9_Project {
                 else if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                     correctShape = shape == nextShape;
                 }
-                currentTest.TargetHit(hit, correctShape, target, pointer);
+                currentTest.TargetHit(hit, correctShape, target, pointer, currCell);
                 if (hit && !correctShape) { hit = false; }
                 TargetHit(target, hit);
             } 
