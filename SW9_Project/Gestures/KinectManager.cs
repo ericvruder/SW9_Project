@@ -29,6 +29,13 @@ namespace SW9_Project {
             
         }
 
+        private bool LeftHand = true;
+
+        public void SetPointerHand(bool leftHand) {
+            LeftHand = leftHand;
+            RegisterGestures(LeftHand);
+        }
+
         private bool StartKinect() {
 
             //kinectSensor.ColorStream.Enable();
@@ -47,7 +54,7 @@ namespace SW9_Project {
             gestureController.GestureRecognized += OnGestureRecognized;
 
             // register the gestures for this demo
-            RegisterGestures();
+            RegisterGestures(LeftHand);
 
             userInfos = new UserInfo[InteractionFrame.UserInfoArrayLength];
             _interactionStream = new InteractionStream(kinectSensor, new InteractionClient());
@@ -83,10 +90,12 @@ namespace SW9_Project {
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
                         Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
+
+                        Joint Pointer = LeftHand ? HandLeft : HandRight;
                         gestureController.UpdateAllGestures(playerSkeleton);
 
                         // Left handed
-                        board.PointAt(HandLeft.Position.X, HandLeft.Position.Y); // This is used for the throw technique
+                        board.PointAt(Pointer.Position.X, Pointer.Position.Y); // This is used for the throw technique
                         //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for all other techniques
 
                         // Right handed
@@ -121,16 +130,25 @@ namespace SW9_Project {
             }
         }
 
-        private void RegisterGestures()
+        private void RegisterGestures(bool leftHand)
         {
+            gestureController.ClearAllGestures();
             IRelativeGestureSegment[] ThrowPush = new IRelativeGestureSegment[2];
-            ThrowPush[0] = new SwingRightSegment1();
-            ThrowPush[1] = new SwingRightSegment2();
-            gestureController.AddGesture("ThrowPush", ThrowPush);
-
             IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
-            ThrowPull[0] = new SwingRightSegment2();
-            ThrowPull[1] = new SwingRightSegment1();
+
+            if (leftHand) {
+                ThrowPush[0] = new SwingRightSegment1();
+                ThrowPush[1] = new SwingRightSegment2();
+                ThrowPull[0] = new SwingRightSegment2();
+                ThrowPull[1] = new SwingRightSegment1();
+            } else {
+                ThrowPush[0] = new SwingLeftSegment1();
+                ThrowPush[1] = new SwingLeftSegment2();
+                ThrowPull[0] = new SwingLeftSegment2();
+                ThrowPull[1] = new SwingLeftSegment1();
+            }
+
+            gestureController.AddGesture("ThrowPush", ThrowPush);
             gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
@@ -205,7 +223,8 @@ namespace SW9_Project {
                                 break;
                         }
 
-                        if (handSide == "left")
+                        string correct = LeftHand ? "left" : "right";
+                        if (handSide == correct)
                         {
                             if (action == "released")
                             {
