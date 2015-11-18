@@ -35,7 +35,7 @@ namespace SW9_Project {
         static Queue<Queue<Target>> TargetSequences;
 
         public static Queue<Target> GetNextSequence() {
-            if(TargetSequences == null) {
+            if(TargetSequences == null || TargetSequences.Count == 0) {
                 Initialize();
             }
             return TargetSequences.Dequeue();
