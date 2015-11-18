@@ -22,16 +22,21 @@ namespace SW9_Project {
             return !(X >= xBounds || Y >= yBounds);
         }
 
+        public static void Initialize() {
+            List<Queue<Target>> list = new List<Queue<Target>>();
+            for (int i = 0; i < 8; i++) {
+                list.Add(LoadSequence(i));
+            }
+            list.Shuffle();
+            TargetSequences = new Queue<Queue<Target>>(list);
+
+        }
+
         static Queue<Queue<Target>> TargetSequences;
 
         public static Queue<Target> GetNextSequence() {
-            List<Queue<Target>> list = new List<Queue<Target>>();
             if(TargetSequences == null) {
-                for(int i = 0; i < 8; i++) {
-                    list.Add(LoadSequence(i));
-                }
-                list.Shuffle();
-                TargetSequences = new Queue<Queue<Target>>(list);
+                Initialize();
             }
             return TargetSequences.Dequeue();
         }

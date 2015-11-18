@@ -55,6 +55,11 @@ namespace SW9_Project {
 
         }
 
+        public void Clear() {
+            this.Background = Brushes.Black;
+            CreateGrid(currentSize);
+        }
+
         public void CreateGrid(GridSize size) {
             if(size == GridSize.Large) {
                 CreateGrid(lgWidth,lgHeight);
@@ -66,6 +71,11 @@ namespace SW9_Project {
 
         public void SetGesture(GestureType type) {
             gestureLabel.Content = "Gesture: " + type;
+        }
+
+        public void CurrentGestureDone() {
+            this.Background = Brushes.Green;
+            gestureLabel.Content = "Current gesture done!";
         }
 
         public void SetProgress(int current, int total) {
@@ -106,7 +116,6 @@ namespace SW9_Project {
         }
 
         bool runningTest = false;
-        string nextShape = "";
         public void DrawNextTargets() {
             if (runningTest) {
                 if(target == null) {
@@ -315,14 +324,19 @@ namespace SW9_Project {
         }
 
         public void EndTest() {
+            progressLabel.Content = "Current direction ended!";
             runningTest = false;
         }
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if(e.Key == System.Windows.Input.Key.Space) {
-                currentTest = new TestSuite(this);
-                testIDLabel.Content = "User ID: " + currentTest.UserID;
+                if (currentTest == null) {
+                    currentTest = new TestSuite(this);
+                    testIDLabel.Content = "User ID: " + currentTest.UserID;
+                }else if (runningTest) {
+
+                }
             }
 
             else if(e.Key == System.Windows.Input.Key.Up) {

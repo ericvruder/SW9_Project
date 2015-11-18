@@ -1,5 +1,6 @@
 ﻿using SW9_Project.Logging;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -18,14 +19,18 @@ namespace SW9_Project {
 
 
         public MainWindow() {
-            
             InitializeComponent();
 
             Task.Factory.StartNew(() => {
                 AllocConsole();
                 Connection.StartService();
             });
-            
+
+            StartCanvasWindow();
+        }
+
+        private void StartCanvasWindow() {
+
             CanvasWindow canvas = new CanvasWindow();
             if (Screen.AllScreens.Length > 1) {
                 Screen s2 = Screen.AllScreens[1];
@@ -43,7 +48,6 @@ namespace SW9_Project {
                 canvas.Left = r1.Left;
                 canvas.Show();
             }
-
         }
     }
 }
