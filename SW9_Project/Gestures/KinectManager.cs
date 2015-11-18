@@ -44,7 +44,7 @@ namespace SW9_Project {
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.5f,
                 Correction = 0.5f,
-                Prediction = 0.5f,
+                Prediction = 0.1f,
                 JitterRadius = 0.05f,
                 MaxDeviationRadius = 0.04f
             });
