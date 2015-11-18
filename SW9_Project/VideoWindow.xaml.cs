@@ -47,10 +47,17 @@ namespace SW9_Project
                 videoMediaElement.Position = TimeSpan.Zero;
             };
         }
+        static Window canvasWindow;
+        public static void SetCanvasWindow(Window window) {
+            canvasWindow = window;
+        }
         
         private static string CreateAbsolutePathTo(string mediaFile) {
             return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
         }
 
+        private void Window_Activated(object sender, EventArgs e) {
+            canvasWindow.Activate();
+        }
     }
 }
