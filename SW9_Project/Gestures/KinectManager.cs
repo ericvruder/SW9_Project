@@ -44,7 +44,7 @@ namespace SW9_Project {
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.5f,
                 Correction = 0.5f,
-                Prediction = 0.1f,
+                Prediction = 0.5f,
                 JitterRadius = 0.05f,
                 MaxDeviationRadius = 0.04f
             });
@@ -62,6 +62,7 @@ namespace SW9_Project {
             kinectSensor.AllFramesReady += KinectSensor_AllFramesReady;
             try {
                 kinectSensor.Start();
+                kinectSensor.ElevationAngle = 10;
             }
             catch(Exception e) {
                 Console.WriteLine("Could not start kinect! E: " + e.Message);
