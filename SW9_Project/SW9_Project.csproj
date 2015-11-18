@@ -202,7 +202,7 @@
     <Content Include="sequences\0_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Pull_Grab.mp4">
+    <Content Include="techniques\Pull_Pinch.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="techniques\Pull_Swipe.mp4">
@@ -214,7 +214,7 @@
     <Content Include="techniques\Pull_Tilt.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Grab.mp4">
+    <Content Include="techniques\Push_Pinch.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="techniques\Push_Swipe.mp4">
