@@ -60,7 +60,7 @@ namespace SW9_Project {
             targetSequence = Target.GetNextSequence();
             totalTargets = targetSequence.Count;
             board.CreateTarget(targetSequence.Dequeue());
-            board.SetProgress(targetSequence.Count, totalTargets);
+            board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
             if(techniquePlayer != null) {
                 techniquePlayer.Close();
@@ -72,7 +72,7 @@ namespace SW9_Project {
         Queue<GestureType> gestureTypeList;
 
         private Queue<GestureType> GetRandomGestureList() {
-
+            
             List<GestureType> types = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
             types.Shuffle();
             Queue<GestureType> list = new Queue<GestureType>(types);
