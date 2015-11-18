@@ -73,9 +73,16 @@ namespace SW9_Project {
             gestureLabel.Content = "Gesture: " + type;
         }
 
+        bool runningGesture = false;
         public void CurrentGestureDone() {
+            runningGesture = false;
             this.Background = Brushes.Green;
             gestureLabel.Content = "Current gesture done!";
+        }
+
+        public void StartNewGesture()
+        {
+            runningGesture = true;
         }
 
         public void SetProgress(int current, int total) {
@@ -117,7 +124,7 @@ namespace SW9_Project {
 
         bool runningTest = false;
         public void DrawNextTargets() {
-            if (runningTest) {
+            if (runningTest && runningGesture) {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
@@ -184,7 +191,7 @@ namespace SW9_Project {
         }
         
         protected Point pointer = new Point();
-
+        
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointingCircle == null) {
@@ -211,7 +218,7 @@ namespace SW9_Project {
             MoveShape(pointingCircle, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
-            if (runningTest) {
+            if (runningTest && runningGesture) {
                 if (gesture != null) {
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
@@ -335,7 +342,7 @@ namespace SW9_Project {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                 }else if (runningTest) {
-
+                    currentTest.NextGesture();
                 }
             }
 

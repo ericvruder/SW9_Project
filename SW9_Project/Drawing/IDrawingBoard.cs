@@ -18,6 +18,7 @@ namespace SW9_Project {
         void SetProgress(int current, int total);
         void Clear();
         void CurrentGestureDone();
+        void StartNewGesture();
         void EndTest();
     }
 }
