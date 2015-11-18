@@ -50,13 +50,11 @@ namespace SW9_Project {
                 board.CurrentGestureDone();
             }
         }
-        public void NextGesture() {
-            ChangeGesture();
-        }
 
         int totalTargets = 0;
         VideoWindow techniquePlayer;
-        private void ChangeGesture() {
+        public bool ChangeGesture() {
+            if (gestureTypeList.Count == 0) { return false; }
             targetSequence = Target.GetNextSequence();
             totalTargets = targetSequence.Count;
             board.Clear();
@@ -69,6 +67,7 @@ namespace SW9_Project {
             }
             techniquePlayer = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
+            return true;
         }
 
         Queue<GestureType> gestureTypeList;

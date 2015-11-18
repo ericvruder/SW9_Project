@@ -48,6 +48,7 @@ namespace SW9_Project {
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
+            VideoWindow.SetCanvasWindow(this);
         }
 
         public static void SetConnection(Connection _connection) {
@@ -342,7 +343,9 @@ namespace SW9_Project {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                 }else if (runningTest) {
-                    currentTest.NextGesture();
+                    if (currentTest.ChangeGesture()) {
+                        gestureLabel.Content = "All gestures in this direction have been completed!";
+                    }
                 }
             }
 
