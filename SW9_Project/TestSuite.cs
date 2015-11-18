@@ -45,13 +45,9 @@ namespace SW9_Project {
                 board.CreateTarget(targetSequence.Dequeue());
                 board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             }
-            else if(gestureTypeList.Count != 0) {
-                ChangeGesture();
-            }
-            else {
-                board.EndTest();
-                ThankYou ty = new ThankYou();
-            }
+        }
+        public void NextGesture() {
+            ChangeGesture();
         }
 
         int totalTargets = 0;
@@ -59,6 +55,7 @@ namespace SW9_Project {
         private void ChangeGesture() {
             targetSequence = Target.GetNextSequence();
             totalTargets = targetSequence.Count;
+            board.Clear();
             board.CreateTarget(targetSequence.Dequeue());
             board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());

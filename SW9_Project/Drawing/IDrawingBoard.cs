@@ -16,6 +16,8 @@ namespace SW9_Project {
         void CreateGrid(GridSize size);
         void SetGesture(GestureType type);
         void SetProgress(int current, int total);
+        void Clear();
+        void CurrentGestureDone();
         void EndTest();
     }
 }

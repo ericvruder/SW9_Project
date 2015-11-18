@@ -49,35 +49,6 @@ namespace SW9_Project.Logging
         /// <returns>userId</returns>
         public int NewUser()
         {
-            /*
-            string pattern = @"^\d+";
-            List<int> ids = new List<int>();
-            Regex r = new Regex(pattern, RegexOptions.IgnoreCase);
-            if(!IsDirectoryEmpty(directory))
-            {
-                foreach (string s in Directory.GetFiles(directory, "*.txt").Select(System.IO.Path.GetFileName))
-                {
-                    if (r.IsMatch(s))
-                    {
-                        Match m = r.Match(s);
-                        ids.Add(Int32.Parse(m.Value));
-                    }
-                }
-                int x = ids.Count() == 0 ? 0 : ids.Max();
-                userID = x + 1;
-            }
-            else
-            {
-                userID = 1;
-            }
-
-            testFilePath = directory + userID + "-test.txt";
-            commentFilePath = directory + userID + "-comment.txt";
-
-            Log("New user registered: " + userID);
-            */
-
-
             var tests = Directory.GetFiles(directory, "*.test");
             userID = tests.Count() + 1;
             testStreamWriter = new StreamWriter(directory + userID + ".test", true);
