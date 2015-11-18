@@ -76,6 +76,7 @@ namespace SW9_Project {
             try {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
                 CanvasWindow.SetConnection(this);
+                Connected = true;
 
                 using (NetworkStream stream = new NetworkStream(socket))
                 using (sr = new StreamReader(stream))
@@ -102,8 +103,11 @@ namespace SW9_Project {
                 Console.WriteLine(e.Message);
             } finally {
                 socket.Close();
+                Connected = false;
             }
         }
+
+        public bool Connected { get; set; }
 
         public void StartTest(GestureDirection direction) {
             String test = direction == GestureDirection.Pull ? "startpull" : "startpush";

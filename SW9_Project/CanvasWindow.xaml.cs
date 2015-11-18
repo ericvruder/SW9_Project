@@ -339,6 +339,7 @@ namespace SW9_Project {
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if(e.Key == System.Windows.Input.Key.Space) {
+                if(connection == null || !connection.Connected) { return; }
                 if (currentTest == null) {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
