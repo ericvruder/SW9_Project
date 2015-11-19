@@ -16,9 +16,23 @@
     <Grid>
         <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
-        <Label x:Name="testIDLabel" Content="User ID: Not Started" HorizontalAlignment="Left" Margin="40,14,0,0" VerticalAlignment="Top" Width="254" Height="45" Foreground="White" FontSize="26.667"/>
-        <Label x:Name="gestureLabel" Content="Gesture: Not Started" HorizontalAlignment="Left" Margin="433,14,0,0" VerticalAlignment="Top" Width="280" Height="46" Foreground ="White" FontSize="26.667" />
-        <Label x:Name="progressLabel" Content="Progress: Not Started" HorizontalAlignment="Left" Margin="865,14,0,0" VerticalAlignment="Top" Width="287" Height="46" Foreground ="White" FontSize="26.667" />
-        <Label x:Name="connectedLabel" Content="Not Connected" HorizontalAlignment="Left" Margin="40,659,0,-12" VerticalAlignment="Top" Width="287" Height="46" Foreground ="White" FontSize="26.667" />
+        <Label x:Name="testIDLabel" 
+               Content="User ID: Not Started" 
+               HorizontalAlignment="Left" 
+               Margin="40,14,0,0" 
+               VerticalAlignment="Top" 
+               Width="254" Height="45" 
+               Foreground="White" 
+               Opacity="0"
+               FontSize="26.667"/>
+        <Label x:Name="connectedLabel" 
+               Content="Not Connected!" 
+               HorizontalAlignment="Right" 
+               Margin="865,14,0,0" 
+               VerticalAlignment="Top" 
+               Width="287" Height="46" 
+               Foreground ="White" 
+               Opacity="0"
+               FontSize="26.667" />
     </Grid>
 </Window>

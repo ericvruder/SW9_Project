@@ -43,24 +43,20 @@ namespace SW9_Project {
             Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape);
             if(targetSequence.Count != 0) {
                 board.CreateTarget(targetSequence.Dequeue());
-                board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             }
             else
             {
                 board.CurrentGestureDone();
             }
         }
-
-        int totalTargets = 0;
+        
         VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if (gestureTypeList.Count == 0) { return false; }
             targetSequence = Target.GetNextSequence();
-            totalTargets = targetSequence.Count;
             board.Clear();
             board.StartNewGesture();
             board.CreateTarget(targetSequence.Dequeue());
-            board.SetProgress(totalTargets - targetSequence.Count, totalTargets);
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
             if(techniquePlayer != null) {
                 techniquePlayer.Close();
