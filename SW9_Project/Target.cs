@@ -47,12 +47,22 @@ namespace SW9_Project {
                 R = new Random();
             }
             Queue<Target> targets = new Queue<Target>();
-            targets.Enqueue(new Target(4, 3, GridSize.Large));
-            int x = 4, y = 3;
-            while(x != 4 || y != 3) {
-                x = R.Next(10);
-                y = R.Next(5);
+            targets.Enqueue(new Target(4, 2, GridSize.Large));
+
+            List<int> xPossibilities = new List<int>();
+            List<int> yPossibilities = new List<int>();
+
+            for (int i = 0; i < 10; i++) {
+                if (i < 4 - 1 || i > 4 + 1) {
+                    xPossibilities.Add(i);
+                }
             }
+            for (int i = 0; i < 5; i++) {
+                if (i < 2 - 1 || i > 2 + 1) {
+                    yPossibilities.Add(i);
+                }
+            }
+            int x = xPossibilities[R.Next(xPossibilities.Count)], y = yPossibilities[R.Next(yPossibilities.Count)];
             targets.Enqueue(new Target(x, y, GridSize.Large));
             targets.Enqueue(new Target(R.Next(20), R.Next(10), GridSize.Small));
             return targets;

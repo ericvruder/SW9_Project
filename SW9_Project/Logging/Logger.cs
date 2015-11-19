@@ -174,7 +174,7 @@ namespace SW9_Project.Logging
                 {
                     if (msg.Length > 0)
                     {
-                        testStreamWriter.WriteLine("[{1}]: {2}", DateTime.Now.ToLongTimeString(), msg);
+                        testStreamWriter.WriteLine("[{0}]: {1}", DateTime.Now.ToLongTimeString(), msg);
                         testStreamWriter.Flush();
                         result = true;
                     }
@@ -185,8 +185,9 @@ namespace SW9_Project.Logging
                     Thread.Sleep(DELAY_MS);
                     retry++;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                     keepRetry = false;
                 }
             }

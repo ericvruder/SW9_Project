@@ -77,7 +77,12 @@ namespace SW9_Project {
         }
 
         public void StartNewGesture() {
+            this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
+        }
+
+        public void PracticeDone() {
+            this.Background = Brushes.Black;
         }
         
 
