@@ -14,11 +14,10 @@ namespace SW9_Project {
         Cell GetCell(Point p);
         void CreateTarget(Target target);
         void CreateGrid(GridSize size);
-        void SetGesture(GestureType type);
-        void SetProgress(int current, int total);
         void Clear();
         void CurrentGestureDone();
         void StartNewGesture();
+        void PracticeDone();
         void EndTest();
     }
 }
