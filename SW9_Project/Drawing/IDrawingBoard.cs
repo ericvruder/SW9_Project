@@ -17,6 +17,7 @@ namespace SW9_Project {
         void Clear();
         void CurrentGestureDone();
         void StartNewGesture();
+        void PracticeDone();
         void EndTest();
     }
 }

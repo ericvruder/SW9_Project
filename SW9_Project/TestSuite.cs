@@ -38,14 +38,26 @@ namespace SW9_Project {
         }
 
         Queue<Target> targetSequence = new Queue<Target>();
+        Queue<Target> practiceSequence = new Queue<Target>();
+        bool practiceDone = false;
 
         public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell) {
-            Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape);
+            if(practiceDone) {
+                Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape);
+            }
+            if (practiceSequence.Count != 0) {
+                board.CreateTarget(practiceSequence.Dequeue());
+                return;
+            }
+            else if (!practiceDone){
+                practiceDone = true;
+                board.PracticeDone();
+            }
+
             if(targetSequence.Count != 0) {
                 board.CreateTarget(targetSequence.Dequeue());
             }
-            else
-            {
+            else {
                 board.CurrentGestureDone();
             }
         }
@@ -53,10 +65,13 @@ namespace SW9_Project {
         VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if (gestureTypeList.Count == 0) { return false; }
+            practiceDone = false;
             targetSequence = Target.GetNextSequence();
+            practiceSequence = Target.GetPracticeTargets();
+
             board.Clear();
             board.StartNewGesture();
-            board.CreateTarget(targetSequence.Dequeue());
+            board.CreateTarget(practiceSequence.Dequeue());
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
             if(techniquePlayer != null) {
                 techniquePlayer.Close();
