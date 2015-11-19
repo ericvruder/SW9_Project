@@ -31,11 +31,6 @@ namespace SW9_Project {
 
         private bool LeftHand = true;
 
-        public void SetPointerHand(bool leftHand) {
-            LeftHand = leftHand;
-            RegisterGestures(LeftHand);
-        }
-
         private bool StartKinect() {
 
             //kinectSensor.ColorStream.Enable();
@@ -91,6 +86,13 @@ namespace SW9_Project {
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
                         Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
+
+                        bool t = HandLeft.Position.Z < HandRight.Position.Z;
+                        if (LeftHand != t) {
+                            LeftHand = t;
+                            RegisterGestures(LeftHand);
+                        }
+
 
                         Joint Pointer = LeftHand ? HandLeft : HandRight;
                         gestureController.UpdateAllGestures(playerSkeleton);

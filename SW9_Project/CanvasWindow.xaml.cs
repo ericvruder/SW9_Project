@@ -69,26 +69,17 @@ namespace SW9_Project {
             }
             currentSize = size;
         }
-
-        public void SetGesture(GestureType type) {
-            gestureLabel.Content = "Gesture: " + type;
-        }
-
+        
         bool runningGesture = false;
         public void CurrentGestureDone() {
             runningGesture = false;
             this.Background = Brushes.Green;
-            gestureLabel.Content = "Current gesture done!";
         }
 
-        public void StartNewGesture()
-        {
+        public void StartNewGesture() {
             runningGesture = true;
         }
-
-        public void SetProgress(int current, int total) {
-            progressLabel.Content = "Progress: " + current + "/" + total;
-        }
+        
 
         private void CreateGrid(int width, int height) {
             if(grid != null) {
@@ -205,12 +196,6 @@ namespace SW9_Project {
             }
             if(extraTarget != null) {
                 extraTarget.GridCell.Fill = targetColor;
-            }
-            if(connection != null) {
-                connectedLabel.Content = "Connected!";
-            }
-            else {
-                connectedLabel.Content = "Not connected!";
             }
 
             DrawNextTargets();
@@ -332,21 +317,30 @@ namespace SW9_Project {
         }
 
         public void EndTest() {
-            progressLabel.Content = "Current direction ended!";
             runningTest = false;
+        }
+
+        private DoubleAnimation CreateFadeAnimation(int seconds) {
+            DoubleAnimation da = new DoubleAnimation();
+            da.From = 1;
+            da.To = 0;
+            da.Duration = TimeSpan.FromSeconds(seconds);
+            return da;
         }
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if(e.Key == System.Windows.Input.Key.Space) {
-                if(connection == null || !connection.Connected) { return; }
+                if(connection == null || !connection.Connected) {
+                    connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(5));
+                    return;
+                }
                 if (currentTest == null) {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
+                    testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(10));
                 }else if (runningTest) {
-                    if (currentTest.ChangeGesture()) {
-                        gestureLabel.Content = "All gestures in this direction have been completed!";
-                    }
+                    currentTest.ChangeGesture();
                 }
             }
 
