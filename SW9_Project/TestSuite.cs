@@ -30,6 +30,9 @@ namespace SW9_Project {
         }
 
         public int UserID { get; }
+        public bool Done { get { return done; } }
+
+        bool firstDirectionRun = false, done = false;
 
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);
@@ -58,6 +61,10 @@ namespace SW9_Project {
                 board.CreateTarget(targetSequence.Dequeue());
             }
             else {
+                if(gestureTypeList.Count == 0) {
+                    if(!firstDirectionRun) { firstDirectionRun = true; }
+                    else { done = true; }
+                }
                 board.CurrentGestureDone();
             }
         }
@@ -87,8 +94,7 @@ namespace SW9_Project {
             
             List<GestureType> types = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
             types.Shuffle();
-            Queue<GestureType> list = new Queue<GestureType>(types);
-            return list;
+            return new Queue<GestureType>(types);
         }
     }
 }

@@ -85,9 +85,6 @@ namespace SW9_Project {
                 }
                 if(targets.Count != 25 || !valid) { Console.WriteLine("Target Sequence number " + sequenceNumber + " is invalid"); }
             }
-            for(int i = 0; i < 20; i++) {
-                targets.Dequeue();
-            }
             return targets;
         }
     }

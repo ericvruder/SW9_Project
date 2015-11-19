@@ -335,28 +335,30 @@ namespace SW9_Project {
         
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
-            if(e.Key == System.Windows.Input.Key.Space) {
-                if(connection == null || !connection.Connected) {
+            if (e.Key == System.Windows.Input.Key.Space) {
+                if (connection == null || !connection.Connected) {
                     connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(5));
                     return;
                 }
-                if (currentTest == null) {
+                if (currentTest == null || currentTest.Done) {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(10));
-                }else if (runningTest) {
+                } else if (runningTest) {
                     currentTest.ChangeGesture();
+                } 
+            } else if (e.Key == System.Windows.Input.Key.Up) {
+                if (currentTest != null) { 
+                    currentTest.StartTest(GestureDirection.Push);
+                    connection?.StartTest(GestureDirection.Push);
+                    runningTest = true;
                 }
-            }
-
-            else if(e.Key == System.Windows.Input.Key.Up) {
-                currentTest.StartTest(GestureDirection.Push);
-                connection?.StartTest(GestureDirection.Push);
-                runningTest = true;
             } else if (e.Key == System.Windows.Input.Key.Down) {
-                currentTest.StartTest(GestureDirection.Pull);
-                connection?.StartTest(GestureDirection.Pull);
-                runningTest = true;
+                if (currentTest != null) {
+                    currentTest.StartTest(GestureDirection.Pull);
+                    connection?.StartTest(GestureDirection.Pull);
+                    runningTest = true;
+                }
             } 
             
             else if (e.Key == System.Windows.Input.Key.Q) {

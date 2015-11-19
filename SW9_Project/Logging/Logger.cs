@@ -51,6 +51,10 @@ namespace SW9_Project.Logging
         {
             var tests = Directory.GetFiles(directory, "*.test");
             userID = tests.Count() + 1;
+            if(testStreamWriter != null) {
+                testStreamWriter.Close();
+                testStreamWriter.Dispose();
+            }
             testStreamWriter = new StreamWriter(directory + userID + ".test", true);
             return userID;
         }
