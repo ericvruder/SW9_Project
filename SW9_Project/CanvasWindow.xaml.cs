@@ -354,13 +354,6 @@ namespace SW9_Project {
                 runningTest = true;
             } 
             
-            else if( e.Key == System.Windows.Input.Key.Left) {
-                kinectManager.SetPointerHand(true);
-            }
-            else if(e.Key == System.Windows.Input.Key.Right) {
-                kinectManager.SetPointerHand(false);
-            }
-            
             else if (e.Key == System.Windows.Input.Key.Q) {
                 GestureParser.SetTypeContext(GestureType.Swipe);
             } else if (e.Key == System.Windows.Input.Key.W) {

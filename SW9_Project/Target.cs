@@ -41,6 +41,23 @@ namespace SW9_Project {
             return TargetSequences.Dequeue();
         }
 
+        private static Random R;
+        public static Queue<Target> GetPracticeTargets() {
+            if(R == null) {
+                R = new Random();
+            }
+            Queue<Target> targets = new Queue<Target>();
+            targets.Enqueue(new Target(4, 3, GridSize.Large));
+            int x = 4, y = 3;
+            while(x != 4 || y != 3) {
+                x = R.Next(10);
+                y = R.Next(5);
+            }
+            targets.Enqueue(new Target(x, y, GridSize.Large));
+            targets.Enqueue(new Target(R.Next(20), R.Next(10), GridSize.Small));
+            return targets;
+        }
+
         static Queue<Target> LoadSequence(int sequenceNumber) {
             bool valid = true;
             Queue<Target> targets = new Queue<Target>();
