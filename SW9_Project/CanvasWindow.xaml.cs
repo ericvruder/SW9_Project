@@ -277,6 +277,8 @@ namespace SW9_Project {
             
         }
         private void Da_Completed(object sender, EventArgs e, Cell cell) {
+            if (target == null)
+                return;
             Cell t = target;
             if(nextTarget == null) {
                 runningTest = false;
