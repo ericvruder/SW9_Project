@@ -1,6 +1,8 @@
 package com.nui.android.activities;
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.view.GestureDetectorCompat;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
@@ -106,6 +109,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        menu.add(Menu.NONE, R.id.network_discovery, Menu.NONE, R.string.network_discovery);
         menu.add(Menu.NONE, R.id.reconnect_action, Menu.NONE, R.string.reconnect_action);
         menu.add(Menu.NONE, R.id.close_app_action, Menu.NONE, R.string.close_app_action);
 
@@ -115,6 +119,9 @@ public abstract class BaseActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.network_discovery:
+                Network.getInstance().FindServer(true);
+                return true;
             case R.id.reconnect_action:
                 Network.getInstance().Reconnect();
                 return true;
@@ -150,4 +157,5 @@ public abstract class BaseActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }
