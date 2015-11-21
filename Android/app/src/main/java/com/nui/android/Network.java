@@ -202,6 +202,7 @@ public class Network implements IServer {
 
     public void SetHost(String host){
         this.host = host;
+
     }
 
 }
