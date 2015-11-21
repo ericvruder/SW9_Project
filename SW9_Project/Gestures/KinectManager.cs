@@ -35,6 +35,8 @@ namespace SW9_Project {
 
             //kinectSensor.ColorStream.Enable();
             //kinectSensor.DepthStream.Range = DepthRange.Near;
+            if (kinectSensor == null)
+                return false;
             kinectSensor.DepthStream.Enable();
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.5f,

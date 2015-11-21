@@ -59,6 +59,21 @@ namespace SW9_Project {
 
         public static void StartService(int port = 8000) {
 
+            UdpClient dispatcher = new UdpClient(49255);
+            Task.Factory.StartNew(() =>
+            {
+                byte[] response;
+                //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
+                response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
+                while (alive)
+                {
+                    var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
+                    var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
+                    Console.Write("receive data from " + remoteEP.ToString());
+                    dispatcher.Send(response, response.Length, remoteEP); //reply back
+                }
+            });
+
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
             Console.WriteLine("Now listening on port " + port);
