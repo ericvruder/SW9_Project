@@ -11,6 +11,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.SocketTimeoutException;
 import java.util.Enumeration;
 
 /**
@@ -125,14 +126,36 @@ public class UDPDiscover implements Runnable {
             Log.w(TAG,">>> Time elapsed: " + (estimatedTime/1000000000.0) + "seconds");
             //Wait for a response
             byte[] recvBuf = new byte[15000];
-            DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+            c.setSoTimeout(5000);
+            //DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
 
             boolean cLoop = true;
             long loopStart = System.nanoTime();
             while(cLoop) {
+                DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
                 //TODO BLocking code, work around!
-                c.receive(receivePacket);
-
+                try {
+                    c.receive(receivePacket);
+                }
+                catch (SocketTimeoutException e) {
+                    if ( ((System.nanoTime() - loopStart)/1000000000.0 ) > 5) {
+                        cLoop = false;
+                        System.out.println(getClass().getName() + ">>> SocketTimeOut");
+                        Log.i(TAG, ">>> SocketTimeOut");
+                        pBase.runOnUiThread(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(pBase, "Search timeout", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
+                        continue;
+                    }
+                    else{
+                        continue;
+                    }
+                }
                 //We have a response
                 System.out.println(getClass().getName() + ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
                 Log.i(TAG, ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
@@ -142,7 +165,16 @@ public class UDPDiscover implements Runnable {
                 if (message.equals("DISCOVER_IS903SERVER_RESPONSE")) {
                     //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
                     //Controller_Base.setServerIp(receivePacket.getAddress());
-                    Network.getInstance().SetHost( receivePacket.getAddress().getHostAddress() );
+                    final String newIP = receivePacket.getAddress().getHostAddress();
+                    pBase.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(pBase, "connecting: " + newIP, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
+                    Network.getInstance().SetHost( newIP );
                     //this.port = 8000; // can be implemented better.
                     cLoop = false;
                     bfound = true;
@@ -169,7 +201,7 @@ public class UDPDiscover implements Runnable {
             Log.e(TAG, "UDP socket failed: " + e.toString());
 
         }
-        Log.w(TAG,"Done broadcasting");
+        Log.w(TAG, "Done broadcasting");
         if (bfound) {
             //BaseActivity.PopText(pBase,"Connecting...");
             //Network.getInstance().Reconnect();
