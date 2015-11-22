@@ -63,13 +63,12 @@ namespace SW9_Project {
             Task.Factory.StartNew(() =>
             {
                 byte[] response;
-                //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
                 response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
                 while (alive)
                 {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
-                    Console.Write("receive data from " + remoteEP.ToString());
+                    Console.WriteLine("UDP from " + remoteEP.ToString());
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
             });
