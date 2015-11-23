@@ -59,7 +59,7 @@ namespace SW9_Project {
             kinectSensor.AllFramesReady += KinectSensor_AllFramesReady;
             try {
                 kinectSensor.Start();
-                kinectSensor.ElevationAngle = 10;
+                kinectSensor.ElevationAngle = 18;
             }
             catch(Exception e) {
                 Console.WriteLine("Could not start kinect! E: " + e.Message);
