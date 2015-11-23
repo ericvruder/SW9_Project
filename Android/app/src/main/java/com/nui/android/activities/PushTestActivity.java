@@ -27,7 +27,6 @@ public class PushTestActivity extends BaseActivity {
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
-    private boolean stroke = false;
 
     @Override
     protected int getLayoutResourceId() {
