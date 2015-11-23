@@ -5,14 +5,17 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.nui.android.AccelerometerMonitor;
@@ -25,12 +28,12 @@ import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
+import java.util.Random;
+
 /**
  * Base activity
  */
-public abstract class BaseActivity extends Activity {
-
-    protected abstract int getLayoutResourceId();
+public class BaseActivity extends Activity {
 
     //private Network network;
     GestureDetectorCompat swipeDetector;
@@ -42,10 +45,20 @@ public abstract class BaseActivity extends Activity {
     public static String shape;
     public static String nextShape;
 
+    private ImageView circleView;
+    private ImageView squareView;
+
+    private ImageView circleViewPull;
+    private ImageView squareViewPull;
+
+    private final Random random = new Random();
+    private int count;
+    private static int MAX_COUNT = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutResourceId());
+        setContentView(R.layout.activity_base);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -64,6 +77,17 @@ public abstract class BaseActivity extends Activity {
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(Network.getInstance(), swipeGestureListener));
         touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(Network.getInstance()));
+
+        circleView = (ImageView) findViewById(R.id.circle);
+        squareView = (ImageView) findViewById(R.id.square);
+        circleViewPull = (ImageView) findViewById(R.id.circle_pull);
+        squareViewPull = (ImageView) findViewById(R.id.square_pull);
+        circleViewPull.setVisibility(View.INVISIBLE);
+        squareViewPull.setVisibility(View.INVISIBLE);
+        circleView.setVisibility(View.INVISIBLE);
+        squareView.setVisibility(View.INVISIBLE);
+        count = 0;
+
     }
 
     protected void initNetwork()
@@ -72,22 +96,116 @@ public abstract class BaseActivity extends Activity {
     }
 
     public void StartPullTest(){
-        if(!PullTestActivity.active) {
-            Intent intent = new Intent(this, PullTestActivity.class);
-            startActivity(intent);
-        }
+
+        circleView.setVisibility(View.INVISIBLE);
+        squareView.setVisibility(View.INVISIBLE);
+
+        circleViewPull.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                shape = Shape.Circle;
+
+                touchDetector.onTouchEvent(event);
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+
+                circleViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
+
+                return true;
+            }
+
+        });
+
+        squareViewPull.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                shape = Shape.Square;
+
+                touchDetector.onTouchEvent(event);
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+
+                squareViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
+
+                return true;
+            }
+
+        });
     }
 
     public void StartPushTest(){
-        if(!PushTestActivity.active) {
-            Intent intent = new Intent(this, PushTestActivity.class);
-            startActivity(intent);
+
+        circleViewPull.setVisibility(View.INVISIBLE);
+        squareViewPull.setVisibility(View.INVISIBLE);
+        circleView.setVisibility(View.VISIBLE);
+        squareView.setVisibility(View.VISIBLE);
+
+        circleView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                shape = Shape.Circle;
+
+                touchDetector.onTouchEvent(event);
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
+                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+                }
+
+                return true;
+            }
+
+        });
+
+        squareView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                shape = Shape.Square;
+
+                touchDetector.onTouchEvent(event);
+                swipeDetector.onTouchEvent(event);
+                pinchDetector.onTouchEvent(event);
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
+                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+                }
+
+                return true;
+            }
+
+        });
+    }
+
+    public void SwitchPosition() {
+        squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+        circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+        if(count > MAX_COUNT || random.nextBoolean()) {
+            count = 0;
+            int TopShapeTop = circleView.getTop();
+            int TopShapeBottom = circleView.getBottom();
+            int BottomShapeTop = squareView.getTop();
+            int BottomShapeBottom = squareView.getBottom();
+
+            circleView.setTop(BottomShapeTop);
+            circleView.setBottom(BottomShapeBottom);
+            squareView.setTop(TopShapeTop);
+            squareView.setBottom(TopShapeBottom);
+        } else {
+            count++;
         }
     }
 
-    public String NextShape(){
-        Log.d("BASE", "Next shape: " + nextShape);
-        return nextShape;
+    public void SetCircleShape() {
+        circleViewPull.setVisibility(View.VISIBLE);
+        squareViewPull.setVisibility(View.INVISIBLE);
+    }
+
+    public void SetSquareShape() {
+        circleViewPull.setVisibility(View.INVISIBLE);
+        squareViewPull.setVisibility(View.VISIBLE);
     }
 
     public boolean ReadyToStart(){

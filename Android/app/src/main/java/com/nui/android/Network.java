@@ -20,8 +20,6 @@ import java.util.Enumeration;
 //JSON
 import com.google.gson.Gson;
 import com.nui.android.activities.BaseActivity;
-import com.nui.android.activities.PullTestActivity;
-import com.nui.android.activities.PushTestActivity;
 
 /**
  * Created by Elias on 08-10-2015.
@@ -30,7 +28,7 @@ import com.nui.android.activities.PushTestActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.9";
+    private static final String SERVER_IP = "192.168.1.10";
 
     Socket clientSocket;
     String host;
@@ -40,8 +38,6 @@ public class Network implements IServer {
     BaseActivity activity;
 
     PrintWriter out;
-    PushTestActivity pushTestActivity;
-    PullTestActivity pullTestActivity;
 
     private static Network instance;
 
@@ -53,14 +49,6 @@ public class Network implements IServer {
 
     public static Network getInstance() {
         return instance;
-    }
-
-    public static void SetActivity(PushTestActivity pushTestActivity) {
-        instance.pushTestActivity = pushTestActivity;
-    }
-
-    public static void SetActivity(PullTestActivity pullTestActivity) {
-        instance.pullTestActivity = pullTestActivity;
     }
 
     public Network(BaseActivity activity){
@@ -113,28 +101,38 @@ public class Network implements IServer {
         try {
             while ((line = r.readLine()) != null) {
                 if(line.equals("startpull")) {
-                    activity.StartPullTest();
-                }
-                else if(line.equals("startpush")){
-                    activity.StartPushTest();
-                }
-                else if(line.equals("nextshape:circle")){
-                    pullTestActivity.runOnUiThread(
+                    activity.runOnUiThread(
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    pullTestActivity.SetCircleShape();
+                                    activity.StartPullTest();
+                                }});
+                }
+                else if(line.equals("startpush")){
+                    activity.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.StartPushTest();
+                                }});
+                }
+                else if(line.equals("nextshape:circle")){
+                    activity.runOnUiThread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.SetCircleShape();
                                     //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
                     );
                 }
                 else if(line.equals("nextshape:square")){
-                    pullTestActivity.runOnUiThread(
+                    activity.runOnUiThread(
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    pullTestActivity.SetSquareShape();
+                                    activity.SetSquareShape();
                                     //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
@@ -145,11 +143,11 @@ public class Network implements IServer {
                 }
                 else if(line.equals("switch")) {
                     // randomly switch the position of the figures
-                    pushTestActivity.runOnUiThread(
+                    activity.runOnUiThread(
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    pushTestActivity.SwitchPosition();
+                                    activity.SwitchPosition();
                                 }
                             }
                     );
