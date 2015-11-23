@@ -13,7 +13,7 @@ namespace SW9_Project.Logging
 {
     class Logger
     {
-        private static string directory = "log/";
+        private static string directory = "..\\..\\Testlog/";
         StreamWriter testStreamWriter; //FIX
 
         int userID = 0;
