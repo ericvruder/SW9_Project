@@ -10,6 +10,8 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.io.PrintWriter;
+
+import android.content.Context;
 import android.util.Log;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
@@ -28,7 +30,7 @@ import com.nui.android.activities.PushTestActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.10";
+    private static final String SERVER_IP = "192.168.1.9";
 
     Socket clientSocket;
     String host;
@@ -193,6 +195,15 @@ public class Network implements IServer {
         //TODO: IMPLEMENT
     }
 
+    public void FindServer(boolean unicast) {
+        Thread UDPThread = new Thread(new UDPDiscover(activity,unicast));
+        UDPThread.start();
+    }
+
+    public void SetHost(String host){
+        this.host = host;
+
+    }
 
 }
 
