@@ -244,8 +244,8 @@ public class BaseActivity extends Activity {
                 Network.getInstance().Reconnect();
                 return true;
             case R.id.close_app_action:
-                android.os.Process.killProcess(android.os.Process.myPid());
-                //CloseApp();
+                //android.os.Process.killProcess(android.os.Process.myPid());
+                CloseApp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
