@@ -343,6 +343,10 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null || currentTest.Done) {
+                    if (currentTest?.Done == true)
+                    {
+                        Application.Current.Shutdown(); // app close
+                    }
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(10));
