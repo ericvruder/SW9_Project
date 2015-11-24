@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Something</title>
+	<style>
+
+	h3 {
+		margin-top: 30px;
+		margin-bottom: 5px;
+	}
+
+	</style>
+	<script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+	<script type="text/javascript">
+	
+	$(document).ready(function(){
+	
+		var pullTiltData =
+		var pullPinchData =
+		var pullSwipeData = 
+		var pullThrowData =
+		
+		var pushTiltData = 
+		var pushPinchData = 
+		var pushSwipeData = 
+		var pushThrowData = 
+		
+		$.plot($("#Push-Tilt"), pushTiltData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Throw"), pushThrowData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Swipe"), pushSwipeData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Pinch"), pushPinchData, { yaxis: { max: 100 } });
+		
+		$.plot($("#Pull-Tilt"), pullTiltData, { yaxis: { max: 100 } });
+		$.plot($("#Pull-Throw"), pullThrowData, { yaxis: { max: 100 } });
+		$.plot($("#Pull-Swipe"), pullSwipeData, { yaxis: { max: 100 } });
+		$.plot($("#Pull-Pinch"), pullPinchData, { yaxis: { max: 100 } });
+	}); 
+	
+
+	</script>
+</head>
+<body>
+
+	<div style="width: 100%; display: table;">
+		<div style="display: table-row">
+			<div id="Push-Throw" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Push-Tilt" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Push-Swipe" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Push-Pinch" style="width:600px; height:300px; display: table-cell;"> </div>
+		</div>
+	</div>
+	
+		<div style="width: 100%; display: table;">
+		<div style="display: table-row">
+			<div id="Pull-Throw" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Pull-Tilt" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Pull-Swipe" style="width:600px; height:300px; display: table-cell;"> </div>
+			<div id="Pull-Pinch" style="width:600px; height:300px; display: table-cell;"> </div>
+		</div>
+	</div>
+
+</body>
+</html>
