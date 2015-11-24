@@ -10,6 +10,7 @@ namespace DataParser {
     //[15:59:47]: Target: Hit Shape: Correct TC: (07,02) CC: (07, 02) Pointer position: (1054,1,384,9).
     class Attempt {
 
+        public TimeSpan Time { get; }
         public bool Hit { get; }
         public bool Shape { get; }
         public Point TargetCell { get; }
@@ -17,6 +18,9 @@ namespace DataParser {
         public Point Pointer { get; }
 
         public Attempt(string attemptLine) {
+
+            string[] para = attemptLine.Trim().Split('[', ']')[1].Split(':');
+            Time = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
             string[] info = attemptLine.Split(':');
             string[] temp = info[4].Split(' ');
             Hit = info[4].Split(' ')[1] == "Hit";
