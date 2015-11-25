@@ -11,4 +11,7 @@ namespace SW9_Project {
     public enum GestureDirection {
         Pull, Push
     }
+    public enum JumpLength {
+        Short, Medium, Long, NA
+    }
 }

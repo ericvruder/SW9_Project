@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace SW9_Project {
     public class Target {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public GridSize Size { get; set; }
-        public Target(int x, int y, GridSize size) {
+        public int X { get; }
+        public int Y { get; }
+        public GridSize Size { get;  }
+        public JumpLength Length { get; }
+        public Target(int x, int y, GridSize size, JumpLength length) {
             X = x;
             Y = y;
             Size = size;
+            Length = length;
         }
 
         public bool IsValid() {
@@ -47,7 +49,7 @@ namespace SW9_Project {
                 R = new Random();
             }
             Queue<Target> targets = new Queue<Target>();
-            targets.Enqueue(new Target(4, 2, GridSize.Large));
+            targets.Enqueue(new Target(4, 2, GridSize.Large, JumpLength.NA));
 
             List<int> xPossibilities = new List<int>();
             List<int> yPossibilities = new List<int>();
@@ -63,8 +65,8 @@ namespace SW9_Project {
                 }
             }
             int x = xPossibilities[R.Next(xPossibilities.Count)], y = yPossibilities[R.Next(yPossibilities.Count)];
-            targets.Enqueue(new Target(x, y, GridSize.Large));
-            targets.Enqueue(new Target(R.Next(20), R.Next(10), GridSize.Small));
+            targets.Enqueue(new Target(x, y, GridSize.Large, JumpLength.NA));
+            targets.Enqueue(new Target(R.Next(20), R.Next(10), GridSize.Small, JumpLength.NA));
             return targets;
         }
 
@@ -79,7 +81,15 @@ namespace SW9_Project {
                     int x = Int32.Parse(targetInfo[0].Trim());
                     int y = Int32.Parse(targetInfo[1].Trim());
                     GridSize size = String.Compare(targetInfo[2].Trim(), "L", true) == 0 ? GridSize.Large : GridSize.Small;
-                    Target t = new Target(x, y, size);
+                    string tLength = targetInfo[3];
+                    JumpLength length = JumpLength.Long;
+                    switch (tLength) {
+                        case "JL": length = JumpLength.Long; break;
+                        case "JM": length = JumpLength.Medium; break;
+                        case "JS": length = JumpLength.Short; break;
+                        default: length = JumpLength.NA; break;
+                    }
+                    Target t = new Target(x, y, size, length);
                     if(!t.IsValid()) { valid = false; }
                     targets.Enqueue(t);
                 }
