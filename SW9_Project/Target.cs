@@ -26,7 +26,7 @@ namespace SW9_Project {
 
         public static void Initialize() {
             List<Queue<Target>> list = new List<Queue<Target>>();
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 4; i++) {
                 list.Add(LoadSequence(i));
             }
             list.Shuffle();
