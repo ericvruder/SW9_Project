@@ -81,7 +81,7 @@ namespace SW9_Project {
                     int x = Int32.Parse(targetInfo[0].Trim());
                     int y = Int32.Parse(targetInfo[1].Trim());
                     GridSize size = String.Compare(targetInfo[2].Trim(), "L", true) == 0 ? GridSize.Large : GridSize.Small;
-                    string tLength = targetInfo[3];
+                    string tLength = targetInfo[3].Trim();
                     JumpLength length = JumpLength.Long;
                     switch (tLength) {
                         case "JL": length = JumpLength.Long; break;

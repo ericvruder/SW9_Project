@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using SW9_Project;
 
 namespace DataParser {
-
-    // 0   1  2     3        4          5           6            7                  8                 9
-    //[15:59:47]: Target: Hit Shape: Correct TC: (07,02) CC: (07, 02) JL: Short Pointer position: (1054,1,384,9).
     class Attempt {
 
         public TimeSpan Time { get; }
@@ -21,6 +18,9 @@ namespace DataParser {
         public GridSize Size { get; }
 
         public Attempt(string attemptLine) {
+
+            // 0   1  2     3        4          5           6            7                  8                 9
+            //[15:59:47]: Target: Hit Shape: Correct TC: (07,02) CC: (07, 02) JL: Short Pointer position: (1054,1,384,9).
 
             string[] para = attemptLine.Trim().Split('[', ']')[1].Split(':');
             Time = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));

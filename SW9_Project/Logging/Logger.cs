@@ -179,7 +179,7 @@ namespace SW9_Project.Logging
                 {
                     if (msg.Length > 0)
                     {
-                        testStreamWriter.WriteLine("[{0}]: {1}", DateTime.Now.ToLongTimeString(), msg);
+                        testStreamWriter.WriteLine("[{0}]: {1}", DateTime.Now.ToString("HH:mm:ss"), msg);
                         testStreamWriter.Flush();
                         result = true;
                     }
