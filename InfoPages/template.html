@@ -17,11 +17,6 @@
 	
 	$(document).ready(function(){
 	
-		var pullTiltData =
-		var pullPinchData =
-		var pullSwipeData = 
-		var pullThrowData =
-		
 		var pushTiltData = 
 		var pushPinchData = 
 		var pushSwipeData = 
@@ -31,11 +26,6 @@
 		$.plot($("#Push-Throw"), pushThrowData, { yaxis: { max: 100 } });
 		$.plot($("#Push-Swipe"), pushSwipeData, { yaxis: { max: 100 } });
 		$.plot($("#Push-Pinch"), pushPinchData, { yaxis: { max: 100 } });
-		
-		$.plot($("#Pull-Tilt"), pullTiltData, { yaxis: { max: 100 } });
-		$.plot($("#Pull-Throw"), pullThrowData, { yaxis: { max: 100 } });
-		$.plot($("#Pull-Swipe"), pullSwipeData, { yaxis: { max: 100 } });
-		$.plot($("#Pull-Pinch"), pullPinchData, { yaxis: { max: 100 } });
 	}); 
 	
 
@@ -49,15 +39,6 @@
 			<div id="Push-Tilt" style="width:600px; height:300px; display: table-cell;"> </div>
 			<div id="Push-Swipe" style="width:600px; height:300px; display: table-cell;"> </div>
 			<div id="Push-Pinch" style="width:600px; height:300px; display: table-cell;"> </div>
-		</div>
-	</div>
-	
-		<div style="width: 100%; display: table;">
-		<div style="display: table-row">
-			<div id="Pull-Throw" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Pull-Tilt" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Pull-Swipe" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Pull-Pinch" style="width:600px; height:300px; display: table-cell;"> </div>
 		</div>
 	</div>
 
