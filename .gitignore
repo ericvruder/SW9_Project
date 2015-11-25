@@ -112,7 +112,6 @@ _TeamCity*
 # NCrunch
 _NCrunch_*
 .*crunch*.local.xml
-
 # MightyMoose
 *.mm.*
 AutoTest.Net/
@@ -122,6 +121,10 @@ AutoTest.Net/
 
 # Installshield output folder
 [Ee]xpress/
+
+/InfoPages/*
+!/InfoPages/template.html
+!/InfoPages/flot/
 
 # DocProject is a documentation generator add-in
 DocProject/buildhelp/
