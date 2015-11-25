@@ -118,13 +118,14 @@ namespace SW9_Project.Logging
         /// <summary>
         /// Log that target has been hit
         /// </summary>
-        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape)
+        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape, JumpLength length)
         {
             string result = hit ? "Target: Hit  " : "Target: Miss ";
             string shape = correctShape ? "Shape: Correct " : "Shape: Wrong   ";
             string cells = "TC: (" + target.X.ToString("D2") + "," + target.Y.ToString("D2") + ")" + " CC: (" + pointer.X.ToString("D2") + ", " + pointer.Y.ToString("D2") + ") ";
+            string jLength = "JL: " + length + " ";
             string pString = "Pointer position: (" + p.X.ToString("F1") +"," + p.Y.ToString("F1") + ").";
-            string message = result + shape + cells + pString;
+            string message = result + shape + cells + jLength + pString;
             Log(message);
         }
 
