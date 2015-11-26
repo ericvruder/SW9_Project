@@ -94,8 +94,6 @@ namespace SW9_Project {
             
             List<GestureType> types = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
             types.Shuffle();
-            //types.Clear();
-            //types.Add(GestureType.Pinch);
             return new Queue<GestureType>(types);
         }
     }
