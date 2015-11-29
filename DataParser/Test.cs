@@ -13,17 +13,19 @@ namespace DataParser {
 
         public string ID { get; }
 
-        Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>> tests = new Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>>();
+        //Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>> tests = new Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>>();
+        Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> tests = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
+
         public Test(string path) {
 
             ID = path.Split('/').Last().Split('.').First();
-
-            List<Attempt> attempts = new List<Attempt>();
+            
             using (StreamReader sr = new StreamReader(path)) {
                 string line = "";
+                GridSize size = GridSize.Large;
+                GestureType type = GestureType.Pinch;
                 while ((line = sr.ReadLine()) != null) {
                     if (line.Contains("Started new gesture test.")) {
-                        GestureType type = GestureType.Pinch; GestureDirection direction = GestureDirection.Pull;
                         string tobesearched = "Type: ";
                         string toBefound = line.Substring(line.IndexOf(tobesearched) + tobesearched.Length).Split(' ')[0];
                         switch (toBefound) {
@@ -32,21 +34,31 @@ namespace DataParser {
                             case "Swipe": type = GestureType.Swipe; break;
                             case "Pinch": type = GestureType.Pinch; break;
                         }
-                        tobesearched = "Direction:";
-                        toBefound = line.Substring(line.IndexOf(tobesearched) + tobesearched.Length).Split(' ')[1];
-                        switch (toBefound) {
-                            case "Push": direction = GestureDirection.Push; break;
-                            case "Pull": direction = GestureDirection.Pull; break;
+                        if (!tests.ContainsKey(type)) {
+                            tests.Add(type, new Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>());
+
+                            tests[type].Add(GridSize.Large, new Dictionary<JumpLength, List<Attempt>>());
+                            tests[type][GridSize.Large].Add(JumpLength.Short, new List<Attempt>());
+                            tests[type][GridSize.Large].Add(JumpLength.Medium, new List<Attempt>());
+                            tests[type][GridSize.Large].Add(JumpLength.Long, new List<Attempt>());
+                            tests[type][GridSize.Large].Add(JumpLength.NA, new List<Attempt>());
+
+
+                            tests[type].Add(GridSize.Small, new Dictionary<JumpLength, List<Attempt>>());
+                            tests[type][GridSize.Small].Add(JumpLength.Short, new List<Attempt>());
+                            tests[type][GridSize.Small].Add(JumpLength.Medium, new List<Attempt>());
+                            tests[type][GridSize.Small].Add(JumpLength.Long, new List<Attempt>());
+                            tests[type][GridSize.Small].Add(JumpLength.NA, new List<Attempt>());
                         }
-                        if (!tests.ContainsKey(direction)) {
-                            tests.Add(direction, new Dictionary<GestureType, List<Attempt>>());
-                        }
-                        if (!tests[direction].ContainsKey(type)) {
-                            tests[direction].Add(type, new List<Attempt>());
-                        }
-                        attempts = tests[direction][type];
-                    } else if (line.Contains("Target")) {
-                        attempts.Add(new Attempt(line));
+                    } else if(line.Contains("Grid height: 10")) {
+                        size = GridSize.Small;
+                    }
+                    else if(line.Contains("Grid height: 5")) {
+                        size = GridSize.Large;
+                    }
+                    else if (line.Contains("Target")) {
+                        Attempt attempt = new Attempt(line, size);
+                        tests[type][attempt.Size][attempt.Length].Add(attempt);
                     }
                 }
             }
@@ -57,27 +69,31 @@ namespace DataParser {
             using(StreamWriter sw = new StreamWriter(directory + ID + ".html")) {
                 string line = "";
                 while((line = sr.ReadLine()) != null) {
-                    if(line.Contains("var pullTiltData =")) { line += GetHitsPerTry(GestureDirection.Pull, GestureType.Tilt); }
-                    else if(line.Contains("var pullPinchData =")) { line += GetHitsPerTry(GestureDirection.Pull, GestureType.Pinch); } 
-                    else if(line.Contains("var pullSwipeData =")) { line += GetHitsPerTry(GestureDirection.Pull, GestureType.Swipe); } 
-                    else if(line.Contains("var pullThrowData =")) { line += GetHitsPerTry(GestureDirection.Pull, GestureType.Throw); } 
 
-                    else if(line.Contains("var pushTiltData =")) { line += GetHitsPerTry(GestureDirection.Push, GestureType.Tilt); } 
-                    else if(line.Contains("var pushPinchData =")) { line += GetHitsPerTry(GestureDirection.Push, GestureType.Pinch); } 
-                    else if(line.Contains("var pushSwipeData =")) { line += GetHitsPerTry(GestureDirection.Push, GestureType.Swipe); } 
-                    else if(line.Contains("var pushThrowData =")) { line += GetHitsPerTry(GestureDirection.Push, GestureType.Throw); }
+                    if (line.Contains("%Tilt%")) { line = GetHitsPerTry(GestureType.Tilt); } 
+                    else if(line.Contains("%Swipe%")) { line = GetHitsPerTry(GestureType.Pinch); } 
+                    else if(line.Contains("%Throw%")) { line = GetHitsPerTry(GestureType.Swipe); } 
+                    else if(line.Contains("%Pinch%")) { line = GetHitsPerTry(GestureType.Throw); }
 
                     sw.WriteLine(line);
                 }
             }
         }
 
-        private string GetHitsPerTry(GestureDirection direction, GestureType type) {
+        private string GetHitsPerTry(GestureType type) {
 
-            List<Attempt> attempts = tests[direction][type];
+            List<Attempt> attempts = new List<Attempt>();
+
+            foreach(var size in tests[type]) {
+                foreach(var length in size.Value) {
+                    foreach(var attempt in length.Value) {
+                        attempts.Add(attempt);
+                    }
+                }
+            }
             //var data = [ [[0, 0], [1, 1], [1,0]] ];
             
-            int hits = 0; int[] hitsAtTries = new int[25]; int currentAttempt = 0;
+            int hits = 0; int[] hitsAtTries = new int[attempts.Count]; int currentAttempt = 0;
             foreach (var attempt in attempts) {
                 if (attempt.Hit) {
                     hits++;
@@ -86,7 +102,7 @@ namespace DataParser {
             }
 
             string array = " [ [";
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < attempts.Count; i++) {
                 double percentage = (double)hitsAtTries[i] / ((double)i + 1.0) * 100.0;
                 array += "[" + (i + 1) + ", " + percentage + "], ";
             }
@@ -94,27 +110,7 @@ namespace DataParser {
             array = array.Remove(array.Length - 2);
             array += "] ];";
 
-            return array;
-        }
-
-        public void HitsPerTry() {
-
-            foreach (var direction in tests) {
-                foreach (var type in direction.Value) {
-                    int hits = 0; int[] hitsAtTries = new int[25]; int currentAttempt = 0;
-                    foreach (var attempt in type.Value) {
-                        if (attempt.Hit) {
-                            hits++;
-                        }
-                        hitsAtTries[currentAttempt++] = hits;
-                    }
-                    Console.WriteLine(type.Key + " " + direction.Key);
-                    for (int i = 0; i < 25; i++) {
-                        double percentage = (double)hitsAtTries[i] / ((double)i + 1.0) * 100.0;
-                        Console.WriteLine("% on " + (i + 1).ToString("D2") + " try: " + percentage);
-                    }
-                }
-            }
+            return "var " + type + "Data = " + array;
         }
     }
 }

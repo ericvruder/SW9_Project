@@ -17,15 +17,15 @@
 	
 	$(document).ready(function(){
 	
-		var pushTiltData = 
-		var pushPinchData = 
-		var pushSwipeData = 
-		var pushThrowData = 
+		%Tilt%
+		%Throw%
+		%Swipe%
+		%Pinch%
 		
-		$.plot($("#Push-Tilt"), pushTiltData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Throw"), pushThrowData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Swipe"), pushSwipeData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Pinch"), pushPinchData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Tilt"), TiltData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Throw"), ThrowData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Swipe"), SwipeData, { yaxis: { max: 100 } });
+		$.plot($("#Push-Pinch"), PinchData, { yaxis: { max: 100 } });
 	}); 
 	
 
