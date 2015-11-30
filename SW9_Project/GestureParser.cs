@@ -21,6 +21,10 @@ namespace SW9_Project {
         static public void Initialize(IDrawingBoard _board) {
             board = _board;
         }
+        static bool paused = false;
+        static public void Pause(bool pause) {
+            paused = pause;
+        }
 
         static public KinectGesture AwaitingGesture {
             get {
@@ -48,6 +52,7 @@ namespace SW9_Project {
         }
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
+            if (paused) return;
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
             switch (receivedGesture.Type) {
                 case GestureType.Swipe:
@@ -104,6 +109,7 @@ namespace SW9_Project {
         }
 
         static public void AddKinectGesture(KinectGesture receivedGesture) {
+            if (paused) return;
             Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
             if (typeContext == receivedGesture.Type) {
                 switch (receivedGesture.Type) {

@@ -212,6 +212,7 @@ namespace SW9_Project {
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
+                    GestureParser.Pause(true);
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
                     bool correctShape = true;
@@ -278,6 +279,7 @@ namespace SW9_Project {
             
         }
         private void Da_Completed(object sender, EventArgs e, Cell cell) {
+            GestureParser.Pause(false);
             if (target == null)
                 return;
             Cell t = target;
