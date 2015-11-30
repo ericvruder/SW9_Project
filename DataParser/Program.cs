@@ -17,6 +17,8 @@ namespace DataParser {
                 tests.Add(new Test(s));
                 tests.Last().GenerateHTML();
             }
+
+            tests[0].DrawHitBoxs();
         }
     }
 }
