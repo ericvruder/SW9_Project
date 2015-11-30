@@ -15,11 +15,25 @@ namespace DataParser {
         public string ID { get; }
 
         public Test(List<Test> tests) {
-            
+            if(gestures.Count == 0) {
+                this.gestures = tests[0].gestures;
+                tests.RemoveAt(0);
+            }
+            foreach(var test in tests) {
+                foreach(var gesture in test.gestures) {
+                    foreach(var size in gestures.Values) {
+                        foreach(var length in size.Values) {
+                            foreach(var attempt in length.Values) {
+                                attempt
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         //Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>> tests = new Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>>();
-        public Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> gestures = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
+        protected Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> gestures = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
 
         public Test(string path) {
 
