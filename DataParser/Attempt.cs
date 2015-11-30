@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SW9_Project;
+using System.Globalization;
 
 namespace DataParser {
     class Attempt {
@@ -52,8 +53,8 @@ namespace DataParser {
                 y = Double.Parse(temp);
             }
             else {
-                x = Double.Parse(para.Split(',')[0].Replace(',', '.'));
-                y = Double.Parse(para.Split(',')[1].Replace(',', '.'));
+                x = Double.Parse(para.Split(',')[0].Replace(',', '.'), new CultureInfo("en-US"));
+                y = Double.Parse(para.Split(',')[1].Replace(',', '.'), new CultureInfo("en-US"));
 
             }
             return new Point(x, y);
