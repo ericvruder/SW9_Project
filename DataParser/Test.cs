@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using SW9_Project;
@@ -78,6 +79,45 @@ namespace DataParser {
                     sw.WriteLine(line);
                 }
             }
+        }
+
+        public void DrawHitBoxs() {
+
+            //List<Attempt> attempts = tests[GestureType.Swipe][GridSize.Large][JumpLength.Long];
+            List<Attempt> attempts = new List<Attempt>();
+            foreach(var gesture in tests) {
+                
+                foreach(var gridSize in gesture.Value) {
+                    foreach(var length in gridSize.Value) {
+                        foreach(var attempt in length.Value) {
+                            attempts.Add(attempt);
+                        }
+                    }
+                }
+            }
+
+        //Changed grid size.Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7
+        //Changed grid size.Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4
+
+            double scale = attempts[0].Size == GridSize.Large ? 122.0 : 61.0;
+            int bmsize = (int)scale * 3;
+            Bitmap hitbox = new Bitmap(bmsize, bmsize);
+            Graphics hBGraphic = Graphics.FromImage(hitbox);
+
+            hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
+
+            foreach (var attempt in attempts) {
+                Point p = new Point(attempt.TargetCell.X, attempt.TargetCell.Y);
+                p.X = p.X * scale; p.Y = p.Y * scale;
+                p.X = attempt.Pointer.X - p.X + scale;
+                p.Y = attempt.Pointer.Y - p.Y + scale;
+
+                if(!((p.X < 0) && (p.X >= bmsize)) || !((p.Y <0) && (p.X >= bmsize))) {
+                    hBGraphic.FillRectangle(Brushes.Red, (float)p.X, (float)p.Y, 2, 2);
+                }
+            }
+            hBGraphic.Save();
+            hitbox.Save(directory + "testing.bmp");
         }
 
         private string GetHitsPerTry(GestureType type) {
