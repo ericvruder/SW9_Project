@@ -29,6 +29,23 @@ namespace SW9_Project {
             
         }
 
+        public void RaiseAngle(int angleChange)
+        {
+            try
+            {
+                kinectSensor.ElevationAngle += angleChange;
+            }
+            catch { }
+        }
+
+        public void LowerAngle(int  angleChange)
+        {
+            try
+            { 
+                kinectSensor.ElevationAngle -= angleChange;
+            } catch { }
+        }
+
         private bool LeftHand = true;
 
         private bool StartKinect() {

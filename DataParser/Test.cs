@@ -15,27 +15,16 @@ namespace DataParser {
         public string ID { get; }
 
         public Test(List<Test> tests) {
-            if(gestures.Count == 0) {
-                this.gestures = tests[0].gestures;
-                tests.RemoveAt(0);
-            }
-            foreach(var test in tests) {
-                foreach(var gesture in test.gestures) {
-                    foreach(var size in gestures.Values) {
-                        foreach(var length in size.Values) {
-                            foreach(var attempt in length.Values) {
-                                attempt
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         //Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>> tests = new Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>>();
-        protected Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> gestures = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
+        //protected Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> gestures = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
+        protected Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
 
-        public Test(string path) {
+        private Test() {
+            Attempts = new Dictionary<GestureType, List<Attempt>>();
+        }
+        public Test(string path) : this() {
 
             ID = path.Split('/').Last().Split('.').First();
             
@@ -53,22 +42,10 @@ namespace DataParser {
                             case "Swipe": type = GestureType.Swipe; break;
                             case "Pinch": type = GestureType.Pinch; break;
                         }
-                        if (!gestures.ContainsKey(type)) {
-                            gestures.Add(type, new Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>());
-
-                            gestures[type].Add(GridSize.Large, new Dictionary<JumpLength, List<Attempt>>());
-                            gestures[type][GridSize.Large].Add(JumpLength.Short, new List<Attempt>());
-                            gestures[type][GridSize.Large].Add(JumpLength.Medium, new List<Attempt>());
-                            gestures[type][GridSize.Large].Add(JumpLength.Long, new List<Attempt>());
-                            gestures[type][GridSize.Large].Add(JumpLength.NA, new List<Attempt>());
-
-
-                            gestures[type].Add(GridSize.Small, new Dictionary<JumpLength, List<Attempt>>());
-                            gestures[type][GridSize.Small].Add(JumpLength.Short, new List<Attempt>());
-                            gestures[type][GridSize.Small].Add(JumpLength.Medium, new List<Attempt>());
-                            gestures[type][GridSize.Small].Add(JumpLength.Long, new List<Attempt>());
-                            gestures[type][GridSize.Small].Add(JumpLength.NA, new List<Attempt>());
+                        if (!Attempts.ContainsKey(type)) {
+                            Attempts.Add(type, new List<Attempt>());
                         }
+
                     } else if(line.Contains("Grid height: 10")) {
                         size = GridSize.Small;
                     }
@@ -77,7 +54,7 @@ namespace DataParser {
                     }
                     else if (line.Contains("Target")) {
                         Attempt attempt = new Attempt(line, size);
-                        gestures[type][attempt.Size][attempt.Length].Add(attempt);
+                        Attempts[type].Add(attempt);
                     }
                 }
             }
@@ -99,43 +76,41 @@ namespace DataParser {
             }
         }
 
-        public void DrawHitBoxs() {
+        public void DrawAllHitBoxes() {
+            foreach(var gesture in Attempts) {
+                DrawHitBox(gesture.Value, gesture.Key.ToString());
+            }
+        }
 
-            //List<Attempt> attempts = tests[GestureType.Swipe][GridSize.Large][JumpLength.Long];
-            List<Attempt> attempts = new List<Attempt>();
+        private void DrawHitBox(List<Attempt> attempts, string fileName) {
 
-           
+            //61 pixel sized squares, makes it better to look at
+            int cellSize = 61;
+            int bmsize = cellSize * 3;
 
-            foreach (var gesture in gestures) {
-                
-                foreach(var gridSize in gesture.Value) {
+            Bitmap hitbox = new Bitmap(bmsize, bmsize);
+            Graphics hBGraphic = Graphics.FromImage(hitbox);
+            hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
+            hBGraphic.DrawRectangle(new Pen(Brushes.Black, 1.0f), cellSize, cellSize, cellSize, cellSize);
 
-                    float scale = gridSize.Key == GridSize.Large ? 122.0f : 61.0f;
-                    int bmsize = (int)scale * 3;
+            foreach (var attempt in attempts) {
+                Brush brush = attempt.Size == GridSize.Large ? Brushes.Red : Brushes.Green;
+                float scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
+                Point p = new Point(attempt.TargetCell.X, attempt.TargetCell.Y);
+                p.X = p.X * scale; p.Y = p.Y * scale;
+                p.X = attempt.Pointer.X - p.X + cellSize;
+                p.Y = attempt.Pointer.Y - p.Y + cellSize;
 
-                    Bitmap hitbox = new Bitmap(bmsize, bmsize);
-                    Graphics hBGraphic = Graphics.FromImage(hitbox);
-                    hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
-                    hBGraphic.DrawRectangle(new Pen(Brushes.Black, 1.0f), scale, scale, scale, scale);
-
-                    foreach (var length in gridSize.Value) {
-                        foreach(var attempt in length.Value) {
-                            Point p = new Point(attempt.TargetCell.X, attempt.TargetCell.Y);
-                            p.X = p.X * scale; p.Y = p.Y * scale;
-                            p.X = attempt.Pointer.X - p.X + scale;
-                            p.Y = attempt.Pointer.Y - p.Y + scale;
-
-                            if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.X >= bmsize))) {
-                                hBGraphic.FillRectangle(Brushes.Red, (float)p.X, (float)p.Y, 2, 2);
-                            }
-                        }
-                    }
-
-                    hBGraphic.Save();
-                    if(!Directory.Exists(directory + ID + "/")) { Directory.CreateDirectory(directory + ID + "/"); }
-                    hitbox.Save(directory + ID + "/" + gesture.Key + "_" + gridSize.Key +  ".bmp");
+                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.X >= bmsize))) {
+                    hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
                 }
             }
+            
+
+            hBGraphic.Save();
+            if(!Directory.Exists(directory + ID + "/")) { Directory.CreateDirectory(directory + ID + "/"); }
+            hitbox.Save(directory + ID + "/" + fileName +  ".bmp");
+
 
         //Changed grid size.Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7
         //Changed grid size.Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4
@@ -144,15 +119,8 @@ namespace DataParser {
 
         private string GetHitsPerTry(GestureType type) {
 
-            List<Attempt> attempts = new List<Attempt>();
+            List<Attempt> attempts = Attempts[type];
 
-            foreach(var size in gestures[type]) {
-                foreach(var length in size.Value) {
-                    foreach(var attempt in length.Value) {
-                        attempts.Add(attempt);
-                    }
-                }
-            }
             //var data = [ [[0, 0], [1, 1], [1,0]] ];
             
             int hits = 0; int[] hitsAtTries = new int[attempts.Count]; int currentAttempt = 0;
