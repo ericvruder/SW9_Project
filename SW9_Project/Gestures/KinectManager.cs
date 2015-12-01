@@ -161,17 +161,12 @@ namespace SW9_Project {
             if (leftHand) {
                 ThrowPush[0] = new SwingRightSegment1();
                 ThrowPush[1] = new SwingRightSegment2();
-                ThrowPull[0] = new SwingRightSegment2();
-                ThrowPull[1] = new SwingRightSegment1();
             } else {
                 ThrowPush[0] = new SwingLeftSegment1();
                 ThrowPush[1] = new SwingLeftSegment2();
-                ThrowPull[0] = new SwingLeftSegment2();
-                ThrowPull[1] = new SwingLeftSegment1();
             }
 
             gestureController.AddGesture("ThrowPush", ThrowPush);
-            gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
