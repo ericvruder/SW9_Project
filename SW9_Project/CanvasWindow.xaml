@@ -9,7 +9,7 @@
         Height="724"
         Width="1200"
         WindowStyle="SingleBorderWindow"
-        WindowState="Normal" KeyDown="Window_KeyDown"
+        WindowState="Normal" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         Background="Black"
         
         >
