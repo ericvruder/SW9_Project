@@ -101,7 +101,7 @@ namespace DataParser {
                 p.X = attempt.Pointer.X - p.X + cellSize;
                 p.Y = attempt.Pointer.Y - p.Y + cellSize;
 
-                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.X >= bmsize))) {
+                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.Y >= bmsize))) {
                     hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
                 }
             }
