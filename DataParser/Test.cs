@@ -131,14 +131,14 @@ namespace DataParser {
                 hitsAtTries[currentAttempt++] = hits;
             }
 
-            string array = " [ [";
+            string array = " [ ";
             for (int i = 0; i < attempts.Count; i++) {
                 double percentage = (double)hitsAtTries[i] / ((double)i + 1.0) * 100.0;
                 array += "[" + (i + 1) + ", " + percentage + "], ";
             }
 
             array = array.Remove(array.Length - 2);
-            array += "] ];";
+            array += " ];";
 
             return "var " + type + "Data = " + array;
         }
