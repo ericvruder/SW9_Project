@@ -121,7 +121,7 @@ namespace DataParser {
                 p.X += cellSize;
                 p.Y += cellSize;
 
-                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.X >= bmsize))) {
+                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.Y >= bmsize))) {
                     hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
                 }
             }
@@ -151,14 +151,14 @@ namespace DataParser {
                 hitsAtTries[currentAttempt++] = hits;
             }
 
-            string array = " [ [";
+            string array = " [ ";
             for (int i = 0; i < attempts.Count; i++) {
                 double percentage = (double)hitsAtTries[i] / ((double)i + 1.0) * 100.0;
                 array += "[" + (i + 1) + ", " + percentage + "], ";
             }
 
             array = array.Remove(array.Length - 2);
-            array += "] ];";
+            array += " ];";
 
             return "var " + type + "Data = " + array;
         }

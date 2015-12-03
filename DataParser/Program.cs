@@ -17,9 +17,7 @@ namespace DataParser {
                 tests.Add(new Test(s));
                 tests.Last().GenerateHTML();
             }
-
             Test.CreateAverageHitboxes(tests);
-            
         }
     }
 }
