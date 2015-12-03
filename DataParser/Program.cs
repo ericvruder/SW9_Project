@@ -16,6 +16,7 @@ namespace DataParser {
             foreach(var s in files) {
                 tests.Add(new Test(s));
                 tests.Last().GenerateHTML();
+                tests.Last().DrawAllHitBoxes();
             }
             Test.CreateAverageHitboxes(tests);
         }
