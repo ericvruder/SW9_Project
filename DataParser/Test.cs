@@ -112,7 +112,6 @@ namespace DataParser {
                 p.X = p.X * scale; p.Y = p.Y * scale;
                 p.X = attempt.Pointer.X - p.X;
                 p.Y = attempt.Pointer.Y - p.Y;
-
                 if(attempt.Size == GridSize.Large) {
                     p.X /= 2;
                     p.Y /= 2;
