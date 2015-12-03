@@ -71,7 +71,6 @@ namespace SW9_Project {
         }
 
         static Queue<Target> LoadSequence(int sequenceNumber) {
-            bool valid = true;
             Queue<Target> targets = new Queue<Target>();
             using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
                 string line = "";
@@ -90,10 +89,8 @@ namespace SW9_Project {
                         default: length = JumpLength.NA; break;
                     }
                     Target t = new Target(x, y, size, length);
-                    if(!t.IsValid()) { valid = false; }
                     targets.Enqueue(t);
                 }
-                if(targets.Count != 25 || !valid) { Console.WriteLine("Target Sequence number " + sequenceNumber + " is invalid"); }
             }
             return targets;
         }
