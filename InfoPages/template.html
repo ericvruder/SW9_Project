@@ -17,30 +17,78 @@
 	
 	$(document).ready(function(){
 	
-		%Tilt%
-		%Throw%
-		%Swipe%
-		%Pinch%
+	%Tilt%
+	%Throw%
+	%Swipe%
+	%Pinch%
 		
-		$.plot($("#Push-Tilt"), TiltData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Throw"), ThrowData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Swipe"), SwipeData, { yaxis: { max: 100 } });
-		$.plot($("#Push-Pinch"), PinchData, { yaxis: { max: 100 } });
-	}); 
-	
+	$.plot("#hitpercentage", [
+			{label: "Tilt", data: TiltData},
+			{label: "Throw", data: ThrowData},
+			{label: "Swipe", data: SwipeData},
+			{label: "Pinch", data: PinchData}
+		],
+		{
+			yaxis: {
+				ticks: 10,
+				min: 0,
+				max: 100,
+				tickDecimals: 0
+			}, 
+			xaxis: {
+				ticks: 19,
+				min: 1,
+				max: 19,
+				tickDecimals: 0
+			},
+			legend: { 
+				position: "se",
+				backgroundOpacity: 0.5,
+				container: "#legend"
+			}	
+		}
+	);
+
+	$("#linkPrev").click(function(){
+		var current_file = window.location.pathname.split('/').pop().slice(0, -5);
+		current_file--;
+		window.location.href = current_file + ".html";
+	});
+	$("#linkNext").click(function(){
+		var current_file = window.location.pathname.split('/').pop().slice(0, -5);
+		current_file++;
+		window.location.href = current_file + ".html";
+	});
+});	
 
 	</script>
 </head>
 <body>
 
-	<div style="width: 100%; display: table;">
-		<div style="display: table-row">
-			<div id="Push-Throw" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Push-Tilt" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Push-Swipe" style="width:600px; height:300px; display: table-cell;"> </div>
-			<div id="Push-Pinch" style="width:600px; height:300px; display: table-cell;"> </div>
-		</div>
-	</div>
+<table style="text-align:center;border:1px solid #000;">
+  <tr>
+    <td></td>
+    <td>Plot Title Goes Here</td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td>%</td>
+    <td>
+      <div id="hitpercentage" style="width:500px; height:300px; display: table-cell;"> </div>
+    </td>
+    <td><div id="legend"></div></td>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td>Target</td>
+    <td></td>
+  </tr>
+</table>
+
+<a id="linkPrev">Prev</a>
+<a id="linkNext">Next</a>
 
 </body>
 </html>
