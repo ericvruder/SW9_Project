@@ -12,14 +12,11 @@ namespace DataParser {
 
         private static string directory = "..\\..\\..\\InfoPages/";
 
-        public string ID { get; }
+        public string ID { get; set; }
 
         public Test(List<Test> tests) {
         }
-
-        //Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>> tests = new Dictionary<GestureDirection, Dictionary<GestureType, List<Attempt>>>();
-        //protected Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>> gestures = new Dictionary<GestureType, Dictionary<GridSize, Dictionary<JumpLength, List<Attempt>>>>();
-        protected Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
+        public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
@@ -82,6 +79,21 @@ namespace DataParser {
             }
         }
 
+        public static void CreateAverageHitboxes(List<Test> tests) {
+            Test averageTest = new Test();
+            averageTest.ID = "Average";
+            foreach(var test in tests) {
+                foreach(var gesture in test.Attempts) {
+                    if (averageTest.Attempts.ContainsKey(gesture.Key)) {
+                        averageTest.Attempts[gesture.Key].AddRange(gesture.Value);
+                    } else {
+                        averageTest.Attempts.Add(gesture.Key, gesture.Value);
+                    }
+                }
+            }
+            averageTest.DrawAllHitBoxes();
+        }
+
         private void DrawHitBox(List<Attempt> attempts, string fileName) {
 
             //61 pixel sized squares, makes it better to look at
@@ -98,8 +110,16 @@ namespace DataParser {
                 float scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
                 Point p = new Point(attempt.TargetCell.X, attempt.TargetCell.Y);
                 p.X = p.X * scale; p.Y = p.Y * scale;
-                p.X = attempt.Pointer.X - p.X + cellSize;
-                p.Y = attempt.Pointer.Y - p.Y + cellSize;
+                p.X = attempt.Pointer.X - p.X;
+                p.Y = attempt.Pointer.Y - p.Y;
+
+                if(attempt.Size == GridSize.Large) {
+                    p.X /= 2;
+                    p.Y /= 2;
+                }
+
+                p.X += cellSize;
+                p.Y += cellSize;
 
                 if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.X >= bmsize))) {
                     hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);

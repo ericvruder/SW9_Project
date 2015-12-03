@@ -97,9 +97,6 @@ namespace SW9_Project {
                 using (sw = new StreamWriter(stream)) {
                     sw.AutoFlush = true;
                     sw.WriteLine("startpush");
-                    sw.WriteLine("startpull");
-                    string startdirection = GestureParser.GetDirectionContext() == GestureDirection.Pull ? "startpull" : "startpush";
-                    sw.WriteLine(startdirection);
                     while (true) {
                         String line = sr.ReadLine();
                         if (line.Contains("nextshape:")) {
