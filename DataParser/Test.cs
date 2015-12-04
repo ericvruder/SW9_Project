@@ -94,6 +94,59 @@ namespace DataParser {
             averageTest.DrawAllHitBoxes();
         }
 
+        public static void CreateAverageLearningGraph(List<Test> tests) {
+
+            Dictionary<GestureType, float[]> percentagePerGesture = new Dictionary<GestureType, float[]>();
+
+            foreach (var test in tests) {
+                foreach (var gesture in test.Attempts) {
+
+                    if (!percentagePerGesture.ContainsKey(gesture.Key)) {
+                        float[] hitsPerTry = new float[tests[0].Attempts[0].Count];
+                        for (int i = 0; i < hitsPerTry.Length; i++) {
+                            hitsPerTry[i] = 0.0f;
+                        }
+                        percentagePerGesture.Add(gesture.Key, hitsPerTry);
+                    }
+
+                    var attempts = gesture.Value;
+                    for(int i = 0; i < attempts.Count; i++) {
+                        percentagePerGesture[gesture.Key][i] += attempts[i].Hit ? 1 : 0;
+                    }
+                }
+            }
+
+            foreach(var gesture in percentagePerGesture) {
+                for(int i = 0; i < gesture.Value.Length; i++) {
+                    gesture.Value[i] /= tests.Count;
+                }
+            }
+
+
+            using (StreamReader sr = new StreamReader(directory + "template.html"))
+            using (StreamWriter sw = new StreamWriter(directory + "Average" + ".html")) {
+                string line = "";
+                while ((line = sr.ReadLine()) != null) {
+
+                    if (line.Contains("%Tilt%")) {
+                        line = "var " + GestureType.Tilt + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Tilt]);
+                    } 
+                    else if (line.Contains("%Swipe%")) {
+                        line = "var " + GestureType.Swipe + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Swipe]);
+                    } 
+                    else if (line.Contains("%Throw%")) {
+                        line = "var " + GestureType.Throw + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Throw]);
+                    } 
+                    else if (line.Contains("%Pinch%")) {
+                        line = "var " + GestureType.Pinch + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Pinch]);
+                    }
+
+                    sw.WriteLine(line);
+                }
+            }
+
+        }
+
         private void DrawHitBox(List<Attempt> attempts, string fileName) {
 
             //61 pixel sized squares, makes it better to look at
@@ -142,24 +195,30 @@ namespace DataParser {
 
             //var data = [ [[0, 0], [1, 1], [1,0]] ];
             
-            int hits = 0; int[] hitsAtTries = new int[attempts.Count]; int currentAttempt = 0;
+            int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
             foreach (var attempt in attempts) {
                 if (attempt.Hit) {
                     hits++;
                 }
-                hitsAtTries[currentAttempt++] = hits;
+                hitsAtTries[currentAttempt++] = (float)hits;
             }
 
+
+            return "var " + type + "Data = " + GetJSPercentageArray(hitsAtTries);
+        }
+
+        private static string GetJSPercentageArray(float[] percentages) {
+
             string array = " [ ";
-            for (int i = 0; i < attempts.Count; i++) {
-                double percentage = (double)hitsAtTries[i] / ((double)i + 1.0) * 100.0;
+            for (int i = 0; i < percentages.Length; i++) {
+                float percentage = (float)percentages[i] / ((float)i + 1.0f) * 100.0f;
                 array += "[" + (i + 1) + ", " + percentage + "], ";
             }
 
             array = array.Remove(array.Length - 2);
             array += " ];";
 
-            return "var " + type + "Data = " + array;
+            return array;
         }
     }
 }
