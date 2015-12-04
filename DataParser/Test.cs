@@ -18,10 +18,12 @@ namespace DataParser {
         }
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
         public Dictionary<GestureType, TimeSpan> TestStart { get; set; }
+        public Dictionary<GestureType, TimeSpan> PracticeTime { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
             TestStart = new Dictionary<GestureType, TimeSpan>();
+            PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
         public Test(string path) : this() {
 
@@ -47,7 +49,7 @@ namespace DataParser {
                         }
 
                         string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                        TestStart.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
+                        PracticeTime.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
 
                     } else if(line.Contains("Grid height: 10")) {
                         size = GridSize.Small;
@@ -63,8 +65,9 @@ namespace DataParser {
             }
             foreach(var g in Attempts)
             {
-                TestStart[g.Key] = g.Value[0].Time;
+                TestStart.Add(g.Key, g.Value[0].Time);
                 g.Value.RemoveAt(0);
+                PracticeTime[g.Key] = TestStart[g.Key] - PracticeTime[g.Key];
             }
         }
 
