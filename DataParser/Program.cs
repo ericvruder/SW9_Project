@@ -19,6 +19,7 @@ namespace DataParser {
                 tests.Last().DrawAllHitBoxes();
             }
             Test.CreateAverageHitboxes(tests);
+            Test.CreateAverageLearningGraph(tests);
         }
     }
 }
