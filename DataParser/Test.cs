@@ -84,7 +84,10 @@ namespace DataParser {
                         GestureType type = GetTypePlaceHolder(line);
                         line = GetJSPercentageArray(GetHitsPerTry(Attempts[type]), type);
                         line += GetJSTimeArray(GetTimePerTarget(Attempts[type], TestStart[type]), type);
-                    } 
+                    } else if (line.Contains("%TiltInfo%") || line.Contains("%SwipeInfo%") || line.Contains("%ThrowInfo%") || line.Contains("%PinchInfo%")) {
+                        GestureType type = GetTypePlaceHolder(line);
+                        line = GenerateInfoBox(PracticeTime[type], Attempts[type].Last().Time , GetHitsPerTry(Attempts[type]).Last(), type );
+                    }
                     sw.WriteLine(line);
                 }
             }
@@ -184,47 +187,85 @@ namespace DataParser {
                     if (line.Contains("%ID%")) {
                         line = "var ID = \"Average\";";
                     } else if ( line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
-
                         GestureType type = GetTypePlaceHolder(line);
                         line = GetJSPercentageArray(averageHitPercentagePerGesture[type], type);
                         line += GetJSTimeArray(averageTimePerTargetPerGesture[type], type);
-
+                    } else if (line.Contains("%TiltInfo%") || line.Contains("%SwipeInfo%") || line.Contains("%ThrowInfo%") || line.Contains("%PinchInfo%")){
+                        GestureType type = GetTypePlaceHolder(line);
+                        line = GenerateInfoBox(GetAveragePracticeTimePerGesture(tests)[type], GetAverageTestTimePerGesture(tests)[type], averageHitPercentagePerGesture[type].Last(), type);
                     } 
+
+
                     sw.WriteLine(line);
                 }
             }
 
         }
 
-        private static Dictionary<GestureType, TimeSpan> GetAveragePracticeTimePerGesture(List<Test> tests) {
-            Dictionary<GestureType, TimeSpan> averagePracticeTimes = new Dictionary<GestureType, TimeSpan>();
+        private static string GenerateInfoBox(TimeSpan practiceTime, TimeSpan totalTime, float finalHit, GestureType type) {
 
-            foreach(var test in tests) {
-                foreach(var time in test.PracticeTime) {
-                    if (!averagePracticeTimes.ContainsKey(time.Key)) {
-                        averagePracticeTimes.Add(time.Key, time.Value);
+            // $("#userID").html("UserID: " + ID);
+            //string final = "$(\"#" + type + "Info\").html(" + htmlCode + ");";
+            string s = "$(\"#" + type + "Info .PracticeTime\").append(\"" + (int)practiceTime.TotalSeconds +"\"); \n";
+            s += "$(\"#" + type + "Info .TotalTime\").append(\"" + (int)totalTime.TotalSeconds + "\"); \n";
+            s += "$(\"#" + type + "Info .FinalHit\").append(\"" + finalHit * 100f + "\"); \n";
+            return s;
+
+        }
+
+        private static Dictionary<GestureType, TimeSpan> GetAverageTestTimePerGesture(List<Test> tests) {
+            Dictionary<GestureType, TimeSpan> temp = new Dictionary<GestureType, TimeSpan>();
+            Dictionary<GestureType, TimeSpan> avgTime = new Dictionary<GestureType, TimeSpan>();
+
+            foreach (var test in tests) {
+                foreach(var gesture in test.Attempts) {
+                    if (!temp.ContainsKey(gesture.Key)) {
+                        temp.Add(gesture.Key, gesture.Value.Last().Time - test.TestStart[gesture.Key]);
                     }
                     else {
-                        averagePracticeTimes[time.Key] += time.Value;
+                        temp[gesture.Key] += gesture.Value.Last().Time - test.TestStart[gesture.Key];
                     }
                 }
             }
 
-            foreach(var time in averagePracticeTimes) {
-                //time.Value = TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count);
+            foreach (var time in temp) {
+                avgTime.Add(time.Key, TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count));
             }
 
-            return averagePracticeTimes;
+            return avgTime;
+
+        }
+
+        private static Dictionary<GestureType, TimeSpan> GetAveragePracticeTimePerGesture(List<Test> tests) {
+            Dictionary<GestureType, TimeSpan> temp = new Dictionary<GestureType, TimeSpan>();
+            Dictionary<GestureType, TimeSpan> avgTime = new Dictionary<GestureType, TimeSpan>();
+
+            foreach (var test in tests) {
+                foreach(var time in test.PracticeTime) {
+                    if (!temp.ContainsKey(time.Key)) {
+                        temp.Add(time.Key, time.Value);
+                    }
+                    else {
+                        temp[time.Key] += time.Value;
+                    }
+                }
+            }
+
+            foreach(var time in temp) {
+                avgTime.Add(time.Key, TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count));
+            }
+
+            return avgTime;
         }
 
         private static GestureType GetTypePlaceHolder(string line) {
-             if (line.Contains("%Tilt%")) {
+             if (line.Contains("Tilt")) {
                 return GestureType.Tilt;
-            } else if (line.Contains("%Swipe%")) {
+            } else if (line.Contains("Swipe")) {
                 return GestureType.Swipe;
-            } else if (line.Contains("%Throw%")) {
+            } else if (line.Contains("Throw")) {
                 return GestureType.Throw;
-            } else if (line.Contains("%Pinch%")) {
+            } else if (line.Contains("Pinch")) {
                 return GestureType.Pinch;
             }
 
