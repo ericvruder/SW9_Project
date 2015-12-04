@@ -82,7 +82,7 @@ namespace DataParser {
                     }
                     else if (line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
                         GestureType type = GetTypePlaceHolder(line);
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[type]), type);
+                        line = GetJSPercentageArray(GetHitsPerTry(Attempts[type]), type);
                         line += GetJSTimeArray(GetTimePerTarget(Attempts[type], TestStart[type]), type);
                     } 
                     sw.WriteLine(line);
@@ -147,27 +147,27 @@ namespace DataParser {
         private static Dictionary<GestureType, float[]> GetAverageTimePerTarget(List<Test> tests) {
             List<GestureType> gestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
-            Dictionary<GestureType, float[]> averageHitPercentagePerGesture = new Dictionary<GestureType, float[]>();
+            Dictionary<GestureType, float[]> averageTimePerGesture = new Dictionary<GestureType, float[]>();
 
             foreach (var gesture in gestures) {
 
-                float[] avgPercentage = new float[tests[0].Attempts[0].Count];
-                List<float[]> percentages = new List<float[]>();
+                float[] averageTime = new float[tests[0].Attempts[0].Count];
+                List<float[]> times = new List<float[]>();
 
-                foreach (var test in tests) {
-                    percentages.Add(GetHitsPerTry(test.Attempts[gesture]));
+                foreach(var test in tests) {
+                    times.Add(GetTimePerTarget(test.Attempts[gesture], test.TestStart[gesture]));
                 }
 
-                for (int i = 0; i < avgPercentage.Length; i++) {
-                    foreach (var percentage in percentages) {
-                        avgPercentage[i] += percentage[i];
+                for (int i = 0; i < averageTime.Length; i++) {
+                    foreach (var time in times) {
+                        averageTime[i] += time[i];
                     }
-                    avgPercentage[i] /= (float)percentages.Count;
+                    averageTime[i] /= (float)times.Count;
                 }
-                averageHitPercentagePerGesture.Add(gesture, avgPercentage);
+                averageTimePerGesture.Add(gesture, averageTime);
             }
 
-            return averageHitPercentagePerGesture;
+            return averageTimePerGesture;
         }
 
         public static void GenerateAverageHTML(List<Test> tests) {
@@ -186,13 +186,35 @@ namespace DataParser {
                     } else if ( line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
 
                         GestureType type = GetTypePlaceHolder(line);
-                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[type], type);
+                        line = GetJSPercentageArray(averageHitPercentagePerGesture[type], type);
+                        line += GetJSTimeArray(averageTimePerTargetPerGesture[type], type);
 
                     } 
                     sw.WriteLine(line);
                 }
             }
 
+        }
+
+        private static Dictionary<GestureType, TimeSpan> GetAveragePracticeTimePerGesture(List<Test> tests) {
+            Dictionary<GestureType, TimeSpan> averagePracticeTimes = new Dictionary<GestureType, TimeSpan>();
+
+            foreach(var test in tests) {
+                foreach(var time in test.PracticeTime) {
+                    if (!averagePracticeTimes.ContainsKey(time.Key)) {
+                        averagePracticeTimes.Add(time.Key, time.Value);
+                    }
+                    else {
+                        averagePracticeTimes[time.Key] += time.Value;
+                    }
+                }
+            }
+
+            foreach(var time in averagePracticeTimes) {
+                //time.Value = TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count);
+            }
+
+            return averagePracticeTimes;
         }
 
         private static GestureType GetTypePlaceHolder(string line) {
@@ -265,7 +287,7 @@ namespace DataParser {
             return hitsAtTries;
         }
 
-        private float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start)
+        private static float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start)
         {
 
            float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
@@ -280,7 +302,7 @@ namespace DataParser {
             return timeAtTries;
         }
 
-        private static string GetJSAvgPercentageArray(float[] percentages, GestureType type)
+        private static string GetJSPercentageArray(float[] percentages, GestureType type)
         {
 
             //var data = [ [[0, 0], [1, 1], [1,0]] ];
@@ -289,7 +311,8 @@ namespace DataParser {
             for (int i = 0; i < percentages.Length; i++)
             {
                 float percentage = (float)percentages[i] * 100.0f;
-                array += "[" + (i + 1) + ", " + percentage + "], ";
+                string sPercentage = percentage.ToString().Replace(',', '.');
+                array += "[" + (i + 1) + ", " + sPercentage + "], ";
             }
 
             array = array.Remove(array.Length - 2);
@@ -307,7 +330,8 @@ namespace DataParser {
             for (int i = 0; i < times.Length; i++)
             {
                 float time = (float)times[i];
-                array += "[" + (i + 1) + ", " + time + "], ";
+                string sTime = time.ToString().Replace(',', '.');
+                array += "[" + (i + 1) + ", " + sTime + "], ";
             }
 
             array = array.Remove(array.Length - 2);
