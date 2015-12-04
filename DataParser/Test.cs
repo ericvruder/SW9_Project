@@ -110,27 +110,26 @@ namespace DataParser {
 
         public static void CreateAverageLearningGraph(List<Test> tests) {
 
-            Dictionary<GestureType, float[]> percentagePerGesture = new Dictionary<GestureType, float[]>();
-            int numberOfAttempts = tests[0].Attempts[0].Count;
+            List<GestureType> gestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
-            foreach (var test in tests) {
-                foreach (var gesture in test.Attempts) {
+            Dictionary<GestureType, float[]> averageHitPercentagePerGesture = new Dictionary<GestureType, float[]>();
 
-                    if (!percentagePerGesture.ContainsKey(gesture.Key)) {
-                        percentagePerGesture.Add(gesture.Key, new float[numberOfAttempts]);
-                    }
+            foreach(var gesture in gestures) {
 
-                    var attempts = gesture.Value;
-                    for(int i = 0; i < attempts.Count; i++) {
-                        percentagePerGesture[gesture.Key][i] += attempts[i].Hit ? 1 : 0;
-                    }
+                float[] avgPercentage = new float[tests[0].Attempts[0].Count];
+                List<float[]> percentages = new List<float[]>();
+
+                foreach(var test in tests) {
+                    percentages.Add(GetHitsPerTry(test.Attempts[gesture]));
                 }
-            }
 
-            foreach(var gesture in percentagePerGesture) {
-                for(int i = 0; i < gesture.Value.Length; i++) {
-                    gesture.Value[i] /= tests.Count;
+                for(int i = 0; i < avgPercentage.Length; i++) {
+                    foreach(var percentage in percentages) {
+                        avgPercentage[i] += percentage[i];
+                    }
+                    avgPercentage[i] /= (float)percentages.Count;
                 }
+                averageHitPercentagePerGesture.Add(gesture, avgPercentage);
             }
 
 
@@ -140,13 +139,16 @@ namespace DataParser {
                 while ((line = sr.ReadLine()) != null) {
 
                     if (line.Contains("%Tilt%")) {
-                        
+                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Tilt], GestureType.Tilt);
                     } 
                     else if (line.Contains("%Swipe%")) {
+                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Swipe], GestureType.Swipe);
                     } 
                     else if (line.Contains("%Throw%")) {
+                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Throw], GestureType.Throw);
                     } 
                     else if (line.Contains("%Pinch%")) {
+                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Pinch], GestureType.Pinch);
                     }
 
                     sw.WriteLine(line);
@@ -197,7 +199,7 @@ namespace DataParser {
 
         }
 
-        private float[] GetHitsPerTry(List<Attempt> attempts) {
+        private static float[] GetHitsPerTry(List<Attempt> attempts) {
             
             int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
             foreach (var attempt in attempts) {
