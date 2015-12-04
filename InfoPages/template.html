@@ -1,8 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Something</title>
+	<title></title>
 	<style>
 
 	h3 {
@@ -49,13 +49,26 @@
 		}
 	);
 
+	function getID() {
+		var currentID = window.location.pathname.split('/').pop().slice(0, -5);
+		return currentID;
+	}
+
+	document.title = "UserID: "+ getID();
+	$("#userID").html("UserID: "+ getID());
+
+	$("#tiltImg").attr("src", getID()+"/Tilt.bmp");
+	$("#throwImg").attr("src", getID()+"/Throw.bmp");
+	$("#swipeImg").attr("src", getID()+"/Swipe.bmp");
+	$("#pinchImg").attr("src", getID()+"/Pinch.bmp");
+
 	$("#linkPrev").click(function(){
-		var current_file = window.location.pathname.split('/').pop().slice(0, -5);
+		var current_file = getID();
 		current_file--;
 		window.location.href = current_file + ".html";
 	});
 	$("#linkNext").click(function(){
-		var current_file = window.location.pathname.split('/').pop().slice(0, -5);
+		var current_file = getID();
 		current_file++;
 		window.location.href = current_file + ".html";
 	});
@@ -64,11 +77,12 @@
 	</script>
 </head>
 <body>
+<h1 id="userID"></h1>
 
 <table style="text-align:center;border:1px solid #000;">
   <tr>
     <td></td>
-    <td>Plot Title Goes Here</td>
+    <td>Hit percentage</td>
     <td></td>
   </tr>
 
@@ -87,8 +101,25 @@
   </tr>
 </table>
 
-<a id="linkPrev">Prev</a>
-<a id="linkNext">Next</a>
+<br>
+
+<table>
+	<tr>
+		<th>Tilt</th>
+		<th>Throw</th>
+		<th>Swipe</th>
+		<th>Pinch</th>
+	</tr>
+	<tr>
+		<td><img id="tiltImg" src=""></td>
+		<td><img id="throwImg" src=""></td>
+		<td><img id="swipeImg" src=""></td>
+		<td><img id="pinchImg" src=""></td>
+	</tr>
+</table>
+
+<a id="linkPrev">&#8678; Prev</a> | 
+<a id="linkNext">Next &#8680;</a>
 
 </body>
 </html>
