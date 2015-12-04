@@ -17,10 +17,11 @@ namespace DataParser {
         public Test(List<Test> tests) {
         }
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
-        public Dictionary<GestureType, DateTime> TestStart { get; set; }
+        public Dictionary<GestureType, TimeSpan> TestStart { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
+            TestStart = new Dictionary<GestureType, TimeSpan>();
         }
         public Test(string path) : this() {
 
@@ -32,6 +33,7 @@ namespace DataParser {
                 GestureType type = GestureType.Pinch;
                 while ((line = sr.ReadLine()) != null) {
                     if (line.Contains("Started new gesture test.")) {
+
                         string tobesearched = "Type: ";
                         string toBefound = line.Substring(line.IndexOf(tobesearched) + tobesearched.Length).Split(' ')[0];
                         switch (toBefound) {
@@ -43,6 +45,9 @@ namespace DataParser {
                         if (!Attempts.ContainsKey(type)) {
                             Attempts.Add(type, new List<Attempt>());
                         }
+
+                        string[] para = line.Trim().Split('[', ']')[1].Split(':');
+                        TestStart.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
 
                     } else if(line.Contains("Grid height: 10")) {
                         size = GridSize.Small;
