@@ -17,6 +17,7 @@ namespace DataParser {
         public Test(List<Test> tests) {
         }
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
+        public Dictionary<GestureType, DateTime> TestStart { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
