@@ -73,7 +73,11 @@ namespace DataParser {
             using(StreamWriter sw = new StreamWriter(directory + ID + ".html")) {
                 string line = "";
                 while((line = sr.ReadLine()) != null) {
-                    if (line.Contains("%Tilt%")) {
+                    if(line.Contains("%ID%"))
+                    {
+                        line = "var ID = " + ID + ";";
+                    }
+                    else if (line.Contains("%Tilt%")) {
                         List<Attempt> attempts = Attempts[GestureType.Tilt];
                         line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Tilt);
                         line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Tilt]), GestureType.Tilt);
@@ -156,7 +160,11 @@ namespace DataParser {
                 string line = "";
                 while ((line = sr.ReadLine()) != null) {
 
-                    if (line.Contains("%Tilt%")) {
+                    if (line.Contains("%ID%"))
+                    {
+                        line = "var ID = \"Average\";";
+                    }
+                    else if (line.Contains("%Tilt%")) {
                         line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Tilt], GestureType.Tilt);
                     } 
                     else if (line.Contains("%Swipe%")) {
