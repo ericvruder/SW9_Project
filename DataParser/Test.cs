@@ -80,27 +80,11 @@ namespace DataParser {
                     {
                         line = "var ID = " + ID + ";";
                     }
-                    else if (line.Contains("%Tilt%")) {
-                        List<Attempt> attempts = Attempts[GestureType.Tilt];
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Tilt);
-                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Tilt]), GestureType.Tilt);
+                    else if (line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
+                        GestureType type = GetTypePlaceHolder(line);
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[type]), GestureType.Tilt);
+                        line += GetJSTimeArray(GetTimePerTarget(Attempts[type], TestStart[GestureType.Tilt]), GestureType.Tilt);
                     } 
-                    else if(line.Contains("%Swipe%")) {
-                        List<Attempt> attempts = Attempts[GestureType.Swipe];
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Swipe);
-                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Swipe]), GestureType.Swipe);
-                    } 
-                    else if(line.Contains("%Throw%")) {
-                        List<Attempt> attempts = Attempts[GestureType.Throw];
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Throw);
-                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Throw]), GestureType.Throw);
-                    } 
-                    else if(line.Contains("%Pinch%")) {
-                        List<Attempt> attempts = Attempts[GestureType.Pinch];
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Pinch);
-                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Pinch]), GestureType.Pinch);
-                    }
-
                     sw.WriteLine(line);
                 }
             }
@@ -133,23 +117,23 @@ namespace DataParser {
             averageTest.DrawAllHitBoxes();
         }
 
-        public static void CreateAverageLearningGraph(List<Test> tests) {
+        private static Dictionary<GestureType, float[]> GetAverageHitPercentagePerTurn(List<Test> tests) {
 
             List<GestureType> gestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
             Dictionary<GestureType, float[]> averageHitPercentagePerGesture = new Dictionary<GestureType, float[]>();
 
-            foreach(var gesture in gestures) {
+            foreach (var gesture in gestures) {
 
                 float[] avgPercentage = new float[tests[0].Attempts[0].Count];
                 List<float[]> percentages = new List<float[]>();
 
-                foreach(var test in tests) {
+                foreach (var test in tests) {
                     percentages.Add(GetHitsPerTry(test.Attempts[gesture]));
                 }
 
-                for(int i = 0; i < avgPercentage.Length; i++) {
-                    foreach(var percentage in percentages) {
+                for (int i = 0; i < avgPercentage.Length; i++) {
+                    foreach (var percentage in percentages) {
                         avgPercentage[i] += percentage[i];
                     }
                     avgPercentage[i] /= (float)percentages.Count;
@@ -157,33 +141,72 @@ namespace DataParser {
                 averageHitPercentagePerGesture.Add(gesture, avgPercentage);
             }
 
+            return averageHitPercentagePerGesture;
+
+        }
+        private static Dictionary<GestureType, float[]> GetAverageTimePerTarget(List<Test> tests) {
+            List<GestureType> gestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+
+            Dictionary<GestureType, float[]> averageHitPercentagePerGesture = new Dictionary<GestureType, float[]>();
+
+            foreach (var gesture in gestures) {
+
+                float[] avgPercentage = new float[tests[0].Attempts[0].Count];
+                List<float[]> percentages = new List<float[]>();
+
+                foreach (var test in tests) {
+                    percentages.Add(GetHitsPerTry(test.Attempts[gesture]));
+                }
+
+                for (int i = 0; i < avgPercentage.Length; i++) {
+                    foreach (var percentage in percentages) {
+                        avgPercentage[i] += percentage[i];
+                    }
+                    avgPercentage[i] /= (float)percentages.Count;
+                }
+                averageHitPercentagePerGesture.Add(gesture, avgPercentage);
+            }
+
+            return averageHitPercentagePerGesture;
+        }
+
+        public static void GenerateAverageHTML(List<Test> tests) {
+
+            var averageHitPercentagePerGesture = GetAverageHitPercentagePerTurn(tests);
+            var averageTimePerTargetPerGesture = GetAverageTimePerTarget(tests);
+
 
             using (StreamReader sr = new StreamReader(directory + "template.html"))
             using (StreamWriter sw = new StreamWriter(directory + "Average" + ".html")) {
                 string line = "";
                 while ((line = sr.ReadLine()) != null) {
 
-                    if (line.Contains("%ID%"))
-                    {
+                    if (line.Contains("%ID%")) {
                         line = "var ID = \"Average\";";
-                    }
-                    else if (line.Contains("%Tilt%")) {
-                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Tilt], GestureType.Tilt);
-                    } 
-                    else if (line.Contains("%Swipe%")) {
-                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Swipe], GestureType.Swipe);
-                    } 
-                    else if (line.Contains("%Throw%")) {
-                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Throw], GestureType.Throw);
-                    } 
-                    else if (line.Contains("%Pinch%")) {
-                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[GestureType.Pinch], GestureType.Pinch);
-                    }
+                    } else if ( line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
 
+                        GestureType type = GetTypePlaceHolder(line);
+                        line = GetJSAvgPercentageArray(averageHitPercentagePerGesture[type], type);
+
+                    } 
                     sw.WriteLine(line);
                 }
             }
 
+        }
+
+        private static GestureType GetTypePlaceHolder(string line) {
+             if (line.Contains("%Tilt%")) {
+                return GestureType.Tilt;
+            } else if (line.Contains("%Swipe%")) {
+                return GestureType.Swipe;
+            } else if (line.Contains("%Throw%")) {
+                return GestureType.Throw;
+            } else if (line.Contains("%Pinch%")) {
+                return GestureType.Pinch;
+            }
+
+            return GestureType.Throw;
         }
 
         private void DrawHitBox(List<Attempt> attempts, string fileName) {
