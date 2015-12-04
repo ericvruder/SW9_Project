@@ -79,14 +79,20 @@ namespace DataParser {
             }
         }
 
-        public static void CreateAverageHitboxes(List<Test> tests) {
+        public static void CreateAverageHitboxes(List<Test> tests)
+        {
             Test averageTest = new Test();
             averageTest.ID = "Average";
-            foreach(var test in tests) {
-                foreach(var gesture in test.Attempts) {
-                    if (averageTest.Attempts.ContainsKey(gesture.Key)) {
+            foreach (var test in tests)
+            {
+                foreach (var gesture in test.Attempts)
+                {
+                    if (averageTest.Attempts.ContainsKey(gesture.Key))
+                    {
                         averageTest.Attempts[gesture.Key].AddRange(gesture.Value);
-                    } else {
+                    }
+                    else
+                    {
                         averageTest.Attempts.Add(gesture.Key, new List<Attempt>(gesture.Value));
                     }
                 }
@@ -126,16 +132,16 @@ namespace DataParser {
                 while ((line = sr.ReadLine()) != null) {
 
                     if (line.Contains("%Tilt%")) {
-                        line = "var " + GestureType.Tilt + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Tilt]);
+                        line = "var " + GestureType.Tilt + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Tilt]);
                     } 
                     else if (line.Contains("%Swipe%")) {
-                        line = "var " + GestureType.Swipe + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Swipe]);
+                        line = "var " + GestureType.Swipe + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Swipe]);
                     } 
                     else if (line.Contains("%Throw%")) {
-                        line = "var " + GestureType.Throw + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Throw]);
+                        line = "var " + GestureType.Throw + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Throw]);
                     } 
                     else if (line.Contains("%Pinch%")) {
-                        line = "var " + GestureType.Pinch + "Data = " + GetJSPercentageArray(percentagePerGesture[GestureType.Pinch]);
+                        line = "var " + GestureType.Pinch + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Pinch]);
                     }
 
                     sw.WriteLine(line);
@@ -209,6 +215,22 @@ namespace DataParser {
             string array = " [ ";
             for (int i = 0; i < percentages.Length; i++) {
                 float percentage = (float)percentages[i] / ((float)i + 1.0f) * 100.0f;
+                array += "[" + (i + 1) + ", " + percentage + "], ";
+            }
+
+            array = array.Remove(array.Length - 2);
+            array += " ];";
+
+            return array;
+        }
+
+        private static string GetJSAvgPercentageArray(float[] percentages)
+        {
+
+            string array = " [ ";
+            for (int i = 0; i < percentages.Length; i++)
+            {
+                float percentage = (float)percentages[i] * 100.0f;
                 array += "[" + (i + 1) + ", " + percentage + "], ";
             }
 
