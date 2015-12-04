@@ -5,10 +5,41 @@
 	<title></title>
 	<style>
 
+	.demo-container {
+	box-sizing: border-box;
+	width: 850px;
+	height: 450px;
+	padding: 20px 15px 15px 15px;
+	margin: 15px auto 30px auto;
+	border: 1px solid #ddd;
+	background: #fff;
+	background: linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+	background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+	box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+	-o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.demo-placeholder {
+	width: 100%;
+	height: 100%;
+	font-size: 14px;
+	line-height: 1.2em;
+}
+
 	.graphContainer {
-		width:500px; 
+		width:600px; 
 		height:300px; 
 		display: table-cell;
+	}
+
+	#hitPercentageGraph {
+		float: left;
 	}
 
 	#hitPercentageGraph, #timeGraph {
@@ -31,6 +62,7 @@
 	</style>
 	<script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
 	<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="flot/jquery.flot.categories.js"></script>
 	<script language="javascript" type="text/javascript" src="flot/jquery.flot.orderBars.js"></script>
 	<script type="text/javascript" language="javascript" src="flot/jquery.flot.axislabels.js"></script>
 	<script type="text/javascript">
@@ -52,18 +84,52 @@
 	%Pinch%
 
 	%ID% // E.g.: var ID = 4
+
+	var data = [
+		{
+			label: "Tilt",
+		    data: TiltData 
+		}, 
+		{
+			label: "Throw",
+		    data: ThrowData 
+		}, 
+		{
+			label: "Swipe",
+		    data: SwipeData 
+		}, 
+		{
+			label: "Pinch",
+		    data: PinchData 
+		}
+	];
+
+	var timeData = [
+		{
+			label: "Tilt",
+		    data: TimeTiltData 
+		}, 
+		{
+			label: "Throw",
+		    data: TimeThrowData 
+		}, 
+		{
+			label: "Swipe",
+		    data: TimeSwipeData 
+		}, 
+		{
+			label: "Pinch",
+		    data: TimePinchData 
+		}
+	];
 		
-	$.plot("#hitpercentage", [
-			{label: "Tilt", data: TiltData},
-			{label: "Throw", data: ThrowData},
-			{label: "Swipe", data: SwipeData},
-			{label: "Pinch", data: PinchData}
-		],
+	$.plot("#hitpercentage", data,
 		{
 			yaxis: {
 				ticks: 10,
 				min: 0,
 				axisLabel: "Percent (%)",
+				axisLabelFontFamily: 'Times New Roman',
 				max: 100,
 				tickDecimals: 0
 			}, 
@@ -71,9 +137,13 @@
 				ticks: 18,
 				min: 1,
 				axisLabel: "Target",
+				axisLabelFontFamily: 'Times New Roman',
 				max: 18,
 				tickDecimals: 0
 			},
+			grid: {
+		        borderWidth: 1
+		    },
 			legend: { 
 				position: "se",
 				backgroundOpacity: 0.5,
@@ -82,54 +152,32 @@
 		}
 	);
 
-	$.plot("#timepertarget", [
-			{label: "Tilt", data: TimeTiltData, 
-				bars: { 
-					show:true,
-					lineWidth: 1,
-                	order: 1
-                }
-            },
-            {label: "Throw", data: TimeThrowData, 
-				bars: { 
-					show:true,
-					lineWidth: 1,
-                	order: 2 
-                }
-            },
-            {label: "Swipe", data: TimeSwipeData, 
-				bars: { 
-					show:true,
-					lineWidth: 1,
-                	order: 3 
-                }
-            },
-            {label: "Pinch", data: TimePinchData, 
-				bars: { 
-					show:true,
-					lineWidth: 1,
-                	order: 4 
-                }
-            }
-		],
-		{
-			xaxis: {
-				tickLength: 0,
-				axisLabel: "Target",
-			},
-			yaxis: {
-				axisLabel: "Time (seconds)"
-			},
-			grid: {
-		        borderWidth: 1
-		    },
-			legend: { 
-				position: "se",
-				backgroundOpacity: 0.5,
-				container: "#TimeLegend"
-			}	
+	$.plot("#timepertarget", timeData, {
+	    series: {
+	        bars: {
+	            show: true,
+	            barWidth: 0.2,
+	            lineWidth: 0.01,
+	            order: 1, 
+	            fillColor: {
+	                colors: [{ opacity: 1 }, { opacity: 1 }, 
+	                		{ opacity: 1 }, { opacity: 1 }]
+	            }
+	        }
+	    },
+	    xaxis: {
+	        mode: "categories",
+	        tickLength: 0
+	    },
+	    grid: {
+	        borderWidth: 1
+	    },
+	    legend: { 
+			position: "se",
+			backgroundOpacity: 0.5,
+			container: "#TimeLegend"
 		}
-	);
+	});
 
 	document.title = "UserID: "+ ID;
 	$("#userID").html("UserID: "+ ID);
@@ -222,5 +270,8 @@
 <a id="linkPrev">&#8678; Prev</a> | 
 <a id="linkNext">Next &#8680;</a>
 
+<div class="demo-container">
+            <div id="placeholder" class="demo-placeholder"></div>
+        </div>
 </body>
 </html>
