@@ -5,6 +5,24 @@
 	<title></title>
 	<style>
 
+	#hitPercentageGraph {
+		text-align:center;
+		border:1px solid #000;
+	}
+
+	#hitPercentageGraph #hitpercentage {
+		width:500px; 
+		height:300px; 
+		display: table-cell;
+	}
+
+	#hitPlot {}
+
+	#hitPlot .data td img {
+		border:1px solid #000;
+		margin: 10px;
+	}
+
 	h3 {
 		margin-top: 30px;
 		margin-bottom: 5px;
@@ -16,6 +34,15 @@
 	<script type="text/javascript">
 	
 	$(document).ready(function(){
+
+	$("body").keydown(function(e) {
+		if(e.which == 37) { // left     
+		  $("#linkPrev").trigger("click");
+		}
+		else if(e.which == 39) { // right     
+		  $("#linkNext").trigger("click");
+		}
+    });
 	
 	%Tilt%
 	%Throw%
@@ -79,7 +106,7 @@
 <body>
 <h1 id="userID"></h1>
 
-<table style="text-align:center;border:1px solid #000;">
+<table id="hitPercentageGraph">
   <tr>
     <td></td>
     <td>Hit percentage</td>
@@ -89,7 +116,7 @@
   <tr>
     <td>%</td>
     <td>
-      <div id="hitpercentage" style="width:500px; height:300px; display: table-cell;"> </div>
+      <div id="hitpercentage"> </div>
     </td>
     <td><div id="legend"></div></td>
   </tr>
@@ -103,14 +130,14 @@
 
 <br>
 
-<table>
-	<tr>
+<table id="hitPlot">
+	<tr class="description">
 		<th>Tilt</th>
 		<th>Throw</th>
 		<th>Swipe</th>
 		<th>Pinch</th>
 	</tr>
-	<tr>
+	<tr class="data">
 		<td><img id="tiltImg" src=""></td>
 		<td><img id="throwImg" src=""></td>
 		<td><img id="swipeImg" src=""></td>
