@@ -31,6 +31,7 @@
 	</style>
 	<script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
 	<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="flot/jquery.flot.orderBars.js"></script>
 	<script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -48,6 +49,8 @@
 	%Throw%
 	%Swipe%
 	%Pinch%
+
+	%ID% // E.g.: var ID = 4
 		
 	$.plot("#hitpercentage", [
 			{label: "Tilt", data: TiltData},
@@ -77,24 +80,46 @@
 	);
 
 	$.plot("#timepertarget", [
-			{label: "Tilt", data: TimeTiltData},
-			{label: "Throw", data: TimeThrowData},
-			{label: "Swipe", data: TimeSwipeData},
-			{label: "Pinch", data: TimePinchData}
+			{label: "Tilt", data: TimeTiltData, 
+				bars: { 
+					show:true,
+                	barWidth: 0.1,
+                	order: 1
+                }
+            },
+            {label: "Throw", data: TimeThrowData, 
+				bars: { 
+					show:true,
+                	barWidth: 0.1,
+                	order: 2 
+                }
+            },
+            {label: "Swipe", data: TimeSwipeData, 
+				bars: { 
+					show:true,
+                	barWidth: 0.1,
+                	order: 3 
+                }
+            },
+            {label: "Pinch", data: TimePinchData, 
+				bars: { 
+					show:true,
+                	barWidth: 0.1,
+                	order: 4 
+                }
+            }
 		],
 		{
 			yaxis: {
-				ticks: 10,
-				min: 0,
-				max: 60,
-				tickDecimals: 0
+
 			}, 
 			xaxis: {
-				ticks: 18,
-				min: 1,
-				max: 18,
+				ticks: 19,
 				tickDecimals: 0
 			},
+			grid: {
+				
+			}
 			legend: { 
 				position: "se",
 				backgroundOpacity: 0.5,
@@ -103,26 +128,21 @@
 		}
 	);
 
-	function getID() {
-		var currentID = window.location.pathname.split('/').pop().slice(0, -5);
-		return currentID;
-	}
+	document.title = "UserID: "+ ID;
+	$("#userID").html("UserID: "+ ID);
 
-	document.title = "UserID: "+ getID();
-	$("#userID").html("UserID: "+ getID());
-
-	$("#tiltImg").attr("src", getID()+"/Tilt.bmp");
-	$("#throwImg").attr("src", getID()+"/Throw.bmp");
-	$("#swipeImg").attr("src", getID()+"/Swipe.bmp");
-	$("#pinchImg").attr("src", getID()+"/Pinch.bmp");
+	$("#tiltImg").attr("src", ID+"/Tilt.bmp");
+	$("#throwImg").attr("src", ID+"/Throw.bmp");
+	$("#swipeImg").attr("src", ID+"/Swipe.bmp");
+	$("#pinchImg").attr("src", ID+"/Pinch.bmp");
 
 	$("#linkPrev").click(function(){
-		var current_file = getID();
+		var current_file = ID;
 		current_file--;
 		window.location.href = current_file + ".html";
 	});
 	$("#linkNext").click(function(){
-		var current_file = getID();
+		var current_file = ID;
 		current_file++;
 		window.location.href = current_file + ".html";
 	});
