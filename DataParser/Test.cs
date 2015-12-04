@@ -61,6 +61,11 @@ namespace DataParser {
                     }
                 }
             }
+            foreach(var g in Attempts)
+            {
+                TestStart[g.Key] = g.Value[0].Time;
+                g.Value.RemoveAt(0);
+            }
         }
 
         public void GenerateHTML() {
@@ -68,18 +73,25 @@ namespace DataParser {
             using(StreamWriter sw = new StreamWriter(directory + ID + ".html")) {
                 string line = "";
                 while((line = sr.ReadLine()) != null) {
-
                     if (line.Contains("%Tilt%")) {
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Tilt]), GestureType.Tilt);
+                        List<Attempt> attempts = Attempts[GestureType.Tilt];
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Tilt);
+                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Tilt]), GestureType.Tilt);
                     } 
                     else if(line.Contains("%Swipe%")) {
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Swipe]), GestureType.Swipe); ;
+                        List<Attempt> attempts = Attempts[GestureType.Swipe];
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Swipe);
+                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Swipe]), GestureType.Swipe);
                     } 
                     else if(line.Contains("%Throw%")) {
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Throw]), GestureType.Throw); ;
+                        List<Attempt> attempts = Attempts[GestureType.Throw];
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Throw);
+                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Throw]), GestureType.Throw);
                     } 
                     else if(line.Contains("%Pinch%")) {
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Pinch]), GestureType.Pinch); ;
+                        List<Attempt> attempts = Attempts[GestureType.Pinch];
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(attempts), GestureType.Pinch);
+                        line += GetJSTimeArray(GetTimePerTarget(attempts, TestStart[GestureType.Pinch]), GestureType.Pinch);
                     }
 
                     sw.WriteLine(line);
@@ -219,6 +231,21 @@ namespace DataParser {
             return hitsAtTries;
         }
 
+        private float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start)
+        {
+
+           float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
+            foreach (var attempt in attempts)
+            {
+                float timeAtTarget = (float) (attempt.Time.TotalSeconds - start.TotalSeconds);
+                
+                timeAtTries[currentAttempt++] = timeAtTarget;
+                start = attempt.Time;
+            }
+
+            return timeAtTries;
+        }
+
         private static string GetJSAvgPercentageArray(float[] percentages, GestureType type)
         {
 
@@ -232,9 +259,27 @@ namespace DataParser {
             }
 
             array = array.Remove(array.Length - 2);
-            array += " ];";
+            array += " ];\n";
 
             return "var " + type + "Data = " + array;
+        }
+
+        private static string GetJSTimeArray(float[] times, GestureType type)
+        {
+
+            //var data = [ [[0, 0], [1, 1], [1,0]] ];
+
+            string array = " [ ";
+            for (int i = 0; i < times.Length; i++)
+            {
+                float time = (float)times[i];
+                array += "[" + (i + 1) + ", " + time + "], ";
+            }
+
+            array = array.Remove(array.Length - 2);
+            array += " ];\n";
+
+            return "var Time" + type + "Data = " + array;
         }
     }
 }
