@@ -82,8 +82,8 @@ namespace DataParser {
                     }
                     else if (line.Contains("%Tilt%") || line.Contains("%Swipe%") || line.Contains("%Throw%") || line.Contains("%Pinch%")) {
                         GestureType type = GetTypePlaceHolder(line);
-                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[type]), GestureType.Tilt);
-                        line += GetJSTimeArray(GetTimePerTarget(Attempts[type], TestStart[GestureType.Tilt]), GestureType.Tilt);
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[type]), type);
+                        line += GetJSTimeArray(GetTimePerTarget(Attempts[type], TestStart[type]), type);
                     } 
                     sw.WriteLine(line);
                 }
