@@ -11,7 +11,7 @@
 		display: table-cell;
 	}
 
-	#hitPercentageGraph {
+	#hitPercentageGraph, #timeGraph {
 		text-align:center;
 		border:1px solid #000;
 	}
@@ -32,6 +32,7 @@
 	<script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
 	<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
 	<script language="javascript" type="text/javascript" src="flot/jquery.flot.orderBars.js"></script>
+	<script type="text/javascript" language="javascript" src="flot/jquery.flot.axislabels.js"></script>
 	<script type="text/javascript">
 	
 	$(document).ready(function(){
@@ -62,12 +63,14 @@
 			yaxis: {
 				ticks: 10,
 				min: 0,
+				axisLabel: "Percent (%)",
 				max: 100,
 				tickDecimals: 0
 			}, 
 			xaxis: {
 				ticks: 18,
 				min: 1,
+				axisLabel: "Target",
 				max: 18,
 				tickDecimals: 0
 			},
@@ -83,36 +86,43 @@
 			{label: "Tilt", data: TimeTiltData, 
 				bars: { 
 					show:true,
+					lineWidth: 1,
                 	order: 1
                 }
             },
             {label: "Throw", data: TimeThrowData, 
 				bars: { 
 					show:true,
+					lineWidth: 1,
                 	order: 2 
                 }
             },
             {label: "Swipe", data: TimeSwipeData, 
 				bars: { 
 					show:true,
+					lineWidth: 1,
                 	order: 3 
                 }
             },
             {label: "Pinch", data: TimePinchData, 
 				bars: { 
 					show:true,
+					lineWidth: 1,
                 	order: 4 
                 }
             }
 		],
 		{
-			yaxis: {
-
-			}, 
 			xaxis: {
-				ticks: 19,
-				tickDecimals: 0
+				tickLength: 0,
+				axisLabel: "Target",
 			},
+			yaxis: {
+				axisLabel: "Time (seconds)"
+			},
+			grid: {
+		        borderWidth: 1
+		    },
 			legend: { 
 				position: "se",
 				backgroundOpacity: 0.5,
@@ -154,7 +164,7 @@
   </tr>
 
   <tr>
-    <td>%</td>
+    <td></td>
     <td>
       <div id="hitpercentage" class="graphContainer"> </div>
     </td>
@@ -163,12 +173,10 @@
 
   <tr>
     <td></td>
-    <td>Target</td>
+    <td></td>
     <td></td>
   </tr>
 </table>
-
-<br>
 
 <table id="timeGraph">
   <tr>
@@ -178,7 +186,7 @@
   </tr>
 
   <tr>
-    <td>Seconds</td>
+    <td></td>
     <td>
       <div id="timepertarget" class="graphContainer"> </div>
     </td>
@@ -187,7 +195,7 @@
 
   <tr>
     <td></td>
-    <td>Target</td>
+    <td></td>
     <td></td>
   </tr>
 </table>
