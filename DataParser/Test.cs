@@ -63,10 +63,18 @@ namespace DataParser {
                 string line = "";
                 while((line = sr.ReadLine()) != null) {
 
-                    if (line.Contains("%Tilt%")) { line = GetHitsPerTry(GestureType.Tilt); } 
-                    else if(line.Contains("%Swipe%")) { line = GetHitsPerTry(GestureType.Pinch); } 
-                    else if(line.Contains("%Throw%")) { line = GetHitsPerTry(GestureType.Swipe); } 
-                    else if(line.Contains("%Pinch%")) { line = GetHitsPerTry(GestureType.Throw); }
+                    if (line.Contains("%Tilt%")) {
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Tilt]), GestureType.Tilt);
+                    } 
+                    else if(line.Contains("%Swipe%")) {
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Swipe]), GestureType.Swipe); ;
+                    } 
+                    else if(line.Contains("%Throw%")) {
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Throw]), GestureType.Throw); ;
+                    } 
+                    else if(line.Contains("%Pinch%")) {
+                        line = GetJSAvgPercentageArray(GetHitsPerTry(Attempts[GestureType.Pinch]), GestureType.Pinch); ;
+                    }
 
                     sw.WriteLine(line);
                 }
@@ -132,16 +140,13 @@ namespace DataParser {
                 while ((line = sr.ReadLine()) != null) {
 
                     if (line.Contains("%Tilt%")) {
-                        line = "var " + GestureType.Tilt + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Tilt]);
+                        
                     } 
                     else if (line.Contains("%Swipe%")) {
-                        line = "var " + GestureType.Swipe + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Swipe]);
                     } 
                     else if (line.Contains("%Throw%")) {
-                        line = "var " + GestureType.Throw + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Throw]);
                     } 
                     else if (line.Contains("%Pinch%")) {
-                        line = "var " + GestureType.Pinch + "Data = " + GetJSAvgPercentageArray(percentagePerGesture[GestureType.Pinch]);
                     }
 
                     sw.WriteLine(line);
@@ -192,40 +197,24 @@ namespace DataParser {
 
         }
 
-        private string GetHitsPerTry(GestureType type) {
-
-            List<Attempt> attempts = Attempts[type];
-
-            //var data = [ [[0, 0], [1, 1], [1,0]] ];
+        private float[] GetHitsPerTry(List<Attempt> attempts) {
             
             int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
             foreach (var attempt in attempts) {
                 if (attempt.Hit) {
                     hits++;
                 }
-                hitsAtTries[currentAttempt++] = (float)hits;
+                hitsAtTries[currentAttempt++] = (float)hits / ((float)currentAttempt);
             }
 
 
-            return "var " + type + "Data = " + GetJSPercentageArray(hitsAtTries);
+            return hitsAtTries;
         }
 
-        private static string GetJSPercentageArray(float[] percentages) {
-
-            string array = " [ ";
-            for (int i = 0; i < percentages.Length; i++) {
-                float percentage = (float)percentages[i] / ((float)i + 1.0f) * 100.0f;
-                array += "[" + (i + 1) + ", " + percentage + "], ";
-            }
-
-            array = array.Remove(array.Length - 2);
-            array += " ];";
-
-            return array;
-        }
-
-        private static string GetJSAvgPercentageArray(float[] percentages)
+        private static string GetJSAvgPercentageArray(float[] percentages, GestureType type)
         {
+
+            //var data = [ [[0, 0], [1, 1], [1,0]] ];
 
             string array = " [ ";
             for (int i = 0; i < percentages.Length; i++)
@@ -237,7 +226,7 @@ namespace DataParser {
             array = array.Remove(array.Length - 2);
             array += " ];";
 
-            return array;
+            return "var " + type + "Data = " + array;
         }
     }
 }
