@@ -87,7 +87,7 @@ namespace DataParser {
                     if (averageTest.Attempts.ContainsKey(gesture.Key)) {
                         averageTest.Attempts[gesture.Key].AddRange(gesture.Value);
                     } else {
-                        averageTest.Attempts.Add(gesture.Key, gesture.Value);
+                        averageTest.Attempts.Add(gesture.Key, new List<Attempt>(gesture.Value));
                     }
                 }
             }
