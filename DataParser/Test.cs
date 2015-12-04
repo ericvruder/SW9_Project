@@ -97,16 +97,13 @@ namespace DataParser {
         public static void CreateAverageLearningGraph(List<Test> tests) {
 
             Dictionary<GestureType, float[]> percentagePerGesture = new Dictionary<GestureType, float[]>();
+            int numberOfAttempts = tests[0].Attempts[0].Count;
 
             foreach (var test in tests) {
                 foreach (var gesture in test.Attempts) {
 
                     if (!percentagePerGesture.ContainsKey(gesture.Key)) {
-                        float[] hitsPerTry = new float[tests[0].Attempts[0].Count];
-                        for (int i = 0; i < hitsPerTry.Length; i++) {
-                            hitsPerTry[i] = 0.0f;
-                        }
-                        percentagePerGesture.Add(gesture.Key, hitsPerTry);
+                        percentagePerGesture.Add(gesture.Key, new float[numberOfAttempts]);
                     }
 
                     var attempts = gesture.Value;
