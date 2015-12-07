@@ -5,22 +5,22 @@
 <script>
 
     $(this).keydown(function (e) {
-        if (e.which == 37) { // left     
-            $("#linkPrev").trigger("click");
+        if (e.which == 37) { // left
+            window.location.href = "@Url.Action("Index", "Home", new { testId = ViewBag.PrevLink })";
         }
-        else if (e.which == 39) { // right     
-            $("#linkNext").trigger("click");
+        else if (e.which == 39) { // right
+            window.location.href = "@Url.Action("Index", "Home", new { testId = ViewBag.NextLink })";
         }
     });
 
-    @Model.GestureInformation["tilt"].HitData 
-    @Model.GestureInformation["tilt"].TimeData 
-    @Model.GestureInformation["throw"].HitData 
+    @Model.GestureInformation["tilt"].HitData
+    @Model.GestureInformation["tilt"].TimeData
+    @Model.GestureInformation["throw"].HitData
     @Model.GestureInformation["throw"].TimeData
-    @Model.GestureInformation["swipe"].HitData 
-    @Model.GestureInformation["swipe"].TimeData 
-    @Model.GestureInformation["pinch"].HitData 
-    @Model.GestureInformation["pinch"].TimeData 
+    @Model.GestureInformation["swipe"].HitData
+    @Model.GestureInformation["swipe"].TimeData
+    @Model.GestureInformation["pinch"].HitData
+    @Model.GestureInformation["pinch"].TimeData
 
 </script>
 @Scripts.Render("~/bundles/documentready")

@@ -1,4 +1,4 @@
-﻿$(document).ready(function(){
+﻿$(document).ready(function () {
 
 	var data = [
 		{
@@ -42,7 +42,7 @@
 		{
 		    yaxis: {
 		        ticks: 10,
-		        axisLabel: "Percent (%)",
+		        axisLabel: "%",
 		        axisLabelFontFamily: 'Times New Roman',
 		        max: 100,
 		        tickDecimals: 0
@@ -67,20 +67,15 @@
 	);
 
     $.plot("#timepertarget", timeData, {
-        series: {
-            bars: {
-                show: true,
-                barWidth: 0.2,
-                lineWidth: 0.01,
-                order: 1,
-                fillColor: {
-                    colors: [{ opacity: 1 }, { opacity: 1 },
-	                		{ opacity: 1 }, { opacity: 1 }]
-                }
-            }
+        
+        yaxis: {
+            axisLabel: "Seconds",
+            axisLabelFontFamily: 'Times New Roman'
         },
         xaxis: {
             mode: "categories",
+            axisLabel: "Target",
+            axisLabelFontFamily: 'Times New Roman',
             tickLength: 0
         },
         grid: {
