@@ -24,9 +24,9 @@ namespace DataSetGenerator {
                     foreach(var gesture in t.Attempts) {
                         string time = (t.Attempts[gesture.Key].Last().Time - t.TestStart[gesture.Key]).TotalSeconds.ToString();
                         float hitPercentage = Test.GetHitsPerTry(t.Attempts[gesture.Key]).Last() * 100f;
-                        string totalHit = hitPercentage.ToString(CultureInfo.InvariantCulture);
-                        string totalError = (100f - hitPercentage).ToString(CultureInfo.InvariantCulture);
-                        datawriter.WriteLine(t.ID + ", " + gesture.Key + ", " + time + ", " + totalHit + ", " + totalError);
+                        string totalHit = hitPercentage.ToString();
+                        string totalError = (100f - hitPercentage).ToString();
+                        datawriter.WriteLine(t.ID + " " + gesture.Key + " " + time + " " + totalHit + " " + totalError);
                     }
                 }
             }
@@ -47,7 +47,7 @@ namespace DataSetGenerator {
                         {
                             string type = attempt.Key.ToString();
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(type + ", " + hit);
+                            datawriter.WriteLine(type + " " + hit);
                         }
                     }
                 }
@@ -69,7 +69,7 @@ namespace DataSetGenerator {
                         {
                             string gridsize = a.Size.ToString();
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(gridsize + ", " + hit);
+                            datawriter.WriteLine(gridsize + " " + hit);
                         }
                     }
                 }
