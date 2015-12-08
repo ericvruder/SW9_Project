@@ -8,9 +8,13 @@ using System.IO;
 
 
 namespace DataSetGenerator {
-    static class DataGenerator {
-        static void GetUserInfoGridSize() {
 
+    static class DataGenerator {
+
+        static string Directory { get { return ".\\..\\..\\Testlog/"; } }
+
+        static void GetUserInfoGridSize() {
+            
         }
     }
 }
