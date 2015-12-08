@@ -11,10 +11,10 @@ namespace DataSetGenerator {
 
     static class DataGenerator {
 
-        static string Directory { get { return ".\\..\\..\\Testlog/"; } }
+        static string Directory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
-        static void GetUserInfoGridSize() {
-            
+        public static void GetUserInfoGridSize() {
+            StreamReader sr = new StreamReader(Directory + "1.test");
         }
     }
 }
