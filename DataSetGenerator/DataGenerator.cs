@@ -53,5 +53,27 @@ namespace DataSetGenerator {
                 }
             }
         }
+
+        public static void GetAllGridSizeAttempts()
+        {
+            using (StreamWriter datawriter = new StreamWriter("all_gridsize_data.csv"))
+            {
+                string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
+                foreach (var file in files)
+                {
+                    string id = file.Split('/').Last().Split('.')[0];
+                    Test t = new Test(new StreamReader(file), id);
+                    foreach (var attempt in t.Attempts)
+                    {
+                        foreach (var a in t.Attempts[attempt.Key])
+                        {
+                            string gridsize = a.Size.ToString();
+                            string hit = a.Hit ? "1" : "0";
+                            datawriter.WriteLine(gridsize + ", " + hit);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
