@@ -8,7 +8,7 @@ using SW9_Project;
 using System.IO;
 
 namespace WebDataParser {
-    class Test {
+    public class Test {
         
         public string ID { get; set; }
 
@@ -68,6 +68,33 @@ namespace WebDataParser {
                 g.Value.RemoveAt(0);
                 PracticeTime[g.Key] = TestStart[g.Key] - PracticeTime[g.Key];
             }
+        }
+
+        public static float[] GetHitsPerTry(List<Attempt> attempts) {
+
+            int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
+            foreach (var attempt in attempts) {
+                if (attempt.Hit) {
+                    hits++;
+                }
+                hitsAtTries[currentAttempt++] = (float)hits / ((float)currentAttempt);
+            }
+
+
+            return hitsAtTries;
+        }
+
+        public static float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start) {
+
+            float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
+            foreach (var attempt in attempts) {
+                float timeAtTarget = (float)(attempt.Time.TotalSeconds - start.TotalSeconds);
+
+                timeAtTries[currentAttempt++] = timeAtTarget;
+                start = attempt.Time;
+            }
+
+            return timeAtTries;
         }
     }
 }

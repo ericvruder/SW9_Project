@@ -50,6 +50,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SW9_Project\SW9_Project.csproj">
+      <Project>{3f2fb401-a2c7-4296-99e9-6766480e4bc8}</Project>
+      <Name>SW9_Project</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebDataParser\WebDataParser.csproj">
+      <Project>{91d7bb22-3795-4f4d-ad37-af1d4973242c}</Project>
+      <Name>WebDataParser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
