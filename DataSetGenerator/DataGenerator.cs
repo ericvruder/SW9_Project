@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 using System.IO;
 
+using WebDataParser;
+
 
 namespace DataSetGenerator {
 
     static class DataGenerator {
 
-        static string Directory { get { return ".\\..\\..\\..\\Testlog/"; } }
+        static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
         public static void GetUserInfoGridSize() {
-            StreamReader sr = new StreamReader(Directory + "1.test");
+            string[] files = Dire
         }
     }
 }
