@@ -4,23 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-<<<<<<< Updated upstream
-=======
 using System.IO;
 
 using WebDataParser;
 using System.Globalization;
-using SW9_Project;
 
->>>>>>> Stashed changes
+using SW9_Project;
 namespace DataSetGenerator {
+
     static class DataGenerator {
-<<<<<<< Updated upstream
-=======
 
         static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
-        public static int GetNumber(GestureType gesturetype) {
+        public static int GetTechniqueNumber(GestureType gesturetype) {
 
             switch (gesturetype)
             {
@@ -42,10 +38,22 @@ namespace DataSetGenerator {
             }
         }
 
+        public static int GetGridsizeNumber(GridSize gridsize)
+        {
+            switch (gridsize)
+            {
+                case GridSize.Small:
+                    return 0;
+                case GridSize.Large:
+                    return 1;
+                default:
+                    return -1;
+            }
+        }
+
         public static void GetUserInfoTechnique() {
             using (StreamWriter datawriter = new StreamWriter("user_technique_data.csv")) {
                 string[] files = Directory.GetFiles(TestFileDirectory);
-                
                 datawriter.WriteLine("time1 time2 time3 time4 success1 success2 success3 success4 failure1 failure2 failure3 failure4");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -73,6 +81,7 @@ namespace DataSetGenerator {
             using (StreamWriter datawriter = new StreamWriter("all_technique_data.csv"))
             {
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
+                datawriter.WriteLine("technique hit");
                 foreach (var file in files)
                 {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -82,7 +91,7 @@ namespace DataSetGenerator {
                         foreach(var a in t.Attempts[attempt.Key])
                         {
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(GetNumber(attempt.Key) + " " + hit);
+                            datawriter.WriteLine(GetTechniqueNumber(attempt.Key) + " " + hit);
                         }
                     }
                 }
@@ -94,6 +103,7 @@ namespace DataSetGenerator {
             using (StreamWriter datawriter = new StreamWriter("all_gridsize_data.csv"))
             {
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
+                datawriter.WriteLine("gridsize hit");
                 foreach (var file in files)
                 {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -102,14 +112,12 @@ namespace DataSetGenerator {
                     {
                         foreach (var a in t.Attempts[attempt.Key])
                         {
-                            string gridsize = a.Size.ToString();
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(gridsize + " " + hit);
+                            datawriter.WriteLine(GetGridsizeNumber(a.Size) + " " + hit);
                         }
                     }
                 }
             }
         }
->>>>>>> Stashed changes
     }
 }
