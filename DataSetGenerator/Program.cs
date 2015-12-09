@@ -10,6 +10,7 @@ namespace DataSetGenerator {
             DataGenerator.GetAllTechniqueAttempts();
             DataGenerator.GetAllGridSizeAttempts();
             DataGenerator.GetUserTechniqueData();
+            DataGenerator.GetUserGridSizeData();
         }
     }
 }

@@ -118,25 +118,43 @@ namespace DataSetGenerator {
 
         public static void GetUserGridSizeData() {
             using (StreamWriter datawriter = new StreamWriter("user_gridsize_data.csv")) {
-                string[] files = Directory.GetFiles(TestFileDirectory);
+                string[] files = Directory.GetFiles(TestFileDirectory, "*test");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
                     Test t = new Test(new StreamReader(file), id);
-                    TimeSpan largeTotalTime = TimeSpan.Zero, smallTotalTime = TimeSpan.Zero;
-                    foreach (var gesture in t.Attempts) {
-                        TimeSpan curr = t.TestStart[gesture.Key];
-                        foreach(var attempt in gesture.Value) {
-                            if(attempt.Size == SW9_Project.GridSize.Large) {
-
+                    int largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
+                    int smallTotalTime = 0, smallTotalHit = 0, smallTotalMiss = 0;
+                    foreach(var gesture in AllTypes) {
+                        TimeSpan curr = t.TestStart[gesture];
+                        foreach (var attempt in t.Attempts[gesture]) {
+                            if(attempt.Size == GridSize.Large) {
+                                largeTotalTime += (int)(attempt.Time.TotalSeconds - curr.TotalSeconds);
+                                if(attempt.Hit) {
+                                    largeTotalHit++;
+                                } else {
+                                    largeTotalMiss++;
+                                }
                             }
+                            else {
+                                smallTotalTime += (int)(attempt.Time.TotalSeconds - curr.TotalSeconds);
+                                if (attempt.Hit) {
+                                    smallTotalHit++;
+                                } else {
+                                    smallTotalMiss++;
+                                }
+                            }
+                            curr = attempt.Time;
                         }
-                        string time = (t.Attempts[gesture.Key].Last().Time - t.TestStart[gesture.Key]).TotalSeconds.ToString();
-                        float hitPercentage = Test.GetHitsPerTry(t.Attempts[gesture.Key]).Last() * 100f;
-                        string totalHit = hitPercentage.ToString();
-                        string totalError = (100f - hitPercentage).ToString();
-                        datawriter.WriteLine(t.ID + ", " + gesture.Key + ", " + time + ", " + totalHit + ", " + totalError);
                     }
-                    
+                    string lTHP = ((largeTotalHit / (largeTotalHit + largeTotalMiss)) * 100f).ToString();
+                    string lTMP = ((largeTotalMiss / (largeTotalHit + largeTotalMiss)) * 100f).ToString();
+
+                    string sTHP = ((smallTotalHit / (smallTotalHit + smallTotalMiss)) * 100f).ToString();
+                    string sTMP = ((smallTotalMiss / (smallTotalHit + smallTotalMiss)) * 100f).ToString();
+
+                    string line = t.ID + " " + largeTotalTime + " " + lTHP + " " + lTMP + " " + smallTotalTime + " " + sTHP + " " + sTMP;
+                    datawriter.WriteLine(line);
+
                 }
             }
 
