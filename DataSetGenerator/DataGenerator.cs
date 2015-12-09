@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.IO;
-
 using WebDataParser;
 using System.Globalization;
 using SW9_Project;
 
-using SW9_Project;
 namespace DataSetGenerator {
 
     static class DataGenerator {
@@ -21,6 +18,10 @@ namespace DataSetGenerator {
 
         public static void GetUserTechniqueData() {
             using (StreamWriter datawriter = new StreamWriter("user_technique_data.csv")) {
+                datawriter.WriteLine("ID TimePinch TotalHitPinch TotalErrorPinch" + 
+                                       " TimeSwipe TotalHitSwipe TotalErrorSwipe" +
+                                       " TimeThrow TotalHitThrow TotalErrorThrow" +
+                                       " TimeTilt TotalHitTilt TotalErrorTilt");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -41,21 +42,16 @@ namespace DataSetGenerator {
 
             switch (gesturetype)
             {
-                case GestureType.Throw:
-                    return 1;
-                    break;
                 case GestureType.Pinch:
-                    return 2;
-                    break;
-                case GestureType.Tilt:
-                    return 3;
-                    break;
+                    return 1;
                 case GestureType.Swipe:
+                    return 2;
+                case GestureType.Throw:
+                    return 3;
+                case GestureType.Tilt:
                     return 4;
-                    break;
                 default:
                     return 0;
-                    break;
             }
         }
 
@@ -76,8 +72,8 @@ namespace DataSetGenerator {
         {
             using (StreamWriter datawriter = new StreamWriter("all_technique_data.csv"))
             {
+                datawriter.WriteLine("Technique HitOrMiss");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
-                datawriter.WriteLine("technique hit");
                 foreach (var file in files)
                 {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -98,8 +94,8 @@ namespace DataSetGenerator {
         {
             using (StreamWriter datawriter = new StreamWriter("all_gridsize_data.csv"))
             {
+                datawriter.WriteLine("GridSize HitOrMiss");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
-                datawriter.WriteLine("gridsize hit");
                 foreach (var file in files)
                 {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -118,12 +114,14 @@ namespace DataSetGenerator {
 
         public static void GetUserGridSizeData() {
             using (StreamWriter datawriter = new StreamWriter("user_gridsize_data.csv")) {
+                datawriter.WriteLine("ID LargeTotalTime LargeTotalHitPercent LargeTotalMissPercent" +
+                                       " SmallTotalTime SmallTotalHitPercent SmallTotalMissPercent");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*test");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
                     Test t = new Test(new StreamReader(file), id);
-                    int largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
-                    int smallTotalTime = 0, smallTotalHit = 0, smallTotalMiss = 0;
+                    float largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
+                    float smallTotalTime = 0, smallTotalHit = 0, smallTotalMiss = 0;
                     foreach(var gesture in AllTypes) {
                         TimeSpan curr = t.TestStart[gesture];
                         foreach (var attempt in t.Attempts[gesture]) {
