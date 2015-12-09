@@ -89,9 +89,9 @@ namespace WebDataParser {
             
             foreach (var gesture in AllGestures) {
                 GestureInfo info = new GestureInfo();
-                var hitsPerTry = GetHitsPerTry(Tests[id].Attempts[gesture]);
+                var hitsPerTry = Test.GetHitsPerTry(Tests[id].Attempts[gesture]);
                 info.HitData = GetJSPercentageArray(hitsPerTry, gesture);
-                info.TimeData = GetJSTimeArray(GetTimePerTarget(Tests[id].Attempts[gesture], Tests[id].TestStart[gesture]), gesture);
+                info.TimeData = GetJSTimeArray(Test.GetTimePerTarget(Tests[id].Attempts[gesture], Tests[id].TestStart[gesture]), gesture);
                 info.HitPercentage = hitsPerTry.Last() * 100f;
                 info.PracticeTime = (int)Tests[id].PracticeTime[gesture].TotalSeconds;
                 info.TotalTime = (int)(Tests[id].Attempts[gesture].Last().Time - Tests[id].TestStart[gesture]).TotalSeconds;
@@ -128,7 +128,7 @@ namespace WebDataParser {
                 List<float[]> percentages = new List<float[]>();
 
                 foreach (var test in tests) {
-                    percentages.Add(GetHitsPerTry(test.Attempts[gesture]));
+                    percentages.Add(Test.GetHitsPerTry(test.Attempts[gesture]));
                 }
 
                 for (int i = 0; i < avgPercentage.Length; i++) {
@@ -154,7 +154,7 @@ namespace WebDataParser {
                 List<float[]> times = new List<float[]>();
 
                 foreach (var test in tests) {
-                    times.Add(GetTimePerTarget(test.Attempts[gesture], test.TestStart[gesture]));
+                    times.Add(Test.GetTimePerTarget(test.Attempts[gesture], test.TestStart[gesture]));
                 }
 
                 for (int i = 0; i < averageTime.Length; i++) {
@@ -259,33 +259,6 @@ namespace WebDataParser {
             //Changed grid size.Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7
             //Changed grid size.Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4
 
-        }
-
-        private static float[] GetHitsPerTry(List<Attempt> attempts) {
-
-            int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
-            foreach (var attempt in attempts) {
-                if (attempt.Hit) {
-                    hits++;
-                }
-                hitsAtTries[currentAttempt++] = (float)hits / ((float)currentAttempt);
-            }
-
-
-            return hitsAtTries;
-        }
-
-        private static float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start) {
-
-            float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
-            foreach (var attempt in attempts) {
-                float timeAtTarget = (float)(attempt.Time.TotalSeconds - start.TotalSeconds);
-
-                timeAtTries[currentAttempt++] = timeAtTarget;
-                start = attempt.Time;
-            }
-
-            return timeAtTries;
         }
 
         private static string GetJSPercentageArray(float[] percentages, GestureType type) {

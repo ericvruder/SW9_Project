@@ -7,7 +7,7 @@ using SW9_Project;
 using System.Globalization;
 
 namespace WebDataParser {
-    class Attempt {
+    public class Attempt {
 
         public TimeSpan Time { get; }
         public bool Hit { get; }
