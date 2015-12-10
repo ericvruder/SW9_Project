@@ -59,9 +59,9 @@ namespace DataSetGenerator {
         {
             switch (gridsize)
             {
-                case GridSize.Small:
-                    return 0;
                 case GridSize.Large:
+                    return 0;
+                case GridSize.Small:
                     return 1;
                 default:
                     return -1;
@@ -72,18 +72,19 @@ namespace DataSetGenerator {
         {
             using (StreamWriter datawriter = new StreamWriter("all_technique_data.csv"))
             {
-                datawriter.WriteLine("Technique HitOrMiss");
+                datawriter.WriteLine("Technique HitOrMiss Time");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
                 foreach (var file in files)
                 {
                     string id = file.Split('/').Last().Split('.')[0];
                     Test t = new Test(new StreamReader(file), id);
-                    foreach(var attempt in t.Attempts)
-                    {
-                        foreach(var a in t.Attempts[attempt.Key])
-                        {
+                    foreach(var attempt in t.Attempts) {
+                        TimeSpan currTime = t.TestStart[attempt.Key];
+                        foreach (var a in t.Attempts[attempt.Key]) {
+                            string time = (a.Time.TotalSeconds - currTime.TotalSeconds).ToString();
+                            currTime = a.Time;
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(GetTechniqueNumber(attempt.Key) + " " + hit);
+                            datawriter.WriteLine(GetTechniqueNumber(attempt.Key) + " " + hit + " " + time);
                         }
                     }
                 }
@@ -94,7 +95,7 @@ namespace DataSetGenerator {
         {
             using (StreamWriter datawriter = new StreamWriter("all_gridsize_data.csv"))
             {
-                datawriter.WriteLine("GridSize HitOrMiss");
+                datawriter.WriteLine("GridSize HitOrMiss Time");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
                 foreach (var file in files)
                 {
@@ -102,10 +103,13 @@ namespace DataSetGenerator {
                     Test t = new Test(new StreamReader(file), id);
                     foreach (var attempt in t.Attempts)
                     {
+                        TimeSpan currTime = t.TestStart[attempt.Key];
                         foreach (var a in t.Attempts[attempt.Key])
                         {
+                            string time = (a.Time.TotalSeconds - currTime.TotalSeconds).ToString();
+                            currTime = a.Time;
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(GetGridsizeNumber(a.Size) + " " + hit);
+                            datawriter.WriteLine(GetGridsizeNumber(a.Size) + " " + hit + " " + time);
                         }
                     }
                 }
