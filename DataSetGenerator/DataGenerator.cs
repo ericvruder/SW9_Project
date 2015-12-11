@@ -17,11 +17,14 @@ namespace DataSetGenerator {
         static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
         public static void GetUserTechniqueData() {
+            using (StreamWriter anovadatawriter = new StreamWriter("user_technique_data_anova.csv"))
             using (StreamWriter datawriter = new StreamWriter("user_technique_data.csv")) {
                 datawriter.WriteLine("ID TimePinch TotalHitPinch TotalErrorPinch" + 
                                        " TimeSwipe TotalHitSwipe TotalErrorSwipe" +
                                        " TimeThrow TotalHitThrow TotalErrorThrow" +
                                        " TimeTilt TotalHitTilt TotalErrorTilt");
+
+                anovadatawriter.WriteLine("ID Technique Time Hit Error");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -33,11 +36,14 @@ namespace DataSetGenerator {
                         string totalHit = hitPercentage.ToString();
                         string totalError = (100f - hitPercentage).ToString();
                         line += " " + time + " " + totalHit + " " + totalError;
+
+                        anovadatawriter.WriteLine(id + " " + GetTechniqueNumber(gesture) + " " + time + " " + hitPercentage + " " + totalError);
                     }
                     datawriter.WriteLine(line);
                 }
             }
         }
+
         public static int GetTechniqueNumber(GestureType gesturetype) {
 
             switch (gesturetype)
@@ -117,9 +123,11 @@ namespace DataSetGenerator {
         }
 
         public static void GetUserGridSizeData() {
+            using (StreamWriter anovadatawriter = new StreamWriter("user_gridsize_data_anova.csv"))
             using (StreamWriter datawriter = new StreamWriter("user_gridsize_data.csv")) {
                 datawriter.WriteLine("ID LargeTotalTime LargeTotalHitPercent LargeTotalMissPercent" +
                                        " SmallTotalTime SmallTotalHitPercent SmallTotalMissPercent");
+                anovadatawriter.WriteLine("ID GridSize Time Hit Miss");
                 string[] files = Directory.GetFiles(TestFileDirectory, "*test");
                 foreach (var file in files) {
                     string id = file.Split('/').Last().Split('.')[0];
@@ -156,6 +164,8 @@ namespace DataSetGenerator {
 
                     string line = t.ID + " " + largeTotalTime + " " + lTHP + " " + lTMP + " " + smallTotalTime + " " + sTHP + " " + sTMP;
                     datawriter.WriteLine(line);
+                    anovadatawriter.WriteLine(t.ID + " " + GetGridsizeNumber(GridSize.Large) + " " + largeTotalTime + " " + lTHP + " " + lTMP);
+                    anovadatawriter.WriteLine(t.ID + " " + GetGridsizeNumber(GridSize.Small) + " " + smallTotalTime + " " + sTHP + " " + sTMP);
 
                 }
             }
