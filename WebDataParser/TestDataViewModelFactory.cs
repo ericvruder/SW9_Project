@@ -255,10 +255,6 @@ namespace WebDataParser {
 
             return ms;
 
-
-            //Changed grid size.Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7
-            //Changed grid size.Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4
-
         }
 
         private static string GetJSPercentageArray(float[] percentages, GestureType type) {
