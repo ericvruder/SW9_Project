@@ -431,6 +431,9 @@
     <Content Include="Testlog\Pilot\2.comment" />
     <Content Include="Testlog\Pilot\2.test" />
     <Content Include="Testlog\Pilot\general.comment" />
+    <Content Include="Testlog\53.test">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
