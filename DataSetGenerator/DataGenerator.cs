@@ -44,6 +44,25 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void GetStartPercentages() {
+            string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
+            int pinchg = 0, throwg = 0, tiltg = 0, swipeg = 0;
+            foreach (var file in files) {
+                Test t = new Test(file);
+                switch (t.Attempts.First().Key) {
+                    case GestureType.Pinch: pinchg++; break;
+                    case GestureType.Swipe: swipeg++; break;
+                    case GestureType.Throw: throwg++; break;
+                    case GestureType.Tilt: tiltg++; break;
+                }
+            }
+
+            Console.WriteLine("Pinch: " + (((float)pinchg / (float)files.Count()) * 100f));
+            Console.WriteLine("Swipe: " + (((float)swipeg / (float)files.Count()) * 100f));
+            Console.WriteLine("Throw: " + (((float)throwg / (float)files.Count()) * 100f));
+            Console.WriteLine("Tilt: " + (((float)tiltg / (float)files.Count()) * 100f));
+        }
+
         public static int GetTechniqueNumber(GestureType gesturetype) {
 
             switch (gesturetype)
