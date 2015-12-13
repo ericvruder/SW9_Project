@@ -61,6 +61,8 @@ namespace DataSetGenerator {
             Console.WriteLine("Swipe: " + (((float)swipeg / (float)files.Count()) * 100f));
             Console.WriteLine("Throw: " + (((float)throwg / (float)files.Count()) * 100f));
             Console.WriteLine("Tilt: " + (((float)tiltg / (float)files.Count()) * 100f));
+
+            Console.Read();
         }
 
         public static int GetTechniqueNumber(GestureType gesturetype) {
