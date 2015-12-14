@@ -91,10 +91,10 @@ namespace WebDataParser {
                 GestureInfo info = new GestureInfo();
                 var hitsPerTry = Test.GetHitsPerTry(Tests[id].Attempts[gesture]);
                 info.HitData = GetJSPercentageArray(hitsPerTry, gesture);
-                info.TimeData = GetJSTimeArray(Test.GetTimePerTarget(Tests[id].Attempts[gesture], Tests[id].TestStart[gesture]), gesture);
+                info.TimeData = GetJSTimeArray(Test.GetTimePerTarget(Tests[id].Attempts[gesture]), gesture);
                 info.HitPercentage = hitsPerTry.Last() * 100f;
                 info.PracticeTime = (int)Tests[id].PracticeTime[gesture].TotalSeconds;
-                info.TotalTime = (int)(Tests[id].Attempts[gesture].Last().Time - Tests[id].TestStart[gesture]).TotalSeconds;
+                info.TotalTime = (int)Tests[id].TotalTime[gesture].TotalSeconds;
                 info.Img = DrawHitBox(Tests[id].Attempts[gesture]);
 
                 TestViewModels[id].GestureInformation[GetGestureTypeString(gesture)] = info;
@@ -154,7 +154,7 @@ namespace WebDataParser {
                 List<float[]> times = new List<float[]>();
 
                 foreach (var test in tests) {
-                    times.Add(Test.GetTimePerTarget(test.Attempts[gesture], test.TestStart[gesture]));
+                    times.Add(Test.GetTimePerTarget(test.Attempts[gesture]));
                 }
 
                 for (int i = 0; i < averageTime.Length; i++) {
@@ -176,9 +176,9 @@ namespace WebDataParser {
             foreach (var test in tests) {
                 foreach (var gesture in test.Attempts) {
                     if (!temp.ContainsKey(gesture.Key)) {
-                        temp.Add(gesture.Key, gesture.Value.Last().Time - test.TestStart[gesture.Key]);
+                        temp.Add(gesture.Key, test.TotalTime[gesture.Key]);
                     } else {
-                        temp[gesture.Key] += gesture.Value.Last().Time - test.TestStart[gesture.Key];
+                        temp[gesture.Key] += test.TotalTime[gesture.Key];
                     }
                 }
             }

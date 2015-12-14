@@ -15,13 +15,13 @@ namespace WebDataParser {
         public Test(List<Test> tests) {
         }
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
-        public Dictionary<GestureType, TimeSpan> TestStart { get; set; }
+        public Dictionary<GestureType, TimeSpan> TotalTime { get; set; }
         public Dictionary<GestureType, TimeSpan> PracticeTime { get; set; }
         public Dictionary<GestureType, MemoryStream> ImageFile { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
-            TestStart = new Dictionary<GestureType, TimeSpan>();
+            TotalTime = new Dictionary<GestureType, TimeSpan>();
             PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
 
@@ -66,9 +66,22 @@ namespace WebDataParser {
             }
             foreach(var g in Attempts)
             {
-                TestStart.Add(g.Key, g.Value[0].Time);
+                TotalTime.Add(g.Key, g.Value[0].Time);
                 g.Value.RemoveAt(0);
-                PracticeTime[g.Key] = TestStart[g.Key] - PracticeTime[g.Key];
+                PracticeTime[g.Key] = TotalTime[g.Key] - PracticeTime[g.Key];
+
+                
+            }
+            foreach (var gesture in Attempts) {
+                TimeSpan currTime = TotalTime[gesture.Key];
+                TimeSpan totTime = TimeSpan.Zero;
+                foreach (var attempt in Attempts[gesture.Key]) {
+                    TimeSpan t = new TimeSpan(attempt.Time.Ticks);
+                    attempt.Time = t - currTime;
+                    currTime = t;
+                    totTime += attempt.Time;
+                }
+                TotalTime[gesture.Key] = totTime;
             }
         }
 
@@ -86,14 +99,12 @@ namespace WebDataParser {
             return hitsAtTries;
         }
 
-        public static float[] GetTimePerTarget(List<Attempt> attempts, TimeSpan start) {
+        public static float[] GetTimePerTarget(List<Attempt> attempts) {
 
             float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
             foreach (var attempt in attempts) {
-                float timeAtTarget = (float)(attempt.Time.TotalSeconds - start.TotalSeconds);
 
-                timeAtTries[currentAttempt++] = timeAtTarget;
-                start = attempt.Time;
+                timeAtTries[currentAttempt++] = (float)attempt.Time.TotalSeconds;
             }
 
             return timeAtTries;
