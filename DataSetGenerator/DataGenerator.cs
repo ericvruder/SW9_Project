@@ -24,7 +24,7 @@ namespace DataSetGenerator {
                                        " TimeTilt TotalHitTilt TotalErrorTilt" +
                                        " LargeTotalTime LargeTotalHitPercent LargeTotalMissPercent" +
                                        " SmallTotalTime SmallTotalHitPercent SmallTotalMissPercent");
-                List<Test> tests = GetFixedTests();
+                List<Test> tests = GetTests();
                 foreach (var t in tests) {
                     string line = t.ID;
                     float largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
@@ -72,7 +72,7 @@ namespace DataSetGenerator {
         {
             using (StreamWriter datawriter = new StreamWriter("target_data.csv"))
             {
-                List<Test> tests = GetFixedTests();
+                List<Test> tests = GetTests();
                 datawriter.WriteLine("GridSize Technique HitOrMiss Time");
                 foreach (var t in tests)
                 {
@@ -91,7 +91,7 @@ namespace DataSetGenerator {
             }
         }
 
-        public static List<Test> GetFixedTests() {
+        public static List<Test> GetTests() {
             List<Test> tests = new List<Test>();
             string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
             foreach (var file in files) {
@@ -108,7 +108,7 @@ namespace DataSetGenerator {
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
                                        " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit");
 
-                List<Test> tests = GetFixedTests();
+                List<Test> tests = GetTests();
                 foreach (var t in tests) {
                     int[,] time = new int[4, 2];
                     float[,] hit = new float[4, 2];
