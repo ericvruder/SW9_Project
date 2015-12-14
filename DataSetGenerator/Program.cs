@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
-            DataGenerator.GetAllTechniqueAttempts();
-            DataGenerator.GetAllGridSizeAttempts();
-            DataGenerator.GetUserTechniqueData();
-            DataGenerator.GetUserGridSizeData();
+            DataGenerator.GetAllTargetData();
+            DataGenerator.GetAllUserData();
         }
     }
 }
