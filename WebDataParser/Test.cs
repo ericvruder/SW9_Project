@@ -24,6 +24,8 @@ namespace WebDataParser {
             TestStart = new Dictionary<GestureType, TimeSpan>();
             PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
+
+        public Test(String path) : this(new StreamReader(path), path.Split('/').Last().Split('.')[0]) { }
         public Test(StreamReader sr, string id) : this() {
 
             ID = id;

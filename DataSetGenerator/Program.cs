@@ -9,6 +9,7 @@ namespace DataSetGenerator {
         static void Main(string[] args) {
             DataGenerator.GetAllTargetData();
             DataGenerator.GetAllUserData();
+            //DataGenerator.GetStartPercentages();
         }
     }
 }
