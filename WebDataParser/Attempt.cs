@@ -16,7 +16,7 @@ namespace WebDataParser {
         public Point CurrentCell { get; }
         public Point Pointer { get; }
         public JumpLength Length { get; }
-        public GridSize Size { get; }
+        public GridSize Size { get; set; }
 
         public Attempt(string attemptLine, GridSize size) {
             Size = size;

@@ -11,6 +11,8 @@ namespace DataSetGenerator {
             DataGenerator.GetAllUserData();
             DataGenerator.GetUserTwoWayData();
             //DataGenerator.GetStartPercentages();
+            //DataGenerator.GetWrongTargetTests();
+            //DataGenerator.VerifyTests();
         }
     }
 }

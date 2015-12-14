@@ -93,6 +93,41 @@ namespace DataSetGenerator {
             foreach (var file in files) {
                 string id = file.Split('/').Last().Split('.')[0];
                 tests.Add(new Test(new StreamReader(file), id));
+
+                switch (tests.Last().ID)
+                {
+                    case "1":
+                        tests.Last().Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                        tests.Last().Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                        tests.Last().Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Swipe][5].Size = GridSize.Large;
+                        tests.Last().Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Swipe][11].Size = GridSize.Large;
+                        tests.Last().Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Swipe][13].Size = GridSize.Large;
+                        break;
+                    case "2":
+                        tests.Last().Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                        break;
+                    case "4":
+                        tests.Last().Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
+                        tests.Last().Attempts[GestureType.Throw][17].Size = GridSize.Large;
+                        tests.Last().Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
+                        tests.Last().Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                        tests.Last().Attempts[GestureType.Tilt][14].Size = GridSize.Small;
+                        break;
+                    case "5":
+                        tests.Last().Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
+                        break;
+                    case "8":
+                        tests.Last().Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                        tests.Last().Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                        break;
+                    default:
+                        break;
+                }
             }
             return tests;
         }
@@ -160,6 +195,61 @@ namespace DataSetGenerator {
                     return 1;
                 default:
                     return -1;
+            }
+        }
+
+        public static void GetWrongTargetTests()
+        {
+            List<Test> tests = GetTests();
+            foreach (var test in tests)
+            {
+                foreach (var gesture in AllTypes)
+                {
+                    bool show = false;
+                    Attempt t = test.Attempts[gesture].First();
+                    foreach (var attepmt in test.Attempts[gesture])
+                    {
+                        if (attepmt == t)
+                        {
+                            continue;
+                        }
+                        if (attepmt.TargetCell.X == t.TargetCell.X && attepmt.TargetCell.Y == t.TargetCell.Y)
+                        {
+                            Console.WriteLine(test.ID + " " + gesture + " " + test.Attempts[gesture].IndexOf(attepmt));
+                            show = true;
+                        }
+                        t = attepmt;
+                    }
+                    var listLarge = from attempt in test.Attempts[gesture]
+                                    where attempt.Size == GridSize.Large
+                                    select attempt;
+                    var listSmall = from attempt in test.Attempts[gesture]
+                                    where attempt.Size == GridSize.Small
+                                    select attempt;
+                    if (show)
+                        Console.WriteLine("largeGrid = " + listLarge.Count() + " smallGrid = " + listSmall.Count());
+                }
+
+            }
+            Console.ReadLine();
+        }
+
+        public static void VerifyTests()
+        {
+            List<Test> tests = GetTests();
+            foreach (var test in tests)
+            {
+                foreach (var gesture in AllTypes)
+                {
+                    var listLarge = from attempt in test.Attempts[gesture]
+                                    where attempt.Size == GridSize.Large
+                                    select attempt;
+                    var listSmall = from attempt in test.Attempts[gesture]
+                                    where attempt.Size == GridSize.Small
+                                    select attempt;
+                    if(listSmall.Count() != listLarge.Count())
+                        Console.WriteLine("Test ID: " + test.ID + " FAILED");
+                }
             }
         }
     }
