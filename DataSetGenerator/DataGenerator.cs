@@ -30,26 +30,24 @@ namespace DataSetGenerator {
                     float largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
                     float smallTotalTime = 0, smallTotalHit = 0, smallTotalMiss = 0;
                     foreach (var gesture in AllTypes) {
-                        TimeSpan curr = t.TestStart[gesture];
                         foreach (var attempt in t.Attempts[gesture]) {
                             if (attempt.Size == GridSize.Large) {
-                                largeTotalTime += (int)(attempt.Time.TotalSeconds - curr.TotalSeconds);
+                                largeTotalTime += (int)attempt.Time.TotalSeconds;
                                 if (attempt.Hit) {
                                     largeTotalHit++;
                                 } else {
                                     largeTotalMiss++;
                                 }
                             } else {
-                                smallTotalTime += (int)(attempt.Time.TotalSeconds - curr.TotalSeconds);
+                                smallTotalTime += (int)attempt.Time.TotalSeconds;
                                 if (attempt.Hit) {
                                     smallTotalHit++;
                                 } else {
                                     smallTotalMiss++;
                                 }
                             }
-                            curr = attempt.Time;
                         }
-                        string time = (t.Attempts[gesture].Last().Time - t.TestStart[gesture]).TotalSeconds.ToString();
+                        string time = t.TotalTime[gesture].TotalSeconds.ToString();
                         float hitPercentage = Test.GetHitsPerTry(t.Attempts[gesture]).Last() * 100f;
                         string totalHit = hitPercentage.ToString();
                         string totalError = (100f - hitPercentage).ToString();
@@ -78,11 +76,9 @@ namespace DataSetGenerator {
                 {
                     foreach (var attempt in t.Attempts)
                     {
-                        TimeSpan currTime = t.TestStart[attempt.Key];
                         foreach (var a in t.Attempts[attempt.Key])
                         {
-                            string time = (a.Time.TotalSeconds - currTime.TotalSeconds).ToString();
-                            currTime = a.Time;
+                            string time = a.Time.TotalSeconds.ToString();
                             string hit = a.Hit ? "1" : "0";
                             datawriter.WriteLine(GetGridsizeNumber(a.Size) + " " + GetTechniqueNumber(attempt.Key) + " " + hit + " " + time);
                         }
@@ -101,24 +97,6 @@ namespace DataSetGenerator {
             return tests;
         }
 
-        //THIS FUNCTION ALWAYS HAS TO BE CALLED LAST! 
-        private static List<Test> FixTestTimes(List<Test> tests) {
-            foreach(var test in tests) {
-                foreach(var gesture in AllTypes) {
-                    TimeSpan currTime = test.TestStart[gesture];
-                    TimeSpan totTime = TimeSpan.Zero;
-                    foreach(var attempt in test.Attempts[gesture]) {
-                        TimeSpan t = new TimeSpan(attempt.Time.Ticks);
-                        attempt.Time = t - currTime;
-                        currTime = t;
-                        totTime += attempt.Time;
-                    }
-                    test.TestStart[gesture] = totTime;
-                }
-            }
-            return tests;
-        }
-
         public static void GetUserTwoWayData() {
             using (StreamWriter datawriter = new StreamWriter("user_twoway_data.csv")) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
@@ -132,12 +110,10 @@ namespace DataSetGenerator {
                     float[,] hit = new float[4, 2];
                     foreach(var gesture in AllTypes) {
                         int gIndex = GetTechniqueNumber(gesture) - 1;
-                        TimeSpan curr = t.TestStart[gesture];
                         foreach(var attempt in t.Attempts[gesture]) {
                             int sIndex = attempt.Size == GridSize.Large ? 0 : 1;
-                            time[gIndex, sIndex] += (int)(attempt.Time - curr).TotalSeconds;
+                            time[gIndex, sIndex] += (int)attempt.Time.TotalSeconds;
                             hit[gIndex, sIndex] += attempt.Hit ? 1 : 0;
-                            curr = attempt.Time;
                         }
                     }
 
@@ -151,13 +127,13 @@ namespace DataSetGenerator {
                     line +=              " " + time[1, 0] + " " + time[1, 1] + " " + hit[1, 0] + " " + hit[1, 1];
                     line +=              " " + time[2, 0] + " " + time[2, 1] + " " + hit[2, 0] + " " + hit[2, 1];
                     line +=              " " + time[3, 0] + " " + time[3, 1] + " " + hit[3, 0] + " " + hit[3, 1];
-
+                    datawriter.WriteLine(line);
                 }
             }
         }
 
         public static void GetTargetTwoWayData() {
-           
+            List<Test> tests = GetTests();
         }
 
         public static int GetTechniqueNumber(GestureType gesturetype) {
