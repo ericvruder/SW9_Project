@@ -168,7 +168,65 @@ namespace DataSetGenerator {
         }
 
         public static void GetTargetTwoWayData() {
-            List<Test> tests = GetTests();
+
+            using (StreamWriter datawriter = new StreamWriter("target_twoway_data.csv")) {
+                datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
+                                       " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
+                                       " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
+                                       " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit");
+                List<Test> tests = GetTests();
+
+                foreach (var test in tests) {
+
+                    Dictionary<GestureType, List<int>> sTimes = new Dictionary<GestureType, List<int>>();
+                    Dictionary<GestureType, List<string>> sHits = new Dictionary<GestureType, List<string>>();
+
+                    Dictionary<GestureType, List<int>> lTimes = new Dictionary<GestureType, List<int>>();
+                    Dictionary<GestureType, List<string>> lHits = new Dictionary<GestureType, List<string>>();
+
+                    foreach (var gesture in AllTypes) {
+                        if (!sTimes.ContainsKey(gesture)) {
+                            sTimes.Add(gesture, new List<int>());
+                            sHits.Add(gesture, new List<string>());
+                            lTimes.Add(gesture, new List<int>());
+                            lHits.Add(gesture, new List<string>());
+                        }
+
+                        var stList = from attempt in test.Attempts[gesture]
+                                     where attempt.Size == GridSize.Small
+                                     select attempt;
+
+                        var ltList = from attempt in test.Attempts[gesture]
+                                     where attempt.Size == GridSize.Large
+                                     select attempt;
+
+                        foreach (var attempt in stList) {
+                            sTimes[gesture].Add((int)attempt.Time.TotalSeconds);
+                            sHits[gesture].Add(attempt.Hit ? "1" : "0");
+                        }
+                        foreach (var attempt in ltList) {
+                            lTimes[gesture].Add((int)attempt.Time.TotalSeconds);
+                            lHits[gesture].Add(attempt.Hit ? "1" : "0");
+                        }
+                    }
+                    for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
+                        string line = test.ID;
+
+
+                        /* "ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
+                           " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
+                           " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
+                           " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit"); */
+
+                        line += " " + lTimes[GestureType.Pinch][tryN] + " " + sTimes[GestureType.Pinch][tryN] + " " + lHits[GestureType.Pinch][tryN] + " " + sHits[GestureType.Pinch][tryN];
+                        line += " " + lTimes[GestureType.Swipe][tryN] + " " + sTimes[GestureType.Swipe][tryN] + " " + lHits[GestureType.Swipe][tryN] + " " + sHits[GestureType.Swipe][tryN];
+                        line += " " + lTimes[GestureType.Throw][tryN] + " " + sTimes[GestureType.Throw][tryN] + " " + lHits[GestureType.Throw][tryN] + " " + sHits[GestureType.Throw][tryN];
+                        line += " " + lTimes[GestureType.Tilt][tryN] + " " + sTimes[GestureType.Tilt][tryN] + " " + lHits[GestureType.Tilt][tryN] + " " + sHits[GestureType.Tilt][tryN];
+                        datawriter.WriteLine(line);
+                    }
+
+                }
+            }
         }
 
         public static int GetTechniqueNumber(GestureType gesturetype) {

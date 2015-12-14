@@ -10,6 +10,7 @@ namespace DataSetGenerator {
             DataGenerator.GetAllTargetData();
             DataGenerator.GetAllUserData();
             DataGenerator.GetUserTwoWayData();
+            DataGenerator.GetTargetTwoWayData();
             //DataGenerator.GetStartPercentages();
             //DataGenerator.GetWrongTargetTests();
             //DataGenerator.VerifyTests();
