@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
+            DataGenerator.GetTests();
             DataGenerator.GetAllTargetData();
             DataGenerator.GetAllUserData();
             //DataGenerator.GetStartPercentages();

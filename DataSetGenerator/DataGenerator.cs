@@ -101,6 +101,24 @@ namespace DataSetGenerator {
             return tests;
         }
 
+        //THIS FUNCTION ALWAYS HAS TO BE CALLED LAST! 
+        private static List<Test> FixTestTimes(List<Test> tests) {
+            foreach(var test in tests) {
+                foreach(var gesture in AllTypes) {
+                    TimeSpan currTime = test.TestStart[gesture];
+                    TimeSpan totTime = TimeSpan.Zero;
+                    foreach(var attempt in test.Attempts[gesture]) {
+                        TimeSpan t = new TimeSpan(attempt.Time.Ticks);
+                        attempt.Time = t - currTime;
+                        currTime = t;
+                        totTime += attempt.Time;
+                    }
+                    test.TestStart[gesture] = totTime;
+                }
+            }
+            return tests;
+        }
+
         public static void GetUserTwoWayData() {
             using (StreamWriter datawriter = new StreamWriter("user_twoway_data.csv")) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
