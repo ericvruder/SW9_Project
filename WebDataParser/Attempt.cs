@@ -9,7 +9,7 @@ using System.Globalization;
 namespace WebDataParser {
     public class Attempt {
 
-        public TimeSpan Time { get; }
+        public TimeSpan Time { get; set; }
         public bool Hit { get; }
         public bool Shape { get; }
         public Point TargetCell { get; }
