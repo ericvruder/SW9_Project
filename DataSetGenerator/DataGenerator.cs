@@ -68,19 +68,22 @@ namespace DataSetGenerator {
 
         public static void GetAllTargetData()
         {
-            using (StreamWriter datawriter = new StreamWriter("target_data.csv"))
-            {
+            using (StreamWriter largeWriter = new StreamWriter("large_target_data.csv"))
+            using (StreamWriter smallWriter = new StreamWriter("small_target_data.csv"))
+            using (StreamWriter datawriter = new StreamWriter("target_data.csv")) {
                 List<Test> tests = GetTests();
-                datawriter.WriteLine("GridSize Technique HitOrMiss Time");
-                foreach (var t in tests)
-                {
-                    foreach (var attempt in t.Attempts)
-                    {
-                        foreach (var a in t.Attempts[attempt.Key])
-                        {
+                datawriter.WriteLine("ID GridSize Technique HitOrMiss Time");
+                smallWriter.WriteLine("ID GridSize Technique HitOrMiss Time");
+                largeWriter.WriteLine("ID GridSize Technique HitOrMiss Time");
+                foreach (var t in tests) {
+                    foreach (var attempt in t.Attempts) {
+                        foreach (var a in t.Attempts[attempt.Key]) {
                             string time = a.Time.TotalSeconds.ToString();
                             string hit = a.Hit ? "1" : "0";
-                            datawriter.WriteLine(GetGridsizeNumber(a.Size) + " " + GetTechniqueNumber(attempt.Key) + " " + hit + " " + time);
+                            StreamWriter sizeWriter = a.Size == GridSize.Large ? largeWriter : smallWriter;
+                            string line = t.ID + " " + GetGridsizeNumber(a.Size) + " " + GetTechniqueNumber(attempt.Key) + " " + hit + " " + time;
+                            datawriter.WriteLine(line);
+                            sizeWriter.WriteLine(line);
                         }
                     }
                 }
