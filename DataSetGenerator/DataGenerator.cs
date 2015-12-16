@@ -169,6 +169,79 @@ namespace DataSetGenerator {
                 }
             }
         }
+        public static void GetTargetTechniqueANOVAData() {
+
+            using (StreamWriter datawriter = new StreamWriter("target_oneway_technique_data.csv")) {
+                datawriter.WriteLine("ID PinchTime PinchHit" +
+                                       " SwipeTime SwipeHit" +
+                                       " ThrowTime ThrowHit" +
+                                       " TiltTime TiltHit");
+                List<Test> tests = GetTests();
+
+                foreach (var test in tests) {
+
+                    Dictionary<GestureType, List<int>> times = new Dictionary<GestureType, List<int>>();
+                    Dictionary<GestureType, List<string>> hits = new Dictionary<GestureType, List<string>>();
+
+                    foreach (var gesture in AllTypes) {
+                        if (!times.ContainsKey(gesture)) {
+                            times.Add(gesture, new List<int>());
+                            hits.Add(gesture, new List<string>());
+                        }
+
+                        foreach (var attempt in test.Attempts[gesture]) {
+                            times[gesture].Add((int)attempt.Time.TotalSeconds);
+                            hits[gesture].Add(attempt.Hit ? "1" : "0");
+                        }
+                    }
+                    for (int tryN = 0; tryN < times[GestureType.Pinch].Count(); tryN++) {
+                        string line = test.ID;
+
+
+                        /* "ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
+                           " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
+                           " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
+                           " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit"); */
+
+                        line += " " + times[GestureType.Pinch][tryN] + " " + hits[GestureType.Pinch][tryN];
+                        line += " " + times[GestureType.Swipe][tryN] + " " + hits[GestureType.Swipe][tryN];
+                        line += " " + times[GestureType.Throw][tryN] + " " + hits[GestureType.Throw][tryN];
+                        line += " " + times[GestureType.Tilt][tryN] +  " " + hits[GestureType.Tilt][tryN];
+                        datawriter.WriteLine(line);
+                    }
+
+                }
+            }
+        }
+
+        public static void GetTargetGridANOVAData() {
+
+            using (StreamWriter datawriter = new StreamWriter("target_oneway_grid_data.csv")) {
+                datawriter.WriteLine("ID LargeTime LargeHit" +
+                                       " SmallTime SmallHit");
+                List<Test> tests = GetTests();
+
+                foreach (var test in tests) {
+                    List<Attempt> sAttempts = new List<Attempt>(), lAttempts = new List<Attempt>();
+
+                    foreach(var s in test.Attempts) {
+                        sAttempts.AddRange(from attempt in s.Value
+                                           where attempt.Size == GridSize.Small
+                                           select attempt);
+                        lAttempts.AddRange(from attempt in s.Value
+                                           where attempt.Size == GridSize.Large
+                                           select attempt);
+                    }
+
+                    for(int i = 0; i < sAttempts.Count; i++) {
+                        string line = test.ID + " " + lAttempts[i].Time.TotalSeconds + " " + (lAttempts[i].Hit ? "1" : "0") + " " + sAttempts[i].Time.TotalSeconds + " " + (sAttempts[i].Hit ? "1" : "0");
+                        datawriter.WriteLine(line);
+                    }
+
+                }
+            }
+
+        }
 
         public static void GetTargetTwoWayData() {
 

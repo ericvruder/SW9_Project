@@ -11,6 +11,8 @@ namespace DataSetGenerator {
             DataGenerator.GetAllUserData();
             DataGenerator.GetUserTwoWayData();
             DataGenerator.GetTargetTwoWayData();
+            DataGenerator.GetTargetGridANOVAData();
+            DataGenerator.GetTargetTechniqueANOVAData();
             //DataGenerator.GetStartPercentages();
             //DataGenerator.GetWrongTargetTests();
             //DataGenerator.VerifyTests();
