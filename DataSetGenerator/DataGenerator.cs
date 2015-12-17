@@ -7,6 +7,8 @@ using System.IO;
 using WebDataParser;
 using System.Globalization;
 using SW9_Project;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace DataSetGenerator {
 
@@ -385,6 +387,80 @@ namespace DataSetGenerator {
                         Console.WriteLine("Test ID: " + test.ID + " FAILED");
                 }
             }
+        }
+
+        private static void DrawHitBox(List<Attempt> attempts, string fileName) {
+
+            //61 pixel sized squares, makes it better to look at
+            int cellSize = 61;
+            int bmsize = cellSize * 3;
+
+            Bitmap hitbox = new Bitmap(bmsize, bmsize);
+            Graphics hBGraphic = Graphics.FromImage(hitbox);
+            hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
+            hBGraphic.DrawRectangle(new Pen(Brushes.Black, 1.0f), cellSize, cellSize, cellSize, cellSize);
+
+            foreach (var attempt in attempts) {
+                Brush brush = Brushes.Red;
+                float scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
+                WebDataParser.Point p = new WebDataParser.Point(attempt.TargetCell.X, attempt.TargetCell.Y);
+                p.X = p.X * scale; p.Y = p.Y * scale;
+                p.X = attempt.Pointer.X - p.X;
+                p.Y = attempt.Pointer.Y - p.Y;
+                if (attempt.Size == GridSize.Large) {
+                    p.X /= 2;
+                    p.Y /= 2;
+                }
+
+                p.X += cellSize;
+                p.Y += cellSize;
+
+                if((p.X > cellSize && p.X < cellSize*2) && (p.Y > cellSize && p.Y < cellSize * 2)) {
+                    brush = Brushes.Green;
+                }
+
+                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.Y >= bmsize))) {
+                    hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
+                }
+            }
+
+            hBGraphic.Save();
+
+            hitbox.Save(fileName);
+
+            hBGraphic.Dispose();
+            hitbox.Dispose();
+
+        }
+
+        public static void CreateHitboxes() {
+            var tests = GetTests();
+            Dictionary<GestureType, List<Attempt>> techAttempts = new Dictionary<GestureType, List<Attempt>>();
+            Dictionary<GridSize, List<Attempt>> sizeAttempts = new Dictionary<GridSize, List<Attempt>>();
+            sizeAttempts.Add(GridSize.Large, new List<Attempt>());
+            sizeAttempts.Add(GridSize.Small, new List<Attempt>());
+            foreach (var test in tests) {
+                foreach(var gesture in AllTypes) {
+                    if (!techAttempts.ContainsKey(gesture)) {
+                        techAttempts.Add(gesture, new List<Attempt>());
+                    }
+                    techAttempts[gesture].AddRange(test.Attempts[gesture]);
+                    sizeAttempts[GridSize.Small].AddRange(from attempt in test.Attempts[gesture]
+                                where attempt.Size == GridSize.Small
+                                select attempt);
+                    sizeAttempts[GridSize.Large].AddRange(from attempt in test.Attempts[gesture]
+                                where attempt.Size == GridSize.Large
+                                select attempt);
+                }
+            }
+
+            DrawHitBox(techAttempts[GestureType.Pinch], "pinch.png");
+            DrawHitBox(techAttempts[GestureType.Swipe], "swipe.png");
+            DrawHitBox(techAttempts[GestureType.Throw], "throw.png");
+            DrawHitBox(techAttempts[GestureType.Tilt], "tilt.png");
+
+            DrawHitBox(sizeAttempts[GridSize.Large], "large.png");
+            DrawHitBox(sizeAttempts[GridSize.Small], "small.png");
         }
     }
 }
