@@ -461,6 +461,44 @@ namespace DataSetGenerator {
 
             DrawHitBox(sizeAttempts[GridSize.Large], "large.png");
             DrawHitBox(sizeAttempts[GridSize.Small], "small.png");
+
+            var lp = from attempt in techAttempts[GestureType.Pinch]
+                     where attempt.Size == GridSize.Large
+                     select attempt;
+            DrawHitBox(lp.ToList(), "pinchlarge.png");
+            var sp = from attempt in techAttempts[GestureType.Pinch]
+                     where attempt.Size == GridSize.Small
+                     select attempt;
+            DrawHitBox(sp.ToList(), "pinchsmall.png");
+
+            var ls = from attempt in techAttempts[GestureType.Swipe]
+                     where attempt.Size == GridSize.Large
+                     select attempt;
+            DrawHitBox(ls.ToList(), "swipelarge.png");
+            var ss = from attempt in techAttempts[GestureType.Swipe]
+                     where attempt.Size == GridSize.Small
+                     select attempt;
+            DrawHitBox(ss.ToList(), "swipesmall.png");
+
+            var lti = from attempt in techAttempts[GestureType.Tilt]
+                     where attempt.Size == GridSize.Large
+                     select attempt;
+            DrawHitBox(lti.ToList(), "tiltlarge.png");
+            var sti = from attempt in techAttempts[GestureType.Tilt]
+                     where attempt.Size == GridSize.Small
+                     select attempt;
+            DrawHitBox(sti.ToList(), "tiltsmall.png");
+
+            var lth = from attempt in techAttempts[GestureType.Throw]
+                      where attempt.Size == GridSize.Large
+                      select attempt;
+            DrawHitBox(lth.ToList(), "throwlarge.png");
+            var sth = from attempt in techAttempts[GestureType.Throw]
+                      where attempt.Size == GridSize.Small
+                      select attempt;
+            DrawHitBox(sth.ToList(), "throwsmall.png");
+
         }
+
     }
 }
