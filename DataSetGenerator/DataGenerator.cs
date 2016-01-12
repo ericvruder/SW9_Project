@@ -565,7 +565,6 @@ namespace DataSetGenerator {
                                 if (distances.Item2 == 0 && distances.Item1 == 0) continue;
                                 datawriter.WriteLine($"{GetTechniqueNumber(technique.Key)} {DistanceToTargetCell(attempt)} {distances.Item1} {distances.Item2}");
                             }
-                            
                         }
                     }
                 }
