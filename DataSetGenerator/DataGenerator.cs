@@ -248,10 +248,10 @@ namespace DataSetGenerator {
         public static void GetTargetTwoWayData() {
 
             using (StreamWriter datawriter = new StreamWriter("target_twoway_data.csv")) {
-                datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
-                                       " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
-                                       " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
-                                       " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit");
+                datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
+                                       " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
+                                       " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
+                                       " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit TiltLargeDist TiltSmallDist TiltLargeXDist TiltSmallXDist TiltLargeYDist TiltSmallYDist");
                 List<Test> tests = GetTests();
 
                 foreach (var test in tests) {
@@ -262,12 +262,26 @@ namespace DataSetGenerator {
                     Dictionary<GestureType, List<int>> lTimes = new Dictionary<GestureType, List<int>>();
                     Dictionary<GestureType, List<string>> lHits = new Dictionary<GestureType, List<string>>();
 
+                    Dictionary<GestureType, List<double>> lDist = new Dictionary<GestureType, List<double>>();
+                    Dictionary<GestureType, List<double>> lxDist = new Dictionary<GestureType, List<double>>();
+                    Dictionary<GestureType, List<double>> lyDist = new Dictionary<GestureType, List<double>>();
+
+                    Dictionary<GestureType, List<double>> sDist = new Dictionary<GestureType, List<double>>();
+                    Dictionary<GestureType, List<double>> sxDist = new Dictionary<GestureType, List<double>>();
+                    Dictionary<GestureType, List<double>> syDist = new Dictionary<GestureType, List<double>>();
+
                     foreach (var gesture in AllTypes) {
                         if (!sTimes.ContainsKey(gesture)) {
                             sTimes.Add(gesture, new List<int>());
                             sHits.Add(gesture, new List<string>());
+                            sDist.Add(gesture, new List<double>());
+                            sxDist.Add(gesture, new List<double>());
+                            syDist.Add(gesture, new List<double>());
                             lTimes.Add(gesture, new List<int>());
                             lHits.Add(gesture, new List<string>());
+                            lDist.Add(gesture, new List<double>());
+                            lxDist.Add(gesture, new List<double>());
+                            lyDist.Add(gesture, new List<double>());
                         }
 
                         var stList = from attempt in test.Attempts[gesture]
@@ -279,12 +293,20 @@ namespace DataSetGenerator {
                                      select attempt;
 
                         foreach (var attempt in stList) {
+                            var distances = GetDistances(attempt);
                             sTimes[gesture].Add((int)attempt.Time.TotalSeconds);
                             sHits[gesture].Add(attempt.Hit ? "1" : "0");
+                            sDist[gesture].Add(distances.Item1);
+                            sxDist[gesture].Add(distances.Item2);
+                            syDist[gesture].Add(distances.Item3);
                         }
                         foreach (var attempt in ltList) {
+                            var distances = GetDistances(attempt);
                             lTimes[gesture].Add((int)attempt.Time.TotalSeconds);
                             lHits[gesture].Add(attempt.Hit ? "1" : "0");
+                            lDist[gesture].Add(distances.Item1);
+                            lxDist[gesture].Add(distances.Item2);
+                            lyDist[gesture].Add(distances.Item3);
                         }
                     }
                     for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
@@ -296,15 +318,29 @@ namespace DataSetGenerator {
                            " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
                            " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit"); */
 
-                        line += " " + lTimes[GestureType.Pinch][tryN] + " " + sTimes[GestureType.Pinch][tryN] + " " + lHits[GestureType.Pinch][tryN] + " " + sHits[GestureType.Pinch][tryN];
-                        line += " " + lTimes[GestureType.Swipe][tryN] + " " + sTimes[GestureType.Swipe][tryN] + " " + lHits[GestureType.Swipe][tryN] + " " + sHits[GestureType.Swipe][tryN];
-                        line += " " + lTimes[GestureType.Throw][tryN] + " " + sTimes[GestureType.Throw][tryN] + " " + lHits[GestureType.Throw][tryN] + " " + sHits[GestureType.Throw][tryN];
-                        line += " " + lTimes[GestureType.Tilt][tryN] + " " + sTimes[GestureType.Tilt][tryN] + " " + lHits[GestureType.Tilt][tryN] + " " + sHits[GestureType.Tilt][tryN];
+                        foreach(var gesture in AllTypes) {
+                            line += $" {lTimes[gesture][tryN]} {sTimes[gesture][tryN]} {lHits[gesture][tryN]} {sHits[gesture][tryN]} {lDist[gesture][tryN]} {sDist[gesture][tryN]} {lxDist[gesture][tryN]} {sxDist[gesture][tryN]} {lyDist[gesture][tryN]} {syDist[gesture][tryN]}";
+                        }
+                        
                         datawriter.WriteLine(line);
                     }
 
                 }
             }
+        }
+
+        private static Tuple<double, double, double> GetDistances(Attempt attempt) {
+            Tuple<double,double,double> result = new Tuple<double, double, double>(0,0,0);
+            if (!attempt.Hit) {
+                var distances = GetXYDistance(attempt);
+                var distance = DistanceToTargetCell(attempt);
+                if (distances.Item2 == 0 && distances.Item1 == 0) {
+                    distance = 1;
+                    distances = new Tuple<double, double>(1, 1);
+                }
+                result = new Tuple<double, double, double>(distance, distances.Item1, distances.Item2);
+            } 
+            return result;
         }
 
         public static int GetTechniqueNumber(GestureType gesturetype) {
@@ -551,26 +587,7 @@ namespace DataSetGenerator {
 
             return distances.Min();
         }
-
-        public static void GetMissDistances() {
-            var tests = GetTests();
-            using(StreamWriter datawriter = new StreamWriter("missDistances.csv")) {
-                int wrong = 0;
-                datawriter.WriteLine("Technique Distance XDistance YDistance");
-                foreach(var test in tests) {
-                    foreach(var technique in test.Attempts) {
-                        foreach(var attempt in technique.Value) {
-                            if(!attempt.Hit) {
-                                var distances = GetXYDistance(attempt);
-                                if (distances.Item2 == 0 && distances.Item1 == 0) continue;
-                                datawriter.WriteLine($"{GetTechniqueNumber(technique.Key)} {DistanceToTargetCell(attempt)} {distances.Item1} {distances.Item2}");
-                            }
-                        }
-                    }
-                }
-                Console.WriteLine(wrong);
-            }
-        }
+        
         public static Tuple<double, double> GetXYDistance(Attempt attempt) {
             double scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
             double x = attempt.TargetCell.X * scale, y = attempt.TargetCell.Y * scale;
