@@ -14,7 +14,6 @@ namespace DataSetGenerator {
             DataGenerator.GetTargetGridANOVAData();
             DataGenerator.GetTargetTechniqueANOVAData();
             DataGenerator.CreateHitboxes();
-            DataGenerator.GetMissDistances();
             //DataGenerator.GetStartPercentages();
             //DataGenerator.GetWrongTargetTests();
             //DataGenerator.VerifyTests();
