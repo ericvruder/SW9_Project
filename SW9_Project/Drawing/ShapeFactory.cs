@@ -22,7 +22,7 @@ namespace SW9_Project {
             }
         }
 
-        public static Ellipse CreatePointer() {
+        public static UIElement CreatePointer() {
 
             Ellipse ellipse = new Ellipse();
             ellipse.Fill = Brushes.Red;
