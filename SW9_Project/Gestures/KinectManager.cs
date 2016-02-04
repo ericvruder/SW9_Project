@@ -100,7 +100,12 @@ namespace SW9_Project {
                     skeletonFrame.CopySkeletonDataTo(skeletonData);
                     _interactionStream.ProcessSkeleton(skeletonData, kinectSensor.AccelerometerGetCurrentReading(), skeletonFrame.Timestamp);
                     
-                    Skeleton playerSkeleton = (from s in skeletonData where s.TrackingState == SkeletonTrackingState.Tracked select s).FirstOrDefault();
+                    var skeletons = (from s in skeletonData
+                                     where s.TrackingState == SkeletonTrackingState.Tracked
+                                     select s);
+                    Skeleton playerSkeleton = (from t in skeletons
+                                               where t.Joints[JointType.Head].Position.Z == skeletons.Min(x => x.Joints[JointType.Head].Position.Z)
+                                               select t).FirstOrDefault();
                     if (playerSkeleton != null) {
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
