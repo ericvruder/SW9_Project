@@ -292,8 +292,8 @@ namespace SW9_Project {
         }
 
         private void MoveShape(UIElement shapeToMove, Point p) {
-            double x = p.X - (24 / 2);
-            double y = p.Y - (24 / 2);
+            double x = p.X - 24;// - (24 / 2);
+            double y = p.Y - 24;// - (24 / 2);
             if (shapeToMove is Shape) {
                 Shape t = shapeToMove as Shape;
                 x = p.X - (t.Width / 2);
