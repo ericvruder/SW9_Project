@@ -7,9 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 using SW9_Project.Logging;
-using System.Threading.Tasks;
 using System.Windows.Media.Animation;
-using System.Threading;
 
 namespace SW9_Project {
 
@@ -19,7 +17,7 @@ namespace SW9_Project {
     /// </summary>
     public partial class CanvasWindow : Window, IDrawingBoard {
 
-        Shape pointingCircle;
+        UIElement pointerFigure;
 
         KinectManager kinectManager;
 
@@ -90,8 +88,8 @@ namespace SW9_Project {
             if(grid != null) {
                 canvas.Children.Clear();
             }
-            if(pointingCircle != null) {
-                canvas.Children.Add(pointingCircle);
+            if(pointerFigure != null) {
+               canvas.Children.Add(pointerFigure);
             }
             gridHeight = height;
             gridWidth = width;
@@ -192,10 +190,10 @@ namespace SW9_Project {
         
         public void PointAt(double xFromMid, double yFromMid) {
 
-            if (pointingCircle == null) {
-                pointingCircle = ShapeFactory.CreatePointer();
-                canvas.Children.Add(pointingCircle);
-                Canvas.SetZIndex(pointingCircle, 10000);
+            if (pointerFigure == null) {
+                pointerFigure = ShapeFactory.CreatePointer();
+                canvas.Children.Add(pointerFigure);
+                Canvas.SetZIndex(pointerFigure, 10000);
             }
             if (target != null) {
                 target.GridCell.Fill = targetColor;
@@ -207,7 +205,7 @@ namespace SW9_Project {
             DrawNextTargets();
 
             pointer = GetPoint(xFromMid, yFromMid);
-            MoveShape(pointingCircle, pointer);
+            MoveShape(pointerFigure, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
@@ -293,14 +291,18 @@ namespace SW9_Project {
             cell.Shape = null;
         }
 
-        private void MoveShape(Shape shapeToMove, Point p) {
-
-            double x = p.X - (shapeToMove.Width / 2);
-            double y = p.Y - (shapeToMove.Height / 2);
-            if (Double.IsNaN(shapeToMove.Width) || Double.IsNaN(shapeToMove.Height)) {
-                double size = squareWidth < squareHeight ? squareWidth : squareHeight;
-                x = p.X - (size / 2);
-                y = p.Y - (size / 2);
+        private void MoveShape(UIElement shapeToMove, Point p) {
+            double x = p.X - (24 / 2);
+            double y = p.Y - (24 / 2);
+            if (shapeToMove is Shape) {
+                Shape t = shapeToMove as Shape;
+                x = p.X - (t.Width / 2);
+                y = p.Y - (t.Height / 2);
+                if (Double.IsNaN(t.Width) || Double.IsNaN(t.Height)) {
+                    double size = squareWidth < squareHeight ? squareWidth : squareHeight;
+                    x = p.X - (size / 2);
+                    y = p.Y - (size / 2);
+                }
             }
             
             Canvas.SetLeft(shapeToMove, x);

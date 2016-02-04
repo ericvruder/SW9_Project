@@ -2831,3 +2831,16 @@
 [12/10/2015 9:56:50 PM]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 714.004415303469 Y = 0 Cell: X = 11 Y = 0
 [12/10/2015 9:56:51 PM]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 841.933544814587 Y = 0 Cell: X = 13 Y = 0
 [12/10/2015 9:56:52 PM]: MOBILE GESTURE Type: Throw Direction: Pull Shape: 
+[04-02-2016 12:56:42]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 0 Y = 208,094288777293 Cell: X = 0 Y = 3
+[04-02-2016 12:56:44]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 1053,86870098114 Y = 0 Cell: X = 19 Y = 0
+[04-02-2016 12:56:45]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 1104 Y = 0 Cell: X = 19 Y = 0
+[04-02-2016 12:56:49]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 267,919228076935 Y = 258,314259100054 Cell: X = 4 Y = 4
+[04-02-2016 12:56:51]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 1103,96351194382 Y = 0 Cell: X = 19 Y = 0
+[04-02-2016 13:23:55]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 747,960602760315 Y = 0 Cell: X = 13 Y = 0
+[04-02-2016 13:23:56]: KINECT GESTURE Type: Throw Direction: Push Shape:  Pointer: X = 867,380581855774 Y = 0 Cell: X = 15 Y = 0
+[04-02-2016 13:23:59]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 540,959122180939 Y = 565 Cell: X = 9 Y = 9
+[04-02-2016 13:24:00]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 9,11737489700317 Y = 293,35815765389 Cell: X = 0 Y = 5
+[04-02-2016 13:24:00]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 0 Y = 332,233478680793 Cell: X = 0 Y = 5
+[04-02-2016 13:24:09]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 1104 Y = 35,6432595110677 Cell: X = 19 Y = 0
+[04-02-2016 13:24:09]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 1104 Y = 0 Cell: X = 19 Y = 0
+[04-02-2016 13:24:40]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 962,780891418457 Y = 0 Cell: X = 17 Y = 0
