@@ -172,6 +172,9 @@
     <Content Include="KinectInteraction180_32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="resources\pointer.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="sequences\5_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
