@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 
 using SW9_Project.Logging;
 using System.Windows.Media.Animation;
+using System.Media;
 
 namespace SW9_Project {
 
@@ -18,6 +19,8 @@ namespace SW9_Project {
     public partial class CanvasWindow : Window, IDrawingBoard {
 
         UIElement pointerFigure;
+
+        Dictionary<string, SoundPlayer> sounds = new Dictionary<string, SoundPlayer>();
 
         KinectManager kinectManager;
 
@@ -37,6 +40,9 @@ namespace SW9_Project {
         Brush targetColor = Brushes.DarkGray;
 
         public CanvasWindow() {
+
+            sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
+            sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
 
             shapes = new List<String>();
             shapes.Add("circle");
@@ -259,9 +265,11 @@ namespace SW9_Project {
         private void TargetHit(Cell cell, bool hit) {
             connection?.SwitchShapes();
             if (hit) {
+                sounds["hit"].Play();
                 cell.Shape.Fill = Brushes.Green;
             }
             else {
+                sounds["miss"].Play();
                 cell.Shape.Fill = Brushes.Red;
             }
             DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
