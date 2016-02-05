@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Control="clr-namespace:SW9_Project"
         xmlns:local="clr-namespace:SW9_Project"
         mc:Ignorable="d"
         Title="CanvasWindow" 
@@ -13,9 +14,11 @@
         Background="Black"
         
         >
+
     <Grid>
         <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
+        <Control:ProgressBar Visibility="Hidden" x:Name="progress" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="80" StrokeThickness="15" SegmentColor="#026873" />
         <Label x:Name="testIDLabel" 
                Content="User ID: Not Started" 
                HorizontalAlignment="Left" 
