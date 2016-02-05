@@ -340,10 +340,10 @@ namespace SW9_Project {
             runningTest = false;
         }
 
-        private DoubleAnimation CreateFadeAnimation(int seconds) {
+        private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
             DoubleAnimation da = new DoubleAnimation();
-            da.From = 1;
-            da.To = 0;
+            da.From = from;
+            da.To = to;
             da.Duration = TimeSpan.FromSeconds(seconds);
             return da;
         }
@@ -375,7 +375,7 @@ namespace SW9_Project {
 
             if (e.Key == System.Windows.Input.Key.Space) {
                 if (connection == null || !connection.Connected) {
-                    connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(5));
+                    connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                     return;
                 }
                 if (currentTest == null || currentTest.Done) {
@@ -385,7 +385,7 @@ namespace SW9_Project {
                     }
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
-                    testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateFadeAnimation(10));
+                    testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
                 } else if (runningTest) {
                     currentTest.ChangeGesture();
                 } 
@@ -450,6 +450,11 @@ namespace SW9_Project {
                 _inStateChange = false;
             }
             base.OnStateChanged(e);
+        }
+
+        public void ShowProgressBar()
+        {
+            progress.BeginAnimation(ProgressBar.PercentageProperty, CreateAnimation(3, 0, 100));
         }
     }
 }
