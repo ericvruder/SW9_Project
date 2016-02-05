@@ -175,6 +175,12 @@
     <Resource Include="resources\pointer.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Content Include="resources\hit.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\miss.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sequences\5_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
