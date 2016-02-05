@@ -13,9 +13,8 @@ import java.io.PrintWriter;
 
 import android.content.Context;
 import android.util.Log;
-import java.net.DatagramSocket;
-import java.net.DatagramPacket;
-import java.util.Enumeration;
+import android.os.Vibrator;
+
 
 //JSON
 import com.google.gson.Gson;
@@ -29,6 +28,7 @@ public class Network implements IServer {
 
     String TAG = "Network";
     private static final String SERVER_IP = "192.168.1.10";
+    private Vibrator vibrator;
 
     Socket clientSocket;
     String host;
@@ -42,6 +42,7 @@ public class Network implements IServer {
     private static Network instance;
 
     public static void initInstance(BaseActivity ba) {
+
         if (instance == null) {
             instance = new Network(SERVER_IP, 8000, ba);
         }
@@ -56,6 +57,7 @@ public class Network implements IServer {
     }
 
     public Network(String host, int port, BaseActivity activity){
+        vibrator = (Vibrator)activity.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
         gsonConverter = new Gson();
 
         this.activity = activity;
@@ -179,6 +181,8 @@ public class Network implements IServer {
         try {
             String t = gsonConverter.toJson(data);
             SendMessage(t);
+            vibrator.vibrate(200);
+
         }
         catch (Exception e){
             Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
