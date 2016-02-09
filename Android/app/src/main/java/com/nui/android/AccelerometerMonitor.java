@@ -129,7 +129,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     }
     private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server, context, Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD);
+        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD});
         rMonitor = monitor;
     }
 }

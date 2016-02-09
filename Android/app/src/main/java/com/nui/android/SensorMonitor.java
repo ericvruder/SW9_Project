@@ -5,14 +5,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ericv on 10/14/2015.
  */
 public abstract class SensorMonitor implements SensorEventListener {
 
     private static SensorManager manager;
-    protected Sensor sensor1;
-    protected Sensor sensor2;
+    protected Sensor sensor;
+    protected ArrayList<Sensor> sensors = new ArrayList<>();
 
     IServer server;
 
@@ -22,28 +25,30 @@ public abstract class SensorMonitor implements SensorEventListener {
     public SensorMonitor(IServer server, Context context, int sensorType){
         this.server = server;
         manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor1 = manager.getDefaultSensor(sensorType);
-        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
+        sensor = manager.getDefaultSensor(sensorType);
+        manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public SensorMonitor(IServer server, Context context, int sensorType1, int sensorType2){
+    public SensorMonitor(IServer server, Context context, int[] sensorsType){
         this.server = server;
         manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor1 = manager.getDefaultSensor(sensorType1);
-        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
-        sensor2 = manager.getDefaultSensor(sensorType2);
-        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
+        for (int sensorType : sensorsType) {
+            Sensor sensor = manager.getDefaultSensor(sensorType);
+            sensors.add(sensor);
+            manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
-
 
     public void Pause(){
         manager.unregisterListener(this);
     }
 
     public void Resume(){
-        if(sensor1 != null)
-            manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
-        if(sensor2 != null)
-            manager.registerListener(this, sensor2, SensorManager.SENSOR_DELAY_NORMAL);
+        if(sensor != null)
+            manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        for(Sensor sensor : sensors) {
+            manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 }
