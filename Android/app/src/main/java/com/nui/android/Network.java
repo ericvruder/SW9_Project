@@ -28,7 +28,6 @@ public class Network implements IServer {
 
     String TAG = "Network";
     private static final String SERVER_IP = "192.168.1.10";
-    private Vibrator vibrator;
 
     Socket clientSocket;
     String host;
@@ -57,7 +56,6 @@ public class Network implements IServer {
     }
 
     public Network(String host, int port, BaseActivity activity){
-        vibrator = (Vibrator)activity.getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
         gsonConverter = new Gson();
 
         this.activity = activity;
@@ -176,12 +174,14 @@ public class Network implements IServer {
     public void SendData(MobileGesture data){
         if (clientSocket == null)
             return;
+        if(activity.PushOrPull() && data.Shape == null)
+            return;
         if (!this.clientSocket.isConnected()) //should prevent some crashes if the network isn't connected.
             return;
         try {
             String t = gsonConverter.toJson(data);
+            activity.ClearShapes();
             SendMessage(t);
-            vibrator.vibrate(200);
 
         }
         catch (Exception e){
