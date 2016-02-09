@@ -54,12 +54,19 @@ public class AccelerometerMonitor extends SensorMonitor {
             }
         }
 
+        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
+        }
+
         if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             mMagnetic = event.values.clone();
         }
 
         if(mGravity != null && mMagnetic != null) {
-            Log.d("sensor1: ", Double.toString(Math.toDegrees(getDirection()[0])) + " " + Double.toString(Math.toDegrees(getDirection()[1])) + " " + Double.toString(Math.toDegrees(getDirection()[2])));
+            //Log.d("sensor1: ", Double.toString(Math.toDegrees(getDirection()[0])) + " " + Double.toString(Math.toDegrees(getDirection()[1])) + " " + Double.toString(Math.toDegrees(getDirection()[2])));
         }
     }
 
@@ -129,7 +136,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     }
     private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD});
+        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_GYROSCOPE});
         rMonitor = monitor;
     }
 }
