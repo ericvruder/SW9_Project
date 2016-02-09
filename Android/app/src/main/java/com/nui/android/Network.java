@@ -5,6 +5,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -39,6 +40,8 @@ public class Network implements IServer {
     PrintWriter out;
 
     private static Network instance;
+    private DatagramSocket datagramSocket;
+    private InetAddress hostInet;
 
     public static void initInstance(BaseActivity ba) {
 
@@ -85,6 +88,11 @@ public class Network implements IServer {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             StartListener((clientSocket.getInputStream()));
+
+            datagramSocket = new DatagramSocket();
+            hostInet = InetAddress.getByName(host);
+            datagramSocket.connect(hostInet, 49256);
+            Log.d("Network:", "Socket is bound to " + String.valueOf(datagramSocket.getLocalPort()));
 
         } catch (Exception e) {
             if(e instanceof IOException || e instanceof EOFException){
@@ -187,6 +195,10 @@ public class Network implements IServer {
         catch (Exception e){
             Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message
         }
+    }
+
+    public void SendDatagram(String message) {
+
     }
 
     public void Pause(){
