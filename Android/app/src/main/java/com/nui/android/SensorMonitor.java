@@ -11,7 +11,8 @@ import android.hardware.SensorManager;
 public abstract class SensorMonitor implements SensorEventListener {
 
     private static SensorManager manager;
-    protected Sensor sensor;
+    protected Sensor sensor1;
+    protected Sensor sensor2;
 
     IServer server;
 
@@ -21,8 +22,17 @@ public abstract class SensorMonitor implements SensorEventListener {
     public SensorMonitor(IServer server, Context context, int sensorType){
         this.server = server;
         manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = manager.getDefaultSensor(sensorType);
-        manager.registerListener(this, sensor , SensorManager.SENSOR_DELAY_NORMAL);
+        sensor1 = manager.getDefaultSensor(sensorType);
+        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    public SensorMonitor(IServer server, Context context, int sensorType1, int sensorType2){
+        this.server = server;
+        manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensor1 = manager.getDefaultSensor(sensorType1);
+        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
+        sensor2 = manager.getDefaultSensor(sensorType2);
+        manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
 
@@ -31,6 +41,9 @@ public abstract class SensorMonitor implements SensorEventListener {
     }
 
     public void Resume(){
-        manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if(sensor1 != null)
+            manager.registerListener(this, sensor1, SensorManager.SENSOR_DELAY_NORMAL);
+        if(sensor2 != null)
+            manager.registerListener(this, sensor2, SensorManager.SENSOR_DELAY_NORMAL);
     }
 }
