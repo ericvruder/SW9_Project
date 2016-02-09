@@ -48,10 +48,9 @@ public class AccelerometerMonitor extends SensorMonitor {
             float y = event.values[1];
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
-            if(IsThrown(x,y,z,curTime)){
+            if(IsThrown(x,y,z)){
                 ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
                 server.SendData(data);
-                Log.d("ACCELEROMETER", "Thrown");
             }
         }
 
@@ -64,20 +63,64 @@ public class AccelerometerMonitor extends SensorMonitor {
         }
     }
 
-    public boolean IsThrown(float x, float y, float z, long curTime){
+    private static final boolean ADAPTIVE_ACCEL_FILTER = true;
+    float lastAccel[] = new float[3];
+    float accelFilter[] = new float[3];
 
-        float accelationSquareRoot = ((y * y + z * z) * 1.33f)
-                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-        if (accelationSquareRoot >= 1.9) //
+    public boolean IsThrown(float accelX, float accelY, float accelZ) {
+        // high pass filter
+        float updateFreq = 30; // match this to your update speed
+        float cutOffFreq = 0.9f;
+        float RC = 1.0f / cutOffFreq;
+        float dt = 1.0f / updateFreq;
+        float filterConstant = RC / (dt + RC);
+        float alpha = filterConstant;
+        float kAccelerometerMinStep = 0.033f;
+        float kAccelerometerNoiseAttenuation = 3.0f;
+
+        if(ADAPTIVE_ACCEL_FILTER)
         {
-            long timeDiff = curTime - lastUpdate;
-            if (timeDiff < 500) {
-                return false;
-            }
-            lastUpdate = curTime;
+
+            float d = (float)(clamp(Math.abs(norm(accelFilter[0], accelFilter[1], accelFilter[2]) - norm(accelX, accelY, accelZ)) / kAccelerometerMinStep - 1.0f, 0.0f, 1.0f));
+            alpha = d * filterConstant / kAccelerometerNoiseAttenuation + (1.0f - d) * filterConstant;
+        }
+
+        accelFilter[0] = (float) (alpha * (accelFilter[0] + accelX - lastAccel[0]));
+        accelFilter[1] = (float) (alpha * (accelFilter[1] + accelY - lastAccel[1]));
+        accelFilter[2] = (float) (alpha * (accelFilter[2] + accelZ - lastAccel[2]));
+
+        float t = accelFilter[2];
+
+        lastAccel[0] = accelX;
+        lastAccel[1] = accelY;
+        lastAccel[2] = accelZ;
+
+        if(t>3.0f){
+            Log.d("ACCELLEROMETERMONITOR", "THROW");
             return true;
         }
+
         return false;
+    }
+
+    double clamp(double v, double min, double max) {
+
+        if(v > max)
+
+            return max;
+
+        else if(v < min)
+
+            return min;
+
+        else
+
+            return v;
+    }
+    double norm(double x, double y, double z) {
+
+        return Math.sqrt(x * x + y * y + z * z);
+
     }
 
     @Override

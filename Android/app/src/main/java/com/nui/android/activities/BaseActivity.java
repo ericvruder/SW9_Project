@@ -90,13 +90,20 @@ public class BaseActivity extends Activity {
 
     }
 
+    private boolean pushOrPull;
+
+    public boolean PushOrPull(){
+        //True = push, false = pull
+        return pushOrPull;
+    }
+
     protected void initNetwork()
     {
         Network.initInstance(this);
     }
 
     public void StartPullTest(){
-
+        pushOrPull = false;
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
 
@@ -135,6 +142,7 @@ public class BaseActivity extends Activity {
 
     public void StartPushTest(){
 
+        pushOrPull = true;
         circleViewPull.setVisibility(View.INVISIBLE);
         squareViewPull.setVisibility(View.INVISIBLE);
         circleView.setVisibility(View.VISIBLE);
@@ -179,9 +187,14 @@ public class BaseActivity extends Activity {
         });
     }
 
-    public void SwitchPosition() {
+    public void ClearShapes(){
+        shape = null;
         squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
         circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+    }
+
+    public void SwitchPosition() {
+        ClearShapes();
         if(count > MAX_COUNT || random.nextBoolean()) {
             count = 0;
             int TopShapeTop = circleView.getTop();
