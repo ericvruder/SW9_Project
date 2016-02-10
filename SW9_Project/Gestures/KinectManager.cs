@@ -107,6 +107,9 @@ namespace SW9_Project {
                                                where t.Joints[JointType.Head].Position.Z == skeletons.Min(x => x.Joints[JointType.Head].Position.Z)
                                                select t).FirstOrDefault();
                     if (playerSkeleton != null) {
+
+
+                        float center = playerSkeleton.Joints[JointType.ShoulderCenter].Position.Y;
                         
                         Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
                         Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
@@ -122,7 +125,7 @@ namespace SW9_Project {
                         gestureController.UpdateAllGestures(playerSkeleton);
 
                         // Left handed
-                        board.PointAt(Pointer.Position.X, Pointer.Position.Y); // This is used for the throw technique
+                        board.PointAt(Pointer.Position.X, Pointer.Position.Y - center); // This is used for the throw technique
                         //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for all other techniques
 
                         // Right handed
