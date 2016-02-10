@@ -13,10 +13,36 @@ import com.nui.android.activities.BaseActivity;
  */
 public class AccelerometerMonitor extends SensorMonitor {
 
+    private float[] mGravity;
+    private float[] mMagnetic;
+
+    private float[] getDirection()
+    {
+
+        float[] temp = new float[9];
+        float[] R = new float[9];
+        //Load rotation matrix into R
+        SensorManager.getRotationMatrix(temp, null,
+                mGravity, mMagnetic);
+
+        //Remap to camera's point-of-view
+        /*SensorManager.remapCoordinateSystem(temp,
+                SensorManager.AXIS_X,
+                SensorManager.AXIS_Z, R);*/
+
+        //Return the orientation values
+        float[] values = new float[3];
+        SensorManager.getOrientation(temp, values);
+
+        return values;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            mGravity = event.values.clone();
+
             long curTime = System.currentTimeMillis();
             float x = event.values[0];
             float y = event.values[1];
@@ -26,6 +52,21 @@ public class AccelerometerMonitor extends SensorMonitor {
                 ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
                 server.SendData(data);
             }
+        }
+
+        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
+        }
+
+        if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            mMagnetic = event.values.clone();
+        }
+
+        if(mGravity != null && mMagnetic != null) {
+            //Log.d("sensor1: ", Double.toString(Math.toDegrees(getDirection()[0])) + " " + Double.toString(Math.toDegrees(getDirection()[1])) + " " + Double.toString(Math.toDegrees(getDirection()[2])));
         }
     }
 
@@ -95,7 +136,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     }
     private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server,context, Sensor.TYPE_ACCELEROMETER);
+        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_GYROSCOPE});
         rMonitor = monitor;
     }
 }
