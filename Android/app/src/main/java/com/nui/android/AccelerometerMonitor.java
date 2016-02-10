@@ -62,7 +62,7 @@ public class AccelerometerMonitor extends SensorMonitor {
             float y = event.values[1];
             float z = event.values[2];
             Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
-            byte[] buf = ("time:"+ event.timestamp +" x:"+x+" y:"+y+" z:"+z).getBytes();
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+Math.toDegrees(x)+":y:"+Math.toDegrees(y)+":z:"+Math.toDegrees(z)).getBytes();
             server.SendDatagram(buf);
         }
 
