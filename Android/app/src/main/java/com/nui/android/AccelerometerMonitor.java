@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.nui.android.activities.BaseActivity;
 
+import java.security.Timestamp;
+import java.sql.Time;
+
 /**
  * Created by ericv on 10/13/2015.
  */
@@ -59,6 +62,8 @@ public class AccelerometerMonitor extends SensorMonitor {
             float y = event.values[1];
             float z = event.values[2];
             Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+Math.toDegrees(x)+":y:"+Math.toDegrees(y)+":z:"+Math.toDegrees(z)).getBytes();
+            server.SendDatagram(buf);
         }
 
         if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {

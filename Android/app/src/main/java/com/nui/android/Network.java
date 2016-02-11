@@ -5,12 +5,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.io.PrintWriter;
+import java.security.spec.ECField;
 
 import android.content.Context;
 import android.util.Log;
@@ -28,7 +30,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.10";
+    private static final String SERVER_IP = "192.168.1.3";
 
     Socket clientSocket;
     String host;
@@ -89,10 +91,7 @@ public class Network implements IServer {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             StartListener((clientSocket.getInputStream()));
 
-            datagramSocket = new DatagramSocket();
-            hostInet = InetAddress.getByName(host);
-            datagramSocket.connect(hostInet, 49256);
-            Log.d("Network:", "Socket is bound to " + String.valueOf(datagramSocket.getLocalPort()));
+            connectDatagram();
 
         } catch (Exception e) {
             if(e instanceof IOException || e instanceof EOFException){
@@ -197,8 +196,32 @@ public class Network implements IServer {
         }
     }
 
-    public void SendDatagram(String message) {
+    public void SendDatagram(byte[] buf) {
+        DatagramPacket dp = new DatagramPacket(buf, buf.length);
+        try {
+            if(datagramSocket == null) {
+                Thread connectionThread = new Thread() {
+                    public void run() {
+                        connectDatagram();
+                    }
+                };
+                connectionThread.start();
+            }
+            datagramSocket.send(dp);
+        } catch (Exception e){
+            Log.e("DatagramPacket:", e.toString());
+        }
+    }
 
+    private void connectDatagram() {
+        try {
+            datagramSocket = new DatagramSocket();
+            hostInet = InetAddress.getByName(host);
+            datagramSocket.connect(hostInet, 49255);
+            Log.d("Network:", "Socket is bound to " + String.valueOf(datagramSocket.getLocalPort()));
+        } catch (Exception e) {
+            Log.e("Datagram connection:", e.toString());
+        }
     }
 
     public void Pause(){
