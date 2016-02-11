@@ -39,9 +39,7 @@ namespace SW9_Project {
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
 
-        public CanvasWindow() : this(true) { }
-
-        public CanvasWindow(bool targetPractice) {
+        public CanvasWindow(bool targetPractice = true) {
 
             this.targetPractice = targetPractice;
 
