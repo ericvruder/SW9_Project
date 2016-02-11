@@ -30,7 +30,6 @@ namespace SW9_Project {
         }
 
         private void StartCanvasWindow() {
-
             CanvasWindow canvas = new CanvasWindow();
             if (Screen.AllScreens.Length > 1) {
                 Screen s2 = Screen.AllScreens[1];
