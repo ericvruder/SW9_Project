@@ -24,14 +24,14 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
+        bool targetPractice = true;
+
         Cell[,] grid;
         Cell target, extraTarget;
         Target nextTarget;
         GridSize currentSize;
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
-        //public static int sgHeight = 12, sgWidth = 18, lgHeight = 6, lgWidth = 9;
-        //public static int sgHeight = 20, sgWidth = 30, lgHeight = 10, lgWidth = 15;
         double squareHeight = 0, squareWidth = 0;
         static CanvasWindow window;
         static Connection connection;
@@ -39,7 +39,11 @@ namespace SW9_Project {
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
 
-        public CanvasWindow() {
+        public CanvasWindow() : this(true) { }
+
+        public CanvasWindow(bool targetPractice) {
+
+            this.targetPractice = targetPractice;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
@@ -67,9 +71,9 @@ namespace SW9_Project {
 
         public void CreateGrid(GridSize size) {
             if(size == GridSize.Large) {
-                CreateGrid(lgWidth,lgHeight);
+                CreateGrid(lgWidth,lgHeight, targetPractice);
             } else {
-                CreateGrid(sgWidth, sgHeight);
+                CreateGrid(sgWidth, sgHeight, targetPractice);
             }
             currentSize = size;
         }
@@ -90,7 +94,7 @@ namespace SW9_Project {
         }
         
 
-        private void CreateGrid(int width, int height) {
+        private void CreateGrid(int width, int height, bool includeBorders) {
             if(grid != null) {
                 canvas.Children.Clear();
             }
@@ -106,7 +110,7 @@ namespace SW9_Project {
 
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight));
+                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight, includeBorders));
                     grid[i, j].X = i; grid[i, j].Y = j;
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
@@ -186,10 +190,11 @@ namespace SW9_Project {
         private void ColorCell(Point toColor) {
             
             if (currentCell != null) {
-                currentCell.Fill = Brushes.White;
+                currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
+            //currentCell.Fill.Opacity = 0.5;
         }
         
         protected Point pointer = new Point();
@@ -229,6 +234,11 @@ namespace SW9_Project {
                     TargetHit(target, hit);
                 }
             }
+            ExtendedDraw();
+        }
+
+        public virtual void ExtendedDraw() {
+
         }
 
         public static Point GetCurrentPoint() {
@@ -404,12 +414,20 @@ namespace SW9_Project {
             } 
             
             else if (e.Key == System.Windows.Input.Key.Q) {
+                gestureTypeLabel.Content = "Swipe";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetTypeContext(GestureType.Swipe);
             } else if (e.Key == System.Windows.Input.Key.W) {
+                gestureTypeLabel.Content = "Throw";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetTypeContext(GestureType.Throw);
             } else if (e.Key == System.Windows.Input.Key.E) {
+                gestureTypeLabel.Content = "Pinch";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetTypeContext(GestureType.Pinch);
             } else if (e.Key == System.Windows.Input.Key.R) {
+                gestureTypeLabel.Content = "Tilt";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetTypeContext(GestureType.Tilt);
             } 
             
@@ -450,11 +468,6 @@ namespace SW9_Project {
                 _inStateChange = false;
             }
             base.OnStateChanged(e);
-        }
-
-        public void ShowProgressBar()
-        {
-            progress.BeginAnimation(ProgressBar.PercentageProperty, CreateAnimation(3, 0, 100));
         }
     }
 }
