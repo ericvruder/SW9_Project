@@ -94,7 +94,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
-    <Compile Include="Gestures\Techniques\SwingLeftSegments.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="KinectGesture.cs" />
     <Compile Include="MobileGesture.cs" />
@@ -105,7 +104,7 @@
     <Compile Include="Gestures\GestureEnumTypes.cs" />
     <Compile Include="Gestures\GestureEventArgs.cs" />
     <Compile Include="Gestures\Techniques\JoinedHandsSegment.cs" />
-    <Compile Include="Gestures\Techniques\SwingRightSegments.cs" />
+    <Compile Include="Gestures\Techniques\SwingSegment.cs" />
     <Compile Include="Gestures\Techniques\WaveRightSegments.cs" />
     <Compile Include="Drawing\IDrawingBoard.cs" />
     <Compile Include="IRelativeGestureSegment.cs" />
