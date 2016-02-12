@@ -5,6 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
@@ -28,6 +32,9 @@ import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.Random;
 
 /**
@@ -87,6 +94,61 @@ public class BaseActivity extends Activity {
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
+
+
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        // TODO provide support for gyroscope (rotation vector is flawed in early
+        // versions of android)
+        rv = sm.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+        // network thread
+        nt = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long lt = 0;
+                // setup socket
+                try {
+                    // TODO select host
+
+                    // TODO support bluetooth TCP socket
+
+                    HOST = InetAddress.getByName("192.168.1.4");
+                    //HOST = InetAddress.getByName("10.208.105.215");
+                    ds = new DatagramSocket();
+                    // InetAddress ia = InetAddress.getByName("192.168.1.255");
+                    // ds.setBroadcast(true);
+                    ds.connect(HOST, PORT);
+                    Log.d("BaseActivity",
+                            "Socket is bound to "
+                                    + String.valueOf(ds.getLocalPort()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("BaseActivity", "Failed to make a socket.");
+                }
+                while (true) {
+                    if (end_nt) {
+                        Log.d("BaseActivity", "Network thread ends.");
+                        break;
+                    }
+
+                    long ct = rv_sel.getLatestTimestamp();
+                    if (ct > lt) {
+                        try {
+                            ds.send(dp);
+                            lt = ct;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }, "UdpThread");
+
+        // nt.setPriority(Thread.MAX_PRIORITY);
+        nt.start();
+
+        // TODO rewrite the sensor acquisition with NDK
+        rv_sel = new RotationVectorListener();
 
     }
 
@@ -269,6 +331,7 @@ public class BaseActivity extends Activity {
     protected void onPause(){
         super.onPause();
         acceloremeterSensor.Pause();
+        sm.unregisterListener(rv_sel);
         Network.getInstance().Pause();
     }
 
@@ -277,6 +340,15 @@ public class BaseActivity extends Activity {
         super.onResume();
         Network.getInstance().Resume();
         acceloremeterSensor.Resume();
+        sm.registerListener(rv_sel, rv, SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (nt.isAlive()) {
+            end_nt = true;
+        }
     }
 
     @Override
@@ -287,6 +359,99 @@ public class BaseActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+
+
+
+    private InetAddress HOST;
+    private final int PORT = 49255;
+
+    private SensorManager sm;
+    private Sensor rv;
+    private RotationVectorListener rv_sel;
+
+    private DatagramSocket ds;
+    private byte[] msg = new byte[100];
+    private DatagramPacket dp = new DatagramPacket(msg, msg.length);
+
+    private Thread nt;
+    private boolean end_nt;
+
+    class RotationVectorListener implements SensorEventListener {
+        private long time = 0;
+        private long mt = 0;
+        public boolean calibrated = false;
+        private float calibrateZ = 0;
+        private float calibrateX = 0;
+        private float calibrateY = 0;
+
+        private float virtualX = 0;
+        private float virtualY = 0;
+        private float virtualZ = 0;
+//		private String info_text;
+
+        public long getLatestTimestamp() {
+            return time;
+        }
+
+        protected void packageSensorEvent(float time, float x, float y, float z, DatagramPacket packet) {
+            byte[] buf = packet.getData();
+            writeByteBuffer(buf, 0, time);
+            writeByteBuffer(buf, 8, x);
+            writeByteBuffer(buf, 12, y);
+            writeByteBuffer(buf, 16, z);
+        }
+
+        protected void writeByteBuffer(byte[] buf, int offset, float f) {
+            if (offset + 4 > buf.length) {
+                // the buffer is not big enough for the data
+                // TODO throws an exception
+                Log.w("buffer", "Not good");
+                return;
+            }
+
+            int n = Float.floatToRawIntBits(f);
+            for (int i = 0; i < 4; i++) {
+                buf[offset + i] = (byte) ((n >>> i * 8) & 0xff);
+            }
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if(time == 0)
+                time = event.timestamp;
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            if(!calibrated){
+                calibrateZ = z;
+                calibrateX = x;
+                calibrateY = y;
+                calibrated = true;
+            }
+
+            virtualX = x-calibrateX;
+            virtualY = y-calibrateY;
+            virtualZ = z-calibrateZ;
+
+            /*virtualXDeg = Math.toDegrees(x-calibrateX);
+            virtualYDeg = Math.toDegrees(y-calibrateY);
+            virtualZDeg = Math.toDegrees(z-calibrateZ);*/
+
+            Log.d("Gyro: ", "X: " + virtualX + " Y: " + virtualY + " Z: " + virtualZ);
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+virtualX+":y:"+virtualY+":z:"+virtualZ).getBytes();
+            //packageSensorEvent(event.timestamp, virtualX, virtualY, virtualZ, dp);
+            dp.setData(buf);
+            time = event.timestamp;
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
     }
 
 }

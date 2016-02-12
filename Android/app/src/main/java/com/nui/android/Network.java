@@ -32,7 +32,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.3";
+    private static final String SERVER_IP = "192.168.1.4";
 
     Socket clientSocket;
     String host;
@@ -43,14 +43,8 @@ public class Network implements IServer {
 
     PrintWriter out;
 
-    private int packets = 0;
-    private long tStart = 0;
-    private long tDelta;
-    private double pps;
-
     private static Network instance;
-    private DatagramSocket datagramSocket;
-    private InetAddress hostInet;
+
 
     public static void initInstance(BaseActivity ba) {
 
@@ -80,6 +74,7 @@ public class Network implements IServer {
             }
         };
         connectionThread.start();
+
     }
 
     public void Reconnect() {
@@ -97,8 +92,6 @@ public class Network implements IServer {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             StartListener((clientSocket.getInputStream()));
-
-            connectDatagram();
 
         } catch (Exception e) {
             if(e instanceof IOException || e instanceof EOFException){
@@ -203,39 +196,6 @@ public class Network implements IServer {
         }
     }
 
-    public void SendDatagram(byte[] buf) {
-        DatagramPacket dp = new DatagramPacket(buf, buf.length);
-        try {
-            if(datagramSocket == null) {
-                Thread connectionThread = new Thread() {
-                    public void run() {
-                        connectDatagram();
-                    }
-                };
-                connectionThread.start();
-                tStart = System.currentTimeMillis();
-            }
-            datagramSocket.send(dp);
-            packets++;
-            tDelta = System.currentTimeMillis() - tStart;
-            pps = packets/(tDelta / 1000.0);
-
-            Log.d("UDP Packets:", Double.toString(pps));
-        } catch (Exception e){
-            Log.e("DatagramPacket:", e.toString());
-        }
-    }
-
-    private void connectDatagram() {
-        try {
-            datagramSocket = new DatagramSocket();
-            hostInet = InetAddress.getByName(host);
-            datagramSocket.connect(hostInet, 49255);
-            Log.d("Network:", "Socket is bound to " + String.valueOf(datagramSocket.getLocalPort()));
-        } catch (Exception e) {
-            Log.e("Datagram connection:", e.toString());
-        }
-    }
 
     public void Pause(){
         //TODO: IMPLEMENT
@@ -252,7 +212,9 @@ public class Network implements IServer {
 
     public void SetHost(String host){
         this.host = host;
-
+    }
+    public String GetHost(){
+        return host;
     }
 
 }
