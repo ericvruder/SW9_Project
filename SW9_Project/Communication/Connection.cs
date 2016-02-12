@@ -68,7 +68,6 @@ namespace SW9_Project {
                 {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
-                    Console.WriteLine("UDP from " + remoteEP.ToString());
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
             });
@@ -129,6 +128,10 @@ namespace SW9_Project {
         public void SwitchShapes() {
             sw.WriteLine("switch");
             Thread.Sleep(50);
+        }
+
+        public void SendPinch() {
+            sw.WriteLine("pinch:pull");
         }
 
         String nextShape = "";
