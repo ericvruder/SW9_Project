@@ -8,5 +8,5 @@ import java.net.DatagramPacket;
 public interface IServer {
     public void SendData(MobileGesture data);
     public void SendMessage(String message);
-    public void SendDatagram(byte[] buf);
+    public String GetHost();
 }

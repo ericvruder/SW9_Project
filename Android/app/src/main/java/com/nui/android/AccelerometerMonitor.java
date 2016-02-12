@@ -10,6 +10,9 @@ import android.util.Log;
 import com.nui.android.activities.BaseActivity;
 
 import java.math.RoundingMode;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.security.Timestamp;
 import java.sql.Time;
 import java.text.DecimalFormat;
@@ -35,6 +38,8 @@ public class AccelerometerMonitor extends SensorMonitor {
     private double virtualYDeg = 0;
     private double virtualZDeg = 0;
 
+    private long time = 0;
+
     DecimalFormat df = new DecimalFormat("#.##");
 
     private float[] getDirection()
@@ -58,6 +63,10 @@ public class AccelerometerMonitor extends SensorMonitor {
         return values;
     }
 
+    public long getLatestTimestamp() {
+        return time;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -73,31 +82,6 @@ public class AccelerometerMonitor extends SensorMonitor {
                 ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
                 server.SendData(data);
             }
-        }
-
-        if(event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR){
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            if(!calibrated){
-                calibrateZ = z;
-                calibrateX = x;
-                calibrateY = y;
-                calibrated = true;
-            }
-
-            virtualX = x-calibrateX;
-            virtualY = y-calibrateY;
-            virtualZ = z-calibrateZ;
-
-            /*virtualXDeg = Math.toDegrees(x-calibrateX);
-            virtualYDeg = Math.toDegrees(y-calibrateY);
-            virtualZDeg = Math.toDegrees(z-calibrateZ);*/
-
-            //Log.d("Gyro: ", "X: " + virtualX + " Y: " + virtualY + " Z: " + virtualZ);
-            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+virtualX+":y:"+virtualY+":z:"+virtualZ).getBytes();
-            server.SendDatagram(buf);
         }
 
         if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
@@ -173,9 +157,10 @@ public class AccelerometerMonitor extends SensorMonitor {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
     private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_GAME_ROTATION_VECTOR});
+        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD});
         rMonitor = monitor;
     }
 }
