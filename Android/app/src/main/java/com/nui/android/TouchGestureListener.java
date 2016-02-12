@@ -11,10 +11,12 @@ import com.nui.android.activities.BaseActivity;
  */
 public class TouchGestureListener extends GestureDetector.SimpleOnGestureListener {
     IServer server;
+    BaseActivity activity;
 
-    public TouchGestureListener(IServer server){
+    public TouchGestureListener(BaseActivity activity, IServer server){
         super();
         this.server = server;
+        this.activity = activity;
     }
 
     @Override
@@ -22,6 +24,9 @@ public class TouchGestureListener extends GestureDetector.SimpleOnGestureListene
         //server.SendData(new ThrowGesture(BaseActivity.GetSelectedShape()));
         //server.SendData(new TiltGesture(BaseActivity.GetSelectedShape()));
         Log.d("TOUCH", "onTouch() " + BaseActivity.GetSelectedShape());
+        if(activity.IsWaitingForPinch()){
+            server.SendData(new PinchGesture("circle"));
+        }
         return true;
     }
 }

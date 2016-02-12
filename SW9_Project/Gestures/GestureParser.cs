@@ -68,12 +68,21 @@ namespace SW9_Project {
                 case GestureType.Pinch:
                     {
                         if (typeContext == GestureType.Pinch) {
-                            if (waitingKinectGesture?.Type == GestureType.Pinch) {
-                                ClearGestures();
-                                AwaitingGesture = new KinectGesture(receivedGesture.Shape);
-                            } else {
-                                ClearGestures();
-                                waitingMobileGesture = receivedGesture;
+                            if (directionContext == GestureDirection.Push) {
+                                if (waitingKinectGesture?.Type == GestureType.Pinch) {
+                                    ClearGestures();
+                                    AwaitingGesture = new KinectGesture(receivedGesture.Shape);
+                                } else {
+                                    ClearGestures();
+                                    waitingMobileGesture = receivedGesture;
+                                }
+                            }
+                            else {
+                                if(waitingKinectGesture != null) {
+                                    KinectGesture t = waitingKinectGesture;
+                                    ClearGestures();
+                                    AwaitingGesture = t;
+                                }
                             }
                         } else {
                             ClearGestures();
@@ -108,6 +117,12 @@ namespace SW9_Project {
             AwaitingGesture = null;
         }
 
+        private static Connection connection;
+
+        static public void SetConnection(Connection conn) {
+            connection = conn;
+        }
+
         static public void AddKinectGesture(KinectGesture receivedGesture) {
             if (paused) return;
             Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
@@ -119,8 +134,9 @@ namespace SW9_Project {
                                 string shape = "";
                                 shape = board.GetCell(receivedGesture.Pointer)?.Shape is Ellipse ? "circle" : "square";
                                 KinectGesture gesture = new KinectGesture(shape);
+                                connection.SendPinch();
                                 ClearGestures();
-                                AwaitingGesture = gesture;
+                                waitingKinectGesture = gesture;
                             } else if (waitingMobileGesture?.Type == GestureType.Pinch) {
                                 if (receivedGesture.Direction != directionContext) { break; }
                                 KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape);

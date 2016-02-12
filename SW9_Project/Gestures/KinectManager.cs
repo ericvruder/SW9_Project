@@ -13,12 +13,10 @@ namespace SW9_Project {
     class KinectManager {
 
         KinectSensor kinectSensor;
-        string connectedStatus = "";
         IDrawingBoard board;
         private GestureController gestureController;
         private InteractionStream _interactionStream;
         private UserInfo[] userInfos;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public KinectManager(IDrawingBoard board) {
             
@@ -147,11 +145,6 @@ namespace SW9_Project {
                     break;
                 }
             }
-
-            if (this.kinectSensor == null) {
-                connectedStatus = "Found none Kinect Sensors connected to USB";
-                return;
-            }
         }
 
         private void RegisterGestures(bool leftHand)
@@ -249,11 +242,13 @@ namespace SW9_Project {
                         {
                             if (action == "released")
                             {
+                                Console.WriteLine("Release");
                                 KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
                                 GestureParser.AddKinectGesture(kinectGesture);
                             }
                             else
                             {
+                                Console.WriteLine("Grip");
                                 KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
                                 GestureParser.AddKinectGesture(kinectGesture);
                             }

@@ -59,7 +59,7 @@ namespace SW9_Project {
 
         public static void SetConnection(Connection _connection) {
             connection = _connection;
-
+            GestureParser.SetConnection(connection);
         }
 
         public void Clear() {
@@ -430,8 +430,14 @@ namespace SW9_Project {
             } 
             
             else if (e.Key == System.Windows.Input.Key.A) {
+                connection?.StartTest(GestureDirection.Push);
+                gestureTypeLabel.Content = "Push";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Push);
             } else if (e.Key == System.Windows.Input.Key.S) {
+                connection?.StartTest(GestureDirection.Pull);
+                gestureTypeLabel.Content = "Pull";
+                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
             }
             else if(e.Key == System.Windows.Input.Key.Z) {

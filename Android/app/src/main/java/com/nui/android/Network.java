@@ -32,7 +32,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.4";
+    private static final String SERVER_IP = "192.168.1.2";
 
     Socket clientSocket;
     String host;
@@ -158,6 +158,9 @@ public class Network implements IServer {
                                 }
                             }
                     );
+                }
+                else if(line.equals("pinch:pull")){
+                    activity.AwaitingPullPinch(true);
                 }
             }
         } catch(Exception e) {

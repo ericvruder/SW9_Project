@@ -85,6 +85,7 @@ namespace SW9_Project {
             }
             techniquePlayer = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
+            Console.WriteLine($"Changed to gesture: {GestureParser.GetTypeContext()} {GestureParser.GetDirectionContext()}");
             return true;
         }
 
@@ -92,7 +93,7 @@ namespace SW9_Project {
 
         private Queue<GestureType> GetRandomGestureList() {
             
-            List<GestureType> types = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+            List<GestureType> types = new List<GestureType> { GestureType.Pinch /*, GestureType.Swipe, GestureType.Throw, GestureType.Tilt*/ };
             types.Shuffle();
             return new Queue<GestureType>(types);
         }
