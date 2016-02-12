@@ -88,17 +88,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BulletinBoard.cs" />
     <Compile Include="CanvasWindow.xaml.cs">
       <DependentUpon>CanvasWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="GestureParser.cs" />
+    <Compile Include="Gestures\GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
-    <Compile Include="Gestures\Techniques\SwingLeftSegments.cs" />
-    <Compile Include="GestureType.cs" />
-    <Compile Include="Gyro.cs" />
-    <Compile Include="KinectGesture.cs" />
-    <Compile Include="MobileGesture.cs" />
+    <Compile Include="Gestures\GestureType.cs" />
+    <Compile Include="Gestures\KinectGesture.cs" />
+    <Compile Include="Gestures\MobileGesture.cs" />
+	<Compile Include="Gyro.cs" />
     <Compile Include="Drawing\Cell.cs" />
     <Compile Include="Communication\Connection.cs" />
     <Compile Include="Gestures\Gesture.cs" />
@@ -106,18 +106,15 @@
     <Compile Include="Gestures\GestureEnumTypes.cs" />
     <Compile Include="Gestures\GestureEventArgs.cs" />
     <Compile Include="Gestures\Techniques\JoinedHandsSegment.cs" />
-    <Compile Include="Gestures\Techniques\SwingRightSegments.cs" />
+    <Compile Include="Gestures\Techniques\SwingSegment.cs" />
     <Compile Include="Gestures\Techniques\WaveRightSegments.cs" />
     <Compile Include="Drawing\IDrawingBoard.cs" />
-    <Compile Include="IRelativeGestureSegment.cs" />
+    <Compile Include="Gestures\Techniques\IRelativeGestureSegment.cs" />
     <Compile Include="Gestures\KinectManager.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Model\AccelerometerData.cs" />
     <Compile Include="Model\MobileData.cs" />
     <Compile Include="Drawing\ShapeFactory.cs" />
-    <Compile Include="ProgressBar.xaml.cs">
-      <DependentUpon>ProgressBar.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Target.cs" />
     <Compile Include="TestSuite.cs" />
     <Compile Include="VideoWindow.xaml.cs">
@@ -139,10 +136,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ProgressBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="VideoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

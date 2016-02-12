@@ -124,13 +124,7 @@ namespace SW9_Project {
                         Joint Pointer = LeftHand ? HandLeft : HandRight;
                         gestureController.UpdateAllGestures(playerSkeleton);
 
-                        // Left handed
-                        board.PointAt(Pointer.Position.X, Pointer.Position.Y - center); // This is used for the throw technique
-                        //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for all other techniques
-
-                        // Right handed
-                        //board.PointAt(HandRight.Position.X, HandRight.Position.Y); // This is used for the throw technique
-                        //board.PointAt(HandLeft.Position.X, HandLeft.Position.Y); // This is used for all other techniques
+                        board.PointAt(Pointer.Position.X, Pointer.Position.Y - center); 
 
                     }
                 }
@@ -166,15 +160,15 @@ namespace SW9_Project {
             IRelativeGestureSegment[] ThrowPush = new IRelativeGestureSegment[2];
             IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
 
-            if (leftHand) {
-                ThrowPush[0] = new SwingRightSegment1();
-                ThrowPush[1] = new SwingRightSegment2();
-            } else {
-                ThrowPush[0] = new SwingLeftSegment1();
-                ThrowPush[1] = new SwingLeftSegment2();
-            }
+
+            ThrowPush[0] = new SwingSegmentBehind(leftHand);
+            ThrowPush[1] = new SwingSegmentInfront(leftHand);
+
+            ThrowPull[0] = new SwingSegmentInfront(leftHand);
+            ThrowPull[1] = new SwingSegmentBehind(leftHand);
 
             gestureController.AddGesture("ThrowPush", ThrowPush);
+            //gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
@@ -183,11 +177,13 @@ namespace SW9_Project {
 
             if(e.GestureName == "ThrowPush")
             {
+                Console.WriteLine("Throw Push");
                 KinectGesture thrown = new KinectGesture(GestureType.Throw, GestureDirection.Push, pointer);
                 GestureParser.AddKinectGesture(thrown);
 
             }
             else if(e.GestureName == "ThrowPull") {
+                Console.WriteLine("Throw Pull");
                 KinectGesture pull = new KinectGesture(GestureType.Throw, GestureDirection.Pull, pointer);
                 GestureParser.AddKinectGesture(pull);
             }
@@ -260,19 +256,6 @@ namespace SW9_Project {
                             {
                                 KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
                                 GestureParser.AddKinectGesture(kinectGesture);
-                            }
-                        }
-                        else
-                        {
-                            if (action == "released")
-                            {
-                                // right hand released code here
-                                //Console.WriteLine("Right hand release");
-                            }
-                            else
-                            {
-                                // right hand gripped code here
-                                //Console.WriteLine("Right hand grip");
                             }
                         }
                     }

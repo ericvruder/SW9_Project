@@ -30,11 +30,12 @@ namespace SW9_Project {
             return pointer;
         }
 
-        public static Rectangle CreateGridCell(double width, double height) {
+        public static Rectangle CreateGridCell(double width, double height, bool border) {
             Rectangle rectangle = new Rectangle();
             rectangle.StrokeThickness = 1;
-            rectangle.Fill = Brushes.White;
-            rectangle.Stroke = Brushes.Black;
+            rectangle.Fill = border ? Brushes.White : Brushes.Transparent;
+
+            rectangle.Stroke = border ? Brushes.Black : Brushes.Transparent;
             rectangle.Height = height;
             rectangle.Width = width;
 
