@@ -18,7 +18,7 @@
     <Grid>
         <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
-        <Control:ProgressBar Visibility="Hidden" x:Name="progress" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="80" StrokeThickness="15" SegmentColor="#026873" />
+        
         <Label x:Name="testIDLabel" 
                Content="User ID: Not Started" 
                HorizontalAlignment="Left" 
@@ -32,6 +32,16 @@
                Content="Not Connected!" 
                HorizontalAlignment="Right" 
                Margin="865,14,0,0" 
+               VerticalAlignment="Top" 
+               Width="287" Height="46" 
+               Foreground ="White" 
+               Opacity="0"
+               FontSize="26.667" />
+
+        <Label x:Name="gestureTypeLabel" 
+               Content="None" 
+               HorizontalAlignment="Right" 
+               Margin="0,14,444,0" 
                VerticalAlignment="Top" 
                Width="287" Height="46" 
                Foreground ="White" 
