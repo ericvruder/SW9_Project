@@ -1,6 +1,7 @@
 package com.nui.android;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -8,8 +9,10 @@ import android.util.Log;
 
 import com.nui.android.activities.BaseActivity;
 
+import java.math.RoundingMode;
 import java.security.Timestamp;
 import java.sql.Time;
+import java.text.DecimalFormat;
 
 /**
  * Created by ericv on 10/13/2015.
@@ -18,6 +21,21 @@ public class AccelerometerMonitor extends SensorMonitor {
 
     private float[] mGravity;
     private float[] mMagnetic;
+
+    public boolean calibrated = false;
+    private float calibrateZ = 0;
+    private float calibrateX = 0;
+    private float calibrateY = 0;
+
+    private float virtualX = 0;
+    private float virtualY = 0;
+    private float virtualZ = 0;
+
+    private double virtualXDeg = 0;
+    private double virtualYDeg = 0;
+    private double virtualZDeg = 0;
+
+    DecimalFormat df = new DecimalFormat("#.##");
 
     private float[] getDirection()
     {
@@ -57,12 +75,28 @@ public class AccelerometerMonitor extends SensorMonitor {
             }
         }
 
-        if(event.sensor.getType() == Sensor.TYPE_GYROSCOPE){
+        if(event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR){
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
-            Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
-            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+Math.toDegrees(x)+":y:"+Math.toDegrees(y)+":z:"+Math.toDegrees(z)).getBytes();
+
+            if(!calibrated){
+                calibrateZ = z;
+                calibrateX = x;
+                calibrateY = y;
+                calibrated = true;
+            }
+
+            virtualX = x-calibrateX;
+            virtualY = y-calibrateY;
+            virtualZ = z-calibrateZ;
+
+            /*virtualXDeg = Math.toDegrees(x-calibrateX);
+            virtualYDeg = Math.toDegrees(y-calibrateY);
+            virtualZDeg = Math.toDegrees(z-calibrateZ);*/
+
+            //Log.d("Gyro: ", "X: " + virtualX + " Y: " + virtualY + " Z: " + virtualZ);
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+virtualX+":y:"+virtualY+":z:"+virtualZ).getBytes();
             server.SendDatagram(buf);
         }
 
@@ -141,7 +175,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     }
     private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_GYROSCOPE});
+        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD, Sensor.TYPE_GAME_ROTATION_VECTOR});
         rMonitor = monitor;
     }
 }

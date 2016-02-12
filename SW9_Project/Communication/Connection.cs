@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace SW9_Project {
     public class Connection {
@@ -60,15 +61,31 @@ namespace SW9_Project {
         public static void StartService(int port = 8000) {
 
             UdpClient dispatcher = new UdpClient(49255);
+            Gyro gyro = new Gyro();
             Task.Factory.StartNew(() =>
             {
                 byte[] response;
+                int packets = 0;
+                Stopwatch tStart =  new Stopwatch();
+                long tDelta;
+                double pps;
                 response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
                 while (alive)
                 {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
+                    string returnData = Encoding.ASCII.GetString(data);
                     Console.WriteLine("UDP from " + remoteEP.ToString());
+                    if (returnData.StartsWith("gyrodata"))
+                    {
+                        if (packets == 0)
+                            tStart.Start();
+                        gyro.updateUI(returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
+                        packets++;
+                        tDelta = tStart.ElapsedMilliseconds;
+                        pps = packets / (tDelta / 1000.0);
+                        Console.WriteLine(packets + "/" + (tDelta / 1000.0) + " = " +pps);
+                    }
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
             });
@@ -84,6 +101,7 @@ namespace SW9_Project {
                 listener.Stop();
             });
         }
+
         StreamWriter sw;
         StreamReader sr;
         private void ManageMobileConnection() {

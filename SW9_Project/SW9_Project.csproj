@@ -96,6 +96,7 @@
     <Compile Include="Gestures\InteractionClient.cs" />
     <Compile Include="Gestures\Techniques\SwingLeftSegments.cs" />
     <Compile Include="GestureType.cs" />
+    <Compile Include="Gyro.cs" />
     <Compile Include="KinectGesture.cs" />
     <Compile Include="MobileGesture.cs" />
     <Compile Include="Drawing\Cell.cs" />

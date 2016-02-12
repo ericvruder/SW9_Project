@@ -13,6 +13,8 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.io.PrintWriter;
 import java.security.spec.ECField;
+import java.sql.Time;
+import java.util.Timer;
 
 import android.content.Context;
 import android.util.Log;
@@ -40,6 +42,11 @@ public class Network implements IServer {
     BaseActivity activity;
 
     PrintWriter out;
+
+    private int packets = 0;
+    private long tStart = 0;
+    private long tDelta;
+    private double pps;
 
     private static Network instance;
     private DatagramSocket datagramSocket;
@@ -206,8 +213,14 @@ public class Network implements IServer {
                     }
                 };
                 connectionThread.start();
+                tStart = System.currentTimeMillis();
             }
             datagramSocket.send(dp);
+            packets++;
+            tDelta = System.currentTimeMillis() - tStart;
+            pps = packets/(tDelta / 1000.0);
+
+            Log.d("UDP Packets:", Double.toString(pps));
         } catch (Exception e){
             Log.e("DatagramPacket:", e.toString());
         }
