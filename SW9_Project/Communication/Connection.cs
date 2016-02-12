@@ -149,6 +149,10 @@ namespace SW9_Project {
             Thread.Sleep(50);
         }
 
+        public void SendPinch() {
+            sw.WriteLine("pinch:pull");
+        }
+
         String nextShape = "";
         public void SetNextShape(string shape) {
             sw.WriteLine("nextshape:" + shape);

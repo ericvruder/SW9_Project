@@ -83,7 +83,7 @@ public class BaseActivity extends Activity {
         acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), rotationSensor, this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(Network.getInstance(), swipeGestureListener));
-        touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(Network.getInstance()));
+        touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(this, Network.getInstance()));
 
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
@@ -247,6 +247,15 @@ public class BaseActivity extends Activity {
             }
 
         });
+    }
+
+    boolean pullPinchWaiting = false;
+    public void AwaitingPullPinch(boolean waiting){
+        pullPinchWaiting = waiting;
+    }
+
+    public boolean IsWaitingForPinch(){
+        return pullPinchWaiting;
     }
 
     public void ClearShapes(){
