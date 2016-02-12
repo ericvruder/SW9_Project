@@ -98,6 +98,7 @@
     <Compile Include="Gestures\GestureType.cs" />
     <Compile Include="Gestures\KinectGesture.cs" />
     <Compile Include="Gestures\MobileGesture.cs" />
+	<Compile Include="Gyro.cs" />
     <Compile Include="Drawing\Cell.cs" />
     <Compile Include="Communication\Connection.cs" />
     <Compile Include="Gestures\Gesture.cs" />
