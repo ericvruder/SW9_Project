@@ -48,7 +48,7 @@ public abstract class SensorMonitor implements SensorEventListener {
             manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         for(Sensor sensor : sensors) {
-            manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 }
