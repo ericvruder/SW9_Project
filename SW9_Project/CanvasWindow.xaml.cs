@@ -232,10 +232,10 @@ namespace SW9_Project {
                     TargetHit(target, hit);
                 }
             }
-            ExtendedDraw();
+            ExtendedDraw(gesture);
         }
 
-        public virtual void ExtendedDraw() {
+        public virtual void ExtendedDraw(KinectGesture gesture) {
 
         }
 
