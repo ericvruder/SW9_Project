@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace SW9_Project {
-    class KinectGesture {
+    public class KinectGesture {
 
         public string Shape;
         public GestureType Type;
