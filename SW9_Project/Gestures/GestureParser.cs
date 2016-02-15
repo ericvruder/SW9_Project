@@ -18,6 +18,8 @@ namespace SW9_Project {
 
         static private IDrawingBoard board;
 
+        static private bool contextless = false;
+
         static public void Initialize(IDrawingBoard _board) {
             board = _board;
         }
@@ -26,10 +28,17 @@ namespace SW9_Project {
             paused = pause;
         }
 
+        public static void SetContext(bool context) {
+            contextless = context;
+        }
+
         static public KinectGesture AwaitingGesture {
             get {
                 KinectGesture t = awaitingGesture;
                 awaitingGesture = null;
+                if(t != null) {
+                    Console.WriteLine($"{DateTime.Now}: Activating gesture {t.Type} {t.Direction}");
+                }
                 return t;
             }
             set { awaitingGesture = value; }
@@ -50,10 +59,23 @@ namespace SW9_Project {
         public static void SetTypeContext(GestureType type) {
             typeContext = type;
         }
-        
+
         static public void AddMobileGesture(MobileGesture receivedGesture) {
             if (paused) return;
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
+            if (contextless) {
+                AddMobileGestureContextless(receivedGesture);
+            }
+            else {
+                AddMobileGestureContext(receivedGesture);
+            }
+        }
+
+        static public void AddMobileGestureContextless(MobileGesture receivedGesture) {
+
+        }
+        
+        static public void AddMobileGestureContext(MobileGesture receivedGesture) {
             switch (receivedGesture.Type) {
                 case GestureType.Swipe:
                     {
@@ -123,9 +145,24 @@ namespace SW9_Project {
             connection = conn;
         }
 
+
         static public void AddKinectGesture(KinectGesture receivedGesture) {
             if (paused) return;
             Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
+
+            if (contextless) {
+                AddKinectGestureContextless(receivedGesture);
+            }
+            else {
+                AddKinectGestureContext(receivedGesture);
+            }
+        }
+
+        static public void AddKinectGestureContextless(KinectGesture receivedGesture) {
+
+        }
+
+        static public void AddKinectGestureContext(KinectGesture receivedGesture) {
             if (typeContext == receivedGesture.Type) {
                 switch (receivedGesture.Type) {
                     case GestureType.Pinch:
