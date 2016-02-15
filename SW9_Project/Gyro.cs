@@ -28,9 +28,9 @@ namespace SW9_Project
         public void updateUI(string newX, string newY, string newZ)
         {
             
-            double x = double.Parse(newX, CultureInfo.InvariantCulture);
+            double x = Math.Round(double.Parse(newX, CultureInfo.InvariantCulture), 1);
             double y = double.Parse(newY, CultureInfo.InvariantCulture);
-            double z = double.Parse(newZ, CultureInfo.InvariantCulture);
+            double z = Math.Round(double.Parse(newZ, CultureInfo.InvariantCulture), 1); // Throws exeption here sometimes
 
             /*
             double[,] rot = rvToRot(x, y, z);
@@ -48,11 +48,11 @@ namespace SW9_Project
             runningCountX += x;
             runningCountZ += z;
 
-            double cx = -z * ((screenWidth / 2.0)/0.16) + (screenWidth / 2.0);
-            double cy = -x * ((screenHeight / 2.0)/0.11) + (screenHeight / 2.0);
+            double cx = -runningCountZ * ((screenWidth / 2.0)/72) + (screenWidth / 2.0);
+            double cy = -runningCountX * ((screenHeight / 2.0)/72) + (screenHeight / 2.0);
 
-            //Console.WriteLine("RC:" + x + "\t" + z);
-            //Console.WriteLine("SC:" + cy + "\t" + cx);
+            Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
+            Console.WriteLine("SC:" + cy + "\t" + cx);
             Cursor.Position = new Point((int)cx, (int)cy);
         }
 
