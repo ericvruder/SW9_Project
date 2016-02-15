@@ -84,7 +84,7 @@ namespace SW9_Project {
                         packets++;
                         tDelta = tStart.ElapsedMilliseconds;
                         pps = packets / (tDelta / 1000.0);
-                        Console.WriteLine(packets + "/" + (tDelta / 1000.0) + " = " +pps);
+                        //Console.WriteLine(packets + "/" + (tDelta / 1000.0) + " = " +pps);
                     }
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }

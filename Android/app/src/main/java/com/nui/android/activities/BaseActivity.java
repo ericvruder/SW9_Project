@@ -99,7 +99,7 @@ public class BaseActivity extends Activity {
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         // TODO provide support for gyroscope (rotation vector is flawed in early
         // versions of android)
-        rv = sm.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        rv = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // network thread
         nt = new Thread(new Runnable() {
@@ -449,8 +449,8 @@ public class BaseActivity extends Activity {
             virtualYDeg = Math.toDegrees(y-calibrateY);
             virtualZDeg = Math.toDegrees(z-calibrateZ);*/
 
-            Log.d("Gyro: ", "X: " + virtualX + " Y: " + virtualY + " Z: " + virtualZ);
-            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+virtualX+":y:"+virtualY+":z:"+virtualZ).getBytes();
+            Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+x+":y:"+y+":z:"+z).getBytes();
             //packageSensorEvent(event.timestamp, virtualX, virtualY, virtualZ, dp);
             dp.setData(buf);
             time = event.timestamp;
