@@ -87,12 +87,31 @@ public class Network implements IServer {
         connectionThread.start();
     }
 
+    private InetAddress HOST;
+    private final int PORT = 49255;
+    public DatagramSocket ds;
+
     private void SetupConnection() {
+        try{
+            if(activity.nt != null)
+                synchronized(activity.nt) {
+                    //activity.nt.wait();
+                    HOST = InetAddress.getByName(host);
+                    //HOST = InetAddress.getByName("10.208.105.215");
+                    ds = new DatagramSocket();
+                    // InetAddress ia = InetAddress.getByName("192.168.1.255");
+                    // ds.setBroadcast(true);
+                    ds.connect(HOST, PORT);
+                    activity.dp.setAddress(HOST);
+                    Log.d("BaseActivity", "Socket is bound to " + String.valueOf(ds.getLocalPort()));
+                }
+        }catch(Exception e) {
+            Log.d("Datagram connection", e.toString());
+        }
         try {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             StartListener((clientSocket.getInputStream()));
-
         } catch (Exception e) {
             if(e instanceof IOException || e instanceof EOFException){
                 Reconnect();
