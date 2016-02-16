@@ -107,24 +107,21 @@ public class BaseActivity extends Activity {
             public void run() {
                 long lt = 0;
                 // setup socket
-                try {
-                    // TODO select host
 
-                    // TODO support bluetooth TCP socket
+                while(Network.getInstance().GetHost() == null) { }
 
-                    HOST = InetAddress.getByName("192.168.1.4");
+                /*try {
+                    HOST = InetAddress.getByName(Network.getInstance().GetHost());
                     //HOST = InetAddress.getByName("10.208.105.215");
                     ds = new DatagramSocket();
                     // InetAddress ia = InetAddress.getByName("192.168.1.255");
                     // ds.setBroadcast(true);
                     ds.connect(HOST, PORT);
-                    Log.d("BaseActivity",
-                            "Socket is bound to "
-                                    + String.valueOf(ds.getLocalPort()));
+                    Log.d("BaseActivity", "Socket is bound to " + String.valueOf(ds.getLocalPort()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("BaseActivity", "Failed to make a socket.");
-                }
+                }*/
                 while (true) {
                     if (end_nt) {
                         Log.d("BaseActivity", "Network thread ends.");
@@ -134,7 +131,7 @@ public class BaseActivity extends Activity {
                     long ct = rv_sel.getLatestTimestamp();
                     if (ct > lt) {
                         try {
-                            ds.send(dp);
+                            Network.getInstance().ds.send(dp);
                             lt = ct;
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -146,6 +143,7 @@ public class BaseActivity extends Activity {
 
         // nt.setPriority(Thread.MAX_PRIORITY);
         nt.start();
+
 
         // TODO rewrite the sensor acquisition with NDK
         rv_sel = new RotationVectorListener();
@@ -382,9 +380,9 @@ public class BaseActivity extends Activity {
 
     private DatagramSocket ds;
     private byte[] msg = new byte[100];
-    private DatagramPacket dp = new DatagramPacket(msg, msg.length);
+    public DatagramPacket dp = new DatagramPacket(msg, msg.length);
 
-    private Thread nt;
+    public Thread nt;
     private boolean end_nt;
 
     class RotationVectorListener implements SensorEventListener {
