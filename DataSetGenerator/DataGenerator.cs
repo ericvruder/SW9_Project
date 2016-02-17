@@ -10,87 +10,16 @@ using SW9_Project;
 using System.Drawing;
 using System.Drawing.Imaging;
 
+using Spss;
+
 namespace DataSetGenerator {
 
-    static class DataGenerator {
+    public static class DataGenerator {
 
         private static List<GestureType> AllTypes = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
         static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
-        public static void GetAllUserData() {
-            using (StreamWriter datawriter = new StreamWriter("user_data.csv")) {
-                datawriter.WriteLine("ID TimePinch TotalHitPinch TotalErrorPinch" + 
-                                       " TimeSwipe TotalHitSwipe TotalErrorSwipe" +
-                                       " TimeThrow TotalHitThrow TotalErrorThrow" +
-                                       " TimeTilt TotalHitTilt TotalErrorTilt" +
-                                       " LargeTotalTime LargeTotalHitPercent LargeTotalMissPercent" +
-                                       " SmallTotalTime SmallTotalHitPercent SmallTotalMissPercent");
-                List<Test> tests = GetTests();
-                foreach (var t in tests) {
-                    string line = t.ID;
-                    float largeTotalTime = 0, largeTotalHit = 0, largeTotalMiss = 0;
-                    float smallTotalTime = 0, smallTotalHit = 0, smallTotalMiss = 0;
-                    foreach (var gesture in AllTypes) {
-                        foreach (var attempt in t.Attempts[gesture]) {
-                            if (attempt.Size == GridSize.Large) {
-                                largeTotalTime += (int)attempt.Time.TotalSeconds;
-                                if (attempt.Hit) {
-                                    largeTotalHit++;
-                                } else {
-                                    largeTotalMiss++;
-                                }
-                            } else {
-                                smallTotalTime += (int)attempt.Time.TotalSeconds;
-                                if (attempt.Hit) {
-                                    smallTotalHit++;
-                                } else {
-                                    smallTotalMiss++;
-                                }
-                            }
-                        }
-                        string time = t.TotalTime[gesture].TotalSeconds.ToString();
-                        float hitPercentage = Test.GetHitsPerTry(t.Attempts[gesture]).Last() * 100f;
-                        string totalHit = hitPercentage.ToString();
-                        string totalError = (100f - hitPercentage).ToString();
-                        line += " " + time + " " + totalHit + " " + totalError;
-
-                        
-                    }
-                    string lTHP = ((largeTotalHit / (largeTotalHit + largeTotalMiss)) * 100f).ToString();
-                    string lTMP = ((largeTotalMiss / (largeTotalHit + largeTotalMiss)) * 100f).ToString();
-
-                    string sTHP = ((smallTotalHit / (smallTotalHit + smallTotalMiss)) * 100f).ToString();
-                    string sTMP = ((smallTotalMiss / (smallTotalHit + smallTotalMiss)) * 100f).ToString();
-                    line += " " + largeTotalTime + " " + lTHP + " " + lTMP + " " + smallTotalTime + " " + sTHP + " " + sTMP;
-                    datawriter.WriteLine(line);
-                }
-            }
-        }
-
-        public static void GetAllTargetData()
-        {
-            using (StreamWriter largeWriter = new StreamWriter("large_target_data.csv"))
-            using (StreamWriter smallWriter = new StreamWriter("small_target_data.csv"))
-            using (StreamWriter datawriter = new StreamWriter("target_data.csv")) {
-                List<Test> tests = GetTests();
-                datawriter.WriteLine("ID GridSize Technique HitOrMiss Time");
-                smallWriter.WriteLine("ID GridSize Technique HitOrMiss Time");
-                largeWriter.WriteLine("ID GridSize Technique HitOrMiss Time");
-                foreach (var t in tests) {
-                    foreach (var attempt in t.Attempts) {
-                        foreach (var a in t.Attempts[attempt.Key]) {
-                            string time = a.Time.TotalSeconds.ToString();
-                            string hit = a.Hit ? "1" : "0";
-                            StreamWriter sizeWriter = a.Size == GridSize.Large ? largeWriter : smallWriter;
-                            string line = t.ID + " " + GetGridsizeNumber(a.Size) + " " + GetTechniqueNumber(attempt.Key) + " " + hit + " " + time;
-                            datawriter.WriteLine(line);
-                            sizeWriter.WriteLine(line);
-                        }
-                    }
-                }
-            }
-        }
 
         public static List<Test> GetTests() {
             List<Test> tests = new List<Test>();
@@ -137,117 +66,13 @@ namespace DataSetGenerator {
             return tests;
         }
 
-        public static void GetUserTwoWayData() {
-            using (StreamWriter datawriter = new StreamWriter("user_twoway_data.csv")) {
-                datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
-                                       " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
-                                       " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
-                                       " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit");
+        
 
-                List<Test> tests = GetTests();
-                foreach (var t in tests) {
-                    int[,] time = new int[4, 2];
-                    float[,] hit = new float[4, 2];
-                    foreach(var gesture in AllTypes) {
-                        int gIndex = GetTechniqueNumber(gesture) - 1;
-                        foreach(var attempt in t.Attempts[gesture]) {
-                            int sIndex = attempt.Size == GridSize.Large ? 0 : 1;
-                            time[gIndex, sIndex] += (int)attempt.Time.TotalSeconds;
-                            hit[gIndex, sIndex] += attempt.Hit ? 1 : 0;
-                        }
-                    }
+        public static void CreateCSVDocument() {
 
-                    for(int i = 0; i < 4; i++) {
-                        for(int j = 0; j < 2; j++) {
-                            hit[i, j] = (hit[i, j] / 9f) * 100f;
-                        }
-                    }
+            List<int> testing = new List<int>();
 
-                    string line = t.ID + " " + time[0, 0] + " " + time[0, 1] + " " + hit[0, 0] + " " + hit[0, 1];
-                    line +=              " " + time[1, 0] + " " + time[1, 1] + " " + hit[1, 0] + " " + hit[1, 1];
-                    line +=              " " + time[2, 0] + " " + time[2, 1] + " " + hit[2, 0] + " " + hit[2, 1];
-                    line +=              " " + time[3, 0] + " " + time[3, 1] + " " + hit[3, 0] + " " + hit[3, 1];
-                    datawriter.WriteLine(line);
-                }
-            }
-        }
-        public static void GetTargetTechniqueANOVAData() {
-
-            using (StreamWriter datawriter = new StreamWriter("target_oneway_technique_data.csv")) {
-                datawriter.WriteLine("ID PinchTime PinchHit" +
-                                       " SwipeTime SwipeHit" +
-                                       " ThrowTime ThrowHit" +
-                                       " TiltTime TiltHit");
-                List<Test> tests = GetTests();
-
-                foreach (var test in tests) {
-
-                    Dictionary<GestureType, List<int>> times = new Dictionary<GestureType, List<int>>();
-                    Dictionary<GestureType, List<string>> hits = new Dictionary<GestureType, List<string>>();
-
-                    foreach (var gesture in AllTypes) {
-                        if (!times.ContainsKey(gesture)) {
-                            times.Add(gesture, new List<int>());
-                            hits.Add(gesture, new List<string>());
-                        }
-
-                        foreach (var attempt in test.Attempts[gesture]) {
-                            times[gesture].Add((int)attempt.Time.TotalSeconds);
-                            hits[gesture].Add(attempt.Hit ? "1" : "0");
-                        }
-                    }
-                    for (int tryN = 0; tryN < times[GestureType.Pinch].Count(); tryN++) {
-                        string line = test.ID;
-
-
-                        /* "ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
-                           " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
-                           " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
-                           " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit"); */
-
-                        line += " " + times[GestureType.Pinch][tryN] + " " + hits[GestureType.Pinch][tryN];
-                        line += " " + times[GestureType.Swipe][tryN] + " " + hits[GestureType.Swipe][tryN];
-                        line += " " + times[GestureType.Throw][tryN] + " " + hits[GestureType.Throw][tryN];
-                        line += " " + times[GestureType.Tilt][tryN] +  " " + hits[GestureType.Tilt][tryN];
-                        datawriter.WriteLine(line);
-                    }
-
-                }
-            }
-        }
-
-        public static void GetTargetGridANOVAData() {
-
-            using (StreamWriter datawriter = new StreamWriter("target_oneway_grid_data.csv")) {
-                datawriter.WriteLine("ID LargeTime LargeHit" +
-                                       " SmallTime SmallHit");
-                List<Test> tests = GetTests();
-
-                foreach (var test in tests) {
-                    List<Attempt> sAttempts = new List<Attempt>(), lAttempts = new List<Attempt>();
-
-                    foreach(var s in test.Attempts) {
-                        sAttempts.AddRange(from attempt in s.Value
-                                           where attempt.Size == GridSize.Small
-                                           select attempt);
-                        lAttempts.AddRange(from attempt in s.Value
-                                           where attempt.Size == GridSize.Large
-                                           select attempt);
-                    }
-
-                    for(int i = 0; i < sAttempts.Count; i++) {
-                        string line = test.ID + " " + lAttempts[i].Time.TotalSeconds + " " + (lAttempts[i].Hit ? "1" : "0") + " " + sAttempts[i].Time.TotalSeconds + " " + (sAttempts[i].Hit ? "1" : "0");
-                        datawriter.WriteLine(line);
-                    }
-
-                }
-            }
-
-        }
-
-        public static void GetTargetTwoWayData() {
-
-            using (StreamWriter datawriter = new StreamWriter("target_twoway_data.csv")) {
+            using (StreamWriter datawriter = new StreamWriter("target_data.csv")) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
                                        " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
@@ -312,12 +137,6 @@ namespace DataSetGenerator {
                     for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
                         string line = test.ID;
 
-
-                        /* "ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit" +
-                           " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit" +
-                           " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit" +
-                           " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit"); */
-
                         foreach(var gesture in AllTypes) {
                             line += $" {lTimes[gesture][tryN]} {sTimes[gesture][tryN]} {lHits[gesture][tryN]} {sHits[gesture][tryN]} {lDist[gesture][tryN]} {sDist[gesture][tryN]} {lxDist[gesture][tryN]} {sxDist[gesture][tryN]} {lyDist[gesture][tryN]} {syDist[gesture][tryN]}";
                         }
@@ -341,33 +160,6 @@ namespace DataSetGenerator {
                 result = new Tuple<double, double, double>(distance, distances.Item1, distances.Item2);
             } 
             return result;
-        }
-
-        public static int GetTechniqueNumber(GestureType gesturetype) {
-
-            switch (gesturetype) {
-                case GestureType.Pinch:
-                    return 1;
-                case GestureType.Swipe:
-                    return 2;
-                case GestureType.Throw:
-                    return 3;
-                case GestureType.Tilt:
-                    return 4;
-                default:
-                    return 0;
-            }
-        }
-
-        public static int GetGridsizeNumber(GridSize gridsize) {
-            switch (gridsize) {
-                case GridSize.Large:
-                    return 0;
-                case GridSize.Small:
-                    return 1;
-                default:
-                    return -1;
-            }
         }
 
         public static void GetWrongTargetTests()
@@ -535,21 +327,6 @@ namespace DataSetGenerator {
             DrawHitBox(sth.ToList(), "throwsmall.png");
 
         }
-       
-        /*
-        function sqr(x) { return x * x }
-        function dist2(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
-        function distToSegmentSquared(p, v, w) {
-          var l2 = dist2(v, w);
-          if (l2 == 0) return dist2(p, v);
-          var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
-          if (t < 0) return dist2(p, v);
-          if (t > 1) return dist2(p, w);
-          return dist2(p, { x: v.x + t * (w.x - v.x),
-                            y: v.y + t * (w.y - v.y) });
-        }
-        function distToSegment(p, v, w) { return Math.sqrt(distToSegmentSquared(p, v, w)); }
-        */
 
         private static double DistanceSquare(WebDataParser.Point v, WebDataParser.Point w) {
             return Math.Pow(v.X - w.X, 2) + Math.Pow(v.Y - w.Y,2);
@@ -607,6 +384,100 @@ namespace DataSetGenerator {
             }
 
             return new Tuple<double, double>(xDistance, yDistance);
+        }
+
+
+        public static void CreateSPSSDocument() {
+
+            if (File.Exists(@"data.sav")) {
+                File.Delete(@"data.sav");
+            }
+
+
+            List<Test> tests = DataGenerator.GetTests();
+
+            using (SpssDataDocument doc = SpssDataDocument.Create(@"data.sav")) {
+                CreateMetaData(doc);
+                foreach (var test in tests) {
+                    ParseTest(doc, test);
+                }
+            }
+
+        }
+
+        private static void AddVariableForTechnique(SpssDataDocument doc, GestureType type) {
+
+
+            SpssNumericVariable time = new SpssNumericVariable();
+            time.Name = $"{type}Time";
+            time.Label = $"Time taken in seconds for the attempt using {type}";
+            doc.Variables.Add(time);
+
+            SpssNumericVariable hit = new SpssNumericVariable();
+            hit.Name = $"{type}Hit";
+            hit.Label = $"Whether the user hit the target or not using {type}";
+            doc.Variables.Add(hit);
+
+            SpssNumericVariable accuracy = new SpssNumericVariable();
+            accuracy.Name = $"{type}Accuracy";
+            accuracy.Label = $"Distance in pixels from target using {type}";
+            doc.Variables.Add(accuracy);
+
+            SpssNumericVariable gridSize = new SpssNumericVariable();
+            gridSize.Name = $"{type}Size";
+            gridSize.Label = $"Grid size for attempt using {type}";
+            gridSize.ValueLabels.Add(0, "Small");
+            gridSize.ValueLabels.Add(1, "Large");
+            doc.Variables.Add(gridSize);
+
+            SpssNumericVariable direction = new SpssNumericVariable();
+            direction.Name = $"{type}Direction";
+            direction.Label = $"Direction for attempt using {type}";
+            direction.ValueLabels.Add(0, "Push");
+            direction.ValueLabels.Add(1, "Pull");
+            doc.Variables.Add(direction);
+
+        }
+
+        public static void CreateMetaData(SpssDataDocument doc) {
+
+            SpssNumericVariable vID = new SpssNumericVariable();
+            vID.Name = "ID";
+            vID.Label = "User ID";
+            doc.Variables.Add(vID);
+
+            foreach (var type in AllTypes) {
+                AddVariableForTechnique(doc, type);
+            }
+
+            doc.CommitDictionary();
+        }
+
+        public static void ParseTest(SpssDataDocument doc, Test test) {
+            int id = int.Parse(test.ID);
+            int nAttempts = test.Attempts[GestureType.Pinch].Count;
+
+            // GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt 
+            for (int i = 0; i < nAttempts; i++) {
+                SpssCase gestureAttempts = doc.Cases.New();
+                gestureAttempts["ID"] = id;
+                foreach (var type in AllTypes) {
+                    gestureAttempts = AddTechniqueData(gestureAttempts, type, test.Attempts[type][i]);
+                }
+                gestureAttempts.Commit();
+
+            }
+        }
+
+        public static SpssCase AddTechniqueData(SpssCase gestureAttempt, GestureType type, Attempt attempt) {
+
+            gestureAttempt[$"{type}Time"] = attempt.Time.TotalSeconds;
+            gestureAttempt[$"{type}Hit"] = attempt.Hit;
+            gestureAttempt[$"{type}Accuracy"] = DistanceToTargetCell(attempt);
+            gestureAttempt[$"{type}Size"] = attempt.Size;
+            gestureAttempt[$"{type}Direction"] = attempt.Direction;
+
+            return gestureAttempt;
         }
     }
 }

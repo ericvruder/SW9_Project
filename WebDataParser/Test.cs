@@ -34,6 +34,7 @@ namespace WebDataParser {
                 string line = "";
                 GridSize size = GridSize.Large;
                 GestureType type = GestureType.Pinch;
+                GestureDirection direction = GestureDirection.Push;
                 while ((line = sr.ReadLine()) != null) {
                     if (line.Contains("Started new gesture test.")) {
 
@@ -45,6 +46,10 @@ namespace WebDataParser {
                             case "Swipe": type = GestureType.Swipe; break;
                             case "Pinch": type = GestureType.Pinch; break;
                         }
+
+                        tobesearched = "Direction: ";
+                        toBefound = line.Substring(line.IndexOf(tobesearched) + tobesearched.Length).Split(' ')[0];
+                        direction = toBefound == "Push" ? GestureDirection.Push : GestureDirection.Pull;
                         if (!Attempts.ContainsKey(type)) {
                             Attempts.Add(type, new List<Attempt>());
                         }
@@ -59,7 +64,7 @@ namespace WebDataParser {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        Attempt attempt = new Attempt(line, size);
+                        Attempt attempt = new Attempt(line, size, direction);
                         Attempts[type].Add(attempt);
                     }
                 }

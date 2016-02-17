@@ -17,8 +17,9 @@ namespace WebDataParser {
         public Point Pointer { get; }
         public JumpLength Length { get; }
         public GridSize Size { get; set; }
+        public GestureDirection Direction { get; set; }
 
-        public Attempt(string attemptLine, GridSize size) {
+        public Attempt(string attemptLine, GridSize size, GestureDirection direction) {
             Size = size;
 
             // 0   1  2     3        4          5           6            7                  8                 9
