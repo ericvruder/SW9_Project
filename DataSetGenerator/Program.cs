@@ -7,16 +7,10 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
-            DataGenerator.GetAllTargetData();
-            DataGenerator.GetAllUserData();
-            DataGenerator.GetUserTwoWayData();
-            DataGenerator.GetTargetTwoWayData();
-            DataGenerator.GetTargetGridANOVAData();
-            DataGenerator.GetTargetTechniqueANOVAData();
+
+            DataGenerator.CreateSPSSDocument();
+            DataGenerator.CreateCSVDocument();
             DataGenerator.CreateHitboxes();
-            //DataGenerator.GetStartPercentages();
-            //DataGenerator.GetWrongTargetTests();
-            //DataGenerator.VerifyTests();
         }
     }
 }

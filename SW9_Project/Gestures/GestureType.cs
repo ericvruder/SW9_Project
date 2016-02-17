@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace SW9_Project {
     public enum GestureType {
-        Throw, Pinch, Tilt, Swipe
+        Pinch, Swipe, Throw, Tilt
     }
     public enum GestureDirection {
-        Pull, Push
+        Push, Pull
     }
     public enum JumpLength {
         Short, Medium, Long, NA
     }
+    public enum GridSize { Small, Large }
 }
