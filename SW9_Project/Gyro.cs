@@ -61,7 +61,8 @@ namespace SW9_Project
             double cx = -runningCountZ * ((screenWidth / 2.0)/72) + (screenWidth / 2.0);
             double cy = -runningCountX * ((screenHeight / 2.0)/72) + (screenHeight / 2.0);
 
-            // TODO: fix screen bounds
+            // TODO fix screen bounds
+            // TODO move the pointer and not the system cursor
 
             Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
             Console.WriteLine("SC:" + cy + "\t" + cx);
