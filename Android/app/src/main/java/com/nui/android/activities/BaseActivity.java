@@ -127,7 +127,8 @@ public class BaseActivity extends Activity {
         }, "UdpThread");
 
         // nt.setPriority(Thread.MAX_PRIORITY);
-        nt.start();
+        if(Network.getInstance().ds != null)
+            nt.start();
 
         // TODO rewrite the sensor acquisition with NDK
         rv_sel = new RotationVectorListener();

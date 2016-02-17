@@ -16,6 +16,7 @@ namespace SW9_Project
         double runningCountZ = 0;
         double runningCountX = 0;
         int scale = 10;
+        long previousTime = 0;
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;
         Cursor cursor = new Cursor(Cursor.Current.Handle); // For test
@@ -25,28 +26,37 @@ namespace SW9_Project
             Cursor.Position = new Point(800, 450);
         }
 
-        public void updateUI(string newX, string newY, string newZ)
+        public void updateUI(string nTime, string nX, string nY, string nZ)
         {
-            
-            double x = Math.Round(double.Parse(newX, CultureInfo.InvariantCulture), 1);
-            double y = double.Parse(newY, CultureInfo.InvariantCulture);
-            double z = Math.Round(double.Parse(newZ, CultureInfo.InvariantCulture), 1); // Throws exeption here sometimes
+            try {
+                double x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 1);
+                //double y = double.Parse(nY, CultureInfo.InvariantCulture);
+                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 1); // Throws exeption here sometimes
+                long currentTime = long.Parse(nTime, CultureInfo.InvariantCulture);
 
-            /*
-            double[,] rot = rvToRot(x, y, z);
-            double[,] ya = new double[,] { { 0.0 }, { 1.0 }, { 0.0 } };
-            double[,] xa = new double[,] { { 1.0 }, { 0.0 }, { 0.0 } };
+                if (currentTime < previousTime)
+                    return;
 
-            double[,] ty = MultiplyMatrix(rot, ya);
-            double[,] tx = MultiplyMatrix(rot, xa);
+                /*
+                double[,] rot = rvToRot(x, y, z);
+                double[,] ya = new double[,] { { 0.0 }, { 1.0 }, { 0.0 } };
+                double[,] xa = new double[,] { { 1.0 }, { 0.0 }, { 0.0 } };
 
-            double cx = -ty[0,0] * int.Parse(screenWidth) + int.Parse(screenWidth) / 2.0;
-            double cy = -ty[2,0] * int.Parse(screenHeight) + int.Parse(screenHeight) / 2.0;
+                double[,] ty = MultiplyMatrix(rot, ya);
+                double[,] tx = MultiplyMatrix(rot, xa);
 
-            Cursor.Position = new Point((int)cx, (int)cy);*/
+                double cx = -ty[0,0] * int.Parse(screenWidth) + int.Parse(screenWidth) / 2.0;
+                double cy = -ty[2,0] * int.Parse(screenHeight) + int.Parse(screenHeight) / 2.0;
 
-            runningCountX += x;
-            runningCountZ += z;
+                Cursor.Position = new Point((int)cx, (int)cy);*/
+
+                runningCountX += x;
+                runningCountZ += z;
+                previousTime = currentTime;
+            }
+            catch (FormatException e)
+            {
+            }
 
             double cx = -runningCountZ * ((screenWidth / 2.0)/72) + (screenWidth / 2.0);
             double cy = -runningCountX * ((screenHeight / 2.0)/72) + (screenHeight / 2.0);

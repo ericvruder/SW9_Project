@@ -97,13 +97,17 @@ public class Network implements IServer {
                 synchronized(activity.nt) {
                     //activity.nt.wait();
                     HOST = InetAddress.getByName(host);
+                    activity.dp.setAddress(HOST);
+                    activity.dp.setPort(PORT);
                     //HOST = InetAddress.getByName("10.208.105.215");
                     ds = new DatagramSocket();
                     // InetAddress ia = InetAddress.getByName("192.168.1.255");
                     // ds.setBroadcast(true);
                     ds.connect(HOST, PORT);
-                    activity.dp.setAddress(HOST);
+
                     Log.d("BaseActivity", "Socket is bound to " + String.valueOf(ds.getLocalPort()));
+                    if(!activity.nt.isAlive())
+                        activity.nt.start();
                 }
         }catch(Exception e) {
             Log.d("Datagram connection", e.toString());
