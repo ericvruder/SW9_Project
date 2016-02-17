@@ -106,9 +106,11 @@ public class BaseActivity extends Activity {
                 if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
                     Log.d("TouchTest", "Touch down");
                     sendGyroData = true;
+                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorDarkGrey));
                     return true;
                 } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
                     Log.d("TouchTest", "Touch up");
+                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorLightGrey));
                     sendGyroData = false;
                     return true;
                 }
