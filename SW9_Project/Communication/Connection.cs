@@ -80,7 +80,7 @@ namespace SW9_Project {
                     {
                         if (packets == 0)
                             tStart.Start();
-                        gyro.updateUI(returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
+                        gyro.updateUI(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
                         packets++;
                         tDelta = tStart.ElapsedMilliseconds;
                         pps = packets / (tDelta / 1000.0);
