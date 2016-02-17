@@ -12,7 +12,6 @@ using System.Media;
 
 namespace SW9_Project {
 
-    public enum GridSize { Small, Large }
     /// <summary>
     /// Interaction logic for CanvasWindow.xaml
     /// </summary>
