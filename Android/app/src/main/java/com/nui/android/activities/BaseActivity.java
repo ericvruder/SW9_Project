@@ -3,6 +3,7 @@ package com.nui.android.activities;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
@@ -13,12 +14,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -57,6 +60,8 @@ public class BaseActivity extends Activity {
 
     private ImageView circleViewPull;
     private ImageView squareViewPull;
+    private Button moveCursor;
+    private boolean sendGyroData = false;
 
     private final Random random = new Random();
     private int count;
@@ -94,6 +99,22 @@ public class BaseActivity extends Activity {
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
+        moveCursor = (Button) findViewById(R.id.move_cursor);
+
+        moveCursor.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View view, MotionEvent event) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                    Log.d("TouchTest", "Touch down");
+                    sendGyroData = true;
+                    return true;
+                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    Log.d("TouchTest", "Touch up");
+                    sendGyroData = false;
+                    return true;
+                }
+                return false;
+            }
+        });
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         // TODO provide support for gyroscope (rotation vector is flawed in early
@@ -114,7 +135,7 @@ public class BaseActivity extends Activity {
                     }
 
                     long ct = rv_sel.getLatestTimestamp();
-                    if (ct > lt) {
+                    if (ct > lt && sendGyroData) {
                         try {
                             Network.getInstance().ds.send(dp);
                             lt = ct;
