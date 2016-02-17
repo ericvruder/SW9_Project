@@ -7,4 +7,9 @@
     <string name="network_discovery">Automatic Discovery</string>
     <string name="reconnect_action">Reconnect</string>
     <string name="close_app_action">Close App</string>
+    <string name="circle">Circle</string>
+    <string name="square">Square</string>
+    <string name="circle_pull">Circle Pull</string>
+    <string name="square_pull">Square Pull</string>
+    <string name="move_cursor">Move Cursor</string>
 </resources>
