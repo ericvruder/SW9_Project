@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using WebDataParser;
-using System.Globalization;
 using SW9_Project;
 using System.Drawing;
-using System.Drawing.Imaging;
 using Newtonsoft.Json;
 
 using Spss;
@@ -21,6 +17,16 @@ namespace DataSetGenerator {
         private static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
         static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
+        static string DataDirectory
+        {
+            get
+            {
+                if (!Directory.Exists(".\\..\\..\\..\\Data/")) {
+                    Directory.CreateDirectory(".\\..\\..\\..\\Data/");
+                }
+                return ".\\..\\..\\..\\Data/";
+            }
+        }
 
 
         public static List<Test> GetTests() {
@@ -74,7 +80,7 @@ namespace DataSetGenerator {
 
             List<int> testing = new List<int>();
 
-            using (StreamWriter datawriter = new StreamWriter("target_data.csv")) {
+            using (StreamWriter datawriter = new StreamWriter(DataDirectory + "target_data.csv")) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
                                        " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
@@ -261,7 +267,7 @@ namespace DataSetGenerator {
 
             hBGraphic.Save();
 
-            hitbox.Save(fileName);
+            hitbox.Save(DataDirectory + fileName);
 
             hBGraphic.Dispose();
             hitbox.Dispose();
@@ -369,13 +375,7 @@ namespace DataSetGenerator {
                 distances.Add(DistanceToSegment(attempt.Pointer, line.Item1, line.Item2));
             }
 
-            var temp = distances.Min();
-
-            if (temp > 1000) {
-                Console.WriteLine(temp);
-            }
-
-            return temp;
+            return distances.Min();
         }
         
         public static Tuple<double, double> GetXYDistance(Attempt attempt) {
@@ -402,14 +402,14 @@ namespace DataSetGenerator {
 
         public static void CreateSPSSDocument() {
 
-            if (File.Exists(@"data.sav")) {
-                File.Delete(@"data.sav");
+            if (File.Exists(DataDirectory + "data.sav")) {
+                File.Delete(DataDirectory + "data.sav");
             }
 
 
             List<Test> tests = DataGenerator.GetTests();
 
-            using (SpssDataDocument doc = SpssDataDocument.Create(@"data.sav")) {
+            using (SpssDataDocument doc = SpssDataDocument.Create(DataDirectory + "data.sav")) {
                 CreateMetaData(doc);
                 foreach (var test in tests) {
                     ParseTest(doc, test);
@@ -499,14 +499,14 @@ namespace DataSetGenerator {
             
             foreach(var technique in AllTechniques) {
 
-                var attempts = tests.SelectMany(x => x.Attempts[technique].ToList()).ToList().Where(x => x.Size == GridSize.Small).ToList();
+                var attempts = tests.SelectMany(x => x.Attempts[technique].ToList()).ToList();
                 jsonInfo.Add(new TechniqueInfo(attempts, technique, GestureDirection.Push));
 
-                
+
             }
 
             string json = JsonConvert.SerializeObject(jsonInfo.ToArray(), Formatting.Indented);
-            File.WriteAllText("techinqueinfo.json", json);
+            File.WriteAllText(DataDirectory + "techinqueinfo.json", json);
         }
 
         private class TechniqueInfo {
@@ -518,22 +518,7 @@ namespace DataSetGenerator {
 
                 HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
                 TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
-                AccuracyM = (float)attempts.Sum(attempt => DistanceToTargetCell(attempt)) / (float)attempts.Count;
-
-                float t = 0;
-                List<double> items = new List<double>();
-                foreach(var attemot in attempts) {
-
-                    
-                    items.Add(attemot.Hit ? 0 : DistanceToTargetCell(attemot));
-                    if(items.Last() > 1000) {
-                        Console.WriteLine(items.Last());
-                    }
-                }
-
-                double f = items.Sum();
-
-                t /= attempts.Count;
+                AccuracyM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : DistanceToTargetCell(attempt)) / (float)attempts.Count;
 
                 HitPercentageSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HitPercentageM, 2)) / attempts.Count);
                 TimeTakenSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TimeTakenM, 2)) / attempts.Count);
