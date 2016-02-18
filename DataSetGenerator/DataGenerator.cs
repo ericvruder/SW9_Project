@@ -479,5 +479,33 @@ namespace DataSetGenerator {
 
             return gestureAttempt;
         }
+
+        public static void GenerateJSONFile() {
+            
+        }
+
+        private class TechniqueInfo {
+
+            public TechniqueInfo(List<Attempt> attempts) {
+
+                HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
+                TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
+                AccuracyM = (float)attempts.Sum(attempt => DistanceToTargetCell(attempt)) / (float)attempts.Count;
+
+                HitPercentageSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HitPercentageM, 2)) / attempts.Count);
+                TimeTakenSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TimeTakenM, 2)) / attempts.Count);
+                AccuracySTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - AccuracyM, 2)) / attempts.Count);
+
+            }
+            GestureType Type { get; set; }
+            GestureDirection Direction { get; set; }
+            float HitPercentageM { get; set; }
+            float HitPercentageSTD { get; set; }
+            float TimeTakenM { get; set; }
+            float TimeTakenSTD { get; set; }
+            float AccuracyM { get; set; }
+            float AccuracySTD { get; set; }
+
+        }
     }
 }
