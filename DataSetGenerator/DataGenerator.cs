@@ -9,6 +9,7 @@ using System.Globalization;
 using SW9_Project;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Newtonsoft.Json;
 
 using Spss;
 
@@ -16,7 +17,8 @@ namespace DataSetGenerator {
 
     public static class DataGenerator {
 
-        private static List<GestureType> AllTypes = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+        private static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+        private static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
         static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
 
@@ -95,7 +97,7 @@ namespace DataSetGenerator {
                     Dictionary<GestureType, List<double>> sxDist = new Dictionary<GestureType, List<double>>();
                     Dictionary<GestureType, List<double>> syDist = new Dictionary<GestureType, List<double>>();
 
-                    foreach (var gesture in AllTypes) {
+                    foreach (var gesture in AllTechniques) {
                         if (!sTimes.ContainsKey(gesture)) {
                             sTimes.Add(gesture, new List<int>());
                             sHits.Add(gesture, new List<string>());
@@ -137,7 +139,7 @@ namespace DataSetGenerator {
                     for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
                         string line = test.ID;
 
-                        foreach(var gesture in AllTypes) {
+                        foreach(var gesture in AllTechniques) {
                             line += $" {lTimes[gesture][tryN]} {sTimes[gesture][tryN]} {lHits[gesture][tryN]} {sHits[gesture][tryN]} {lDist[gesture][tryN]} {sDist[gesture][tryN]} {lxDist[gesture][tryN]} {sxDist[gesture][tryN]} {lyDist[gesture][tryN]} {syDist[gesture][tryN]}";
                         }
                         
@@ -167,7 +169,7 @@ namespace DataSetGenerator {
             List<Test> tests = GetTests();
             foreach (var test in tests)
             {
-                foreach (var gesture in AllTypes)
+                foreach (var gesture in AllTechniques)
                 {
                     bool show = false;
                     Attempt t = test.Attempts[gesture].First();
@@ -203,8 +205,13 @@ namespace DataSetGenerator {
             List<Test> tests = GetTests();
             foreach (var test in tests)
             {
-                foreach (var gesture in AllTypes)
+                foreach (var gesture in AllTechniques)
                 {
+                    foreach(var attempt in test.Attempts[gesture]) {
+                        if(attempt.Pointer.X > 1920 || attempt.Pointer.X < 0 || attempt.Pointer.Y > 1080 || attempt.Pointer.Y < 0) {
+                            Console.WriteLine(attempt.Pointer);
+                        }
+                    }
                     var listLarge = from attempt in test.Attempts[gesture]
                                     where attempt.Size == GridSize.Large
                                     select attempt;
@@ -268,7 +275,7 @@ namespace DataSetGenerator {
             sizeAttempts.Add(GridSize.Large, new List<Attempt>());
             sizeAttempts.Add(GridSize.Small, new List<Attempt>());
             foreach (var test in tests) {
-                foreach(var gesture in AllTypes) {
+                foreach(var gesture in AllTechniques) {
                     if (!techAttempts.ContainsKey(gesture)) {
                         techAttempts.Add(gesture, new List<Attempt>());
                     }
@@ -362,7 +369,13 @@ namespace DataSetGenerator {
                 distances.Add(DistanceToSegment(attempt.Pointer, line.Item1, line.Item2));
             }
 
-            return distances.Min();
+            var temp = distances.Min();
+
+            if (temp > 1000) {
+                Console.WriteLine(temp);
+            }
+
+            return temp;
         }
         
         public static Tuple<double, double> GetXYDistance(Attempt attempt) {
@@ -446,8 +459,8 @@ namespace DataSetGenerator {
             vID.Label = "User ID";
             doc.Variables.Add(vID);
 
-            foreach (var type in AllTypes) {
-                AddVariableForTechnique(doc, type);
+            foreach (var technique in AllTechniques) {
+                AddVariableForTechnique(doc, technique);
             }
 
             doc.CommitDictionary();
@@ -461,7 +474,7 @@ namespace DataSetGenerator {
             for (int i = 0; i < nAttempts; i++) {
                 SpssCase gestureAttempts = doc.Cases.New();
                 gestureAttempts["ID"] = id;
-                foreach (var type in AllTypes) {
+                foreach (var type in AllTechniques) {
                     gestureAttempts = AddTechniqueData(gestureAttempts, type, test.Attempts[type][i]);
                 }
                 gestureAttempts.Commit();
@@ -480,31 +493,62 @@ namespace DataSetGenerator {
             return gestureAttempt;
         }
 
-        public static void GenerateJSONFile() {
+        public static void GenerateJSONDocument() {
+            var tests = GetTests();
+            List<TechniqueInfo> jsonInfo = new List<TechniqueInfo>();
             
+            foreach(var technique in AllTechniques) {
+
+                var attempts = tests.SelectMany(x => x.Attempts[technique].ToList()).ToList().Where(x => x.Size == GridSize.Small).ToList();
+                jsonInfo.Add(new TechniqueInfo(attempts, technique, GestureDirection.Push));
+
+                
+            }
+
+            string json = JsonConvert.SerializeObject(jsonInfo.ToArray(), Formatting.Indented);
+            File.WriteAllText("techinqueinfo.json", json);
         }
 
         private class TechniqueInfo {
 
-            public TechniqueInfo(List<Attempt> attempts) {
+            public TechniqueInfo(List<Attempt> attempts, GestureType type, GestureDirection direction) {
+
+                Type = type.ToString();
+                Direction = direction.ToString();
 
                 HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
                 TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
                 AccuracyM = (float)attempts.Sum(attempt => DistanceToTargetCell(attempt)) / (float)attempts.Count;
+
+                float t = 0;
+                List<double> items = new List<double>();
+                foreach(var attemot in attempts) {
+
+                    
+                    items.Add(attemot.Hit ? 0 : DistanceToTargetCell(attemot));
+                    if(items.Last() > 1000) {
+                        Console.WriteLine(items.Last());
+                    }
+                }
+
+                double f = items.Sum();
+
+                t /= attempts.Count;
 
                 HitPercentageSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HitPercentageM, 2)) / attempts.Count);
                 TimeTakenSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TimeTakenM, 2)) / attempts.Count);
                 AccuracySTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - AccuracyM, 2)) / attempts.Count);
 
             }
-            GestureType Type { get; set; }
-            GestureDirection Direction { get; set; }
-            float HitPercentageM { get; set; }
-            float HitPercentageSTD { get; set; }
-            float TimeTakenM { get; set; }
-            float TimeTakenSTD { get; set; }
-            float AccuracyM { get; set; }
-            float AccuracySTD { get; set; }
+
+            public String Type { get; set; }
+            public String Direction { get; set; }
+            public float HitPercentageM { get; set; }
+            public float HitPercentageSTD { get; set; }
+            public float TimeTakenM { get; set; }
+            public float TimeTakenSTD { get; set; }
+            public float AccuracyM { get; set; }
+            public float AccuracySTD { get; set; }
 
         }
     }
