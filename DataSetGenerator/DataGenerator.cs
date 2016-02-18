@@ -230,35 +230,35 @@ namespace DataSetGenerator {
         }
 
         
-        private static double DistanceSquare(WebDataParser.Point v, WebDataParser.Point w) {
+        private static double DistanceSquare(Point v, Point w) {
             return Math.Pow(v.X - w.X, 2) + Math.Pow(v.Y - w.Y,2);
         }
 
-        private static double DistanceToSegmentSquared(WebDataParser.Point p, WebDataParser.Point v, WebDataParser.Point w) {
+        private static double DistanceToSegmentSquared(Point p, Point v, Point w) {
             double l2 = DistanceSquare(v, w);
             if(l2 == 0) { return DistanceSquare(p, v); }
             double t = ((p.X - v.X) * (w.X - v.X) + (p.Y - v.Y) * (w.Y - v.Y)) / l2;
             if(t < 0) { return DistanceSquare(p, v); }
             if(t > 1) { return DistanceSquare(p, w); }
-            WebDataParser.Point n = new WebDataParser.Point(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y));
+            Point n = new Point(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y));
             return DistanceSquare(p, n);
         }
 
-        private static double DistanceToSegment(WebDataParser.Point p, WebDataParser.Point ls, WebDataParser.Point le) {
+        private static double DistanceToSegment(Point p, Point ls, Point le) {
             return Math.Sqrt(DistanceToSegmentSquared(p, ls, le));
         }
 
         public static double DistanceToTargetCell(Attempt attempt) {
             double scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
-            List<Tuple<WebDataParser.Point,WebDataParser.Point>> lineSegments = new List<Tuple<WebDataParser.Point, WebDataParser.Point>>();
-            WebDataParser.Point t = new WebDataParser.Point(attempt.TargetCell.X * scale, attempt.TargetCell.Y * scale);
-            WebDataParser.Point u = new WebDataParser.Point(t.X, t.Y + scale);
-            WebDataParser.Point v = new WebDataParser.Point(t.X + scale, t.Y + scale);
-            WebDataParser.Point w = new WebDataParser.Point(t.X + scale, t.Y);
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(t, u));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(t, w));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(u, v));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(v, w));
+            List<Tuple<Point,Point>> lineSegments = new List<Tuple<Point, Point>>();
+            Point t = new Point(attempt.TargetCell.X * scale, attempt.TargetCell.Y * scale);
+            Point u = new Point(t.X, t.Y + scale);
+            Point v = new Point(t.X + scale, t.Y + scale);
+            Point w = new Point(t.X + scale, t.Y);
+            lineSegments.Add(new Tuple<Point, Point>(t, u));
+            lineSegments.Add(new Tuple<Point, Point>(t, w));
+            lineSegments.Add(new Tuple<Point, Point>(u, v));
+            lineSegments.Add(new Tuple<Point, Point>(v, w));
             List<double> distances = new List<double>();
             foreach(var line in lineSegments) {
                 distances.Add(DistanceToSegment(attempt.Pointer, line.Item1, line.Item2));
