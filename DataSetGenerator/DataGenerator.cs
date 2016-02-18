@@ -495,26 +495,30 @@ namespace DataSetGenerator {
 
         public static void GenerateJSONDocument() {
             var tests = GetTests();
-            List<TechniqueInfo> jsonInfo = new List<TechniqueInfo>();
-            
-            foreach(var technique in AllTechniques) {
+            List<string> jsonInfo = new List<string>();
 
-                var attempts = tests.SelectMany(x => x.Attempts[technique].ToList()).ToList();
-                jsonInfo.Add(new TechniqueInfo(attempts, technique, GestureDirection.Push));
+            using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.json")) {
+                string total = "";
+                foreach (var technique in AllTechniques) {
+
+                    var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
+                    var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
+
+                    var aPushS = new TechniqueInfo(attemptsPush).ToString();
+                    var aPullS = new TechniqueInfo(attemptsPull).ToString();
+
+                    total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+
+                }
 
 
+                jsonFile.WriteLine("var data = {\n" + total.Remove(total.Length - 2) + "\n}");
             }
-
-            string json = JsonConvert.SerializeObject(jsonInfo.ToArray(), Formatting.Indented);
-            File.WriteAllText(DataDirectory + "techinqueinfo.json", json);
         }
 
         private class TechniqueInfo {
 
-            public TechniqueInfo(List<Attempt> attempts, GestureType type, GestureDirection direction) {
-
-                Type = type.ToString();
-                Direction = direction.ToString();
+            public TechniqueInfo(List<Attempt> attempts) {
 
                 HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
                 TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
@@ -526,8 +530,9 @@ namespace DataSetGenerator {
 
             }
 
-            public String Type { get; set; }
-            public String Direction { get; set; }
+            public override string ToString() {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
             public float HitPercentageM { get; set; }
             public float HitPercentageSTD { get; set; }
             public float TimeTakenM { get; set; }
