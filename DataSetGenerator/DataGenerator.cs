@@ -497,7 +497,7 @@ namespace DataSetGenerator {
             var tests = GetTests();
             List<string> jsonInfo = new List<string>();
 
-            using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.json")) {
+            using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.js")) {
                 string total = "";
                 foreach (var technique in AllTechniques) {
 
@@ -520,25 +520,25 @@ namespace DataSetGenerator {
 
             public TechniqueInfo(List<Attempt> attempts) {
 
-                HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
-                TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
-                AccuracyM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : DistanceToTargetCell(attempt)) / (float)attempts.Count;
+                HPM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
+                TTM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
+                ACCM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : DistanceToTargetCell(attempt)) / (float)attempts.Count;
 
-                HitPercentageSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HitPercentageM, 2)) / attempts.Count);
-                TimeTakenSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TimeTakenM, 2)) / attempts.Count);
-                AccuracySTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - AccuracyM, 2)) / attempts.Count);
+                HPSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HPM, 2)) / attempts.Count);
+                TTSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TTM, 2)) / attempts.Count);
+                ACCSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - ACCM, 2)) / attempts.Count);
 
             }
 
             public override string ToString() {
                 return JsonConvert.SerializeObject(this, Formatting.Indented);
             }
-            public float HitPercentageM { get; set; }
-            public float HitPercentageSTD { get; set; }
-            public float TimeTakenM { get; set; }
-            public float TimeTakenSTD { get; set; }
-            public float AccuracyM { get; set; }
-            public float AccuracySTD { get; set; }
+            public float HPM { get; set; }
+            public float HPSTD { get; set; }
+            public float TTM { get; set; }
+            public float TTSTD { get; set; }
+            public float ACCM { get; set; }
+            public float ACCSTD { get; set; }
 
         }
     }
