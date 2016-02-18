@@ -12,7 +12,7 @@ namespace DataSetGenerator {
             DataGenerator.GenerateJSONDocument();
             DataGenerator.CreateSPSSDocument();
             DataGenerator.CreateCSVDocument();
-            DataGenerator.CreateHitboxes();
+            HitboxDrawer.CreateHitboxes();
         }
     }
 }
