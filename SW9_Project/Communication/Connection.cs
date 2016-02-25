@@ -61,7 +61,7 @@ namespace SW9_Project {
         public static void StartService(int port = 8000) {
 
             UdpClient dispatcher = new UdpClient(49255);
-            Gyro gyro = new Gyro();
+            GyroParser gyroParser = new GyroParser();
             Task.Factory.StartNew(() =>
             {
                 byte[] response;
@@ -80,7 +80,7 @@ namespace SW9_Project {
                     {
                         if (packets == 0)
                             tStart.Start();
-                        gyro.updateUI(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
+                        gyroParser.Update(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
                         packets++;
                         tDelta = tStart.ElapsedMilliseconds;
                         pps = packets / (tDelta / 1000.0);
