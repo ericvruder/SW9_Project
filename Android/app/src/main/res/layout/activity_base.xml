@@ -9,19 +9,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <ImageView
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:padding="1dp"
                 android:id="@+id/circle"
-                android:src="@drawable/circle"
+                android:src="@drawable/circle2"
                 android:contentDescription="@string/circle" />
             <ImageView
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:padding="1dp"
                 android:id="@+id/square"
-                android:src="@drawable/square"
+                android:src="@drawable/square2"
                 android:contentDescription="@string/square" />
         </LinearLayout>
 
@@ -34,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/circle_pull"
-                android:src="@drawable/circle"
+                android:src="@drawable/circle2"
                 android:visibility="invisible"
                 android:contentDescription="@string/circle_pull" />
             <ImageView
