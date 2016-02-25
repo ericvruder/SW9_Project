@@ -149,7 +149,7 @@ public class BaseActivity extends Activity {
             }
         }, "UdpThread");
 
-        // nt.setPriority(Thread.MAX_PRIORITY);
+        //nt.setPriority(Thread.MAX_PRIORITY);
         if(Network.getInstance().ds != null)
             nt.start();
 
@@ -355,7 +355,7 @@ public class BaseActivity extends Activity {
         super.onResume();
         Network.getInstance().Resume();
         acceloremeterSensor.Resume();
-        sm.registerListener(rv_sel, rv, SensorManager.SENSOR_DELAY_FASTEST);
+        sm.registerListener(rv_sel, rv, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
