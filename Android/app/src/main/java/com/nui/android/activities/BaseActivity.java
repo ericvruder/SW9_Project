@@ -1,9 +1,6 @@
 package com.nui.android.activities;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
@@ -14,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -23,7 +19,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
@@ -36,8 +31,6 @@ import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.Random;
 
 /**
@@ -128,7 +121,6 @@ public class BaseActivity extends Activity {
             @Override
             public void run() {
                 long lt = 0;
-                while(Network.getInstance().GetHost() == null) { /* wait */ }
 
                 while (true) {
                     if (end_nt) {
@@ -136,11 +128,10 @@ public class BaseActivity extends Activity {
                         break;
                     }
 
-                    long ct = rv_sel.getLatestTimestamp();
-                    if (ct > lt && sendGyroData) {
+                    if (sendGyroData && rv_sel.getLatestTimestamp() > lt) {
                         try {
                             Network.getInstance().ds.send(dp);
-                            lt = ct;
+                            lt = rv_sel.getLatestTimestamp();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -149,10 +140,10 @@ public class BaseActivity extends Activity {
             }
         }, "UdpThread");
 
-        //nt.setPriority(Thread.MAX_PRIORITY);
-        if(Network.getInstance().ds != null)
+        nt.setPriority(Thread.MIN_PRIORITY);
+        if(Network.getInstance().ds != null) {
             nt.start();
-
+        }
         // TODO rewrite the sensor acquisition with NDK
         rv_sel = new RotationVectorListener();
 
@@ -225,7 +216,7 @@ public class BaseActivity extends Activity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
                     circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
                     squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
                 }
@@ -244,7 +235,7 @@ public class BaseActivity extends Activity {
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
                     squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
                     circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
                 }
