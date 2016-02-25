@@ -106,8 +106,9 @@ public class Network implements IServer {
                     ds.connect(HOST, PORT);
 
                     Log.d("BaseActivity", "Socket is bound to " + String.valueOf(ds.getLocalPort()));
-                    if(!activity.nt.isAlive())
+                    if(!activity.nt.isAlive()) {
                         activity.nt.start();
+                    }
                 }
         }catch(Exception e) {
             Log.d("Datagram connection", e.toString());
