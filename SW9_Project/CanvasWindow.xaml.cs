@@ -37,6 +37,7 @@ namespace SW9_Project {
         TestSuite currentTest;
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
+        Point lastGyroPoint { get; set; }
 
         public CanvasWindow(bool targetPractice = true) {
 
@@ -89,7 +90,12 @@ namespace SW9_Project {
         public void PracticeDone() {
             this.Background = Brushes.Black;
         }
-        
+
+        internal static void SetPosition(double cx, double cy)
+        {
+            GyroPositionX = cx;
+            GyroPositionY = cy;
+        }
 
         private void CreateGrid(int width, int height, bool includeBorders) {
             if(grid != null) {
@@ -196,6 +202,7 @@ namespace SW9_Project {
         
         protected Point pointer = new Point();
         
+        
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
@@ -211,6 +218,14 @@ namespace SW9_Project {
             }
 
             DrawNextTargets();
+            Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+
+            if (currentGyroPoint != lastGyroPoint)
+            {
+                xFromMid = GyroPositionX;
+                yFromMid = -GyroPositionY;
+                lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+            }
 
             pointer = GetPoint(xFromMid, yFromMid);
             MoveShape(pointerFigure, pointer);
@@ -343,6 +358,15 @@ namespace SW9_Project {
             return p;
         }
 
+        public Point GetPoint(double xFromMid, double yFromMid, float scaleX, float scaleY)
+        {
+            double x = Scale(canvas.ActualWidth, scaleX, xFromMid);
+            double y = Scale(canvas.ActualHeight, scaleY, yFromMid);
+            Point p = new Point(x, y);
+
+            return p;
+        }
+
         public void EndTest() {
             runningTest = false;
         }
@@ -461,6 +485,10 @@ namespace SW9_Project {
         }
 
         private bool _inStateChange;
+
+        public static double GyroPositionX { get; set; }
+        public static double GyroPositionY { get; set; }
+
         protected override void OnStateChanged(EventArgs e) {
             if (WindowState == WindowState.Maximized && !_inStateChange) {
                 _inStateChange = true;

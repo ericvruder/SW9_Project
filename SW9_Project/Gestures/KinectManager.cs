@@ -50,15 +50,16 @@ namespace SW9_Project {
 
             //kinectSensor.ColorStream.Enable();
             //kinectSensor.DepthStream.Range = DepthRange.Near;
+            //kinectSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
             if (kinectSensor == null)
                 return false;
             kinectSensor.DepthStream.Enable();
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
-                Smoothing = 0.5f,
-                Correction = 0.5f,
-                Prediction = 0.5f,
-                JitterRadius = 0.05f,
-                MaxDeviationRadius = 0.04f
+                Smoothing = 0.7f,
+                Correction = 0.3f,
+                Prediction = 1.0f,
+                JitterRadius = 1.0f,
+                MaxDeviationRadius = 1.0f
             });
 
             // initialize the gesture recognizer
