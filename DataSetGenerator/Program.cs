@@ -8,9 +8,11 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
+            DataGenerator.VerifyTests();
+            DataGenerator.GenerateJSONDocument();
             DataGenerator.CreateSPSSDocument();
             DataGenerator.CreateCSVDocument();
-            DataGenerator.CreateHitboxes();
+            HitboxDrawer.CreateHitboxes();
         }
     }
 }

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using WebDataParser;
-using System.Globalization;
 using SW9_Project;
-using System.Drawing;
-using System.Drawing.Imaging;
+using Newtonsoft.Json;
 
 using Spss;
 
@@ -16,9 +12,20 @@ namespace DataSetGenerator {
 
     public static class DataGenerator {
 
-        private static List<GestureType> AllTypes = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+        public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
+        public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
-        static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
+        public static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
+        public static string DataDirectory
+        {
+            get
+            {
+                if (!Directory.Exists(".\\..\\..\\..\\Data/")) {
+                    Directory.CreateDirectory(".\\..\\..\\..\\Data/");
+                }
+                return ".\\..\\..\\..\\Data/";
+            }
+        }
 
 
         public static List<Test> GetTests() {
@@ -72,7 +79,7 @@ namespace DataSetGenerator {
 
             List<int> testing = new List<int>();
 
-            using (StreamWriter datawriter = new StreamWriter("target_data.csv")) {
+            using (StreamWriter datawriter = new StreamWriter(DataDirectory + "target_data.csv")) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
                                        " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
@@ -95,7 +102,7 @@ namespace DataSetGenerator {
                     Dictionary<GestureType, List<double>> sxDist = new Dictionary<GestureType, List<double>>();
                     Dictionary<GestureType, List<double>> syDist = new Dictionary<GestureType, List<double>>();
 
-                    foreach (var gesture in AllTypes) {
+                    foreach (var gesture in AllTechniques) {
                         if (!sTimes.ContainsKey(gesture)) {
                             sTimes.Add(gesture, new List<int>());
                             sHits.Add(gesture, new List<string>());
@@ -137,7 +144,7 @@ namespace DataSetGenerator {
                     for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
                         string line = test.ID;
 
-                        foreach(var gesture in AllTypes) {
+                        foreach(var gesture in AllTechniques) {
                             line += $" {lTimes[gesture][tryN]} {sTimes[gesture][tryN]} {lHits[gesture][tryN]} {sHits[gesture][tryN]} {lDist[gesture][tryN]} {sDist[gesture][tryN]} {lxDist[gesture][tryN]} {sxDist[gesture][tryN]} {lyDist[gesture][tryN]} {syDist[gesture][tryN]}";
                         }
                         
@@ -167,7 +174,7 @@ namespace DataSetGenerator {
             List<Test> tests = GetTests();
             foreach (var test in tests)
             {
-                foreach (var gesture in AllTypes)
+                foreach (var gesture in AllTechniques)
                 {
                     bool show = false;
                     Attempt t = test.Attempts[gesture].First();
@@ -203,8 +210,13 @@ namespace DataSetGenerator {
             List<Test> tests = GetTests();
             foreach (var test in tests)
             {
-                foreach (var gesture in AllTypes)
+                foreach (var gesture in AllTechniques)
                 {
+                    foreach(var attempt in test.Attempts[gesture]) {
+                        if(attempt.Pointer.X > 1920 || attempt.Pointer.X < 0 || attempt.Pointer.Y > 1080 || attempt.Pointer.Y < 0) {
+                            Console.WriteLine(attempt.Pointer);
+                        }
+                    }
                     var listLarge = from attempt in test.Attempts[gesture]
                                     where attempt.Size == GridSize.Large
                                     select attempt;
@@ -217,146 +229,36 @@ namespace DataSetGenerator {
             }
         }
 
-        private static void DrawHitBox(List<Attempt> attempts, string fileName) {
-
-            //61 pixel sized squares, makes it better to look at
-            int cellSize = 61;
-            int bmsize = cellSize * 3;
-
-            Bitmap hitbox = new Bitmap(bmsize, bmsize);
-            Graphics hBGraphic = Graphics.FromImage(hitbox);
-            hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
-            hBGraphic.DrawRectangle(new Pen(Brushes.Black, 1.0f), cellSize, cellSize, cellSize, cellSize);
-
-            foreach (var attempt in attempts) {
-                Brush brush = Brushes.Red;
-                float scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
-                WebDataParser.Point p = new WebDataParser.Point(attempt.TargetCell.X, attempt.TargetCell.Y);
-                p.X = p.X * scale; p.Y = p.Y * scale;
-                p.X = attempt.Pointer.X - p.X;
-                p.Y = attempt.Pointer.Y - p.Y;
-                if (attempt.Size == GridSize.Large) {
-                    p.X /= 2;
-                    p.Y /= 2;
-                }
-
-                p.X += cellSize;
-                p.Y += cellSize;
-
-                if((p.X > cellSize && p.X < cellSize*2) && (p.Y > cellSize && p.Y < cellSize * 2)) {
-                    brush = Brushes.Green;
-                }
-
-                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.Y >= bmsize))) {
-                    hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
-                }
-            }
-
-            hBGraphic.Save();
-
-            hitbox.Save(fileName);
-
-            hBGraphic.Dispose();
-            hitbox.Dispose();
-
-        }
-
-        public static void CreateHitboxes() {
-            var tests = GetTests();
-            Dictionary<GestureType, List<Attempt>> techAttempts = new Dictionary<GestureType, List<Attempt>>();
-            Dictionary<GridSize, List<Attempt>> sizeAttempts = new Dictionary<GridSize, List<Attempt>>();
-            sizeAttempts.Add(GridSize.Large, new List<Attempt>());
-            sizeAttempts.Add(GridSize.Small, new List<Attempt>());
-            foreach (var test in tests) {
-                foreach(var gesture in AllTypes) {
-                    if (!techAttempts.ContainsKey(gesture)) {
-                        techAttempts.Add(gesture, new List<Attempt>());
-                    }
-                    techAttempts[gesture].AddRange(test.Attempts[gesture]);
-                    sizeAttempts[GridSize.Small].AddRange(from attempt in test.Attempts[gesture]
-                                where attempt.Size == GridSize.Small
-                                select attempt);
-                    sizeAttempts[GridSize.Large].AddRange(from attempt in test.Attempts[gesture]
-                                where attempt.Size == GridSize.Large
-                                select attempt);
-                }
-            }
-
-            DrawHitBox(techAttempts[GestureType.Pinch], "pinch.png");
-            DrawHitBox(techAttempts[GestureType.Swipe], "swipe.png");
-            DrawHitBox(techAttempts[GestureType.Throw], "throw.png");
-            DrawHitBox(techAttempts[GestureType.Tilt], "tilt.png");
-
-            DrawHitBox(sizeAttempts[GridSize.Large], "large.png");
-            DrawHitBox(sizeAttempts[GridSize.Small], "small.png");
-
-            var lp = from attempt in techAttempts[GestureType.Pinch]
-                     where attempt.Size == GridSize.Large
-                     select attempt;
-            DrawHitBox(lp.ToList(), "pinchlarge.png");
-            var sp = from attempt in techAttempts[GestureType.Pinch]
-                     where attempt.Size == GridSize.Small
-                     select attempt;
-            DrawHitBox(sp.ToList(), "pinchsmall.png");
-
-            var ls = from attempt in techAttempts[GestureType.Swipe]
-                     where attempt.Size == GridSize.Large
-                     select attempt;
-            DrawHitBox(ls.ToList(), "swipelarge.png");
-            var ss = from attempt in techAttempts[GestureType.Swipe]
-                     where attempt.Size == GridSize.Small
-                     select attempt;
-            DrawHitBox(ss.ToList(), "swipesmall.png");
-
-            var lti = from attempt in techAttempts[GestureType.Tilt]
-                     where attempt.Size == GridSize.Large
-                     select attempt;
-            DrawHitBox(lti.ToList(), "tiltlarge.png");
-            var sti = from attempt in techAttempts[GestureType.Tilt]
-                     where attempt.Size == GridSize.Small
-                     select attempt;
-            DrawHitBox(sti.ToList(), "tiltsmall.png");
-
-            var lth = from attempt in techAttempts[GestureType.Throw]
-                      where attempt.Size == GridSize.Large
-                      select attempt;
-            DrawHitBox(lth.ToList(), "throwlarge.png");
-            var sth = from attempt in techAttempts[GestureType.Throw]
-                      where attempt.Size == GridSize.Small
-                      select attempt;
-            DrawHitBox(sth.ToList(), "throwsmall.png");
-
-        }
-
-        private static double DistanceSquare(WebDataParser.Point v, WebDataParser.Point w) {
+        
+        private static double DistanceSquare(Point v, Point w) {
             return Math.Pow(v.X - w.X, 2) + Math.Pow(v.Y - w.Y,2);
         }
 
-        private static double DistanceToSegmentSquared(WebDataParser.Point p, WebDataParser.Point v, WebDataParser.Point w) {
+        private static double DistanceToSegmentSquared(Point p, Point v, Point w) {
             double l2 = DistanceSquare(v, w);
             if(l2 == 0) { return DistanceSquare(p, v); }
             double t = ((p.X - v.X) * (w.X - v.X) + (p.Y - v.Y) * (w.Y - v.Y)) / l2;
             if(t < 0) { return DistanceSquare(p, v); }
             if(t > 1) { return DistanceSquare(p, w); }
-            WebDataParser.Point n = new WebDataParser.Point(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y));
+            Point n = new Point(v.X + t * (w.X - v.X), v.Y + t * (w.Y - v.Y));
             return DistanceSquare(p, n);
         }
 
-        private static double DistanceToSegment(WebDataParser.Point p, WebDataParser.Point ls, WebDataParser.Point le) {
+        private static double DistanceToSegment(Point p, Point ls, Point le) {
             return Math.Sqrt(DistanceToSegmentSquared(p, ls, le));
         }
 
         public static double DistanceToTargetCell(Attempt attempt) {
             double scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
-            List<Tuple<WebDataParser.Point,WebDataParser.Point>> lineSegments = new List<Tuple<WebDataParser.Point, WebDataParser.Point>>();
-            WebDataParser.Point t = new WebDataParser.Point(attempt.TargetCell.X * scale, attempt.TargetCell.Y * scale);
-            WebDataParser.Point u = new WebDataParser.Point(t.X, t.Y + scale);
-            WebDataParser.Point v = new WebDataParser.Point(t.X + scale, t.Y + scale);
-            WebDataParser.Point w = new WebDataParser.Point(t.X + scale, t.Y);
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(t, u));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(t, w));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(u, v));
-            lineSegments.Add(new Tuple<WebDataParser.Point, WebDataParser.Point>(v, w));
+            List<Tuple<Point,Point>> lineSegments = new List<Tuple<Point, Point>>();
+            Point t = new Point(attempt.TargetCell.X * scale, attempt.TargetCell.Y * scale);
+            Point u = new Point(t.X, t.Y + scale);
+            Point v = new Point(t.X + scale, t.Y + scale);
+            Point w = new Point(t.X + scale, t.Y);
+            lineSegments.Add(new Tuple<Point, Point>(t, u));
+            lineSegments.Add(new Tuple<Point, Point>(t, w));
+            lineSegments.Add(new Tuple<Point, Point>(u, v));
+            lineSegments.Add(new Tuple<Point, Point>(v, w));
             List<double> distances = new List<double>();
             foreach(var line in lineSegments) {
                 distances.Add(DistanceToSegment(attempt.Pointer, line.Item1, line.Item2));
@@ -389,14 +291,14 @@ namespace DataSetGenerator {
 
         public static void CreateSPSSDocument() {
 
-            if (File.Exists(@"data.sav")) {
-                File.Delete(@"data.sav");
+            if (File.Exists(DataDirectory + "data.sav")) {
+                File.Delete(DataDirectory + "data.sav");
             }
 
 
             List<Test> tests = DataGenerator.GetTests();
 
-            using (SpssDataDocument doc = SpssDataDocument.Create(@"data.sav")) {
+            using (SpssDataDocument doc = SpssDataDocument.Create(DataDirectory + "data.sav")) {
                 CreateMetaData(doc);
                 foreach (var test in tests) {
                     ParseTest(doc, test);
@@ -446,8 +348,8 @@ namespace DataSetGenerator {
             vID.Label = "User ID";
             doc.Variables.Add(vID);
 
-            foreach (var type in AllTypes) {
-                AddVariableForTechnique(doc, type);
+            foreach (var technique in AllTechniques) {
+                AddVariableForTechnique(doc, technique);
             }
 
             doc.CommitDictionary();
@@ -461,7 +363,7 @@ namespace DataSetGenerator {
             for (int i = 0; i < nAttempts; i++) {
                 SpssCase gestureAttempts = doc.Cases.New();
                 gestureAttempts["ID"] = id;
-                foreach (var type in AllTypes) {
+                foreach (var type in AllTechniques) {
                     gestureAttempts = AddTechniqueData(gestureAttempts, type, test.Attempts[type][i]);
                 }
                 gestureAttempts.Commit();
@@ -480,31 +382,52 @@ namespace DataSetGenerator {
             return gestureAttempt;
         }
 
-        public static void GenerateJSONFile() {
-            
+        public static void GenerateJSONDocument() {
+            var tests = GetTests();
+            List<string> jsonInfo = new List<string>();
+
+            using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.js")) {
+                string total = "";
+                foreach (var technique in AllTechniques) {
+
+                    var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
+                    var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
+
+                    var aPushS = new TechniqueInfo(attemptsPush).ToString();
+                    var aPullS = new TechniqueInfo(attemptsPull).ToString();
+
+                    total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+
+                }
+
+
+                jsonFile.WriteLine("var data = {\n" + total.Remove(total.Length - 2) + "\n}");
+            }
         }
 
         private class TechniqueInfo {
 
             public TechniqueInfo(List<Attempt> attempts) {
 
-                HitPercentageM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
-                TimeTakenM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
-                AccuracyM = (float)attempts.Sum(attempt => DistanceToTargetCell(attempt)) / (float)attempts.Count;
+                HPM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
+                TTM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
+                ACCM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : DistanceToTargetCell(attempt)) / (float)attempts.Count;
 
-                HitPercentageSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HitPercentageM, 2)) / attempts.Count);
-                TimeTakenSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TimeTakenM, 2)) / attempts.Count);
-                AccuracySTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - AccuracyM, 2)) / attempts.Count);
+                HPSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HPM, 2)) / attempts.Count);
+                TTSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TTM, 2)) / attempts.Count);
+                ACCSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - ACCM, 2)) / attempts.Count);
 
             }
-            GestureType Type { get; set; }
-            GestureDirection Direction { get; set; }
-            float HitPercentageM { get; set; }
-            float HitPercentageSTD { get; set; }
-            float TimeTakenM { get; set; }
-            float TimeTakenSTD { get; set; }
-            float AccuracyM { get; set; }
-            float AccuracySTD { get; set; }
+
+            public override string ToString() {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
+            public float HPM { get; set; }
+            public float HPSTD { get; set; }
+            public float TTM { get; set; }
+            public float TTSTD { get; set; }
+            public float ACCM { get; set; }
+            public float ACCSTD { get; set; }
 
         }
     }
