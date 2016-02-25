@@ -50,7 +50,7 @@ namespace SW9_Project {
             shapes.Add("circle");
             shapes.Add("square");
             GestureParser.Initialize(this);
-            currentSize = GridSize.Small;
+            currentSize = targetPractice ? GridSize.Small : GridSize.Large;
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
