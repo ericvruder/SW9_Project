@@ -38,6 +38,8 @@ namespace SW9_Project {
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
         Point lastGyroPoint { get; set; }
+        double xPoint = 0;
+        double yPoint = 0;
 
         public CanvasWindow(bool targetPractice = true) {
 
@@ -209,6 +211,8 @@ namespace SW9_Project {
                 pointerFigure = ShapeFactory.CreatePointer();
                 canvas.Children.Add(pointerFigure);
                 Canvas.SetZIndex(pointerFigure, 10000);
+                xPoint = xFromMid;
+                yPoint = yFromMid;
             }
             if (target != null) {
                 target.GridCell.Fill = targetColor;
@@ -218,16 +222,19 @@ namespace SW9_Project {
             }
 
             DrawNextTargets();
-            Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
 
+            Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             if (currentGyroPoint != lastGyroPoint)
             {
-                xFromMid = GyroPositionX;
-                yFromMid = -GyroPositionY;
+                xPoint = GyroPositionX;
+                yPoint = -GyroPositionY;
                 lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             }
 
-            pointer = GetPoint(xFromMid, yFromMid);
+            xPoint = xFromMid + lastGyroPoint.X;
+            yPoint = yFromMid + lastGyroPoint.Y;
+
+            pointer = GetPoint(xPoint, yPoint);
             MoveShape(pointerFigure, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
