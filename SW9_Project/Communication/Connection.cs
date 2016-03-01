@@ -146,7 +146,6 @@ namespace SW9_Project {
 
         public void SwitchShapes() {
             sw.WriteLine("switch");
-            Thread.Sleep(50);
         }
 
         public void SendPinch() {
@@ -156,6 +155,17 @@ namespace SW9_Project {
         String nextShape = "";
         public void SetNextShape(string shape) {
             sw.WriteLine("nextshape:" + shape);
+        }
+
+        public void SetGesture(GestureType type) {
+            string gesture = "";
+            switch (type) {
+                case GestureType.Pinch: gesture = "pinch"; break;
+                case GestureType.Swipe: gesture = "swipe"; break;
+                case GestureType.Throw: gesture = "throw"; break;
+                case GestureType.Tilt: gesture = "tilt"; break;
+            }
+            sw.WriteLine("gesture:" + gesture);
         }
     }
 }
