@@ -175,6 +175,7 @@ public class UDPDiscover implements Runnable {
                             }
                     );
                     Network.getInstance().SetHost( newIP );
+                    Network.getInstance().Reconnect();
                     //this.port = 8000; // can be implemented better.
                     cLoop = false;
                     bfound = true;

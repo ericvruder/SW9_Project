@@ -143,6 +143,8 @@ public class BaseActivity extends Activity {
         nt.setPriority(Thread.MIN_PRIORITY);
         if(Network.getInstance().ds != null) {
             nt.start();
+        }else {
+            Network.getInstance().Reconnect();
         }
         // TODO rewrite the sensor acquisition with NDK
         rv_sel = new RotationVectorListener();
