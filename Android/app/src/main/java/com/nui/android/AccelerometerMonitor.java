@@ -1,7 +1,6 @@
 package com.nui.android;
 
 import android.content.Context;
-import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -9,12 +8,6 @@ import android.util.Log;
 
 import com.nui.android.activities.BaseActivity;
 
-import java.math.RoundingMode;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.security.Timestamp;
-import java.sql.Time;
 import java.text.DecimalFormat;
 
 /**
@@ -25,42 +18,17 @@ public class AccelerometerMonitor extends SensorMonitor {
     private float[] mGravity;
     private float[] mMagnetic;
 
-    public boolean calibrated = false;
-    private float calibrateZ = 0;
-    private float calibrateX = 0;
-    private float calibrateY = 0;
-
-    private float virtualX = 0;
-    private float virtualY = 0;
-    private float virtualZ = 0;
-
-    private double virtualXDeg = 0;
-    private double virtualYDeg = 0;
-    private double virtualZDeg = 0;
-
     private long time = 0;
 
-    DecimalFormat df = new DecimalFormat("#.##");
+    private boolean tilt = false;
 
-    private float[] getDirection()
-    {
-
-        float[] temp = new float[9];
-        float[] R = new float[9];
-        //Load rotation matrix into R
-        SensorManager.getRotationMatrix(temp, null,
-                mGravity, mMagnetic);
-
-        //Remap to camera's point-of-view
-        /*SensorManager.remapCoordinateSystem(temp,
-                SensorManager.AXIS_X,
-                SensorManager.AXIS_Z, R);*/
-
-        //Return the orientation values
-        float[] values = new float[3];
-        SensorManager.getOrientation(temp, values);
-
-        return values;
+    public void SetTiltorThrow(String gesture){
+        if(gesture.equals("tilt")){
+            tilt = true;
+        }
+        else if(gesture.equals("throw")){
+            tilt = false;
+        }
     }
 
     public long getLatestTimestamp() {
@@ -78,7 +46,11 @@ public class AccelerometerMonitor extends SensorMonitor {
             float y = event.values[1];
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
-            if(IsThrown(x,y,z)){
+            if(tilt && IsTilt(x, y, z)){
+                ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
+                server.SendData(data);
+            }
+            else if(!tilt && IsThrow(x,y,z, curTime)){
                 ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
                 server.SendData(data);
             }
@@ -93,11 +65,26 @@ public class AccelerometerMonitor extends SensorMonitor {
         }
     }
 
+    private boolean IsThrow(float x, float y, float z, long curTime){
+        float accelationSquareRoot = (x * x + y * y + z * z)
+                            / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        if (accelationSquareRoot >= 2) //
+            {
+            long timeDiff = curTime - lastUpdate;
+            if (timeDiff < 1000) {
+                return false;
+            }
+            lastUpdate = curTime;
+            return true;
+        }
+        return false;
+    }
+
     private static final boolean ADAPTIVE_ACCEL_FILTER = true;
     float lastAccel[] = new float[3];
     float accelFilter[] = new float[3];
 
-    public boolean IsThrown(float accelX, float accelY, float accelZ) {
+    public boolean IsTilt(float accelX, float accelY, float accelZ) {
         // high pass filter
         float updateFreq = 30; // match this to your update speed
         float cutOffFreq = 0.9f;
@@ -158,9 +145,7 @@ public class AccelerometerMonitor extends SensorMonitor {
 
     }
 
-    private RotationMonitor rMonitor;
     public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
         super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD});
-        rMonitor = monitor;
     }
 }

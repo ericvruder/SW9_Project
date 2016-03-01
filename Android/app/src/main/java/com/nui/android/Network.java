@@ -186,6 +186,13 @@ public class Network implements IServer {
                 else if(line.equals("pinch:pull")){
                     activity.AwaitingPullPinch(true);
                 }
+                else {
+                    String[] lines = line.split(":");
+                    if(lines.length > 1 && lines[0].equals("gesture")) {
+                        activity.SetGesture(lines[1]);
+
+                    }
+                }
             }
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
