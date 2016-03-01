@@ -13,6 +13,9 @@ namespace SW9_Project {
         static private MobileGesture waitingMobileGesture;
         static private KinectGesture awaitingGesture;
 
+
+        private static Connection connection;
+
         static private GestureDirection directionContext = GestureDirection.Push;
         static private GestureType typeContext = GestureType.Swipe;
 
@@ -51,6 +54,7 @@ namespace SW9_Project {
         }
 
         public static void SetTypeContext(GestureType type) {
+            connection?.SetGesture(type);
             typeContext = type;
         }
         
@@ -120,7 +124,6 @@ namespace SW9_Project {
             AwaitingGesture = null;
         }
 
-        private static Connection connection;
 
         static public void SetConnection(Connection conn) {
             connection = conn;
