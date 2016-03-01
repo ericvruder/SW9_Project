@@ -42,7 +42,7 @@ public class BaseActivity extends Activity {
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
-    private SensorMonitor acceloremeterSensor;
+    private AccelerometerMonitor acceloremeterSensor;
     private RotationMonitor rotationSensor;
 
     public static String shape;
@@ -199,6 +199,13 @@ public class BaseActivity extends Activity {
             }
 
         });
+    }
+
+    public void SetGesture(String gesture){
+        switch (gesture){
+            case "tilt": case "throw": acceloremeterSensor.SetTiltorThrow(gesture); break;
+            default: break;
+        }
     }
 
     public void StartPushTest(){
