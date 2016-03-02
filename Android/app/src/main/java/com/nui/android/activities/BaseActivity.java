@@ -268,6 +268,7 @@ public class BaseActivity extends Activity {
 
     public void SetShape(String shape) {
         ClearShapes();
+        shape = shape;
 
         if(shape.equals("circle")) {
             pullShape.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
