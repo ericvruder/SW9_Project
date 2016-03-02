@@ -51,8 +51,7 @@ public class BaseActivity extends Activity {
     private ImageView circleView;
     private ImageView squareView;
 
-    private ImageView circleViewPull;
-    private ImageView squareViewPull;
+    private ImageView pullShape;
     private Button moveCursor;
     private boolean sendGyroData = false;
 
@@ -85,10 +84,8 @@ public class BaseActivity extends Activity {
 
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
-        circleViewPull = (ImageView) findViewById(R.id.circle_pull);
-        squareViewPull = (ImageView) findViewById(R.id.square_pull);
-        circleViewPull.setVisibility(View.INVISIBLE);
-        squareViewPull.setVisibility(View.INVISIBLE);
+        pullShape = (ImageView) findViewById(R.id.pull_shape);
+        pullShape.setVisibility(View.INVISIBLE);
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
@@ -167,33 +164,15 @@ public class BaseActivity extends Activity {
         pushOrPull = false;
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
+        pullShape.setVisibility(View.VISIBLE);
 
-        circleViewPull.setOnTouchListener(new View.OnTouchListener() {
+        pullShape.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = Shape.Circle;
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
-
-                circleViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
-
-                return true;
-            }
-
-        });
-
-        squareViewPull.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                shape = Shape.Square;
-
-                touchDetector.onTouchEvent(event);
-                swipeDetector.onTouchEvent(event);
-                pinchDetector.onTouchEvent(event);
-
-                squareViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
 
                 return true;
             }
@@ -211,8 +190,7 @@ public class BaseActivity extends Activity {
     public void StartPushTest(){
 
         pushOrPull = true;
-        circleViewPull.setVisibility(View.INVISIBLE);
-        squareViewPull.setVisibility(View.INVISIBLE);
+        pullShape.setVisibility(View.INVISIBLE);
         circleView.setVisibility(View.VISIBLE);
         squareView.setVisibility(View.VISIBLE);
 
@@ -288,14 +266,16 @@ public class BaseActivity extends Activity {
         }
     }
 
-    public void SetCircleShape() {
-        circleViewPull.setVisibility(View.VISIBLE);
-        squareViewPull.setVisibility(View.INVISIBLE);
-    }
+    public void SetShape(String shape) {
+        ClearShapes();
+        shape = shape;
 
-    public void SetSquareShape() {
-        circleViewPull.setVisibility(View.INVISIBLE);
-        squareViewPull.setVisibility(View.VISIBLE);
+        if(shape.equals("circle")) {
+            pullShape.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+        }
+        else {
+            pullShape.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+        }
     }
 
     public boolean ReadyToStart(){

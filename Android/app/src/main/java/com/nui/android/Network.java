@@ -152,7 +152,7 @@ public class Network implements IServer {
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    activity.SetCircleShape();
+                                    activity.SetShape("circle");
                                     //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
@@ -163,7 +163,7 @@ public class Network implements IServer {
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    activity.SetSquareShape();
+                                    activity.SetShape("square");
                                     //SendMessage("nextshape:" + activity.NextShape());
                                 }
                             }
