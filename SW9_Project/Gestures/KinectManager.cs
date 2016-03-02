@@ -162,7 +162,7 @@ namespace SW9_Project {
             ThrowPull[1] = new SwingSegmentBehind(leftHand);
 
             gestureController.AddGesture("ThrowPush", ThrowPush);
-            //gestureController.AddGesture("ThrowPull", ThrowPull);
+            gestureController.AddGesture("ThrowPull", ThrowPull);
         }
 
         private void OnGestureRecognized(object sender, GestureEventArgs e) { 
