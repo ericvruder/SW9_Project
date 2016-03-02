@@ -75,7 +75,7 @@ namespace SW9_Project {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
                     string returnData = Encoding.ASCII.GetString(data);
-                    Console.WriteLine("UDP from " + remoteEP.ToString());
+                    //Console.WriteLine("UDP from " + remoteEP.ToString());
                     if (returnData.StartsWith("gyrodata"))
                     {
                         if (packets == 0)

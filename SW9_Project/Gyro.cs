@@ -46,16 +46,14 @@ namespace SW9_Project
             {
             }
 
-            RunningCountLimit(ref runningCountX, ref runningCountZ);
+            //RunningCountLimit(ref runningCountX, ref runningCountZ);
 
             double cx = -runningCountZ * ((screenWidth / 2.0) / zScale) + (screenWidth / 2.0);
             double cy = -runningCountX * ((screenHeight / 2.0) / xScale) + (screenHeight / 2.0);
 
-            // TODO move the pointer and not the system cursor
-
             //Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
             //Console.WriteLine("SC:" + cy + "\t" + cx);
-            Cursor.Position = new Point((int)cx, (int)cy);
+            //Cursor.Position = new Point((int)cx, (int)cy);
             CanvasWindow.GyroPositionX = -runningCountZ;
             CanvasWindow.GyroPositionY = -runningCountX;
         }
