@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 namespace SW9_Project {
     static class ShapeFactory {
 
+        private static bool pointer = false;
+
         public static Shape CreateShape(string shape, double size) {
             switch (shape) {
                 case "circle": return CreateCircle(size * 0.8);
@@ -25,9 +27,21 @@ namespace SW9_Project {
         }
 
         public static UIElement CreatePointer() {
-            Image pointer = new Image();
-            pointer.Source = new BitmapImage(new Uri("resources/pointer.png", UriKind.RelativeOrAbsolute));
-            return pointer;
+            if (pointer) {
+                Image pointer = new Image();
+                pointer.Source = new BitmapImage(new Uri("resources/pointer.png", UriKind.RelativeOrAbsolute));
+                return pointer;
+            }
+            else {
+                Ellipse ellipse = new Ellipse();
+                ellipse.Fill = Brushes.Red;
+                ellipse.StrokeThickness = 1;
+                ellipse.Stroke = Brushes.Black;
+                ellipse.Height = 25;
+                ellipse.Width = 25;
+                
+                return ellipse;
+            }
         }
 
         public static Rectangle CreateGridCell(double width, double height, bool border) {
