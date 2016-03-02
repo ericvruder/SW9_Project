@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <ImageView
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/circle_pull"
@@ -38,7 +38,7 @@
                 android:visibility="invisible"
                 android:contentDescription="@string/circle_pull" />
             <ImageView
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/square_pull"

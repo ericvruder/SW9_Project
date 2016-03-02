@@ -267,7 +267,10 @@ public class BaseActivity extends Activity {
     public void ClearShapes(){
         shape = null;
         squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+        squareViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+
         circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+        circleViewPull.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
     }
 
     public void SwitchPosition() {
