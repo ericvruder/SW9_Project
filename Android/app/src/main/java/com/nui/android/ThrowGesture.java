@@ -9,4 +9,10 @@ public class ThrowGesture extends MobileGesture {
         Shape = shape;
         Type = "ThrowGesture";
     }
+
+    public ThrowGesture(String shape, String direction){
+        Shape = shape;
+        Direction = direction;
+        Type = "ThrowGesture";
+    }
 }

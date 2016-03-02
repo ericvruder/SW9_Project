@@ -46,9 +46,11 @@ public class AccelerometerMonitor extends SensorMonitor {
             float y = event.values[1];
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
-            if(tilt && IsTilt(x, y, z)){
-                ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
-                server.SendData(data);
+            if(tilt){
+                ThrowGesture data = IsTilt(x, y, z);
+                if(data != null) {
+                    server.SendData(data);
+                }
             }
             else if(!tilt && IsThrow(x,y,z, curTime)){
                 ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
@@ -84,7 +86,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     float lastAccel[] = new float[3];
     float accelFilter[] = new float[3];
 
-    public boolean IsTilt(float accelX, float accelY, float accelZ) {
+    public ThrowGesture IsTilt(float accelX, float accelY, float accelZ) {
         // high pass filter
         float updateFreq = 30; // match this to your update speed
         float cutOffFreq = 0.9f;
@@ -113,11 +115,14 @@ public class AccelerometerMonitor extends SensorMonitor {
         lastAccel[2] = accelZ;
 
         if(t>3.0f){
-            Log.d("ACCELLEROMETERMONITOR", "THROW");
-            return true;
+            return new ThrowGesture(BaseActivity.GetSelectedShape(), "Push");
         }
 
-        return false;
+        else if(t< -3.0f){
+            return new ThrowGesture(BaseActivity.GetSelectedShape(), "Pull");
+        }
+
+        return null;
     }
 
     double clamp(double v, double min, double max) {
