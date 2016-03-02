@@ -16,7 +16,8 @@ namespace SW9_Project
         double runningCountX = 0;
         double xScale = 0.26f;
         double zScale = 0.25f;
-        int scale = 333;
+        int xScaleRaw = 200;
+        int zScaleRaw = 260;
         long previousTime = 0;
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;
@@ -30,9 +31,9 @@ namespace SW9_Project
         public void Update(string nTime, string nX, string nY, string nZ)
         {
             try {
-                double x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 10) / scale;
+                double x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 10) / xScaleRaw;
                 //double y = double.Parse(nY, CultureInfo.InvariantCulture);
-                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / scale ; // Throws exeption here sometimes
+                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / zScaleRaw ; // Throws exeption here sometimes
                 long currentTime = long.Parse(nTime, CultureInfo.InvariantCulture);
 
                 if (currentTime < previousTime)
@@ -48,14 +49,15 @@ namespace SW9_Project
 
             //RunningCountLimit(ref runningCountX, ref runningCountZ);
 
-            double cx = -runningCountZ * ((screenWidth / 2.0) / zScale) + (screenWidth / 2.0);
-            double cy = -runningCountX * ((screenHeight / 2.0) / xScale) + (screenHeight / 2.0);
+            double cx = -runningCountZ * ((screenWidth / zScale) / 2.0) + (screenWidth / 2.0);
+            double cy = -runningCountX * ((screenHeight / xScale) / 2.0) + (screenHeight / 2.0);
 
             //Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
             //Console.WriteLine("SC:" + cy + "\t" + cx);
-            //Cursor.Position = new Point((int)cx, (int)cy);
+            Cursor.Position = new Point((int)cx, (int)cy);
             CanvasWindow.GyroPositionX = -runningCountZ;
             CanvasWindow.GyroPositionY = -runningCountX;
+            //Console.WriteLine("X:" + -runningCountZ + " Y:" + -runningCountX);
         }
 
         private void RunningCountLimit(ref double x, ref double z)
