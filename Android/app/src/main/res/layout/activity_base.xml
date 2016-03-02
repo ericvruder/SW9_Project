@@ -42,7 +42,7 @@
 
     </FrameLayout>
 
-    <Button
+    <!--<Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/move_cursor"
@@ -52,6 +52,6 @@
         android:textColor="@color/colorBlack"
         android:layout_weight="0.07"
         android:longClickable="false"
-        android:focusable="false" />
+        android:focusable="false" />-->
 
 </LinearLayout>
