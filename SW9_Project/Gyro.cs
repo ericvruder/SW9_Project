@@ -54,7 +54,7 @@ namespace SW9_Project
 
             //Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
             //Console.WriteLine("SC:" + cy + "\t" + cx);
-            Cursor.Position = new Point((int)cx, (int)cy);
+            //Cursor.Position = new Point((int)cx, (int)cy);
             CanvasWindow.GyroPositionX = -runningCountZ;
             CanvasWindow.GyroPositionY = -runningCountX;
             //Console.WriteLine("X:" + -runningCountZ + " Y:" + -runningCountX);

@@ -7398,3 +7398,7 @@
 [02-03-2016 13:42:19]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 1104 Y = 84,6982513314761 Cell: X = 19 Y = 1
 [02-03-2016 13:42:22]: KINECT GESTURE Type: Pinch Direction: Pull Shape:  Pointer: X = 1104 Y = 90,6612321747718 Cell: X = 19 Y = 1
 [02-03-2016 13:42:23]: KINECT GESTURE Type: Pinch Direction: Push Shape:  Pointer: X = 892,03308391571 Y = 134,181438207404 Cell: X = 16 Y = 2
+[02-03-2016 15:51:27]: MOBILE GESTURE Type: Swipe Direction: Push Shape: square
+[02-03-2016 15:51:28]: MOBILE GESTURE Type: Swipe Direction: Push Shape: square
+[02-03-2016 15:51:29]: MOBILE GESTURE Type: Swipe Direction: Push Shape: circle
+[02-03-2016 15:51:29]: MOBILE GESTURE Type: Swipe Direction: Push Shape: square

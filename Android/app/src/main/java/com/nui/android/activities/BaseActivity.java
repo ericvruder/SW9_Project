@@ -53,7 +53,7 @@ public class BaseActivity extends Activity {
 
     private ImageView pullShape;
     private Button moveCursor;
-    private boolean sendGyroData = false;
+    private boolean sendGyroData = true;
 
     private final Random random = new Random();
     private int count;
@@ -89,8 +89,9 @@ public class BaseActivity extends Activity {
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
-        moveCursor = (Button) findViewById(R.id.move_cursor);
 
+        /*
+        moveCursor = (Button) findViewById(R.id.move_cursor);
         moveCursor.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent event) {
                 if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
@@ -107,6 +108,7 @@ public class BaseActivity extends Activity {
                 return false;
             }
         });
+        */
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         // TODO provide support for gyroscope (rotation vector is flawed in early
