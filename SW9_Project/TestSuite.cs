@@ -76,6 +76,9 @@ namespace SW9_Project {
             targetSequence = Target.GetNextSequence();
             practiceSequence = Target.GetPracticeTargets();
 
+            practiceSequence.RemoveLast();
+            practiceSequence.Enqueue(targetSequence.Dequeue());
+
             board.Clear();
             board.StartNewGesture();
             board.CreateTarget(practiceSequence.Dequeue());
