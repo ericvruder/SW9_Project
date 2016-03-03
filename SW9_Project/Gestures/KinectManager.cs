@@ -18,6 +18,8 @@ namespace SW9_Project {
         private InteractionStream _interactionStream;
         private UserInfo[] userInfos;
 
+        private Timer handChangeTimer;
+
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
@@ -53,7 +55,7 @@ namespace SW9_Project {
             //kinectSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
             if (kinectSensor == null)
                 return false;
-            kinectSensor.DepthStream.Enable();
+            //kinectSensor.DepthStream.Enable();
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.7f,
                 Correction = 0.3f,
