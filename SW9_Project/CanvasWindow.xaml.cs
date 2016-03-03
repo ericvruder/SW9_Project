@@ -229,6 +229,17 @@ namespace SW9_Project {
                 xPoint = GyroPositionX;
                 yPoint = -GyroPositionY;
                 lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+                
+                /*if(GetPoint(lastGyroPoint.X, lastGyroPoint.Y).X > canvas.ActualHeight ||
+                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).X < 0 ||
+                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).Y > canvas.ActualWidth ||
+                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).Y < 0)
+                {
+                    Console.WriteLine("Pointer is NOT within canvas");
+                }else
+                {
+                    Console.WriteLine("Pointer is within canvas");
+                }*/
             }
 
             xPoint = xFromMid + lastGyroPoint.X;
