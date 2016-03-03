@@ -30,6 +30,7 @@ namespace SW9_Project {
             if (pointer) {
                 Image pointer = new Image();
                 pointer.Source = new BitmapImage(new Uri("resources/pointer.png", UriKind.RelativeOrAbsolute));
+                
                 return pointer;
             }
             else {

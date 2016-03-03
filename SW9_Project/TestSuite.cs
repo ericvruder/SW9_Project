@@ -75,8 +75,7 @@ namespace SW9_Project {
             practiceDone = false;
             targetSequence = Target.GetNextSequence();
             practiceSequence = Target.GetPracticeTargets();
-
-            practiceSequence.RemoveLast();
+            
             practiceSequence.Enqueue(targetSequence.Dequeue());
 
             board.Clear();
@@ -96,7 +95,7 @@ namespace SW9_Project {
 
         private Queue<GestureType> GetRandomGestureList() {
             
-            List<GestureType> types = new List<GestureType> { /*GestureType.Pinch, GestureType.Swipe,  GestureType.Throw,*/ GestureType.Tilt };
+            List<GestureType> types = new List<GestureType> { GestureType.Pinch /*, GestureType.Swipe,  GestureType.Throw, GestureType.Tilt*/ };
             types.Shuffle();
             return new Queue<GestureType>(types);
         }
