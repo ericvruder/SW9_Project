@@ -206,10 +206,12 @@ namespace SW9_Project.Logging
         {
             try {
                 if (comment.Length > 0) {
-                    string path = userID == 0 ? directory + "general.comment" : directory + userID + ".comment";
-                    using (StreamWriter sw = new StreamWriter(path, true)) {
-                        sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), comment);
-                        sw.Flush();
+                    if (userID != 0) { 
+                        string path = directory + userID + ".comment";
+                        using (StreamWriter sw = new StreamWriter(path, true)) {
+                            sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), comment);
+                            sw.Flush();
+                        }
                     }
                 }
             } catch (Exception) { } //TODO: FIX
