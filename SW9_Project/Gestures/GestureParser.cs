@@ -38,7 +38,11 @@ namespace SW9_Project {
                 }
                 return t;
             }
-            set { awaitingGesture = value; }
+            set {
+                KinectGesture gesture = value;
+                //ClearGestures();
+                awaitingGesture = gesture;
+            }
         }
 
         public static void SetDirectionContext(GestureDirection direction) {
@@ -71,7 +75,26 @@ namespace SW9_Project {
                             AwaitingGesture = new KinectGesture(receivedGesture.Shape);
                         }
                         break;
-                    case GestureType.Pinch:
+                    case GestureType.Pinch: {
+                            if (directionContext == receivedGesture.Direction) {
+                                if (directionContext == GestureDirection.Push) {
+                                    if (waitingKinectGesture?.Direction == GestureDirection.Pull) {
+                                        KinectGesture gesture = waitingKinectGesture;
+                                        ClearGestures();
+                                        AwaitingGesture = gesture;
+                                    } else {
+                                        ClearGestures();
+                                        waitingMobileGesture = receivedGesture;
+                                    }
+                                } else {
+                                    if(waitingKinectGesture != null) {
+                                        KinectGesture gesture = waitingKinectGesture;
+                                        ClearGestures();
+                                        AwaitingGesture = gesture;
+                                    }
+                                }
+                            }
+                        }
                         break;
                     case GestureType.Throw:
                         if (waitingKinectGesture?.Type == GestureType.Throw) {
@@ -89,7 +112,7 @@ namespace SW9_Project {
         static private void ClearGestures() {
             waitingKinectGesture = null;
             waitingMobileGesture = null;
-            AwaitingGesture = null;
+            awaitingGesture = null;
         }
 
 
@@ -105,21 +128,24 @@ namespace SW9_Project {
                 switch (receivedGesture.Type) {
                     case GestureType.Pinch:
                         {
-                            if (directionContext == GestureDirection.Pull && receivedGesture.Direction == GestureDirection.Pull) {
-                                board.LockPointer(); 
-                                string shape = "";
-                                shape = board.GetCell(receivedGesture.Pointer)?.Shape is Ellipse ? "circle" : "square";
-                                KinectGesture gesture = new KinectGesture(shape);
-                                connection.SendPinch();
-                                ClearGestures();
-                                waitingKinectGesture = gesture;
-                            } else if (waitingMobileGesture?.Type == GestureType.Pinch) {
-                                if (receivedGesture.Direction != directionContext) { break; }
-                                KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape);
-                                ClearGestures();
-                                AwaitingGesture = gesture;
-                            } else {
-                                ClearGestures();
+                            if (directionContext == receivedGesture.Direction) {
+                                if (directionContext == GestureDirection.Pull) {
+                                    board.LockPointer();
+                                    string shape = "";
+                                    shape = board.GetCell(receivedGesture.Pointer)?.Shape is Ellipse ? "circle" : "square";
+                                    KinectGesture gesture = new KinectGesture(shape);
+                                    connection.SendPinch();
+                                    ClearGestures();
+                                    waitingKinectGesture = gesture;
+                                } else if (waitingMobileGesture != null) {
+                                    KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape);
+                                    ClearGestures();
+                                    AwaitingGesture = gesture;
+                                }
+                            }
+                            else if(directionContext == GestureDirection.Pull && receivedGesture.Direction == GestureDirection.Push) {
+                                /*ClearGestures();
+                                board.UnlockPointer();*/
                             }
                         }
                         break;
