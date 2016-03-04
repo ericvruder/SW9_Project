@@ -46,10 +46,10 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         if(!pinching) {
             float diff = firstEvent.getY() - secondEvent.getY();
             if (diff >= 100f) {
-                server.SendData(new SwipeGesture("push", BaseActivity.GetSelectedShape()));
+                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Push"));
                 Log.d("SWIPE", "onFling() push " + BaseActivity.GetSelectedShape());
             } else if (diff <= -100f) {
-                server.SendData(new SwipeGesture("pull", BaseActivity.GetSelectedShape()));
+                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Pull"));
                 Log.d("SWIPE", "onFling() pull " + BaseActivity.GetSelectedShape());
             }
         }

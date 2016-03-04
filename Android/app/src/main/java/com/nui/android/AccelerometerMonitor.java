@@ -47,13 +47,13 @@ public class AccelerometerMonitor extends SensorMonitor {
             float z = event.values[2];
             String values = "X: " + x + " Y: " + y + " Z: " + z;
             if(tilt){
-                TiltGesture data = IsTilt(x, y, z);
+                MobileGesture data = IsTilt(x, y, z);
                 if(data != null) {
                     server.SendData(data);
                 }
             }
             else if(!tilt && IsThrow(x,y,z, curTime)){
-                ThrowGesture data = new ThrowGesture(BaseActivity.GetSelectedShape());
+                MobileGesture data = new MobileGesture(BaseActivity.GetSelectedShape(), "Throw");
                 server.SendData(data);
             }
         }
@@ -86,7 +86,7 @@ public class AccelerometerMonitor extends SensorMonitor {
     float lastAccel[] = new float[3];
     float accelFilter[] = new float[3];
 
-    public TiltGesture IsTilt(float accelX, float accelY, float accelZ) {
+    public MobileGesture IsTilt(float accelX, float accelY, float accelZ) {
         // high pass filter
         float updateFreq = 30; // match this to your update speed
         float cutOffFreq = 0.9f;
@@ -115,11 +115,11 @@ public class AccelerometerMonitor extends SensorMonitor {
         lastAccel[2] = accelZ;
 
         if(t>3.0f){
-            return new TiltGesture(BaseActivity.GetSelectedShape(), "Push");
+            return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Push");
         }
 
         else if(t< -3.0f){
-            return new TiltGesture(BaseActivity.GetSelectedShape(), "Pull");
+            return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Pull");
         }
 
         return null;

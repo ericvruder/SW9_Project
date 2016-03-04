@@ -32,9 +32,8 @@ namespace WebDataParser {
             if (Tests.Count != files.Count()) {
                 Tests.Clear();
                 foreach (var s in files) {
-                    string id = s.Split('/').Last().Split('.').First();
-                    StreamReader sr = new StreamReader(s);
-                    Tests.Add(id, new Test(sr, id));
+                    var test = new Test(s);
+                    Tests.Add(test.ID, test);
                 }
             }
 
@@ -83,8 +82,7 @@ namespace WebDataParser {
 
              
             if (!Tests.ContainsKey(id)) {
-                StreamReader reader = new StreamReader(utility.MapPath("~/Testlog/" + id + ".test"));
-                Tests[id] = new Test(reader, id);
+                Tests[id] = new Test(utility.MapPath("~/Testlog/" + id + ".test"));
             }
             
             foreach (var gesture in AllGestures) {
