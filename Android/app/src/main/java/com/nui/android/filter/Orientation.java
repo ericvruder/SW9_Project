@@ -58,7 +58,7 @@ public abstract class Orientation implements OrientationInterface, SensorEventLi
 	protected float meanFilterTimeConstant = 0.2f;
 
 	// angular speeds from gyro
-	protected float[] vGyroscope = new float[3];
+	public float[] vGyroscope = new float[3];
 
 	// magnetic field vector
 	protected float[] vMagnetic = new float[3];
