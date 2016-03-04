@@ -66,7 +66,6 @@ namespace SW9_Project {
             }
             int x = xPossibilities[R.Next(xPossibilities.Count)], y = yPossibilities[R.Next(yPossibilities.Count)];
             targets.Enqueue(new Target(x, y, GridSize.Large, JumpLength.NA));
-            targets.Enqueue(new Target(R.Next(20), R.Next(10), GridSize.Small, JumpLength.NA));
             return targets;
         }
 
@@ -91,7 +90,6 @@ namespace SW9_Project {
                     }
                     Target t = new Target(x, y, size, length);
                     targets.Enqueue(t);
-                    if (count++ > 2) break;
                 }
             }
             return targets;

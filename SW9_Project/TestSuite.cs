@@ -34,6 +34,12 @@ namespace SW9_Project {
 
         bool firstDirectionRun = false, done = false;
 
+        public void StartDebugTest(GestureType type) {
+            gestureTypeList = new Queue<GestureType>();
+            gestureTypeList.Enqueue(type);
+            ChangeGesture();
+        }
+
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);
             gestureTypeList = GetRandomGestureList();
@@ -69,12 +75,14 @@ namespace SW9_Project {
             }
         }
         
-        VideoWindow techniquePlayer;
+        static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if (gestureTypeList.Count == 0) { return false; }
             practiceDone = false;
             targetSequence = Target.GetNextSequence();
             practiceSequence = Target.GetPracticeTargets();
+            
+            practiceSequence.Enqueue(targetSequence.Dequeue());
 
             board.Clear();
             board.StartNewGesture();
@@ -92,8 +100,8 @@ namespace SW9_Project {
         Queue<GestureType> gestureTypeList;
 
         private Queue<GestureType> GetRandomGestureList() {
-            // GestureType.Pinch, GestureType.Swipe,  GestureType.Throw, GestureType.Tilt
-            List<GestureType> types = new List<GestureType> { GestureType.Throw, GestureType.Swipe };
+            
+            List<GestureType> types = new List<GestureType> { GestureType.Pinch /*, GestureType.Swipe,  GestureType.Throw, GestureType.Tilt*/ };
             types.Shuffle();
             return new Queue<GestureType>(types);
         }

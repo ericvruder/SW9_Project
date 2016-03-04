@@ -18,6 +18,9 @@ namespace SW9_Project {
         private InteractionStream _interactionStream;
         private UserInfo[] userInfos;
 
+        private Timer handChangeTimer;
+        private double handChangeTime = 2; //seconds to wait for hand change
+
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
@@ -53,7 +56,7 @@ namespace SW9_Project {
             //kinectSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
             if (kinectSensor == null)
                 return false;
-            kinectSensor.DepthStream.Enable();
+
             kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
                 Smoothing = 0.7f,
                 Correction = 0.3f,
@@ -61,10 +64,15 @@ namespace SW9_Project {
                 JitterRadius = 1.0f,
                 MaxDeviationRadius = 1.0f
             });
-
+            kinectSensor.DepthStream.Enable();
             // initialize the gesture recognizer
             gestureController = new GestureController();
             gestureController.GestureRecognized += OnGestureRecognized;
+
+            //prepare the hand change timer
+            handChangeTimer = new Timer();
+            handChangeTimer.Interval = TimeSpan.FromSeconds(handChangeTime).TotalMilliseconds;
+            handChangeTimer.Elapsed += HandChangeTimer_Elapsed;
 
             // register the gestures for this demo
             RegisterGestures(LeftHand);
@@ -83,6 +91,11 @@ namespace SW9_Project {
             }
             return true;
 
+        }
+
+        private void HandChangeTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            LeftHand = !LeftHand;
+            RegisterGestures(LeftHand);
         }
 
         /// <summary>
@@ -115,8 +128,14 @@ namespace SW9_Project {
 
                         bool t = HandLeft.Position.Z < HandRight.Position.Z;
                         if (LeftHand != t) {
-                            LeftHand = t;
-                            RegisterGestures(LeftHand);
+                            if (!handChangeTimer.Enabled) {
+                                handChangeTimer.Start();
+                            }
+                        }
+                        else {
+                            if (handChangeTimer.Enabled) {
+                                handChangeTimer.Stop();
+                            }
                         }
 
 

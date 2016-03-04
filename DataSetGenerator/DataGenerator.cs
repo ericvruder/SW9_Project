@@ -393,8 +393,8 @@ namespace DataSetGenerator {
                     var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
                     var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
 
-                    var aPushS = new TechniqueInfo(attemptsPush).ToString();
-                    var aPullS = new TechniqueInfo(attemptsPull).ToString();
+                    var aPushS = new TechniqueInfo(attemptsPush).ToJson();
+                    var aPullS = new TechniqueInfo(attemptsPull).ToJson();
 
                     total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
 
@@ -403,32 +403,6 @@ namespace DataSetGenerator {
 
                 jsonFile.WriteLine("var data = {\n" + total.Remove(total.Length - 2) + "\n}");
             }
-        }
-
-        private class TechniqueInfo {
-
-            public TechniqueInfo(List<Attempt> attempts) {
-
-                HPM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
-                TTM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
-                ACCM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : DistanceToTargetCell(attempt)) / (float)attempts.Count;
-
-                HPSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HPM, 2)) / attempts.Count);
-                TTSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TTM, 2)) / attempts.Count);
-                ACCSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(DistanceToTargetCell(attempt) - ACCM, 2)) / attempts.Count);
-
-            }
-
-            public override string ToString() {
-                return JsonConvert.SerializeObject(this, Formatting.Indented);
-            }
-            public float HPM { get; set; }
-            public float HPSTD { get; set; }
-            public float TTM { get; set; }
-            public float TTSTD { get; set; }
-            public float ACCM { get; set; }
-            public float ACCSTD { get; set; }
-
         }
     }
 }

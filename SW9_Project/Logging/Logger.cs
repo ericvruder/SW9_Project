@@ -23,9 +23,12 @@ namespace SW9_Project.Logging
         private static int sgHeight, sgWidth, lgHeight, lgWidth;
         private static double canvasHeight, canvasWidth;
 
+        public bool DebugMode { get; set; }
+
         public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
             if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
+                CurrentLogger.DebugMode = false;
             }
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
@@ -167,33 +170,28 @@ namespace SW9_Project.Logging
         /// <param name="msg"></param>
         private void Log(string msg)
         {
-            const int MAX_RETRY = 10;
-            const int DELAY_MS = 1000;
-            bool result = false;
-            int retry = 0;
-            bool keepRetry = true;
+            if (!DebugMode) {
+                const int MAX_RETRY = 10;
+                const int DELAY_MS = 1000;
+                bool result = false;
+                int retry = 0;
+                bool keepRetry = true;
 
-            while (keepRetry && !result && retry < MAX_RETRY)
-            {
-                try
-                {
-                    if (msg.Length > 0)
-                    {
-                        testStreamWriter.WriteLine("[{0}]: {1}", DateTime.Now.ToString("HH:mm:ss"), msg);
-                        testStreamWriter.Flush();
-                        result = true;
+                while (keepRetry && !result && retry < MAX_RETRY) {
+                    try {
+                        if (msg.Length > 0) {
+                            testStreamWriter.WriteLine("[{0}]: {1}", DateTime.Now.ToString("HH:mm:ss"), msg);
+                            testStreamWriter.Flush();
+                            result = true;
+                        }
+                    } catch (IOException e) {
+                        Console.WriteLine(e.ToString());
+                        Thread.Sleep(DELAY_MS);
+                        retry++;
+                    } catch (Exception ex) {
+                        Console.WriteLine(ex.Message);
+                        keepRetry = false;
                     }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine(e.ToString());
-                    Thread.Sleep(DELAY_MS);
-                    retry++;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    keepRetry = false;
                 }
             }
         }
@@ -204,15 +202,19 @@ namespace SW9_Project.Logging
         /// <param name="comment"></param>
         public void LogComment(string comment)
         {
-            try {
-                if (comment.Length > 0) {
-                    string path = userID == 0 ? directory + "general.comment" : directory + userID + ".comment";
-                    using (StreamWriter sw = new StreamWriter(path, true)) {
-                        sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), comment);
-                        sw.Flush();
+            if (!DebugMode) {
+                try {
+                    if (comment.Length > 0) {
+                        if (userID != 0) {
+                            string path = directory + userID + ".comment";
+                            using (StreamWriter sw = new StreamWriter(path, true)) {
+                                sw.WriteLine("[{0} {1}]: {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString(), comment);
+                                sw.Flush();
+                            }
+                        }
                     }
-                }
-            } catch (Exception) { } //TODO: FIX
+                } catch (Exception) { } //TODO: FIX
+            }
         }
 
         //private static void flush()

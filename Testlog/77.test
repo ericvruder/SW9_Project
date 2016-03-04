@@ -1,9 +1,0 @@
-[13:42:26]: Started new gesture test. Type: Tilt Direction: Pull
-[13:42:26]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 113 Cell width: 110,4
-[13:42:45]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 56,5 Cell width: 55,2
-[13:42:50]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 113 Cell width: 110,4
-[13:42:53]: Target: Hit  Shape: Correct TC: (08,01) CC: (08, 01) JL: NA Pointer position: (897,1,195,3).
-[13:42:55]: Target: Hit  Shape: Correct TC: (03,00) CC: (03, 00) JL: Medium Pointer position: (418,8,56,6).
-[13:42:56]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 56,5 Cell width: 55,2
-[13:42:57]: Target: Miss Shape: Correct TC: (18,08) CC: (10, 03) JL: Long Pointer position: (566,2,196,8).
-[13:43:01]: Target: Miss Shape: Correct TC: (04,06) CC: (12, 09) JL: Long Pointer position: (697,9,524,2).
