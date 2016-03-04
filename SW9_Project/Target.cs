@@ -90,7 +90,6 @@ namespace SW9_Project {
                     }
                     Target t = new Target(x, y, size, length);
                     targets.Enqueue(t);
-                    if (count++ > 2) break;
                 }
             }
             return targets;
