@@ -73,7 +73,6 @@ namespace SW9_Project {
             Queue<Target> targets = new Queue<Target>();
             using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
                 string line = "";
-                int count = 0;
                 while((line = sr.ReadLine()) != null) { 
                     if(line == "") { break; }
                     string[] targetInfo = line.Split(',');
