@@ -46,6 +46,9 @@ public class BaseActivity extends Activity {
     private AccelerometerMonitor acceloremeterSensor;
     private RotationMonitor rotationSensor;
 
+    private SwipeGestureListener swipeGestureListener;
+    private PinchGestureListener pinchGestureListener;
+
     public static String shape;
     public static String nextShape;
 
@@ -77,11 +80,12 @@ public class BaseActivity extends Activity {
 
 
         initNetwork();
-        SwipeGestureListener swipeGestureListener = new SwipeGestureListener(Network.getInstance());
+        swipeGestureListener = new SwipeGestureListener(Network.getInstance());
+        pinchGestureListener = new PinchGestureListener(Network.getInstance(), swipeGestureListener);
         rotationSensor = new RotationMonitor(Network.getInstance(), this);
         acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), rotationSensor, this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
-        pinchDetector = new ScaleGestureDetector(this, new PinchGestureListener(Network.getInstance(), swipeGestureListener));
+        pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
         touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(this, Network.getInstance()));
 
         circleView = (ImageView) findViewById(R.id.circle);
@@ -186,9 +190,19 @@ public class BaseActivity extends Activity {
 
     public void SetGesture(String gesture){
         sendGyroData = false;
+        pinchGestureListener.Stop();
+        swipeGestureListener.Stop();
         switch (gesture){
             case "tilt": case "throw": acceloremeterSensor.SetTiltorThrow(gesture); break;
-            case "swipe": sendGyroData = true ; break;
+            case "swipe":{
+                swipeGestureListener.Start();
+                sendGyroData = true;
+                break;
+            }
+            case "pinch": {
+                pinchGestureListener.Start();
+                break;
+            }
             default: break;
         }
     }

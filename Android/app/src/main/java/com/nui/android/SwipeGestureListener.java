@@ -22,6 +22,14 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         this.server = server;
     }
 
+    boolean running = false;
+    public void Stop(){
+        running = false;
+    }
+    public void Start(){
+        running = true;
+    }
+
     public void Pinching(){
         if(!pinching) {
             pinching = true;
@@ -43,14 +51,16 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
 
     @Override
     public boolean onFling(MotionEvent firstEvent, MotionEvent secondEvent, float vx, float vy){
-        if(!pinching) {
-            float diff = firstEvent.getY() - secondEvent.getY();
-            if (diff >= 100f) {
-                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Push"));
-                Log.d("SWIPE", "onFling() push " + BaseActivity.GetSelectedShape());
-            } else if (diff <= -100f) {
-                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Pull"));
-                Log.d("SWIPE", "onFling() pull " + BaseActivity.GetSelectedShape());
+        if(running) {
+            if (!pinching) {
+                float diff = firstEvent.getY() - secondEvent.getY();
+                if (diff >= 100f) {
+                    server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Push"));
+                    Log.d("SWIPE", "onFling() push " + BaseActivity.GetSelectedShape());
+                } else if (diff <= -100f) {
+                    server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Pull"));
+                    Log.d("SWIPE", "onFling() pull " + BaseActivity.GetSelectedShape());
+                }
             }
         }
         return true;
