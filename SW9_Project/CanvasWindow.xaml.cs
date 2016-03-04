@@ -85,7 +85,6 @@ namespace SW9_Project {
         
         bool runningGesture = false;
         public void CurrentGestureDone() {
-            lockedPointer = false;
             GestureParser.SetTypeContext(GestureType.Swipe);
             foreach(var cell in grid) {
                 cell.GridCell.Fill = Brushes.White;
@@ -218,10 +217,16 @@ namespace SW9_Project {
 
 
         public void LockPointer() {
+            if(pointerFigure is Shape) {
+                ((Shape)pointerFigure).Fill = Brushes.Red;
+            }
             lockedPointer = true;
         }
 
         public void UnlockPointer() {
+            if (pointerFigure is Shape) {
+                ((Shape)pointerFigure).Fill = Brushes.Blue;
+            }
             lockedPointer = false;
         }
 
@@ -268,7 +273,7 @@ namespace SW9_Project {
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
-                    lockedPointer = false;
+                    UnlockPointer();
                     GestureParser.Pause(true);
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
@@ -488,6 +493,10 @@ namespace SW9_Project {
         }
 
         private void StartDebugTest(GestureType type) {
+            if (connection == null || !connection.Connected) {
+                connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+                return;
+            }
             Logger.CurrentLogger.DebugMode = true;
             gestureTypeLabel.Content = type.ToString();
             gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
