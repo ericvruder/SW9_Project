@@ -16,14 +16,26 @@ public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGest
         this.server = server;
         this.swiper = swiper;
     }
+
+    boolean running = false;
+    public void Stop(){
+        running = false;
+    }
+    public void Start(){
+        running = true;
+    }
+
     @Override
     public boolean onScale(ScaleGestureDetector detector){
-        long curTime = System.currentTimeMillis();
-        if(curTime - lastUpdate > 500) {
-            lastUpdate = curTime;
-            swiper.Pinching();
-            server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
-            Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
+        if(running) {
+            long curTime = System.currentTimeMillis();
+            if (curTime - lastUpdate > 500) {
+                lastUpdate = curTime;
+                swiper.Pinching();
+                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
+                Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
+            }
+
         }
         return true;
     }
