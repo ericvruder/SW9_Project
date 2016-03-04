@@ -136,7 +136,6 @@ public class BaseActivity extends Activity {
 
     public void networkThread(){
         handler = new Handler();
-
         runable = new Runnable()
         {
             private long time = 0;
@@ -148,11 +147,11 @@ public class BaseActivity extends Activity {
 
                 handler.postDelayed(this, 100);
 
-                vOrientation = orientation.getOrientation();
+                //vOrientation = orientation.gyroValues;
 
-                float x = vOrientation[0];
-                float y = vOrientation[1];
-                float z = vOrientation[2];
+                float x = orientation.gyroValues[0];
+                float y = orientation.gyroValues[1];
+                float z = orientation.gyroValues[2];
 
                 if (!virtualCalibrated) {
                     calibrateZ = z;
@@ -165,13 +164,11 @@ public class BaseActivity extends Activity {
                 virtualY = y - calibrateY;
                 virtualZ = z - calibrateZ;
 
-                Log.d("Orientation", Float.toString(virtualX) + " " + Float.toString(virtualY) + " " + Float.toString(virtualZ));
+                Log.d("Orientation", String.format("%.2f", virtualX) + " " + String.format("%.2f", virtualY) + " " + String.format("%.2f", virtualZ));
                 byte[] buf = ("gyrodata:time:" + orientation.sensorTimestamp + ":x:" + virtualX + ":y:" + virtualY + ":z:" + virtualZ).getBytes();
                 dp.setData(buf);
                 time = orientation.sensorTimestamp;
                 dataReady = true;
-
-                //updateGauges();
             }
         };
 
@@ -423,71 +420,58 @@ public class BaseActivity extends Activity {
 
     private boolean getPrefCalibratedGyroscopeEnabled()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        return prefs.getBoolean(
-                ConfigActivity.CALIBRATED_GYROSCOPE_ENABLED_KEY, true);
+        return prefs.getBoolean(ConfigActivity.CALIBRATED_GYROSCOPE_ENABLED_KEY, true);
     }
 
     private boolean getPrefImuOCfOrientationEnabled()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         return prefs.getBoolean(ConfigActivity.IMUOCF_ORIENTATION_ENABLED_KEY, false);
     }
 
     private boolean getPrefImuOCfRotationMatrixEnabled()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        return prefs.getBoolean(
-                ConfigActivity.IMUOCF_ROTATION_MATRIX_ENABLED_KEY, false);
+        return prefs.getBoolean(ConfigActivity.IMUOCF_ROTATION_MATRIX_ENABLED_KEY, false);
     }
 
     private boolean getPrefImuOCfQuaternionEnabled()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         return prefs.getBoolean(ConfigActivity.IMUOCF_QUATERNION_ENABLED_KEY, false);
     }
 
     private boolean getPrefImuOKfQuaternionEnabled()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         return prefs.getBoolean(ConfigActivity.IMUOKF_QUATERNION_ENABLED_KEY, false);
     }
 
     private float getPrefImuOCfOrienationCoeff()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        return Float.valueOf(prefs.getString(
-                ConfigActivity.IMUOCF_ORIENTATION_COEFF_KEY, "0.5"));
+        return Float.valueOf(prefs.getString(ConfigActivity.IMUOCF_ORIENTATION_COEFF_KEY, "0.5"));
     }
 
     private float getPrefImuOCfRotationMatrixCoeff()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        return Float.valueOf(prefs.getString(
-                ConfigActivity.IMUOCF_ROTATION_MATRIX_COEFF_KEY, "0.5"));
+        return Float.valueOf(prefs.getString(ConfigActivity.IMUOCF_ROTATION_MATRIX_COEFF_KEY, "0.5"));
     }
 
     private float getPrefImuOCfQuaternionCoeff()
     {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        return Float.valueOf(prefs.getString(
-                ConfigActivity.IMUOCF_QUATERNION_COEFF_KEY, "0.5"));
+        return Float.valueOf(prefs.getString(ConfigActivity.IMUOCF_QUATERNION_COEFF_KEY, "0.5"));
     }
 
     private boolean gyroscopeAvailable()
@@ -565,12 +549,6 @@ public class BaseActivity extends Activity {
         }
 
 
-    }
-
-    private void updateGauges()
-    {
-        gaugeBearingCalibrated.updateBearing(vOrientation[0]);
-        gaugeTiltCalibrated.updateRotation(vOrientation);
     }
 
     @Override

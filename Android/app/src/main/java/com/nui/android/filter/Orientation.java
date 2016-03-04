@@ -83,6 +83,7 @@ public abstract class Orientation implements OrientationInterface, SensorEventLi
 	// We need the SensorManager to register for Sensor Events.
 	protected SensorManager sensorManager;
 	public long sensorTimestamp;
+	public  float[] gyroValues = new float[] {0,0,0};
 
 	public Orientation(Context context)
 	{
@@ -132,15 +133,14 @@ public abstract class Orientation implements OrientationInterface, SensorEventLi
 
 		if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE)
 		{
-			System.arraycopy(event.values, 0, this.vGyroscope, 0,
-					this.vGyroscope.length);
+			System.arraycopy(event.values, 0, this.vGyroscope, 0, this.vGyroscope.length);
 
 			if (meanFilterSmoothingEnabled)
 			{
-				this.vGyroscope = meanFilterGyroscope
-						.addSamples(this.vGyroscope);
+				this.vGyroscope = meanFilterGyroscope.addSamples(this.vGyroscope);
 			}
 
+			gyroValues = event.values;
 			timeStampGyroscope = event.timestamp;
 
 			onGyroscopeChanged();
