@@ -21,5 +21,6 @@ namespace SW9_Project {
         void EndTest();
         void LockPointer();
         void UnlockPointer();
+        void ResetGyro();
     }
 }

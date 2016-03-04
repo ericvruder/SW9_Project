@@ -55,6 +55,7 @@ namespace SW9_Project {
         }
 
         public static void SetTypeContext(GestureType type) {
+            board.ResetGyro();
             connection?.SetGesture(type);
             typeContext = type;
         }

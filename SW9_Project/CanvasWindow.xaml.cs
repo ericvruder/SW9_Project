@@ -225,6 +225,11 @@ namespace SW9_Project {
             lockedPointer = false;
         }
 
+        public void ResetGyro()
+        {
+            GyroPositionX = 0;
+            GyroPositionY = 0;
+        }
 
         public void PointAt(double xFromMid, double yFromMid) {
 
@@ -244,24 +249,7 @@ namespace SW9_Project {
 
             DrawNextTargets();
 
-            Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
-            if (currentGyroPoint != lastGyroPoint)
-            {
-                xPoint = GyroPositionX;
-                yPoint = -GyroPositionY;
-                lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
-                
-                /*if(GetPoint(lastGyroPoint.X, lastGyroPoint.Y).X > canvas.ActualHeight ||
-                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).X < 0 ||
-                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).Y > canvas.ActualWidth ||
-                    GetPoint(lastGyroPoint.X, lastGyroPoint.Y).Y < 0)
-                {
-                    Console.WriteLine("Pointer is NOT within canvas");
-                }else
-                {
-                    Console.WriteLine("Pointer is within canvas");
-                }*/
-            }
+            lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
 
             xPoint = xFromMid + lastGyroPoint.X;
             yPoint = yFromMid + lastGyroPoint.Y;
