@@ -29,9 +29,11 @@ namespace SW9_Project {
         Cell target, extraTarget;
         Target nextTarget;
         GridSize currentSize;
+
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
         double squareHeight = 0, squareWidth = 0;
+
         static CanvasWindow window;
         static Connection connection;
         TestSuite currentTest;
@@ -66,6 +68,9 @@ namespace SW9_Project {
 
         public void Clear() {
             this.Background = Brushes.Black;
+            target = null;
+            extraTarget = null;
+            nextTarget = null;
             CreateGrid(currentSize);
         }
 
@@ -92,6 +97,7 @@ namespace SW9_Project {
         public void StartNewGesture() {
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
+            runningTest = true;
         }
 
         public void PracticeDone() {
@@ -459,14 +465,10 @@ namespace SW9_Project {
             } else if (e.Key == System.Windows.Input.Key.Up) {
                 if (currentTest != null) { 
                     currentTest.StartTest(GestureDirection.Push);
-                    connection?.StartTest(GestureDirection.Push);
-                    runningTest = true;
                 }
             } else if (e.Key == System.Windows.Input.Key.Down) {
                 if (currentTest != null) {
                     currentTest.StartTest(GestureDirection.Pull);
-                    connection?.StartTest(GestureDirection.Pull);
-                    runningTest = true;
                 }
             } 
             

@@ -75,7 +75,7 @@ namespace SW9_Project {
             }
         }
         
-        VideoWindow techniquePlayer;
+        static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if (gestureTypeList.Count == 0) { return false; }
             practiceDone = false;
