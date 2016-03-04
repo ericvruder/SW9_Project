@@ -22,7 +22,7 @@ public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGest
         if(curTime - lastUpdate > 500) {
             lastUpdate = curTime;
             swiper.Pinching();
-            server.SendData(new PinchGesture(BaseActivity.GetSelectedShape()));
+            server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
             Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
         }
         return true;
