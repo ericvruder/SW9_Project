@@ -35,7 +35,7 @@ namespace SW9_Project {
             }
             else {
                 Ellipse ellipse = new Ellipse();
-                ellipse.Fill = Brushes.Red;
+                ellipse.Fill = Brushes.Blue;
                 ellipse.StrokeThickness = 1;
                 ellipse.Stroke = Brushes.Black;
                 ellipse.Height = 25;
