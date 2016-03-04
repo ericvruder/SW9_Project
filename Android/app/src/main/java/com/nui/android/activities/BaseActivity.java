@@ -63,6 +63,7 @@ public class BaseActivity extends Activity {
     private int count;
     private static int MAX_COUNT = 2;
     private boolean menuActive = true;
+    public boolean calibrated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,7 +382,6 @@ public class BaseActivity extends Activity {
 
     class RotationVectorListener implements SensorEventListener {
         private long time = 0;
-        public boolean calibrated = false;
         private float calibrateZ = 0;
         private float calibrateX = 0;
         private float calibrateY = 0;
@@ -446,6 +446,11 @@ public class BaseActivity extends Activity {
             case KeyEvent.KEYCODE_VOLUME_UP:
                 if (action == KeyEvent.ACTION_DOWN) {
                     menuActive = !menuActive;
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    calibrated = !calibrated;
                 }
                 return true;
             default:
