@@ -92,8 +92,8 @@ namespace SW9_Project {
         Queue<GestureType> gestureTypeList;
 
         private Queue<GestureType> GetRandomGestureList() {
-            
-            List<GestureType> types = new List<GestureType> { /*GestureType.Pinch, GestureType.Swipe,  GestureType.Throw,*/ GestureType.Tilt };
+            // GestureType.Pinch, GestureType.Swipe,  GestureType.Throw, GestureType.Tilt
+            List<GestureType> types = new List<GestureType> { GestureType.Throw, GestureType.Swipe };
             types.Shuffle();
             return new Queue<GestureType>(types);
         }

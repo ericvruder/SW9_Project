@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -62,7 +63,7 @@ public class BaseActivity extends Activity {
 
     private ImageView pullShape;
     private Button moveCursor;
-    private boolean sendGyroData = true;
+    private boolean sendGyroData = false;
 
     private final Random random = new Random();
     private int count;
@@ -82,6 +83,14 @@ public class BaseActivity extends Activity {
     public Thread nt;
     private boolean end_nt;
 
+    private float calibrateZ = 0;
+    private float calibrateX = 0;
+    private float calibrateY = 0;
+
+    private float virtualX = 0;
+    private float virtualY = 0;
+    private float virtualZ = 0;
+
     private float[] vOrientation = new float[3];
     private boolean dataReady = false;
 
@@ -89,6 +98,7 @@ public class BaseActivity extends Activity {
     // the UI thread, not ideal, but easy to use.
     private GaugeBearing gaugeBearingCalibrated;
     private GaugeRotation gaugeTiltCalibrated;
+    private boolean menuActive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,31 +130,51 @@ public class BaseActivity extends Activity {
         circleView.setVisibility(View.INVISIBLE);
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
-
-        /*
-        moveCursor = (Button) findViewById(R.id.move_cursor);
-        moveCursor.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                    Log.d("TouchTest", "Touch down");
-                    sendGyroData = true;
-                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorDarkGrey));
-                    return true;
-                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    Log.d("TouchTest", "Touch up");
-                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorLightGrey));
-                    sendGyroData = false;
-                    return true;
-                }
-                return false;
-            }
-        });
-        */
     }
 
     private boolean pushOrPull;
 
     public void networkThread(){
+        handler = new Handler();
+
+        runable = new Runnable()
+        {
+            private long time = 0;
+
+            @Override
+            public void run() {
+                if (time == 0)
+                    time = orientation.sensorTimestamp;
+
+                handler.postDelayed(this, 100);
+
+                vOrientation = orientation.getOrientation();
+
+                float x = vOrientation[0];
+                float y = vOrientation[1];
+                float z = vOrientation[2];
+
+                if (!virtualCalibrated) {
+                    calibrateZ = z;
+                    calibrateX = x;
+                    calibrateY = y;
+                    virtualCalibrated = true;
+                }
+
+                virtualX = x - calibrateX;
+                virtualY = y - calibrateY;
+                virtualZ = z - calibrateZ;
+
+                Log.d("Orientation", Float.toString(virtualX) + " " + Float.toString(virtualY) + " " + Float.toString(virtualZ));
+                byte[] buf = ("gyrodata:time:" + orientation.sensorTimestamp + ":x:" + virtualX + ":y:" + virtualY + ":z:" + virtualZ).getBytes();
+                dp.setData(buf);
+                time = orientation.sensorTimestamp;
+                dataReady = true;
+
+                //updateGauges();
+            }
+        };
+
         // network thread
         nt = new Thread(new Runnable() {
             @Override
@@ -208,10 +238,10 @@ public class BaseActivity extends Activity {
     }
 
     public void SetGesture(String gesture){
-        /* deactivate gyro */
+        sendGyroData = false;
         switch (gesture){
             case "tilt": case "throw": acceloremeterSensor.SetTiltorThrow(gesture); break;
-            case "swipe": /* activate gyro */ ; break;
+            case "swipe": sendGyroData = true ; break;
             default: break;
         }
     }
@@ -405,8 +435,7 @@ public class BaseActivity extends Activity {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        return prefs.getBoolean(ConfigActivity.IMUOCF_ORIENTATION_ENABLED_KEY,
-                false);
+        return prefs.getBoolean(ConfigActivity.IMUOCF_ORIENTATION_ENABLED_KEY, false);
     }
 
     private boolean getPrefImuOCfRotationMatrixEnabled()
@@ -423,8 +452,7 @@ public class BaseActivity extends Activity {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        return prefs.getBoolean(ConfigActivity.IMUOCF_QUATERNION_ENABLED_KEY,
-                false);
+        return prefs.getBoolean(ConfigActivity.IMUOCF_QUATERNION_ENABLED_KEY, false);
     }
 
     private boolean getPrefImuOKfQuaternionEnabled()
@@ -432,8 +460,7 @@ public class BaseActivity extends Activity {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
 
-        return prefs.getBoolean(ConfigActivity.IMUOKF_QUATERNION_ENABLED_KEY,
-                false);
+        return prefs.getBoolean(ConfigActivity.IMUOKF_QUATERNION_ENABLED_KEY, false);
     }
 
     private float getPrefImuOCfOrienationCoeff()
@@ -465,8 +492,7 @@ public class BaseActivity extends Activity {
 
     private boolean gyroscopeAvailable()
     {
-        return getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_SENSOR_GYROSCOPE);
+        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_GYROSCOPE);
     }
 
     private void reset() {
@@ -538,55 +564,7 @@ public class BaseActivity extends Activity {
             }
         }
 
-        handler = new Handler();
 
-        runable = new Runnable()
-        {
-            private long time = 0;
-
-            private float calibrateZ = 0;
-            private float calibrateX = 0;
-            private float calibrateY = 0;
-
-            private float virtualX = 0;
-            private float virtualY = 0;
-            private float virtualZ = 0;
-
-            @Override
-            public void run()
-            {
-                if(time == 0)
-                    time = orientation.sensorTimestamp;
-
-                handler.postDelayed(this, 100);
-
-                vOrientation = orientation.getOrientation();
-
-                Log.d("Orientation", Float.toString(vOrientation[0]) + " " + Float.toString(vOrientation[1]) + " " + Float.toString(vOrientation[2]));
-
-                float x = vOrientation[0];
-                float y = vOrientation[1];
-                float z = vOrientation[2];
-
-                if(!virtualCalibrated){
-                    calibrateZ = z;
-                    calibrateX = x;
-                    calibrateY = y;
-                    virtualCalibrated = true;
-                }
-
-                virtualX = x-calibrateX;
-                virtualY = y-calibrateY;
-                virtualZ = z-calibrateZ;
-
-                byte[] buf = ("gyrodata:time:"+ orientation.sensorTimestamp +":x:"+virtualX+":y:"+virtualY+":z:"+virtualZ).getBytes();
-                dp.setData(buf);
-                time = orientation.sensorTimestamp;
-                dataReady = true;
-
-                //updateGauges();
-            }
-        };
     }
 
     private void updateGauges()
@@ -598,6 +576,9 @@ public class BaseActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (nt.isAlive()) {
+            end_nt = true;
+        }
     }
 
     @Override
@@ -607,7 +588,27 @@ public class BaseActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(menuActive)
+            super.onBackPressed();
+    }
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        return menuActive;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    menuActive = !menuActive;
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
     }
 
 }
