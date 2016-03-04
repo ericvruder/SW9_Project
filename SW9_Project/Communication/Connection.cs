@@ -65,10 +65,6 @@ namespace SW9_Project {
             Task.Factory.StartNew(() =>
             {
                 byte[] response;
-                int packets = 0;
-                Stopwatch tStart =  new Stopwatch();
-                long tDelta;
-                double pps;
                 response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
                 while (alive)
                 {
@@ -78,13 +74,7 @@ namespace SW9_Project {
                     //Console.WriteLine("UDP from " + remoteEP.ToString());
                     if (returnData.StartsWith("gyrodata"))
                     {
-                        if (packets == 0)
-                            tStart.Start();
                         gyroParser.Update(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
-                        packets++;
-                        tDelta = tStart.ElapsedMilliseconds;
-                        pps = packets / (tDelta / 1000.0);
-                        //Console.WriteLine(packets + "/" + (tDelta / 1000.0) + " = " +pps);
                     }
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
