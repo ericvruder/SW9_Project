@@ -85,10 +85,13 @@ namespace SW9_Project {
                                 }
                             }
                             else {
-                                if(waitingKinectGesture != null) {
+                                if (waitingKinectGesture != null) {
                                     KinectGesture t = waitingKinectGesture;
                                     ClearGestures();
                                     AwaitingGesture = t;
+                                } else {
+                                    ClearGestures();
+                                    board.UnlockPointer();
                                 }
                             }
                         } else {
@@ -137,7 +140,8 @@ namespace SW9_Project {
                 switch (receivedGesture.Type) {
                     case GestureType.Pinch:
                         {
-                            if (directionContext == GestureDirection.Pull && receivedGesture.Direction == GestureDirection.Pull) { 
+                            if (directionContext == GestureDirection.Pull && receivedGesture.Direction == GestureDirection.Pull) {
+                                board.LockPointer(); 
                                 string shape = "";
                                 shape = board.GetCell(receivedGesture.Pointer)?.Shape is Ellipse ? "circle" : "square";
                                 KinectGesture gesture = new KinectGesture(shape);

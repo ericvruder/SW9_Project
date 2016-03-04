@@ -64,7 +64,7 @@ namespace SW9_Project {
                 JitterRadius = 1.0f,
                 MaxDeviationRadius = 1.0f
             });
-
+            kinectSensor.DepthStream.Enable();
             // initialize the gesture recognizer
             gestureController = new GestureController();
             gestureController.GestureRecognized += OnGestureRecognized;

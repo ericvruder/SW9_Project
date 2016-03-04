@@ -80,6 +80,11 @@ namespace SW9_Project {
         
         bool runningGesture = false;
         public void CurrentGestureDone() {
+            lockedPointer = false;
+            GestureParser.SetTypeContext(GestureType.Swipe);
+            foreach(var cell in grid) {
+                cell.GridCell.Fill = Brushes.White;
+            }
             runningGesture = false;
             this.Background = Brushes.Green;
         }
@@ -203,8 +208,18 @@ namespace SW9_Project {
         }
         
         protected Point pointer = new Point();
-        
-        
+        private bool lockedPointer = false;
+
+
+        public void LockPointer() {
+            lockedPointer = true;
+        }
+
+        public void UnlockPointer() {
+            lockedPointer = false;
+        }
+
+
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
@@ -245,12 +260,15 @@ namespace SW9_Project {
             xPoint = xFromMid + lastGyroPoint.X;
             yPoint = yFromMid + lastGyroPoint.Y;
 
-            pointer = GetPoint(xPoint, yPoint);
+            if (!lockedPointer) {
+                pointer = GetPoint(xPoint, yPoint);
+            }
             MoveShape(pointerFigure, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
+                    lockedPointer = false;
                     GestureParser.Pause(true);
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
@@ -435,7 +453,7 @@ namespace SW9_Project {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
-                } else if (runningTest) {
+                } else if (runningTest && !runningGesture) {
                     currentTest.ChangeGesture();
                 } 
             } else if (e.Key == System.Windows.Input.Key.Up) {
