@@ -33,7 +33,7 @@ namespace DataSetGenerator {
             string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
             foreach (var file in files) {
                 string id = file.Split('/').Last().Split('.')[0];
-                tests.Add(new Test(new StreamReader(file), id));
+                tests.Add(new Test(file));
 
                 switch (tests.Last().ID)
                 {
