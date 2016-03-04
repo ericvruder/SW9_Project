@@ -15,11 +15,8 @@ namespace SW9_Project
         double runningCountZ = 0;
         double runningCountX = 0;
         double xScale = 0.26f;
-        double yScale = 0.25f;
         double zScale = 0.25f;
-        double x, y, z;
         int xScaleRaw = 200;
-        int yScaleRaw = 50;
         int zScaleRaw = 260;
         long previousTime = 0;
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
@@ -33,35 +30,32 @@ namespace SW9_Project
 
         public void Update(string nTime, string nX, string nY, string nZ)
         {
-            try {
-                x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 10) / xScaleRaw;
-                y = Math.Round(double.Parse(nY, CultureInfo.InvariantCulture), 10) / yScaleRaw;
-                z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / zScaleRaw ;
+            try
+            {
+                double x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 10) / xScaleRaw;
+                //double y = double.Parse(nY, CultureInfo.InvariantCulture);
+                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / zScaleRaw; // Throws exeption here sometimes
                 long currentTime = long.Parse(nTime, CultureInfo.InvariantCulture);
-                Console.WriteLine("x:" + x + "\t y:" + y + "\t z:" + z);
 
                 if (currentTime < previousTime)
                     return;
 
                 runningCountX += x;
                 runningCountZ += z;
-
                 previousTime = currentTime;
             }
             catch (FormatException e)
             {
             }
 
-            //RunningCountLimit(ref runningCountX, ref runningCountZ);  
+            //RunningCountLimit(ref runningCountX, ref runningCountZ);
 
-            double cx = (((screenWidth / 0.25) / 2.0) * x) + (screenWidth / 2.0);
-            double cy = (((screenHeight / 0.25) / 2.0) * y) + (screenHeight / 2.0);
+            double cx = -runningCountZ * ((screenWidth / zScale) / 2.0) + (screenWidth / 2.0);
+            double cy = -runningCountX * ((screenHeight / xScale) / 2.0) + (screenHeight / 2.0);
 
             //Console.WriteLine("RC:" + runningCountX + "\t" + runningCountZ);
-            //Console.WriteLine("SC:" + cx + "\t" + cy);
-            Cursor.Position = new Point((int)cx, (int)cy);
-            //CanvasWindow.GyroPositionX = x;
-            //CanvasWindow.GyroPositionY = y;
+            //Console.WriteLine("SC:" + cy + "\t" + cx);
+            //Cursor.Position = new Point((int)cx, (int)cy);
             CanvasWindow.GyroPositionX = -runningCountZ;
             CanvasWindow.GyroPositionY = -runningCountX;
             //Console.WriteLine("X:" + -runningCountZ + " Y:" + -runningCountX);

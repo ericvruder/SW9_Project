@@ -252,6 +252,8 @@ namespace SW9_Project {
             Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             if (currentGyroPoint != lastGyroPoint)
             {
+                xPoint = GyroPositionX;
+                yPoint = -GyroPositionY;
                 lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             }
 
