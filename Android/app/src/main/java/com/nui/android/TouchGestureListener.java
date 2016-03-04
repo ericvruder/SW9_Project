@@ -21,11 +21,9 @@ public class TouchGestureListener extends GestureDetector.SimpleOnGestureListene
 
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
-        //server.SendData(new ThrowGesture(BaseActivity.GetSelectedShape()));
-        //server.SendData(new TiltGesture(BaseActivity.GetSelectedShape()));
         Log.d("TOUCH", "onTouch() " + BaseActivity.GetSelectedShape());
         if(activity.IsWaitingForPinch()){
-            server.SendData(new PinchGesture("circle"));
+            server.SendData(new MobileGesture("circle", "Pinch", "Pull"));
         }
         return true;
     }
