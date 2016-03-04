@@ -26,5 +26,17 @@ namespace SW9_Project {
                 list[n] = value;
             }
         }
+
+        public static void RemoveLast<T>(this Queue<T> q) {
+            var first = q.Peek();
+            var current = q.Peek();
+            while (true) {
+                current = q.Dequeue();
+                if (q.Peek().Equals(first)) {
+                    break;
+                }
+                q.Enqueue(current);
+            }
+        }
     }
 }

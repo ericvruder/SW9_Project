@@ -29,9 +29,11 @@ namespace SW9_Project {
         Cell target, extraTarget;
         Target nextTarget;
         GridSize currentSize;
+
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
         double squareHeight = 0, squareWidth = 0;
+
         static CanvasWindow window;
         static Connection connection;
         TestSuite currentTest;
@@ -66,6 +68,9 @@ namespace SW9_Project {
 
         public void Clear() {
             this.Background = Brushes.Black;
+            target = null;
+            extraTarget = null;
+            nextTarget = null;
             CreateGrid(currentSize);
         }
 
@@ -80,6 +85,11 @@ namespace SW9_Project {
         
         bool runningGesture = false;
         public void CurrentGestureDone() {
+            lockedPointer = false;
+            GestureParser.SetTypeContext(GestureType.Swipe);
+            foreach(var cell in grid) {
+                cell.GridCell.Fill = Brushes.White;
+            }
             runningGesture = false;
             this.Background = Brushes.Green;
         }
@@ -87,6 +97,7 @@ namespace SW9_Project {
         public void StartNewGesture() {
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
+            runningTest = true;
         }
 
         public void PracticeDone() {
@@ -203,8 +214,18 @@ namespace SW9_Project {
         }
         
         protected Point pointer = new Point();
-        
-        
+        private bool lockedPointer = false;
+
+
+        public void LockPointer() {
+            lockedPointer = true;
+        }
+
+        public void UnlockPointer() {
+            lockedPointer = false;
+        }
+
+
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
@@ -245,12 +266,15 @@ namespace SW9_Project {
             xPoint = xFromMid + lastGyroPoint.X;
             yPoint = yFromMid + lastGyroPoint.Y;
 
-            pointer = GetPoint(xPoint, yPoint);
+            if (!lockedPointer) {
+                pointer = GetPoint(xPoint, yPoint);
+            }
             MoveShape(pointerFigure, pointer);
             ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
+                    lockedPointer = false;
                     GestureParser.Pause(true);
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
@@ -435,57 +459,47 @@ namespace SW9_Project {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
-                } else if (runningTest) {
+                } else if (runningTest && !runningGesture) {
                     currentTest.ChangeGesture();
                 } 
             } else if (e.Key == System.Windows.Input.Key.Up) {
                 if (currentTest != null) { 
                     currentTest.StartTest(GestureDirection.Push);
-                    connection?.StartTest(GestureDirection.Push);
-                    runningTest = true;
                 }
             } else if (e.Key == System.Windows.Input.Key.Down) {
                 if (currentTest != null) {
                     currentTest.StartTest(GestureDirection.Pull);
-                    connection?.StartTest(GestureDirection.Pull);
-                    runningTest = true;
                 }
             } 
             
             else if (e.Key == System.Windows.Input.Key.Q) {
-                gestureTypeLabel.Content = "Swipe";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Swipe);
+                StartDebugTest(GestureType.Swipe);
             } else if (e.Key == System.Windows.Input.Key.W) {
-                gestureTypeLabel.Content = "Throw";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Throw);
+                StartDebugTest(GestureType.Throw);
             } else if (e.Key == System.Windows.Input.Key.E) {
-                gestureTypeLabel.Content = "Pinch";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Pinch);
+                StartDebugTest(GestureType.Pinch);
             } else if (e.Key == System.Windows.Input.Key.R) {
-                gestureTypeLabel.Content = "Tilt";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Tilt);
+                StartDebugTest(GestureType.Tilt);
             } 
             
             else if (e.Key == System.Windows.Input.Key.A) {
-                connection?.StartTest(GestureDirection.Push);
                 gestureTypeLabel.Content = "Push";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Push);
             } else if (e.Key == System.Windows.Input.Key.S) {
-                connection?.StartTest(GestureDirection.Pull);
                 gestureTypeLabel.Content = "Pull";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
             }
-            else if(e.Key == System.Windows.Input.Key.Z) {
-                CreateGrid(GridSize.Small);
-            }else if(e.Key == System.Windows.Input.Key.X) {
-                CreateGrid(GridSize.Large);
-            }
+        }
+
+        private void StartDebugTest(GestureType type) {
+            Logger.CurrentLogger.DebugMode = true;
+            gestureTypeLabel.Content = type.ToString();
+            gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+            currentTest = new TestSuite(this);
+            currentTest.StartDebugTest(type);
+
         }
 
         private static double Scale(double maxPixel, float maxSkeleton, double position)

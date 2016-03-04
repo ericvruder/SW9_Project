@@ -19,5 +19,7 @@ namespace SW9_Project {
         void StartNewGesture();
         void PracticeDone();
         void EndTest();
+        void LockPointer();
+        void UnlockPointer();
     }
 }

@@ -8,4 +8,10 @@ public class TiltGesture extends MobileGesture {
         this.Shape = shape;
         this.Type = "TiltGesture";
     }
+
+    public TiltGesture(String shape, String direction){
+        Shape = shape;
+        Direction = direction;
+        Type = "TiltGesture";
+    }
 }
