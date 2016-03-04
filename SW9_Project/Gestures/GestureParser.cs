@@ -42,6 +42,7 @@ namespace SW9_Project {
         }
 
         public static void SetDirectionContext(GestureDirection direction) {
+            connection?.StartTest(direction);
             directionContext = direction;
         }
 
@@ -61,63 +62,25 @@ namespace SW9_Project {
         static public void AddMobileGesture(MobileGesture receivedGesture) {
             if (paused) return;
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
-            switch (receivedGesture.Type) {
-                case GestureType.Swipe:
-                    {
-                        if (typeContext == GestureType.Swipe) {
+            if (receivedGesture.Type == typeContext) {
+                switch (receivedGesture.Type) {
+                    case GestureType.Swipe: case GestureType.Tilt {
+                            ClearGestures();
+                            AwaitingGesture = new KinectGesture(receivedGesture.Shape);
+                        }
+                        break;
+                    case GestureType.Pinch:
+                        break;
+                    case GestureType.Throw:
+                        if (waitingKinectGesture?.Type == GestureType.Throw) {
                             ClearGestures();
                             AwaitingGesture = new KinectGesture(receivedGesture.Shape);
                         } else {
                             ClearGestures();
+                            waitingMobileGesture = receivedGesture;
                         }
-                    }
-                    break;
-                case GestureType.Pinch:
-                    {
-                        if (typeContext == GestureType.Pinch) {
-                            if (directionContext == GestureDirection.Push) {
-                                if (waitingKinectGesture?.Type == GestureType.Pinch) {
-                                    ClearGestures();
-                                    AwaitingGesture = new KinectGesture(receivedGesture.Shape);
-                                } else {
-                                    ClearGestures();
-                                    waitingMobileGesture = receivedGesture;
-                                }
-                            }
-                            else {
-                                if (waitingKinectGesture != null) {
-                                    KinectGesture t = waitingKinectGesture;
-                                    ClearGestures();
-                                    AwaitingGesture = t;
-                                } else {
-                                    ClearGestures();
-                                    board.UnlockPointer();
-                                }
-                            }
-                        } else {
-                            ClearGestures();
-                        }
-                    }
-                    break;
-                case GestureType.Throw:
-                    {
-                        if(typeContext == GestureType.Pinch) { break; }
-                        if (typeContext == GestureType.Tilt) {
-                            ClearGestures();
-                            AwaitingGesture = new KinectGesture(receivedGesture.Shape);
-                        } else if (typeContext == GestureType.Throw) {
-                            if (waitingKinectGesture?.Type == GestureType.Throw) {
-                                ClearGestures();
-                                AwaitingGesture = new KinectGesture(receivedGesture.Shape);
-                            } else {
-                                ClearGestures();
-                                waitingMobileGesture = receivedGesture;
-                            }
-                        } else {
-                            ClearGestures();
-                        }
-                    }
-                    break;
+                        break;
+                }
             }
         }
 
@@ -176,8 +139,6 @@ namespace SW9_Project {
                         }
                         break;
                 }
-            } else {
-                ClearGestures();
             }
         }
     }

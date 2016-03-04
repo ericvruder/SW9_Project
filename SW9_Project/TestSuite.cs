@@ -34,6 +34,12 @@ namespace SW9_Project {
 
         bool firstDirectionRun = false, done = false;
 
+        public void StartDebugTest(GestureType type) {
+            gestureTypeList = new Queue<GestureType>();
+            gestureTypeList.Enqueue(type);
+            ChangeGesture();
+        }
+
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);
             gestureTypeList = GetRandomGestureList();
