@@ -18,9 +18,9 @@ namespace SW9_Project
         double yScale = 0.25f;
         double zScale = 0.25f;
         double x, y, z;
-        int xScaleRaw = 280;
+        int xScaleRaw = 200;
         int yScaleRaw = 50;
-        int zScaleRaw = 280;
+        int zScaleRaw = 260;
         long previousTime = 0;
         int screenWidth = Screen.PrimaryScreen.Bounds.Width;
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;

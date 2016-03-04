@@ -147,11 +147,12 @@ public class BaseActivity extends Activity {
 
                 handler.postDelayed(this, 100);
 
-                //vOrientation = orientation.gyroValues;
+                //vOrientation = orientation.getOrientation();
+                vOrientation = orientation.gyroValues;
 
-                float x = orientation.gyroValues[0];
-                float y = orientation.gyroValues[1];
-                float z = orientation.gyroValues[2];
+                float x = vOrientation[0];
+                float y = vOrientation[1];
+                float z = vOrientation[2];
 
                 if (!virtualCalibrated) {
                     calibrateZ = z;
@@ -164,7 +165,7 @@ public class BaseActivity extends Activity {
                 virtualY = y - calibrateY;
                 virtualZ = z - calibrateZ;
 
-                Log.d("Orientation", String.format("%.2f", virtualX) + " " + String.format("%.2f", virtualY) + " " + String.format("%.2f", virtualZ));
+                //Log.d("Orientation", String.format("%.2f", virtualX) + " " + String.format("%.2f", virtualY) + " " + String.format("%.2f", virtualZ));
                 byte[] buf = ("gyrodata:time:" + orientation.sensorTimestamp + ":x:" + virtualX + ":y:" + virtualY + ":z:" + virtualZ).getBytes();
                 dp.setData(buf);
                 time = orientation.sensorTimestamp;

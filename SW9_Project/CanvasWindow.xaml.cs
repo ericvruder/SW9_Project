@@ -249,7 +249,11 @@ namespace SW9_Project {
 
             DrawNextTargets();
 
-            lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+            Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+            if (currentGyroPoint != lastGyroPoint)
+            {
+                lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
+            }
 
             xPoint = xFromMid + lastGyroPoint.X;
             yPoint = yFromMid + lastGyroPoint.Y;
