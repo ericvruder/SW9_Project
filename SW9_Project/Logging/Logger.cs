@@ -58,7 +58,9 @@ namespace SW9_Project.Logging
                 testStreamWriter.Close();
                 testStreamWriter.Dispose();
             }
-            testStreamWriter = new StreamWriter(directory + userID + ".test", true);
+            if (!DebugMode) {
+                testStreamWriter = new StreamWriter(directory + userID + ".test", true);
+            }
             return userID;
         }
 

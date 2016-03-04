@@ -12,23 +12,19 @@ namespace WebDataParser {
         
         public string ID { get; set; }
 
-        public Test(List<Test> tests) {
-        }
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
         public Dictionary<GestureType, TimeSpan> TotalTime { get; set; }
         public Dictionary<GestureType, TimeSpan> PracticeTime { get; set; }
-        public Dictionary<GestureType, MemoryStream> ImageFile { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
             TotalTime = new Dictionary<GestureType, TimeSpan>();
             PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
-
-        public Test(String path) : this(new StreamReader(path), path.Split('/').Last().Split('.')[0]) { }
-        public Test(StreamReader sr, string id) : this() {
-
-            ID = id;
+        
+        public Test(String path) : this() {
+            StreamReader sr = new StreamReader(path);
+            ID = path.Split('/').Last().Split('.')[0];
             
             using (sr) {
                 string line = "";
