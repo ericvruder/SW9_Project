@@ -64,7 +64,8 @@ namespace SW9_Project {
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
             if (receivedGesture.Type == typeContext) {
                 switch (receivedGesture.Type) {
-                    case GestureType.Swipe: case GestureType.Tilt {
+                    case GestureType.Swipe:
+                    case GestureType.Tilt: {
                             ClearGestures();
                             AwaitingGesture = new KinectGesture(receivedGesture.Shape);
                         }

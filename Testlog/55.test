@@ -1,0 +1,7 @@
+[11:12:58]: Started new gesture test. Type: Swipe Direction: Push
+[11:12:59]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[11:13:21]: Target: Hit  Shape: Correct TC: (07,01) CC: (07, 01) JL: Medium Pointer position: (960,0,168,8).
+[11:13:22]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[11:13:28]: Target: Hit  Shape: Correct TC: (13,08) CC: (13, 08) JL: Short Pointer position: (834,6,534,3).
+[11:13:37]: Target: Hit  Shape: Correct TC: (18,05) CC: (18, 05) JL: Short Pointer position: (1100,7,339,5).
+[11:13:38]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
