@@ -473,25 +473,13 @@ namespace SW9_Project {
             } 
             
             else if (e.Key == System.Windows.Input.Key.Q) {
-                gestureTypeLabel.Content = "Swipe";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                currentTest = new TestSuite(this);
-                currentTest.StartDebugTest(GestureType.Swipe);
+                StartDebugTest(GestureType.Swipe);
             } else if (e.Key == System.Windows.Input.Key.W) {
-                gestureTypeLabel.Content = "Throw";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                currentTest = new TestSuite(this);
-                currentTest.StartDebugTest(GestureType.Throw);
+                StartDebugTest(GestureType.Throw);
             } else if (e.Key == System.Windows.Input.Key.E) {
-                gestureTypeLabel.Content = "Pinch";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                currentTest = new TestSuite(this);
-                currentTest.StartDebugTest(GestureType.Pinch);
+                StartDebugTest(GestureType.Pinch);
             } else if (e.Key == System.Windows.Input.Key.R) {
-                gestureTypeLabel.Content = "Tilt";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                currentTest = new TestSuite(this);
-                currentTest.StartDebugTest(GestureType.Tilt);
+                StartDebugTest(GestureType.Tilt);
             } 
             
             else if (e.Key == System.Windows.Input.Key.A) {
@@ -503,6 +491,15 @@ namespace SW9_Project {
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
             }
+        }
+
+        private void StartDebugTest(GestureType type) {
+            Logger.CurrentLogger.DebugMode = true;
+            gestureTypeLabel.Content = type.ToString();
+            gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+            currentTest = new TestSuite(this);
+            currentTest.StartDebugTest(type);
+
         }
 
         private static double Scale(double maxPixel, float maxSkeleton, double position)
