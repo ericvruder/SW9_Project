@@ -473,36 +473,33 @@ namespace SW9_Project {
             else if (e.Key == System.Windows.Input.Key.Q) {
                 gestureTypeLabel.Content = "Swipe";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Swipe);
+                currentTest = new TestSuite(this);
+                currentTest.StartDebugTest(GestureType.Swipe);
             } else if (e.Key == System.Windows.Input.Key.W) {
                 gestureTypeLabel.Content = "Throw";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Throw);
+                currentTest = new TestSuite(this);
+                currentTest.StartDebugTest(GestureType.Throw);
             } else if (e.Key == System.Windows.Input.Key.E) {
                 gestureTypeLabel.Content = "Pinch";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Pinch);
+                currentTest = new TestSuite(this);
+                currentTest.StartDebugTest(GestureType.Pinch);
             } else if (e.Key == System.Windows.Input.Key.R) {
                 gestureTypeLabel.Content = "Tilt";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
-                GestureParser.SetTypeContext(GestureType.Tilt);
+                currentTest = new TestSuite(this);
+                currentTest.StartDebugTest(GestureType.Tilt);
             } 
             
             else if (e.Key == System.Windows.Input.Key.A) {
-                connection?.StartTest(GestureDirection.Push);
                 gestureTypeLabel.Content = "Push";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Push);
             } else if (e.Key == System.Windows.Input.Key.S) {
-                connection?.StartTest(GestureDirection.Pull);
                 gestureTypeLabel.Content = "Pull";
                 gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
-            }
-            else if(e.Key == System.Windows.Input.Key.Z) {
-                CreateGrid(GridSize.Small);
-            }else if(e.Key == System.Windows.Input.Key.X) {
-                CreateGrid(GridSize.Large);
             }
         }
 
