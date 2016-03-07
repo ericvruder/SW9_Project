@@ -85,7 +85,7 @@ public class Network implements IServer {
     }
 
     private InetAddress HOST;
-    private final int PORT = 49256;
+    private final int PORT = 49255;
     public DatagramSocket ds;
 
     private void SetupConnection() {
