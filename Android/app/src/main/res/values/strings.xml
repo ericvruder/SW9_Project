@@ -34,4 +34,5 @@
     <string name="action_start_log">Start</string>
     <string name="action_stop_log">Stop</string>
     <string name="gyro_config">Gyro config</string>
+    <string name="resetGyro">Reset gyroscope</string>
 </resources>

@@ -13,7 +13,7 @@ namespace SW9_Project {
         static private MobileGesture waitingMobileGesture;
         static private KinectGesture awaitingGesture;
 
-
+        private static Gyroscope gyro;
         private static Connection connection;
 
         static private GestureDirection directionContext = GestureDirection.Push;
@@ -120,6 +120,15 @@ namespace SW9_Project {
             connection = conn;
         }
 
+        static public void SetGyro(Gyroscope _gyro)
+        {
+            gyro = _gyro;
+        }
+
+        static public void Reset()
+        {
+            gyro.ResetGyroscope();
+        }
 
         static public void AddKinectGesture(KinectGesture receivedGesture) {
             if (paused) return;
