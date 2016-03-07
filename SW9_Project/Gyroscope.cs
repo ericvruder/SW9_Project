@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SW9_Project
 {
-    class GyroParser
+    public class Gyroscope
     {
         double runningCountZ = 0;
         double runningCountX = 0;
@@ -23,7 +23,7 @@ namespace SW9_Project
         int screenHeight = Screen.PrimaryScreen.Bounds.Height;
         Cursor cursor = new Cursor(Cursor.Current.Handle); // For test
 
-        public GyroParser()
+        public Gyroscope()
         {
             Cursor.Position = new Point(800, 450);
         }
@@ -34,7 +34,7 @@ namespace SW9_Project
             {
                 double x = Math.Round(double.Parse(nX, CultureInfo.InvariantCulture), 10) / xScaleRaw;
                 //double y = double.Parse(nY, CultureInfo.InvariantCulture);
-                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / zScaleRaw; // Throws exeption here sometimes
+                double z = Math.Round(double.Parse(nZ, CultureInfo.InvariantCulture), 10) / zScaleRaw;
                 long currentTime = long.Parse(nTime, CultureInfo.InvariantCulture);
 
                 if (currentTime < previousTime)
@@ -59,6 +59,12 @@ namespace SW9_Project
             CanvasWindow.GyroPositionX = -runningCountZ;
             CanvasWindow.GyroPositionY = -runningCountX;
             //Console.WriteLine("X:" + -runningCountZ + " Y:" + -runningCountX);
+        }
+
+        public void ResetGyroscope()
+        {
+            runningCountX = 0;
+            runningCountZ = 0;
         }
 
         private void RunningCountLimit(ref double x, ref double z)

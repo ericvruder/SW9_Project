@@ -25,7 +25,9 @@ namespace SW9_Project {
 
             Task.Factory.StartNew(() => {
                 AllocConsole();
-                Connection.StartService();
+                Gyroscope gyro = new Gyroscope();
+                GestureParser.SetGyro(gyro);
+                Connection.StartService(gyro);
             });
 
             //TODO: Implement at preprossor definition :D - JK
