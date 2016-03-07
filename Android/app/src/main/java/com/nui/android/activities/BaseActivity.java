@@ -320,6 +320,7 @@ public class BaseActivity extends Activity {
 
         menu.add(Menu.NONE, R.id.network_discovery, Menu.NONE, R.string.network_discovery);
         menu.add(Menu.NONE, R.id.reconnect_action, Menu.NONE, R.string.reconnect_action);
+        menu.add(Menu.NONE, R.id.resetGyro, Menu.NONE, R.string.resetGyro);
         menu.add(Menu.NONE, R.id.close_app_action, Menu.NONE, R.string.close_app_action);
 
         return super.onCreateOptionsMenu(menu);
@@ -333,6 +334,10 @@ public class BaseActivity extends Activity {
                 return true;
             case R.id.reconnect_action:
                 Network.getInstance().Reconnect();
+                return true;
+            case R.id.resetGyro:
+                calibrated = !calibrated;
+                Network.getInstance().SendMessage("resetgyro");
                 return true;
             case R.id.close_app_action:
                 //android.os.Process.killProcess(android.os.Process.myPid());
@@ -446,11 +451,6 @@ public class BaseActivity extends Activity {
             case KeyEvent.KEYCODE_VOLUME_UP:
                 if (action == KeyEvent.ACTION_DOWN) {
                     menuActive = !menuActive;
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    calibrated = !calibrated;
                 }
                 return true;
             default:
