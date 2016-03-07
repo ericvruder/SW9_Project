@@ -123,10 +123,10 @@ namespace SW9_Project {
 
                         float center = playerSkeleton.Joints[JointType.ShoulderCenter].Position.Y;
                         
-                        Joint HandLeft = playerSkeleton.Joints[JointType.HandLeft];
-                        Joint HandRight = playerSkeleton.Joints[JointType.HandRight];
+                        Joint handLeft = playerSkeleton.Joints[JointType.HandLeft];
+                        Joint handRight = playerSkeleton.Joints[JointType.HandRight];
 
-                        bool t = HandLeft.Position.Z < HandRight.Position.Z;
+                        bool t = handLeft.Position.Z < handRight.Position.Z;
                         if (LeftHand != t) {
                             if (!handChangeTimer.Enabled) {
                                 handChangeTimer.Start();
@@ -139,10 +139,12 @@ namespace SW9_Project {
                         }
 
 
-                        Joint Pointer = LeftHand ? HandLeft : HandRight;
+                        Joint pointer = LeftHand ? handLeft : handRight;
+                        Joint throwHand = LeftHand ? handRight : handLeft;
+                        
                         gestureController.UpdateAllGestures(playerSkeleton);
 
-                        board.PointAt(Pointer.Position.X, Pointer.Position.Y - center); 
+                        board.PointAt(pointer.Position.X, pointer.Position.Y - center); 
 
                     }
                 }
@@ -155,6 +157,11 @@ namespace SW9_Project {
                     _interactionStream.ProcessDepth(depthFrame.GetRawPixelData(), depthFrame.Timestamp);
                 }
             }
+        }
+
+        private bool IsThrowing() {
+            bool throwing = false;
+            return throwing;
         }
 
         private void DiscoverKinectSensor() {
