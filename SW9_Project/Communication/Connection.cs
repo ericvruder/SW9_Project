@@ -43,27 +43,29 @@ namespace SW9_Project {
             return bytes;
         }
 
-        //private static void StartService() {
-        //    UdpClient dispatcher = new UdpClient(49255);
-        //    Task.Factory.StartNew(() => {
-        //        byte[] response;
-        //        //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
-        //        response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
-        //        while (alive) {
-        //            var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
-        //            var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
-        //            Console.Write("receive data from " + remoteEP.ToString());
-        //            dispatcher.Send(response, response.Length, remoteEP); //reply back
-        //        }
-        //    });
-        //}
+        private static void StartService()
+        {
+            UdpClient dispatcher = new UdpClient(49255);
+            Task.Factory.StartNew(() =>
+            {
+                byte[] response;
+                //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
+                response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
+                while (alive)
+                {
+                    var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
+                    var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
+                    Console.Write("receive data from " + remoteEP.ToString());
+                    dispatcher.Send(response, response.Length, remoteEP); //reply back
+                }
+            });
+        }
 
         public static void StartService(Gyroscope gyro, int port = 8000) {
             UdpClient dispatcher = new UdpClient(49255);
             Task.Factory.StartNew(() =>
             {
-                byte[] response;
-                response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
+                byte[] response  = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
                 while (alive)
                 {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
@@ -103,7 +105,9 @@ namespace SW9_Project {
                 using (sw = new StreamWriter(stream))
                 {
                     sw.AutoFlush = true;
-                    sw.WriteLine("startpush");
+                    string start = GestureParser.GetDirectionContext() == GestureDirection.Pull ? "startpull" : "startpush";
+                    sw.WriteLine(start);
+                    SetGesture(GestureParser.GetTypeContext());
                     while (true)
                     {
                         String line = sr.ReadLine();
