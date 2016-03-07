@@ -43,25 +43,23 @@ namespace SW9_Project {
             return bytes;
         }
 
-        private static void StartService() {
-            UdpClient dispatcher = new UdpClient(49255);
-            Task.Factory.StartNew(() => {
-                byte[] response;
-                //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
-                response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
-                while (alive) {
-                    var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
-                    var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
-                    Console.Write("receive data from " + remoteEP.ToString());
-                    dispatcher.Send(response, response.Length, remoteEP); //reply back
-                }
-            });
-        }
+        //private static void StartService() {
+        //    UdpClient dispatcher = new UdpClient(49255);
+        //    Task.Factory.StartNew(() => {
+        //        byte[] response;
+        //        //response = GetBytes( "DISCOVER_IS903SERVER_RESPONSE");
+        //        response = Encoding.ASCII.GetBytes("DISCOVER_IS903SERVER_RESPONSE");
+        //        while (alive) {
+        //            var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
+        //            var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
+        //            Console.Write("receive data from " + remoteEP.ToString());
+        //            dispatcher.Send(response, response.Length, remoteEP); //reply back
+        //        }
+        //    });
+        //}
 
-        public static void StartService(int port = 8000) {
-
+        public static void StartService(Gyroscope gyro, int port = 8000) {
             UdpClient dispatcher = new UdpClient(49255);
-            GyroParser gyroParser = new GyroParser();
             Task.Factory.StartNew(() =>
             {
                 byte[] response;
@@ -71,10 +69,9 @@ namespace SW9_Project {
                     var remoteEP = new IPEndPoint(IPAddress.Any, 49255);
                     var data = dispatcher.Receive(ref remoteEP); // listen on port 49255
                     string returnData = Encoding.ASCII.GetString(data);
-                    //Console.WriteLine("UDP from " + remoteEP.ToString());
                     if (returnData.StartsWith("gyrodata"))
                     {
-                        gyroParser.Update(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
+                        gyro.Update(returnData.Split(':')[2], returnData.Split(':')[4], returnData.Split(':')[6], returnData.Split(':')[8]);
                     }
                     dispatcher.Send(response, response.Length, remoteEP); //reply back
                 }
@@ -95,32 +92,46 @@ namespace SW9_Project {
         StreamWriter sw;
         StreamReader sr;
         private void ManageMobileConnection() {
-            try {
+            try
+            {
                 Console.WriteLine("User connected! Address: " + socket.RemoteEndPoint);
                 CanvasWindow.SetConnection(this);
                 Connected = true;
 
                 using (NetworkStream stream = new NetworkStream(socket))
                 using (sr = new StreamReader(stream))
-                using (sw = new StreamWriter(stream)) {
+                using (sw = new StreamWriter(stream))
+                {
                     sw.AutoFlush = true;
                     sw.WriteLine("startpush");
-                    while (true) {
+                    while (true)
+                    {
                         String line = sr.ReadLine();
-                        if (line.Contains("nextshape:")) {
+                        if (line.Contains("nextshape:"))
+                        {
                             nextShape = line.Split(':')[1];
-                        } else {
+                        }
+                        else if (line.Contains("resetgyro"))
+                        {
+                            GestureParser.Reset();
+                        }
+                        else {
                             dynamic jO = JsonConvert.DeserializeObject(line);
-                            if (jO.GetType().GetProperty("Type") != null) {
+                            if (jO.GetType().GetProperty("Type") != null)
+                            {
                                 GestureParser.AddMobileGesture(new MobileGesture(jO));
                             }
                         }
                     }
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e.Message);
-            } finally {
+            }
+            finally
+            {
                 socket.Close();
                 Connected = false;
             }
