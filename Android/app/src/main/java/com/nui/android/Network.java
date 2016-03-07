@@ -17,6 +17,7 @@ import java.sql.Time;
 import java.util.Timer;
 
 import android.content.Context;
+import android.support.v4.*;
 import android.util.Log;
 import android.os.Vibrator;
 
@@ -32,7 +33,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = "192.168.1.4";
+    private static final String SERVER_IP = BuildConfig.IP_ADDRESS;
 
     Socket clientSocket;
     String host;
@@ -55,10 +56,6 @@ public class Network implements IServer {
 
     public static Network getInstance() {
         return instance;
-    }
-
-    public Network(BaseActivity activity){
-        this(SERVER_IP, 8000, activity);
     }
 
     public Network(String host, int port, BaseActivity activity){

@@ -51,6 +51,7 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
 
     @Override
     public boolean onFling(MotionEvent firstEvent, MotionEvent secondEvent, float vx, float vy){
+
         if(running) {
             if (!pinching) {
                 float diff = firstEvent.getY() - secondEvent.getY();
