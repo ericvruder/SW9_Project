@@ -18,6 +18,7 @@ namespace SW9_Project {
 
         private static List<Connection> allConnections;
         private static bool alive = true;
+        public static Gyroscope gyro = new Gyroscope();
 
         public static List<Connection> AllConnections {
             get {
@@ -61,7 +62,7 @@ namespace SW9_Project {
             });
         }
 
-        public static void StartService(Gyroscope gyro, int port = 8000) {
+        public static void StartService(int port = 8000) {
             UdpClient dispatcher = new UdpClient(49255);
             Task.Factory.StartNew(() =>
             {
@@ -117,8 +118,12 @@ namespace SW9_Project {
                         }
                         else if (line.Contains("resetgyro"))
                         {
-                            GestureParser.Reset();
+                            gyro.ResetGyroscope();
                         }
+                        //else if (line.StartsWith("gyrodata"))
+                        //{
+                        //    gyro.Update(line.Split(':')[2], line.Split(':')[4], line.Split(':')[6], line.Split(':')[8]);
+                        //}
                         else {
                             dynamic jO = JsonConvert.DeserializeObject(line);
                             if (jO.GetType().GetProperty("Type") != null)
