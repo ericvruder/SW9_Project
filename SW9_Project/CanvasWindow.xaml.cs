@@ -260,8 +260,11 @@ namespace SW9_Project {
                 lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             }
 
-            xPoint = xFromMid + lastGyroPoint.X;
-            yPoint = yFromMid + lastGyroPoint.Y;
+            //xPoint = xFromMid + lastGyroPoint.X;
+            //yPoint = yFromMid + lastGyroPoint.Y;
+
+            xPoint = currentGyroPoint.X;
+            yPoint = currentGyroPoint.Y;
 
             if (!lockedPointer) {
                 pointer = GetPoint(xPoint, yPoint);
