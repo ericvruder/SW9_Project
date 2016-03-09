@@ -98,6 +98,7 @@ namespace SW9_Project {
             RegisterGestures(LeftHand);
         }
 
+        Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
         /// <summary>
         /// This event is fired when all frames of the Kinect are ready.
         /// This includes depth, color and skeleton frames.
@@ -138,10 +139,22 @@ namespace SW9_Project {
                             }
                         }
 
-
                         Joint pointer = LeftHand ? handLeft : handRight;
                         Joint throwHand = LeftHand ? handRight : handLeft;
-                        
+
+                        var pos = throwHand.Position;
+                        double distance = Math.Sqrt(Math.Pow((0 - pos.X), 2) + Math.Pow((0 - pos.Y), 2) + Math.Pow((0 - pos.Z), 2));
+
+                        Tuple<long, double> currentPoint = new Tuple<long, double>(skeletonFrame.Timestamp, distance);
+
+                        KinectGesture throwGesture = IsThrowing(currentPoint, lastPoint);
+
+                        if(throwGesture != null) {
+                            GestureParser.AddKinectGesture(throwGesture);
+                        }
+
+                        lastPoint = currentPoint;
+
                         gestureController.UpdateAllGestures(playerSkeleton);
 
                         board.PointAt(pointer.Position.X, pointer.Position.Y - center); 
@@ -159,9 +172,26 @@ namespace SW9_Project {
             }
         }
 
-        private bool IsThrowing() {
-            bool throwing = false;
-            return throwing;
+        long lastThrowEvent = 0;
+
+        private KinectGesture IsThrowing(Tuple<long,double> current, Tuple<long,double> last) {
+
+            double distance = current.Item2 - last.Item2;
+
+            if(current.Item1 - lastThrowEvent < 1000) { return null; }
+
+            if(distance < -0.05 && GestureParser.GetDirectionContext() == GestureDirection.Push) {
+                Console.WriteLine("Throw Push");
+                lastThrowEvent = current.Item1;
+                return new KinectGesture(GestureType.Throw, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
+            }
+            else if(distance > 0.05 && GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                Console.WriteLine("Throw Pull");
+                lastThrowEvent = current.Item1;
+                return new KinectGesture(GestureType.Throw, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
+            }
+
+            return null;
         }
 
         private void DiscoverKinectSensor() {
@@ -197,13 +227,13 @@ namespace SW9_Project {
 
             if(e.GestureName == "ThrowPush")
             {
-                Console.WriteLine("Throw Push");
+                //Console.WriteLine("Throw Push");
                 KinectGesture thrown = new KinectGesture(GestureType.Throw, GestureDirection.Push, pointer);
                 GestureParser.AddKinectGesture(thrown);
 
             }
             else if(e.GestureName == "ThrowPull") {
-                Console.WriteLine("Throw Pull");
+                //Console.WriteLine("Throw Pull");
                 KinectGesture pull = new KinectGesture(GestureType.Throw, GestureDirection.Pull, pointer);
                 GestureParser.AddKinectGesture(pull);
             }
