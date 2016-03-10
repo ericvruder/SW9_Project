@@ -10,11 +10,9 @@ import com.nui.android.activities.BaseActivity;
  */
 public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
     IServer server;
-    SwipeGestureListener swiper;
     private long lastUpdate = 0;
-    public PinchGestureListener(IServer server, SwipeGestureListener swiper){
+    public PinchGestureListener(IServer server){
         this.server = server;
-        this.swiper = swiper;
     }
 
     boolean running = false;
@@ -31,7 +29,6 @@ public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGest
             long curTime = System.currentTimeMillis();
             if (curTime - lastUpdate > 500) {
                 lastUpdate = curTime;
-                swiper.Pinching();
                 server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
                 Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
             }

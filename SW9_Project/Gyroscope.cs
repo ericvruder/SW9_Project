@@ -60,7 +60,7 @@ namespace SW9_Project
             //Console.WriteLine("SC:" + cy + "\t" + cx);
             //Cursor.Position = new Point((int)cx, (int)cy);
 
-            Console.WriteLine(absX + "\t" + absZ);
+            //Console.WriteLine(absX + "\t" + absZ);
             CanvasWindow.GyroPositionX = -absX;
             CanvasWindow.GyroPositionY = -absZ;
             //Console.WriteLine("X:" + -runningCountZ + " Y:" + -runningCountX);

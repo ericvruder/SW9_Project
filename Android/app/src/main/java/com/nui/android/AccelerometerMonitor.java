@@ -15,9 +15,6 @@ import java.text.DecimalFormat;
  */
 public class AccelerometerMonitor extends SensorMonitor {
 
-    private float[] mGravity;
-    private float[] mMagnetic;
-
     private long time = 0;
 
     private boolean tilt = false;
@@ -39,7 +36,6 @@ public class AccelerometerMonitor extends SensorMonitor {
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-            mGravity = event.values.clone();
 
             long curTime = System.currentTimeMillis();
             float x = event.values[0];
@@ -56,14 +52,6 @@ public class AccelerometerMonitor extends SensorMonitor {
                 MobileGesture data = new MobileGesture(BaseActivity.GetSelectedShape(), "Throw");
                 server.SendData(data);
             }
-        }
-
-        if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            mMagnetic = event.values.clone();
-        }
-
-        if(mGravity != null && mMagnetic != null) {
-            //Log.d("sensor1: ", Double.toString(Math.toDegrees(getDirection()[0])) + " " + Double.toString(Math.toDegrees(getDirection()[1])) + " " + Double.toString(Math.toDegrees(getDirection()[2])));
         }
     }
 
@@ -150,7 +138,7 @@ public class AccelerometerMonitor extends SensorMonitor {
 
     }
 
-    public AccelerometerMonitor(IServer server, RotationMonitor monitor, Context context){
-        super(server, context, new int[]{Sensor.TYPE_ACCELEROMETER, Sensor.TYPE_MAGNETIC_FIELD});
+    public AccelerometerMonitor(IServer server, Context context){
+        super(server, context, Sensor.TYPE_ACCELEROMETER);
     }
 }
