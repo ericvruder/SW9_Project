@@ -26,7 +26,6 @@ import com.nui.android.Network;
 import com.nui.android.PinchGestureListener;
 import com.nui.android.R;
 import com.nui.android.RotationMonitor;
-import com.nui.android.SensorMonitor;
 import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
@@ -337,6 +336,8 @@ public class BaseActivity extends Activity {
                 return true;
             case R.id.resetGyro:
                 calibrated = !calibrated;
+                rv_sel.countX = 0;
+                rv_sel.countZ = 0;
                 Network.getInstance().SendMessage("resetgyro");
                 return true;
             case R.id.close_app_action:
@@ -395,6 +396,8 @@ public class BaseActivity extends Activity {
         private float virtualY = 0;
         private float virtualZ = 0;
 //		private String info_text;
+        public float countX = 0;
+        public float countZ = 0;
 
         public long getLatestTimestamp() {
             return time;
@@ -409,6 +412,9 @@ public class BaseActivity extends Activity {
             float y = event.values[1];
             float z = event.values[2];
 
+            countX += x;
+            countZ += z;
+
             if(!calibrated){
                 calibrateZ = z;
                 calibrateX = x;
@@ -421,7 +427,7 @@ public class BaseActivity extends Activity {
             virtualZ = z-calibrateZ;
 
             //Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
-            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+x+":y:"+y+":z:"+z).getBytes();
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+countX+":y:"+y+":z:"+countZ).getBytes();
             dp.setData(buf);
             time = event.timestamp;
         }
