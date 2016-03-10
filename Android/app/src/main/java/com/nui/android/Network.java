@@ -196,15 +196,18 @@ public class Network implements IServer {
         }
     }
 
-    public void SendMessage(String message){
+    public boolean SendMessage(String message){
         try {
             out.println(message);
             out.flush();
+            return true;
         }catch (Exception e){
             if(e instanceof IOException || e instanceof EOFException) {
                 Reconnect();
+                return false;
             } else {
                 Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+                return false;
             }
         }
     }
