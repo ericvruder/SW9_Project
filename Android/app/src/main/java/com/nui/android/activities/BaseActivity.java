@@ -25,7 +25,6 @@ import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
 import com.nui.android.PinchGestureListener;
 import com.nui.android.R;
-import com.nui.android.RotationMonitor;
 import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
@@ -43,7 +42,6 @@ public class BaseActivity extends Activity {
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
     private AccelerometerMonitor acceloremeterSensor;
-    private RotationMonitor rotationSensor;
 
     private SwipeGestureListener swipeGestureListener;
     private PinchGestureListener pinchGestureListener;
@@ -81,9 +79,8 @@ public class BaseActivity extends Activity {
 
         initNetwork();
         swipeGestureListener = new SwipeGestureListener(Network.getInstance());
-        pinchGestureListener = new PinchGestureListener(Network.getInstance(), swipeGestureListener);
-        rotationSensor = new RotationMonitor(Network.getInstance(), this);
-        acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), rotationSensor, this);
+        pinchGestureListener = new PinchGestureListener(Network.getInstance());
+        acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
         touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(this, Network.getInstance()));
