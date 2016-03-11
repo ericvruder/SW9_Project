@@ -39,8 +39,11 @@ namespace SW9_Project
                 this.Left = r.Left;
                 this.Show();
             }
-            
-            videoMediaElement.Source = new Uri(CreateAbsolutePathTo(videoDirectory + video), UriKind.Relative);
+            String videoPath = CreateAbsolutePathTo(videoDirectory + video);
+            if (File.Exists(videoPath)) {
+                Uri videoUri = new Uri(videoPath, UriKind.Relative);
+                videoMediaElement.Source = videoUri;
+            }
 
             if (reopen) {
                 this.Activate();
