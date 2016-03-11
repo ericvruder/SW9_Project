@@ -11,20 +11,16 @@ import com.nui.android.activities.BaseActivity;
  */
 public class TouchGestureListener extends GestureDetector.SimpleOnGestureListener {
     IServer server;
-    BaseActivity activity;
 
-    public TouchGestureListener(BaseActivity activity, IServer server){
+    public TouchGestureListener(IServer server){
         super();
         this.server = server;
-        this.activity = activity;
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
         Log.d("TOUCH", "onTouch() " + BaseActivity.GetSelectedShape());
-        if(activity.IsWaitingForPinch()){
-            server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Pull"));
-        }
+        server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Pull"));
         return true;
     }
 }
