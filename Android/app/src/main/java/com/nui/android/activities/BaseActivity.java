@@ -174,7 +174,9 @@ public class BaseActivity extends Activity {
         });
     }
 
+    String gesture = "";
     public void SetGesture(String gesture){
+        this.gesture = gesture;
         sendGyroData = false;
         pinchGestureListener.Stop();
         swipeGestureListener.Stop();
@@ -191,6 +193,10 @@ public class BaseActivity extends Activity {
             }
             default: break;
         }
+    }
+
+    public String GetGesture(){
+        return gesture;
     }
 
     public void StartPushTest(){
@@ -244,10 +250,6 @@ public class BaseActivity extends Activity {
         pullPinchWaiting = waiting;
     }
 
-    public boolean IsWaitingForPinch(){
-        return pullPinchWaiting;
-    }
-
     public void ClearShapes(){
         shape = null;
         squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
@@ -274,7 +276,6 @@ public class BaseActivity extends Activity {
 
     public void SetShape(String shape) {
         ClearShapes();
-        shape = shape;
 
         if(shape.equals("circle")) {
             pullShape.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));

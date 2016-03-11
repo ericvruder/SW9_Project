@@ -40,11 +40,12 @@ namespace SW9_Project {
         List<String> shapes;
         Brush targetColor = Brushes.DarkGray;
         Point lastGyroPoint { get; set; }
+        
         double xPoint = 0;
         double yPoint = 0;
 
         public CanvasWindow(bool targetPractice = true) {
-
+            
             this.targetPractice = targetPractice;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
@@ -235,7 +236,7 @@ namespace SW9_Project {
             GyroPositionX = 0;
             GyroPositionY = 0;
         }
-
+        
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {

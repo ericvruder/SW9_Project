@@ -11,14 +11,12 @@ namespace SW9_Project
     /// </summary>
     public partial class VideoWindow : Window
     {
-        public bool DoneShowing { get; set; }
 
-        public VideoWindow(GestureDirection direction, GestureType type)
+        public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
         {
-
+            GestureParser.Pause(!reopen);
             InitializeComponent();
             this.Title = type + " " + direction;
-            DoneShowing = false;
             this.Show();
 
             string videoDirectory = @"techniques/";
@@ -26,38 +24,48 @@ namespace SW9_Project
 
 
             if (Screen.AllScreens.Length > 1) {
-                Screen s2 = Screen.AllScreens[0];
-                System.Drawing.Rectangle r2 = s2.WorkingArea;
-                this.Top = r2.Top;
-                this.Left = r2.Left;
+                Screen s = reopen ? Screen.AllScreens[0] : Screen.AllScreens[1];
+                System.Drawing.Rectangle r = s.WorkingArea;
+                this.Top = r.Top;
+                this.Left = r.Left;
+                this.Topmost = true;
                 this.Show();
                 this.WindowStyle = WindowStyle.None;
                 this.WindowState = WindowState.Maximized;
             } else {
-                Screen s1 = Screen.AllScreens[0];
-                System.Drawing.Rectangle r1 = s1.WorkingArea;
-                this.Top = r1.Top;
-                this.Left = r1.Left;
+                Screen s = Screen.AllScreens[0];
+                System.Drawing.Rectangle r = s.WorkingArea;
+                this.Top = r.Top;
+                this.Left = r.Left;
                 this.Show();
             }
+            
             videoMediaElement.Source = new Uri(CreateAbsolutePathTo(videoDirectory + video), UriKind.Relative);
 
-            videoMediaElement.MediaEnded += (sender, args) =>
-            {
-                videoMediaElement.Position = TimeSpan.Zero;
-            };
+            if (reopen) {
+                this.Activate();
+                canvasWindow.Activate();
+                videoMediaElement.MediaEnded += (sender, args) => {
+                    videoMediaElement.Position = TimeSpan.Zero;
+                };
+            } else {
+                videoMediaElement.MediaEnded += (sender, args) => {
+                    this.Close();
+                    var t = new VideoWindow(direction, type, true);
+                };
+            }
         }
-        static Window canvasWindow;
-        public static void SetCanvasWindow(Window window) {
+        static CanvasWindow canvasWindow;
+        public static void SetCanvasWindow(CanvasWindow window) {
             canvasWindow = window;
         }
         
         private static string CreateAbsolutePathTo(string mediaFile) {
             return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
         }
-
+        
         private void Window_Activated(object sender, EventArgs e) {
-            canvasWindow.Activate();
+            //canvasWindow.Activate();
         }
     }
 }

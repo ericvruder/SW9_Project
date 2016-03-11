@@ -213,6 +213,8 @@ public class Network implements IServer {
     }
 
     public void SendData(MobileGesture data){
+        if(!activity.GetGesture().equalsIgnoreCase(data.Type))
+            return;
         if (clientSocket == null)
             return;
         if(activity.PushOrPull() && data.Shape == null)
