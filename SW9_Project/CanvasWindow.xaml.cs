@@ -423,24 +423,6 @@ namespace SW9_Project {
         }
 
         /// <summary>
-        /// Register a key up event. (Better for the kinect)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.OemPlus)
-            {
-                
-                kinectManager.RaiseAngle(2);
-            }
-            else if (e.Key == System.Windows.Input.Key.OemMinus)
-            {
-                kinectManager.LowerAngle(2);
-            }
-        }
-
-        /// <summary>
         /// Register a key down event
         /// </summary>
         /// <param name="sender"></param>
