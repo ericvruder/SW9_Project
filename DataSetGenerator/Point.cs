@@ -11,5 +11,7 @@
             X = x;
             Y = y;
         }
+
+        public Point() { }
     }
 }
