@@ -4,13 +4,12 @@ using System.Linq;
 using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
-using SW9_Project;
 using System.IO;
 
-namespace WebDataParser {
+namespace DataSetGenerator {
     public class Test {
         
-        public string ID { get; set; }
+        public String ID { get; set; }
 
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
         public Dictionary<GestureType, TimeSpan> TotalTime { get; set; }
@@ -60,7 +59,7 @@ namespace WebDataParser {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        Attempt attempt = new Attempt(line, size, direction);
+                        Attempt attempt = new Attempt(ID, line, size, direction, type);
                         Attempts[type].Add(attempt);
                     }
                 }

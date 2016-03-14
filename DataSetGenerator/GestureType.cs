@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SW9_Project {
+namespace DataSetGenerator {
     public enum GestureType {
         Pinch, Swipe, Throw, Tilt
     }
@@ -14,5 +14,7 @@ namespace SW9_Project {
     public enum JumpLength {
         Short, Medium, Long, NA
     }
-    public enum GridSize { Small, Large }
+    public enum GridSize {
+        Small, Large
+    }
 }

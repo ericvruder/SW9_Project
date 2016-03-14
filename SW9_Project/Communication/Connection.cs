@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using System.Diagnostics;
+using DataSetGenerator;
 
 namespace SW9_Project {
     public class Connection {

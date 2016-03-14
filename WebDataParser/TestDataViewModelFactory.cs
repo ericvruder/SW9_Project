@@ -6,9 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-using SW9_Project;
-
 using WebDataParser.Models;
+using DataSetGenerator;
+
+using Point = DataSetGenerator.Point;
 
 namespace WebDataParser {
     public static class TestDataViewModelFactory {

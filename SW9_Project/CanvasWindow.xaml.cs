@@ -7,8 +7,11 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 using SW9_Project.Logging;
+using DataSetGenerator;
 using System.Windows.Media.Animation;
 using System.Media;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
 

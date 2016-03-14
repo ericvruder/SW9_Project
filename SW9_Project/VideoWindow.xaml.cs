@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 
+using DataSetGenerator;
+
 namespace SW9_Project
 {
     /// <summary>

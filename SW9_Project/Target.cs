@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using DataSetGenerator;
+
 namespace SW9_Project {
     public class Target {
         public int X { get; }

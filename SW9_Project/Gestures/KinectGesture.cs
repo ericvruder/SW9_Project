@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using DataSetGenerator;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
     public class KinectGesture {

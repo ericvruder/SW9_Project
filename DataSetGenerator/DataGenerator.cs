@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using WebDataParser;
-using SW9_Project;
 using Newtonsoft.Json;
 
 using Spss;

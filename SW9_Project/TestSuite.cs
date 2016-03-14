@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using SW9_Project.Logging;
 using System.Windows;
+using DataSetGenerator;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
     class TestSuite {

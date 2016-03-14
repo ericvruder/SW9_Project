@@ -7,7 +7,9 @@ using System.Timers;
 using System.Windows;
 using Microsoft.Kinect.Toolkit.Interaction;
 using SW9_Project.Gestures;
-using SW9_Project.Logging;
+
+using DataSetGenerator;
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
     class KinectManager {

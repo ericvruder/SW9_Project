@@ -8,6 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
+using DataSetGenerator;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project.Logging
 {

@@ -5,10 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
-using SW9_Project;
-using WebDataParser;
-using Point = WebDataParser.Point;
-
 namespace DataSetGenerator {
     class HitboxDrawer {
         private static void DrawHitBox(List<Attempt> attempts, string fileName) {

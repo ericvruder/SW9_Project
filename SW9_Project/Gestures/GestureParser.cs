@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SW9_Project.Logging;
 using System.Windows.Shapes;
+using DataSetGenerator;
 
 namespace SW9_Project {
     static class GestureParser {

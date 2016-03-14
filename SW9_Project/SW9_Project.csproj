@@ -105,7 +105,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Gestures\GestureParser.cs" />
     <Compile Include="Gestures\InteractionClient.cs" />
-    <Compile Include="Gestures\GestureType.cs" />
     <Compile Include="Gestures\KinectGesture.cs" />
     <Compile Include="Gestures\MobileGesture.cs" />
     <Compile Include="Gyroscope.cs" />
@@ -216,30 +215,6 @@
     <Content Include="sequences\0_sequence.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Pull_Pinch.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Pull_Swipe.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Pull_Throw.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Pull_Tilt.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Push_Pinch.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Push_Swipe.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Push_Throw.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="techniques\Push_Tilt.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -253,7 +228,15 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DataSetGenerator\DataSetGenerator.csproj">
+      <Project>{55a8fd05-154f-4c42-9547-2d139870e764}</Project>
+      <Name>DataSetGenerator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="techniques\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
