@@ -5,19 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace DataSetGenerator {
-    public class Attempt {
+using System.Data.Entity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace DataSetGenerator {
+
+    public class Attempt {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
+        public Guid AttemptID { get; set; }
         public string ID { get; set; }
         public TimeSpan Time { get; set; }
-        public bool Hit { get; }
-        public bool Shape { get; }
-        public Point TargetCell { get; }
-        public Point CurrentCell { get; }
-        public Point Pointer { get; }
+        public bool Hit { get; set; }
+        public bool Shape { get; set; }
+        public Point TargetCell { get; set; }
+        public Point CurrentCell { get; set; }
+        public Point Pointer { get; set; }
         public GridSize Size { get; set; }
         public GestureDirection Direction { get; set; }
         public GestureType Type { get; set; }
+
+        public Attempt() { }
 
         public Attempt(string id, string attemptLine, GridSize size, GestureDirection direction, GestureType type) {
             Size = size;

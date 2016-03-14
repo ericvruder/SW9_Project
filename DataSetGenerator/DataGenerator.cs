@@ -14,6 +14,16 @@ namespace DataSetGenerator {
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
         public static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
+
+        private static AttemptContext database;
+        public static AttemptContext Database { get {
+                if(database == null) {
+                    database = new AttemptContext();
+                }
+                return database;
+            }
+        }
+
         public static string DataDirectory
         {
             get
@@ -24,7 +34,26 @@ namespace DataSetGenerator {
                 return ".\\..\\..\\..\\Data/";
             }
         }
+        public static void SaveTestsToDatabase() {
+            SaveTestsToDatabase(GetTests());
+        }
 
+        public static void SaveTestsToDatabase(List<Test> tests) {
+            foreach(var test in tests) {
+                SaveTestToDatabase(test);
+            }
+        }
+        public static void SaveTestToDatabase(Test test) {
+            var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
+            if (testFound) return;
+            foreach(var technique in AllTechniques) {
+                foreach(var attempt in test.Attempts[technique]) {
+                    Database.Attempts.Add(attempt);
+                }
+            }
+
+            Database.SaveChanges();
+        }
 
         public static List<Test> GetTests() {
             List<Test> tests = new List<Test>();
