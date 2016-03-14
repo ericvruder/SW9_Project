@@ -12,7 +12,7 @@ namespace SW9_Project {
         /// I skal hold styr på background, om det skal være et billede eller farve skal ordnes ellers forsvinder griddet ikke
         /// </summary>
         public BulletinBoard() : base(false) {
-            canvas.Background = Brushes.Tomato;
+            canvas.Background = Brushes.Gray;
         }
 
         /// <summary>
