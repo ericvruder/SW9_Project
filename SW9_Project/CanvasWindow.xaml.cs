@@ -300,18 +300,6 @@ namespace SW9_Project {
             return window.pointer;
         }
 
-        private Shape PullShape(Point p) {
-            Cell cell = GetCell(p);
-            Shape returnShape = cell.Shape;
-            canvas.Children.Remove(returnShape);
-            cell.Shape = null;
-            return returnShape;
-        }
-
-        private void PushShape(string shape, Point p) {
-            PushShape(shape, GetCell(p));
-        }
-
         private void PushShape(string shape, Cell cell) {
             canvas.Children.Remove(cell?.Shape);
             double size = squareHeight < squareWidth ? squareHeight : squareWidth;
