@@ -85,6 +85,7 @@ namespace SW9_Project {
                 System.Drawing.Rectangle r2 = s2.WorkingArea;
                 canvas.Top = r2.Top;
                 canvas.Left = r2.Left;
+                canvas.Show();
                 canvas.WindowStyle = WindowStyle.None;
                 canvas.WindowState = WindowState.Maximized;
                 canvas.Topmost = true;
@@ -94,8 +95,9 @@ namespace SW9_Project {
                 System.Drawing.Rectangle r1 = s1.WorkingArea;
                 canvas.Top = r1.Top;
                 canvas.Left = r1.Left;
+                canvas.Show();
             }
-            canvas.Show();
+            
         }
     }
 }
