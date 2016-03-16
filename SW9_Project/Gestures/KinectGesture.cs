@@ -20,7 +20,6 @@ namespace SW9_Project {
         public KinectGesture(GestureType type, GestureDirection direction): this(null) {
             Type = type;
             Direction = direction;
-            Timestamp = DateTime.Now;
         }
 
         public KinectGesture(string shape) {

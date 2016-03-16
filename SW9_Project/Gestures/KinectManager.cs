@@ -16,6 +16,7 @@ namespace SW9_Project {
         KinectSensor kinectSensor;
         IDrawingBoard board;
         Body[] bodies;
+        KinectJointFilter filter;
 
         private Timer handChangeTimer;
         private double handChangeTime = 2; //seconds to wait for hand change
@@ -23,7 +24,7 @@ namespace SW9_Project {
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
-
+            filter = new KinectJointFilter();
             StartKinect();
             
         }
@@ -106,6 +107,9 @@ namespace SW9_Project {
         Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
         Boolean handClose = false;
         public void ParseBody(Body playerBody, long timeStamp) {
+
+            filter.UpdateFilter(playerBody);
+            var joints = filter.GetFilteredJoints();
 
             float center = playerBody.Joints[JointType.SpineShoulder].Position.Y;
 
