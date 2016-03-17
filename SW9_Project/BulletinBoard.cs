@@ -13,6 +13,7 @@ namespace SW9_Project {
         /// </summary>
         public BulletinBoard() : base(false) {
             canvas.Background = Brushes.Gray;
+            base.isBB = true;
         }
 
         /// <summary>

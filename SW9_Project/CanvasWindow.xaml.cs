@@ -41,11 +41,13 @@ namespace SW9_Project {
         static Connection connection;
         TestSuite currentTest;
         List<String> shapes;
+        List<String> shapes_FT; //shapes for field testing
         Brush targetColor = Brushes.DarkGray;
         Point lastGyroPoint { get; set; }
         
         double xPoint = 0;
         double yPoint = 0;
+        public bool isBB = false;
 
         public CanvasWindow(bool targetPractice = true) {
             
@@ -57,6 +59,9 @@ namespace SW9_Project {
             shapes = new List<String>();
             shapes.Add("circle");
             shapes.Add("square");
+            shapes_FT = new List<String>();
+            shapes_FT.Add("document");
+            shapes_FT.Add("image");
             GestureParser.Initialize(this);
             currentSize = targetPractice ? GridSize.Small : GridSize.Large;
             window = this;
@@ -153,6 +158,9 @@ namespace SW9_Project {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
+                    if (isBB){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
+                    
+                    
                     if(currentSize != nextTarget.Size) {
                         Logger.CurrentLogger.ChangeSize(nextTarget.Size);
                     }
@@ -160,7 +168,7 @@ namespace SW9_Project {
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         connection?.SetNextShape(shape);
-                        string extraShape = shape == "circle" ? "square" : "circle";
+                        string extraShape = shape == "circle" ? "square" : "circle"; 
                         int t = nextTarget.Size == GridSize.Large ? 1 : 2;
                         List<int> xPossibilities = new List<int>();
                         List<int> yPossibilities = new List<int>();
@@ -186,7 +194,10 @@ namespace SW9_Project {
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
-                    target.Shape.Fill = Brushes.Black;
+                    if (!isBB)
+                    {
+                        target.Shape.Fill = Brushes.Black;
+                    } 
 
                 }
             }

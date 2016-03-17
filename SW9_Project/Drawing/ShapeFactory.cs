@@ -22,6 +22,8 @@ namespace SW9_Project {
                 case "square": return CreateSquare(size * 0.8);
                 case "triangle": return CreateTriangle(size);
                 case "pentagon": return CreatePentagon(size);
+                case "document": return CreateSquareTextured(size * 0.8, new BitmapImage(new Uri("resources/DocumentShape.png", UriKind.RelativeOrAbsolute)));
+                case "image": return CreateSquareTextured(size * 0.8, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)));
                 default: return CreateStar(size, 5);
             }
         }
@@ -79,6 +81,29 @@ namespace SW9_Project {
 
             return square;
         }
+
+        public static Rectangle CreateSquareTextured(double size, BitmapImage bitimage)
+        {
+            Rectangle square = new Rectangle();
+            if (bitimage != null && System.IO.File.Exists(bitimage.UriSource.ToString())) //This is slightly overkill, better safe than sory
+            {
+                ImageBrush brush = new ImageBrush(bitimage);
+                brush.TileMode = TileMode.None;
+                square.Fill = brush;
+            }
+            else
+            {
+                square.Fill = Brushes.Indigo; //Debug, image var null or file not found.
+            }
+                      
+            square.StrokeThickness = 1;
+            square.Stroke = Brushes.Black;
+            square.Height = size;
+            square.Width = size;
+
+            return square;
+        }
+
 
         public static Polygon CreateTriangle(double size) {
 
