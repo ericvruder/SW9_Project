@@ -16,6 +16,7 @@ namespace SW9_Project {
         KinectSensor kinectSensor;
         IDrawingBoard board;
         Body[] bodies;
+        KinectJointFilter filter;
 
         private Timer handChangeTimer;
         private double handChangeTime = 2; //seconds to wait for hand change
@@ -23,20 +24,14 @@ namespace SW9_Project {
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
-
+            filter = new KinectJointFilter();
             StartKinect();
             
         }
 
         private bool LeftHand = true;
-
-        InfraredFrameReader irReader;
-
-        ushort[] irData;
-
-        byte[] irDataConverted;
-
-        WriteableBitmap irBitmap;
+        private HandState currentHandState = HandState.Unknown;
+        private KinectGesture handGesture;
         
         MultiSourceFrameReader msfr;
         private bool StartKinect() {
@@ -89,13 +84,32 @@ namespace SW9_Project {
 
         }
 
+        private bool HandStateChanged(HandState handstate) {
+            if(handstate != currentHandState) {
+                currentHandState = handstate;
+                if(currentHandState == HandState.Closed) {
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
+                    return true;
+                } else if (currentHandState == HandState.Closed) {
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
         private void HandChangeTimer_Elapsed(object sender, ElapsedEventArgs e) {
             LeftHand = !LeftHand;
+            currentHandState = HandState.Unknown;
         }
 
         Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
         Boolean handClose = false;
         public void ParseBody(Body playerBody, long timeStamp) {
+
+            filter.UpdateFilter(playerBody);
+            var joints = filter.GetFilteredJoints();
 
             float center = playerBody.Joints[JointType.SpineShoulder].Position.Y;
 
@@ -119,6 +133,7 @@ namespace SW9_Project {
 
             Joint pointer = LeftHand ? handLeft : handRight;
             Joint throwHand = LeftHand ? handRight : handLeft;
+            HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
 
             var pos = throwHand.Position;
             double distance = Math.Sqrt(Math.Pow((0 - pos.X), 2) + Math.Pow((0 - pos.Y), 2) + Math.Pow((0 - pos.Z), 2));
@@ -134,7 +149,9 @@ namespace SW9_Project {
 
             lastPoint = currentPoint;
 
-
+            if (HandStateChanged(handState)) {
+                GestureParser.AddKinectGesture(handGesture);
+            }
             board.PointAt(pointer.Position.X, pointer.Position.Y - center);
         }
 
@@ -149,12 +166,12 @@ namespace SW9_Project {
             if(distance < -0.05 && GestureParser.GetDirectionContext() == GestureDirection.Push) {
                 Console.WriteLine("Throw Push");
                 lastThrowEvent = current.Item1;
-                return new KinectGesture(GestureType.Throw, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
+                return new KinectGesture(GestureType.Throw, GestureDirection.Push);
             }
             else if(distance > 0.05 && GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                 Console.WriteLine("Throw Pull");
                 lastThrowEvent = current.Item1;
-                return new KinectGesture(GestureType.Throw, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
+                return new KinectGesture(GestureType.Throw, GestureDirection.Pull);
             }
 
             return null;

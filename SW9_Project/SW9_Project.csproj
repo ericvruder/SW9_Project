@@ -99,6 +99,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Gestures\GestureParser.cs" />
     <Compile Include="Gestures\KinectGesture.cs" />
+    <Compile Include="Gestures\KinectJointFilter.cs" />
     <Compile Include="Gestures\MobileGesture.cs" />
     <Compile Include="Gyroscope.cs" />
     <Compile Include="Drawing\Cell.cs" />

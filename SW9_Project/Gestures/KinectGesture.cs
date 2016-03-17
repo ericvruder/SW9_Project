@@ -11,24 +11,15 @@ using Point = System.Windows.Point;
 namespace SW9_Project {
     public class KinectGesture {
 
-        public string Shape;
+        public String Shape;
         public GestureType Type;
         public GestureDirection Direction;
         public Point Pointer;
         public DateTime Timestamp;
 
-        public KinectGesture(string shape, GestureType type, GestureDirection direction, Point p) {
+        public KinectGesture(GestureType type, GestureDirection direction): this(null) {
             Type = type;
             Direction = direction;
-            Pointer = p;
-            Timestamp = DateTime.Now;
-        }
-        public KinectGesture(GestureType type, GestureDirection direction, Point p) : this(null, type, direction, p) { }
-        public KinectGesture(string shape, GestureDirection direction, Point p) {
-            Shape = shape;
-            Direction = direction;
-            Pointer = p;
-            Timestamp = DateTime.Now;
         }
 
         public KinectGesture(string shape) {
