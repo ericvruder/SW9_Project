@@ -47,7 +47,6 @@ namespace SW9_Project {
         
         double xPoint = 0;
         double yPoint = 0;
-        public bool isBB = false;
 
         public CanvasWindow(bool targetPractice = true) {
             
@@ -158,7 +157,7 @@ namespace SW9_Project {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
-                    if (isBB){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
+                    if (!targetPractice){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
                     
                     
                     if(currentSize != nextTarget.Size) {
@@ -194,7 +193,7 @@ namespace SW9_Project {
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
-                    if (!isBB)
+                    if (targetPractice)
                     {
                         target.Shape.Fill = Brushes.Black;
                     } 

@@ -30,7 +30,7 @@ namespace SW9_Project {
         }
 
         private bool LeftHand = true;
-        private HandState currentHandState = HandState.Unknown;
+        private HandState currentHandState = HandState.Open;
         private KinectGesture handGesture;
         
         MultiSourceFrameReader msfr;
@@ -85,12 +85,18 @@ namespace SW9_Project {
         }
 
         private bool HandStateChanged(HandState handstate) {
+            if(handstate == HandState.Unknown) { return false; }
             if(handstate != currentHandState) {
-                currentHandState = handstate;
-                if(currentHandState == HandState.Closed) {
+                if(handstate == HandState.Open)
+                {
+                    currentHandState = handstate;
+                    Console.WriteLine("Opened");
                     handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
                     return true;
-                } else if (currentHandState == HandState.Closed) {
+                } else if (handstate == HandState.Closed)
+                {
+                    currentHandState = handstate;
+                    Console.WriteLine("Closed");
                     handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
                     return true;
                 }
@@ -105,18 +111,17 @@ namespace SW9_Project {
         }
 
         Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
-        Boolean handClose = false;
         public void ParseBody(Body playerBody, long timeStamp) {
 
             filter.UpdateFilter(playerBody);
             var joints = filter.GetFilteredJoints();
 
-            float center = playerBody.Joints[JointType.SpineShoulder].Position.Y;
+            float center = joints[(int)JointType.SpineShoulder].Y;
 
-            Joint handLeft = playerBody.Joints[JointType.HandTipLeft];
-            Joint handRight = playerBody.Joints[JointType.HandTipRight];
+            var handLeft = joints[(int)JointType.HandTipLeft];
+            var handRight = joints[(int)JointType.HandTipRight];
 
-            bool t = handLeft.Position.Z < handRight.Position.Z;
+            bool t = handLeft.Z < handRight.Z;
             if (LeftHand != t)
             {
                 if (!handChangeTimer.Enabled)
@@ -131,11 +136,11 @@ namespace SW9_Project {
                 }
             }
 
-            Joint pointer = LeftHand ? handLeft : handRight;
-            Joint throwHand = LeftHand ? handRight : handLeft;
+            var pointer = LeftHand ? handLeft : handRight;
+            var throwHand = LeftHand ? handRight : handLeft;
             HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
 
-            var pos = throwHand.Position;
+            var pos = throwHand;
             double distance = Math.Sqrt(Math.Pow((0 - pos.X), 2) + Math.Pow((0 - pos.Y), 2) + Math.Pow((0 - pos.Z), 2));
 
             Tuple<long, double> currentPoint = new Tuple<long, double>(timeStamp, distance);
@@ -152,7 +157,7 @@ namespace SW9_Project {
             if (HandStateChanged(handState)) {
                 GestureParser.AddKinectGesture(handGesture);
             }
-            board.PointAt(pointer.Position.X, pointer.Position.Y - center);
+            board.PointAt(pointer.X, pointer.Y - center);
         }
 
         long lastThrowEvent = 0;
