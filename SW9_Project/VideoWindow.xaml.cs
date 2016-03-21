@@ -26,7 +26,7 @@ namespace SW9_Project
 
 
             if (Screen.AllScreens.Length > 1) {
-                Screen s = reopen ? Screen.AllScreens[0] : Screen.AllScreens[1];
+                Screen s = reopen ? Screen.AllScreens[2] : Screen.AllScreens[0];
                 System.Drawing.Rectangle r = s.WorkingArea;
                 this.Top = r.Top;
                 this.Left = r.Left;
