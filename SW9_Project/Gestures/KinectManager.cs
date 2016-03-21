@@ -24,7 +24,7 @@ namespace SW9_Project {
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
-            filter = new KinectJointFilter(0.75f);
+            filter = new KinectJointFilter(1f);
             StartKinect();
             
         }
@@ -44,7 +44,7 @@ namespace SW9_Project {
 
             msfr.MultiSourceFrameArrived += KinectManager_MultiSourceFrameArrived;
 
-            kinectSensor.Open();
+            kinectSensor.Open(); 
 
             //prepare the hand change timer
             handChangeTimer = new Timer();
@@ -60,6 +60,8 @@ namespace SW9_Project {
             return true;
 
         }
+
+        List<float> throwHandLocations = new List<float>();
 
         private void KinectManager_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
@@ -107,7 +109,6 @@ namespace SW9_Project {
 
         private void HandChangeTimer_Elapsed(object sender, ElapsedEventArgs e) {
             LeftHand = !LeftHand;
-            currentHandState = HandState.Unknown;
         }
 
         Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
@@ -122,22 +123,21 @@ namespace SW9_Project {
             var handRight = joints[(int)JointType.HandRight];
 
             bool t = handLeft.Z < handRight.Z;
-            if (LeftHand != t)
-            {
+            if (LeftHand != t) {
                 if (!handChangeTimer.Enabled)
                 {
                     handChangeTimer.Start();
                 }
             }
             else {
-                if (handChangeTimer.Enabled)
-                {
+                if (handChangeTimer.Enabled) {
                     handChangeTimer.Stop();
                 }
             }
 
             var pointer = LeftHand ? handLeft : handRight;
             var throwHand = LeftHand ? handRight : handLeft;
+            var throwTrackingState = LeftHand ? playerBody.Joints[JointType.HandRight].TrackingState : playerBody.Joints[JointType.HandLeft].TrackingState;
             HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
 
             var pos = throwHand;
@@ -147,8 +147,7 @@ namespace SW9_Project {
 
             KinectGesture throwGesture = IsThrowing(currentPoint, lastPoint);
 
-            if (throwGesture != null)
-            {
+            if (throwGesture != null && throwTrackingState == TrackingState.Tracked) {
                 GestureParser.AddKinectGesture(throwGesture);
             }
 
@@ -168,12 +167,12 @@ namespace SW9_Project {
 
             if(current.Item1 - lastThrowEvent < 1000) { return null; }
 
-            if(distance < -0.05 && GestureParser.GetDirectionContext() == GestureDirection.Push) {
+            if(distance < -0.1 && GestureParser.GetDirectionContext() == GestureDirection.Push) {
                 Console.WriteLine("Throw Push");
                 lastThrowEvent = current.Item1;
                 return new KinectGesture(GestureType.Throw, GestureDirection.Push);
             }
-            else if(distance > 0.05 && GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+            else if(distance > 0.1 && GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                 Console.WriteLine("Throw Pull");
                 lastThrowEvent = current.Item1;
                 return new KinectGesture(GestureType.Throw, GestureDirection.Pull);
