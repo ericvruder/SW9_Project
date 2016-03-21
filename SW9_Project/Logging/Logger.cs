@@ -149,8 +149,7 @@ namespace SW9_Project.Logging
                              " Shape: " + gesture.Shape + 
                              " Pointer: X = " + gesture.Pointer.X + " Y = " + gesture.Pointer.Y +
                              " Cell: X = " + cell.X + " Y = " + cell.Y;
-
-            LogComment(message);
+            
         }
 
         /// <summary>
@@ -165,8 +164,7 @@ namespace SW9_Project.Logging
                              " Shape: " + gesture.Shape;
 
             LogComment(message);
-
-            Console.WriteLine(message);
+            
         }
 
         /// <summary>

@@ -95,12 +95,10 @@ namespace SW9_Project {
             if(handstate != currentHandState) {
                 if(handstate == HandState.Open) {
                     currentHandState = handstate;
-                    Console.WriteLine("Opened");
                     handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
                     return true;
                 } else if (handstate == HandState.Closed) {
                     currentHandState = handstate;
-                    Console.WriteLine("Closed");
                     handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
                     return true;
                 }
@@ -155,7 +153,6 @@ namespace SW9_Project {
             if (throwGesture != null && 
                 throwTrackingState == TrackingState.Tracked &&
                 playerBody.Joints[pointerHand].Position.Y > playerBody.Joints[JointType.HipRight].Position.Y) {
-                    Console.WriteLine(throwGesture.Type + " " + throwGesture.Direction);
                     GestureParser.AddKinectGesture(throwGesture);
             }
             

@@ -11,8 +11,7 @@ namespace SW9_Project
     /// <summary>
     /// Interaction logic for VideoWindow.xaml
     /// </summary>
-    public partial class VideoWindow : Window
-    {
+    public partial class VideoWindow : Window {
 
         public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
         {
@@ -26,7 +25,9 @@ namespace SW9_Project
 
 
             if (Screen.AllScreens.Length > 1) {
-                Screen s = reopen ? Screen.AllScreens[2] : Screen.AllScreens[0];
+                int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
+                int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
+                Screen s = reopen ? Screen.AllScreens[secScreen] : Screen.AllScreens[mainScreen];
                 System.Drawing.Rectangle r = s.WorkingArea;
                 this.Top = r.Top;
                 this.Left = r.Left;
@@ -34,7 +35,8 @@ namespace SW9_Project
                 this.Show();
                 this.WindowStyle = WindowStyle.None;
                 this.WindowState = WindowState.Maximized;
-            } else {
+            }
+            else {
                 Screen s = Screen.AllScreens[0];
                 System.Drawing.Rectangle r = s.WorkingArea;
                 this.Top = r.Top;

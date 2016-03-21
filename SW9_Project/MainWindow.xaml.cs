@@ -52,7 +52,8 @@ namespace SW9_Project {
         private void StartCanvasWindow(bool bulletinBoard) {
             CanvasWindow canvas = bulletinBoard ? new BulletinBoard() : new CanvasWindow();
             if (Screen.AllScreens.Length > 1) {
-                Screen s2 = Screen.AllScreens[0];
+                int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
+                Screen s2 = Screen.AllScreens[mainScreen];
                 System.Drawing.Rectangle r2 = s2.Bounds;
                 canvas.Top = r2.Top;
                 canvas.Left = r2.Left;
@@ -60,7 +61,8 @@ namespace SW9_Project {
                 canvas.WindowStyle = WindowStyle.None;
                 canvas.WindowState = WindowState.Maximized;
                 canvas.Topmost = true;
-            } else {
+            }
+            else {
                 Screen s1 = Screen.AllScreens[1];
                 System.Drawing.Rectangle r1 = s1.WorkingArea;
                 canvas.Top = r1.Top;
