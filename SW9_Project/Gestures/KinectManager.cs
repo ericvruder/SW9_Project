@@ -24,7 +24,7 @@ namespace SW9_Project {
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
-            filter = new KinectJointFilter();
+            filter = new KinectJointFilter(0.75f);
             StartKinect();
             
         }
@@ -118,8 +118,8 @@ namespace SW9_Project {
 
             float center = joints[(int)JointType.SpineShoulder].Y;
 
-            var handLeft = joints[(int)JointType.HandTipLeft];
-            var handRight = joints[(int)JointType.HandTipRight];
+            var handLeft = joints[(int)JointType.HandLeft];
+            var handRight = joints[(int)JointType.HandRight];
 
             bool t = handLeft.Z < handRight.Z;
             if (LeftHand != t)
