@@ -13,8 +13,6 @@ namespace SW9_Project {
         static private KinectGesture waitingKinectGesture;
         static private MobileGesture waitingMobileGesture;
         static private KinectGesture awaitingGesture;
-
-        private static Gyroscope gyro;
         private static Connection connection;
 
         static private GestureDirection directionContext = GestureDirection.Push;

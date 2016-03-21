@@ -47,7 +47,7 @@ namespace SW9_Project
                 absZ = x;
                 previousTime = currentTime;
             }
-            catch (FormatException e)
+            catch (FormatException)
             {
             }
 
