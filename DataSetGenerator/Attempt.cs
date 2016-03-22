@@ -27,7 +27,7 @@ namespace DataSetGenerator {
 
         public Attempt() { }
 
-        public Attempt(string id, string attemptLine, GridSize size, GestureDirection direction, GestureType type) {
+        public Attempt(string id, string attemptLine, TimeSpan time, GridSize size, GestureDirection direction, GestureType type) {
             Size = size;
             Direction = direction;
 
@@ -35,7 +35,7 @@ namespace DataSetGenerator {
             //[15:59:47]: Target: Hit Shape: Correct TC: (07,02) CC: (07, 02) JL: Short Pointer position: (1054,1,384,9).
             ID = id;
             string[] para = attemptLine.Trim().Split('[', ']')[1].Split(':');
-            Time = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
+            Time = time;
             string[] info = attemptLine.Split(':');
             Hit = info[4].Split(' ')[1] == "Hit";
             Shape = info[5].Split(' ')[1] == "Correct";

@@ -28,6 +28,11 @@ namespace SW9_Project.Logging
 
         public bool DebugMode { get; set; }
 
+        public void FinishCurrentUser() {
+            testStreamWriter.Close();
+            testStreamWriter.Dispose();
+        }
+
         public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
             if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
@@ -57,10 +62,6 @@ namespace SW9_Project.Logging
         {
             var tests = Directory.GetFiles(directory, "*.test");
             userID = tests.Count() + 1;
-            if(testStreamWriter != null) {
-                testStreamWriter.Close();
-                testStreamWriter.Dispose();
-            }
             if (!DebugMode) {
                 testStreamWriter = new StreamWriter(directory + userID + ".test", true);
             }
@@ -112,6 +113,14 @@ namespace SW9_Project.Logging
                              " Type: " + gestureType.ToString() + 
                              " Direction: " + gestureDirection.ToString();
             Log(message);
+        }
+
+        public void StartPracticeTime(GestureType type, GestureDirection direction) {
+            string message = "Started new gesture practice." +
+                             " Type: " + type.ToString() +
+                             " Direction: " + direction.ToString();
+            Log(message);
+
         }
 
         /// <summary>

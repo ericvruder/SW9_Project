@@ -12,18 +12,15 @@ namespace DataSetGenerator {
         public String ID { get; set; }
 
         public Dictionary<GestureType, List<Attempt>> Attempts { get; set; }
-        public Dictionary<GestureType, TimeSpan> TotalTime { get; set; }
-        public Dictionary<GestureType, TimeSpan> PracticeTime { get; set; }
 
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
-            TotalTime = new Dictionary<GestureType, TimeSpan>();
-            PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
 
         public Test(int id) : this(DataGenerator.TestFileDirectory + id + ".test") { }
         
         public Test(String path) : this() {
+            
             StreamReader sr = new StreamReader(path);
             ID = path.Split('/').Last().Split('.')[0];
             
@@ -32,6 +29,7 @@ namespace DataSetGenerator {
                 GridSize size = GridSize.Large;
                 GestureType type = GestureType.Pinch;
                 GestureDirection direction = GestureDirection.Push;
+                TimeSpan currentTime = TimeSpan.Zero;
                 while ((line = sr.ReadLine()) != null) {
                     if (line.Contains("Started new gesture test.")) {
 
@@ -52,7 +50,7 @@ namespace DataSetGenerator {
                         }
 
                         string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                        PracticeTime.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
+                        currentTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
 
                     } else if(line.Contains("Grid height: 10")) {
                         size = GridSize.Small;
@@ -61,29 +59,15 @@ namespace DataSetGenerator {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        Attempt attempt = new Attempt(ID, line, size, direction, type);
+
+                        string[] para = line.Trim().Split('[', ']')[1].Split(':');
+                        var cTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
+                        var attemptTime = cTime - currentTime;
+                        currentTime = cTime;
+                        Attempt attempt = new Attempt(ID, line, attemptTime, size, direction, type);
                         Attempts[type].Add(attempt);
                     }
                 }
-            }
-            foreach(var g in Attempts)
-            {
-                TotalTime.Add(g.Key, g.Value[0].Time);
-                g.Value.RemoveAt(0);
-                PracticeTime[g.Key] = TotalTime[g.Key] - PracticeTime[g.Key];
-
-                
-            }
-            foreach (var gesture in Attempts) {
-                TimeSpan currTime = TotalTime[gesture.Key];
-                TimeSpan totTime = TimeSpan.Zero;
-                foreach (var attempt in Attempts[gesture.Key]) {
-                    TimeSpan t = new TimeSpan(attempt.Time.Ticks);
-                    attempt.Time = t - currTime;
-                    currTime = t;
-                    totTime += attempt.Time;
-                }
-                TotalTime[gesture.Key] = totTime;
             }
         }
 
