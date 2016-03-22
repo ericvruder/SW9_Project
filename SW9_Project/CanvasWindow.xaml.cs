@@ -148,7 +148,7 @@ namespace SW9_Project {
             nextTarget = target;
             
         }
-
+        JumpLength currentLength = JumpLength.NA;
         bool runningTest = false;
         public void DrawNextTargets() {
             if (runningTest && runningGesture) {
@@ -186,6 +186,7 @@ namespace SW9_Project {
                         PushShape(extraShape, extraTarget);
                         extraTarget.Shape.Fill = Brushes.Black;
                     }
+                    currentLength = nextTarget.Length;
                     target = grid[nextTarget.X, nextTarget.Y];
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
@@ -293,7 +294,7 @@ namespace SW9_Project {
                     if (direction == GestureDirection.Push) {
                         correctShape = shape == gesture.Shape;
                     }
-                    currentTest.TargetHit(type, direction, currentSize, hit, correctShape, target, pointer, currCell);
+                    currentTest.TargetHit(hit, correctShape, target, pointer, currCell, currentLength);
                     if (hit && !correctShape) { hit = false; }
                     TargetHit(target, hit);
                 }

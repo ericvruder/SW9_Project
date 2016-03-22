@@ -20,6 +20,8 @@ namespace DataSetGenerator {
             TotalTime = new Dictionary<GestureType, TimeSpan>();
             PracticeTime = new Dictionary<GestureType, TimeSpan>();
         }
+
+        public Test(int id) : this(DataGenerator.TestFileDirectory + id + ".test") { }
         
         public Test(String path) : this() {
             StreamReader sr = new StreamReader(path);

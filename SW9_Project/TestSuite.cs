@@ -52,9 +52,9 @@ namespace SW9_Project {
         Queue<Target> practiceSequence = new Queue<Target>();
         bool practiceDone = false;
 
-        public void TargetHit(GestureType type, GestureDirection direction, GridSize size, bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell) {
+        public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell, JumpLength length) {
             if(practiceDone) {
-                Logger.CurrentLogger.CurrentTargetHit(type, direction, size, hit, target, pointer, pointerCell, correctShape);
+                Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape, length);
             }
             if (practiceSequence.Count != 0) {
                 board.CreateTarget(practiceSequence.Dequeue());
