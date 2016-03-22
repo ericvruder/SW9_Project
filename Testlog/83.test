@@ -1,0 +1,31 @@
+[15:05:56]: Started new gesture test. Type: Swipe Direction: Push
+[15:05:56]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:07:31]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:07:36]: Target: Hit  Shape: Correct TC: (06,07) CC: (06, 07) JL: Medium Pointer position: (386,9,454,9).
+[15:07:40]: Target: Hit  Shape: Correct TC: (03,02) CC: (03, 02) JL: Short Pointer position: (220,6,151,2).
+[15:07:44]: Started new gesture test. Type: Throw Direction: Push
+[15:07:44]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:08:50]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:08:54]: Target: Miss Shape: Wrong   TC: (07,02) CC: (07, 04) JL: Short Pointer position: (480,3,267,0).
+[15:08:55]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:08:56]: Target: Miss Shape: Correct TC: (07,04) CC: (03, 02) JL: Medium Pointer position: (461,6,279,8).
+[15:08:59]: Started new gesture test. Type: Pinch Direction: Push
+[15:10:23]: Target: Miss Shape: Correct TC: (07,01) CC: (05, 02) JL: Medium Pointer position: (702,6,286,4).
+[15:10:24]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:10:27]: Target: Miss Shape: Correct TC: (13,08) CC: (13, 06) JL: Short Pointer position: (842,7,421,1).
+[15:10:31]: Started new gesture test. Type: Tilt Direction: Push
+[15:10:31]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:11:48]: Target: Miss Shape: Correct TC: (03,00) CC: (05, 01) JL: Medium Pointer position: (679,0,168,5).
+[15:11:49]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:11:52]: Target: Miss Shape: Correct TC: (18,08) CC: (12, 04) JL: Long Pointer position: (777,1,273,2).
+[15:11:55]: Started new gesture test. Type: Throw Direction: Pull
+[15:11:55]: Started new gesture test. Type: Pinch Direction: Pull
+[15:11:55]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:13:22]: Target: Miss Shape: Correct TC: (03,00) CC: (07, 03) JL: Medium Pointer position: (887,3,454,2).
+[15:13:23]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:13:25]: Target: Miss Shape: Correct TC: (18,08) CC: (15, 06) JL: Long Pointer position: (910,8,409,1).
+[15:13:30]: Started new gesture test. Type: Tilt Direction: Pull
+[15:13:30]: Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122,8 Cell width: 121,4
+[15:15:26]: Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61,4 Cell width: 60,7
+[15:15:28]: Target: Miss Shape: Correct TC: (06,07) CC: (12, 06) JL: Medium Pointer position: (747,1,412,6).
+[15:15:30]: Target: Miss Shape: Correct TC: (03,02) CC: (13, 03) JL: Short Pointer position: (809,5,204,4).

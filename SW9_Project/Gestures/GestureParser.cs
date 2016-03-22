@@ -110,7 +110,7 @@ namespace SW9_Project {
             }
         }
 
-        static private void ClearGestures() {
+        static public void ClearGestures() {
             waitingKinectGesture = null;
             waitingMobileGesture = null;
             awaitingGesture = null;

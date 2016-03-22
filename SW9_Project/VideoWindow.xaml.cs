@@ -18,7 +18,7 @@ namespace SW9_Project
         public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
         {
             if(currentVideoWindow != null) {
-                currentVideoWindow.Close();
+                currentVideoWindow.CloseWindow();
                 currentVideoWindow = this;
             }
             else {
@@ -60,15 +60,17 @@ namespace SW9_Project
                 videoMediaElement.Source = videoUri;
             }
 
+
             if (reopen) {
                 this.Activate();
                 canvasWindow.Activate();
                 videoMediaElement.MediaEnded += (sender, args) => {
+                    videoMediaElement.Stop();
                     videoMediaElement.Position = TimeSpan.Zero;
                 };
             } else {
                 videoMediaElement.MediaEnded += (sender, args) => {
-                    this.Close();
+                    this.CloseWindow();
                     var t = new VideoWindow(direction, type, true);
                 };
             }
@@ -82,13 +84,11 @@ namespace SW9_Project
         private static string CreateAbsolutePathTo(string mediaFile) {
             return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
         }
-        
-        private void Window_Activated(object sender, EventArgs e) {
-            //canvasWindow.Activate();
-        }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void CloseWindow() {
             videoMediaElement.Stop();
+            videoMediaElement.Close();
+            this.Close();
         }
     }
 }

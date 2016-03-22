@@ -104,6 +104,8 @@ namespace SW9_Project {
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
             runningTest = true;
+            UnlockPointer();
+            GestureParser.ClearGestures();
         }
 
         public void PracticeDone() {
