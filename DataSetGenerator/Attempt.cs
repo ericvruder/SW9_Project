@@ -29,6 +29,7 @@ namespace DataSetGenerator {
 
         public Attempt(string id, string attemptLine, GridSize size, GestureDirection direction, GestureType type) {
             Size = size;
+            Direction = direction;
 
             // 0   1  2     3        4          5           6            7                  8                 9
             //[15:59:47]: Target: Hit Shape: Correct TC: (07,02) CC: (07, 02) JL: Short Pointer position: (1054,1,384,9).
