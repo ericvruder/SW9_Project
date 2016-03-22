@@ -33,7 +33,6 @@ namespace SW9_Project {
         }
 
         public int UserID { get; }
-        public bool Done { get { return done; } }
 
         bool firstDirectionRun = false, done = false;
 
@@ -53,9 +52,9 @@ namespace SW9_Project {
         Queue<Target> practiceSequence = new Queue<Target>();
         bool practiceDone = false;
 
-        public void TargetHit(bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell, JumpLength length) {
+        public void TargetHit(GestureType type, GestureDirection direction, GridSize size, bool hit, bool correctShape, Cell target, Point pointer, Cell pointerCell) {
             if(practiceDone) {
-                Logger.CurrentLogger.CurrentTargetHit(hit, target, pointer, pointerCell, correctShape, length);
+                Logger.CurrentLogger.CurrentTargetHit(type, direction, size, hit, target, pointer, pointerCell, correctShape);
             }
             if (practiceSequence.Count != 0) {
                 board.CreateTarget(practiceSequence.Dequeue());
@@ -70,17 +69,29 @@ namespace SW9_Project {
                 board.CreateTarget(targetSequence.Dequeue());
             }
             else {
-                if(gestureTypeList.Count == 0) {
-                    if(!firstDirectionRun) { firstDirectionRun = true; }
-                    else { done = true; }
-                }
                 board.CurrentGestureDone();
+                if (gestureTypeList.Count == 0 && done) {
+                    Finish();
+                }
+                else if (gestureTypeList.Count == 0) {
+                    if(!firstDirectionRun) { firstDirectionRun = true; }
+                }
             }
+        }
+
+        private void Finish() {
+            Test currentTest = new Test(UserID);
+            DataGenerator.SaveTestToDatabase(currentTest);
+            board.EndTest();
         }
         
         static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
-            if (gestureTypeList.Count == 0) { return false; }
+            if(gestureTypeList.Count == 0 && firstDirectionRun) {
+                GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
+                StartTest(direction);
+                done = true;
+            }
             practiceDone = false;
             targetSequence = Target.GetNextSequence();
             practiceSequence = Target.GetPracticeTargets();

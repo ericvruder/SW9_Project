@@ -93,7 +93,6 @@ namespace SW9_Project {
         
         bool runningGesture = false;
         public void CurrentGestureDone() {
-            GestureParser.SetTypeContext(GestureType.Swipe);
             foreach(var cell in grid) {
                 cell.GridCell.Fill = Brushes.White;
             }
@@ -151,7 +150,6 @@ namespace SW9_Project {
         }
 
         bool runningTest = false;
-        JumpLength currentLength = JumpLength.NA;
         public void DrawNextTargets() {
             if (runningTest && runningGesture) {
                 if(target == null) {
@@ -188,7 +186,6 @@ namespace SW9_Project {
                         PushShape(extraShape, extraTarget);
                         extraTarget.Shape.Fill = Brushes.Black;
                     }
-                    currentLength = nextTarget.Length;
                     target = grid[nextTarget.X, nextTarget.Y];
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
@@ -291,10 +288,12 @@ namespace SW9_Project {
                     bool hit = currCell == target;
                     bool correctShape = true;
                     string shape = target.Shape is Ellipse ? "circle" : "square";
-                    if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
+                    GestureDirection direction = GestureParser.GetDirectionContext();
+                    GestureType type = GestureParser.GetTypeContext();
+                    if (direction == GestureDirection.Push) {
                         correctShape = shape == gesture.Shape;
                     }
-                    currentTest.TargetHit(hit, correctShape, target, pointer, currCell, currentLength);
+                    currentTest.TargetHit(type, direction, currentSize, hit, correctShape, target, pointer, currCell);
                     if (hit && !correctShape) { hit = false; }
                     TargetHit(target, hit);
                 }
@@ -409,7 +408,7 @@ namespace SW9_Project {
         }
 
         public void EndTest() {
-            runningTest = false;
+
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -432,11 +431,7 @@ namespace SW9_Project {
                     connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                     return;
                 }
-                if (currentTest == null || currentTest.Done) {
-                    if (currentTest?.Done == true)
-                    {
-                        Application.Current.Shutdown(); // app close
-                    }
+                if (currentTest == null) {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
