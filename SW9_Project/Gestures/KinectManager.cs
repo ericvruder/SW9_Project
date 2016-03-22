@@ -95,11 +95,11 @@ namespace SW9_Project {
             if(handstate != currentHandState) {
                 if(handstate == HandState.Open) {
                     currentHandState = handstate;
-                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
                     return true;
                 } else if (handstate == HandState.Closed) {
                     currentHandState = handstate;
-                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
                     return true;
                 }
                 return false;
@@ -176,12 +176,12 @@ namespace SW9_Project {
                 float initialPosition = throwHandLocations.Dequeue();
 
                 if (timestamp - lastThrowEvent < 1000) { return null; }
-
-                if(initialPosition - currentLocation > 0.3) {
+                bool push = GestureParser.GetDirectionContext() == GestureDirection.Push ? true : false;
+                if(initialPosition - currentLocation > 0.3 && push) {
                     lastThrowEvent = timestamp;
                     return new KinectGesture(GestureType.Throw, GestureDirection.Push);
                 }
-                else if(currentLocation - initialPosition > 0.3) {
+                else if(currentLocation - initialPosition > 0.3 && !push) {
                     lastThrowEvent = timestamp;
                     return new KinectGesture(GestureType.Throw, GestureDirection.Pull);
                 }

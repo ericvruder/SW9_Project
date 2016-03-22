@@ -13,13 +13,24 @@ namespace SW9_Project
     /// </summary>
     public partial class VideoWindow : Window {
 
+        static VideoWindow currentVideoWindow;
+
         public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
         {
+            if(currentVideoWindow != null) {
+                currentVideoWindow.Close();
+                currentVideoWindow = this;
+            }
+            else {
+                currentVideoWindow = this;
+            }
             GestureParser.Pause(!reopen);
             InitializeComponent();
             this.Title = type + " " + direction;
             this.Show();
 
+            videoMediaElement.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
+            videoMediaElement.UnloadedBehavior = System.Windows.Controls.MediaState.Manual;
             string videoDirectory = @"techniques/";
             string video = direction.ToString() + "_" + type.ToString() + ".mp4";
 
@@ -61,6 +72,7 @@ namespace SW9_Project
                     var t = new VideoWindow(direction, type, true);
                 };
             }
+            videoMediaElement.Play();
         }
         static CanvasWindow canvasWindow;
         public static void SetCanvasWindow(CanvasWindow window) {
@@ -73,6 +85,10 @@ namespace SW9_Project
         
         private void Window_Activated(object sender, EventArgs e) {
             //canvasWindow.Activate();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+            videoMediaElement.Stop();
         }
     }
 }
