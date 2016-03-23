@@ -60,7 +60,7 @@ public class BaseActivity extends Activity {
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
-    private boolean menuActive = true;
+    private boolean menuActive = false;
     public boolean calibrated = false;
 
     @Override
@@ -359,8 +359,10 @@ public class BaseActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (nt.isAlive()) {
-            end_nt = true;
+        if(nt != null) {
+            if (nt.isAlive()) {
+                end_nt = true;
+            }
         }
     }
 

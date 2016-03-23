@@ -29,6 +29,8 @@ namespace DataSetGenerator {
         public float TTSTD { get; set; }
         public float ACCM { get; set; }
         public float ACCSTD { get; set; }
+        public GestureDirection Direction { get; set; }
+        public GestureType Type { get; set; }
 
     }
 }
