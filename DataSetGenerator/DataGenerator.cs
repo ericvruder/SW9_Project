@@ -61,7 +61,7 @@ namespace DataSetGenerator {
             foreach (var file in files) {
                 string id = file.Split('/').Last().Split('.')[0];
                 tests.Add(new Test(file));
-
+                /*
                 switch (tests.Last().ID)
                 {
                     case "1":
@@ -95,7 +95,7 @@ namespace DataSetGenerator {
                         break;
                     default:
                         break;
-                }
+                }*/
             }
             return tests;
         }

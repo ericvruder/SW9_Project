@@ -49,8 +49,6 @@ namespace WebDataParser {
                 info.HitData = GetJSPercentageArray(averageHitPercentagePerGesture[gesture], gesture);
                 info.TimeData = GetJSTimeArray(averageTimePerTargetPerGesture[gesture], gesture);
                 info.HitPercentage = averageHitPercentagePerGesture[gesture].Last() * 100f;
-                info.PracticeTime = (int)GetAveragePracticeTimePerGesture(tests)[gesture].TotalSeconds;
-                info.TotalTime = (int)(GetAverageTestTimePerGesture(tests)[gesture]).TotalSeconds;
 
                 List<Attempt> attempts = new List<Attempt>();
                 foreach(var test in tests) {
@@ -92,8 +90,6 @@ namespace WebDataParser {
                 info.HitData = GetJSPercentageArray(hitsPerTry, gesture);
                 info.TimeData = GetJSTimeArray(Test.GetTimePerTarget(Tests[id].Attempts[gesture]), gesture);
                 info.HitPercentage = hitsPerTry.Last() * 100f;
-                info.PracticeTime = (int)Tests[id].PracticeTime[gesture].TotalSeconds;
-                info.TotalTime = (int)Tests[id].TotalTime[gesture].TotalSeconds;
                 info.Img = DrawHitBox(Tests[id].Attempts[gesture]);
 
                 TestViewModels[id].GestureInformation[GetGestureTypeString(gesture)] = info;
@@ -166,49 +162,6 @@ namespace WebDataParser {
             }
 
             return averageTimePerGesture;
-        }
-
-        private static Dictionary<GestureType, TimeSpan> GetAverageTestTimePerGesture(List<Test> tests) {
-            Dictionary<GestureType, TimeSpan> temp = new Dictionary<GestureType, TimeSpan>();
-            Dictionary<GestureType, TimeSpan> avgTime = new Dictionary<GestureType, TimeSpan>();
-
-            foreach (var test in tests) {
-                foreach (var gesture in test.Attempts) {
-                    if (!temp.ContainsKey(gesture.Key)) {
-                        temp.Add(gesture.Key, test.TotalTime[gesture.Key]);
-                    } else {
-                        temp[gesture.Key] += test.TotalTime[gesture.Key];
-                    }
-                }
-            }
-
-            foreach (var time in temp) {
-                avgTime.Add(time.Key, TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count));
-            }
-
-            return avgTime;
-
-        }
-
-        private static Dictionary<GestureType, TimeSpan> GetAveragePracticeTimePerGesture(List<Test> tests) {
-            Dictionary<GestureType, TimeSpan> temp = new Dictionary<GestureType, TimeSpan>();
-            Dictionary<GestureType, TimeSpan> avgTime = new Dictionary<GestureType, TimeSpan>();
-
-            foreach (var test in tests) {
-                foreach (var time in test.PracticeTime) {
-                    if (!temp.ContainsKey(time.Key)) {
-                        temp.Add(time.Key, time.Value);
-                    } else {
-                        temp[time.Key] += time.Value;
-                    }
-                }
-            }
-
-            foreach (var time in temp) {
-                avgTime.Add(time.Key, TimeSpan.FromSeconds(time.Value.TotalSeconds / tests.Count));
-            }
-
-            return avgTime;
         }
 
         private static MemoryStream DrawHitBox(List<Attempt> attempts) {
