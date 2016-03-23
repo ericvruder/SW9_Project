@@ -13,7 +13,12 @@ namespace DataSetGenerator {
         public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
-        public static string TestFileDirectory { get { return ".\\..\\..\\..\\Testlog/"; } }
+        public static string TestFileDirectory {
+            get {
+                if (OldData) return ".\\..\\..\\..\\Testlog.SW9/";
+                return ".\\..\\..\\..\\Testlog/";
+            }
+        }
 
         private static AttemptContext database;
         public static AttemptContext Database { get {
@@ -23,6 +28,8 @@ namespace DataSetGenerator {
                 return database;
             }
         }
+
+        public static bool OldData { get; set; }
 
         public static string DataDirectory
         {
