@@ -41,6 +41,12 @@ namespace WebDataParser.Controllers {
             return View(TestDataViewModelFactory.GetTest(utilityBase, testId));
         }
 
+        public ActionResult LiveView()
+        {
+
+            return View();
+        }
+
         public ActionResult GetImage(string testId, string type) {
 
             return File(TestDataViewModelFactory.GetHitbox(testId, type).ToArray(), "image/png");
