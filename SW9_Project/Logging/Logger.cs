@@ -28,11 +28,6 @@ namespace SW9_Project.Logging
 
         public bool DebugMode { get; set; }
 
-        public void FinishCurrentUser() {
-            testStreamWriter.Close();
-            testStreamWriter.Dispose();
-        }
-
         public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
             if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
@@ -75,6 +70,8 @@ namespace SW9_Project.Logging
         {
             string message = "Test session ended.";
             Log(message);
+            testStreamWriter.Close();
+            testStreamWriter.Dispose();
         }
 
         /// <summary>
@@ -89,8 +86,8 @@ namespace SW9_Project.Logging
             string message = "Changed grid size." +
                              " Grid height: " + gridHeight +
                              " Grid width: " + gridWidth +
-                             " Cell height: " + cellHeight +
-                             " Cell width: " + cellWidth;
+                             " Cell height: " + cellHeight.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                             " Cell width: " + cellWidth.ToString(System.Globalization.CultureInfo.InvariantCulture);
             Log(message);
         }
 
@@ -135,13 +132,12 @@ namespace SW9_Project.Logging
         /// <summary>
         /// Log that target has been hit
         /// </summary>
-        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape, JumpLength length)
-        {
+        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape, JumpLength length) {
             string result = hit ? "Target: Hit  " : "Target: Miss ";
             string shape = correctShape ? "Shape: Correct " : "Shape: Wrong   ";
             string cells = "TC: (" + target.X.ToString("D2") + "," + target.Y.ToString("D2") + ")" + " CC: (" + pointer.X.ToString("D2") + ", " + pointer.Y.ToString("D2") + ") ";
             string jLength = "JL: " + length + " ";
-            string pString = "Pointer position: (" + p.X.ToString("F1") +"," + p.Y.ToString("F1") + ").";
+            string pString = "Pointer position: (" + p.X.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) +"," + p.Y.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + ").";
             string message = result + shape + cells + jLength + pString;
             Log(message);
         }
@@ -156,7 +152,7 @@ namespace SW9_Project.Logging
                              " Type: " + gesture.Type.ToString() +
                              " Direction: " + gesture.Direction.ToString() +
                              " Shape: " + gesture.Shape + 
-                             " Pointer: X = " + gesture.Pointer.X + " Y = " + gesture.Pointer.Y +
+                             " Pointer: X = " + gesture.Pointer.X.ToString(System.Globalization.CultureInfo.InvariantCulture) + " Y = " + gesture.Pointer.Y.ToString(System.Globalization.CultureInfo.InvariantCulture) +
                              " Cell: X = " + cell.X + " Y = " + cell.Y;
             
         }

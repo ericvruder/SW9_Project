@@ -81,7 +81,7 @@ namespace SW9_Project {
         }
 
         private void Finish() {
-            Logger.CurrentLogger.FinishCurrentUser();
+            Logger.CurrentLogger.EndUser();
             Test currentTest = new Test(UserID);
             DataGenerator.SaveTestToDatabase(currentTest);
             board.EndTest();
