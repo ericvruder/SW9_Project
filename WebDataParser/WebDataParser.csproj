@@ -121,15 +121,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Attempt.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\TestDataViewModel.cs" />
-    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="TestDataViewModelFactory.cs" />
     <Compile Include="GestureInfo.cs" />
   </ItemGroup>
@@ -516,9 +513,9 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SW9_Project\SW9_Project.csproj">
-      <Project>{3f2fb401-a2c7-4296-99e9-6766480e4bc8}</Project>
-      <Name>SW9_Project</Name>
+    <ProjectReference Include="..\DataSetGenerator\DataSetGenerator.csproj">
+      <Project>{55a8fd05-154f-4c42-9547-2d139870e764}</Project>
+      <Name>DataSetGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

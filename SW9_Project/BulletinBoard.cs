@@ -10,9 +10,11 @@ namespace SW9_Project {
 
         /// <summary>
         /// I skal hold styr på background, om det skal være et billede eller farve skal ordnes ellers forsvinder griddet ikke
+        /// At kalde base med false fortæller canvas window at det er en bulletin board der arbejder, den sætter variable targetPractice = false
+        /// så bare bruge det hvis i skal ændre nogen ting i canvaswindow.cs
         /// </summary>
         public BulletinBoard() : base(false) {
-            canvas.Background = Brushes.Tomato;
+            canvas.Background = Brushes.Gray;
         }
 
         /// <summary>

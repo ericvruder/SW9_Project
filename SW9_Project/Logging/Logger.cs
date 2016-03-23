@@ -8,6 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shapes;
+using DataSetGenerator;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project.Logging
 {
@@ -54,10 +57,6 @@ namespace SW9_Project.Logging
         {
             var tests = Directory.GetFiles(directory, "*.test");
             userID = tests.Count() + 1;
-            if(testStreamWriter != null) {
-                testStreamWriter.Close();
-                testStreamWriter.Dispose();
-            }
             if (!DebugMode) {
                 testStreamWriter = new StreamWriter(directory + userID + ".test", true);
             }
@@ -71,6 +70,8 @@ namespace SW9_Project.Logging
         {
             string message = "Test session ended.";
             Log(message);
+            testStreamWriter.Close();
+            testStreamWriter.Dispose();
         }
 
         /// <summary>
@@ -85,8 +86,8 @@ namespace SW9_Project.Logging
             string message = "Changed grid size." +
                              " Grid height: " + gridHeight +
                              " Grid width: " + gridWidth +
-                             " Cell height: " + cellHeight +
-                             " Cell width: " + cellWidth;
+                             " Cell height: " + cellHeight.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                             " Cell width: " + cellWidth.ToString(System.Globalization.CultureInfo.InvariantCulture);
             Log(message);
         }
 
@@ -111,6 +112,14 @@ namespace SW9_Project.Logging
             Log(message);
         }
 
+        public void StartPracticeTime(GestureType type, GestureDirection direction) {
+            string message = "Started new gesture practice." +
+                             " Type: " + type.ToString() +
+                             " Direction: " + direction.ToString();
+            Log(message);
+
+        }
+
         /// <summary>
         /// Log that the current gesture test has ended.
         /// </summary>
@@ -123,13 +132,12 @@ namespace SW9_Project.Logging
         /// <summary>
         /// Log that target has been hit
         /// </summary>
-        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape, JumpLength length)
-        {
+        public void CurrentTargetHit(bool hit, Cell target, Point p, Cell pointer, bool correctShape, JumpLength length) {
             string result = hit ? "Target: Hit  " : "Target: Miss ";
             string shape = correctShape ? "Shape: Correct " : "Shape: Wrong   ";
             string cells = "TC: (" + target.X.ToString("D2") + "," + target.Y.ToString("D2") + ")" + " CC: (" + pointer.X.ToString("D2") + ", " + pointer.Y.ToString("D2") + ") ";
             string jLength = "JL: " + length + " ";
-            string pString = "Pointer position: (" + p.X.ToString("F1") +"," + p.Y.ToString("F1") + ").";
+            string pString = "Pointer position: (" + p.X.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) +"," + p.Y.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + ").";
             string message = result + shape + cells + jLength + pString;
             Log(message);
         }
@@ -144,10 +152,9 @@ namespace SW9_Project.Logging
                              " Type: " + gesture.Type.ToString() +
                              " Direction: " + gesture.Direction.ToString() +
                              " Shape: " + gesture.Shape + 
-                             " Pointer: X = " + gesture.Pointer.X + " Y = " + gesture.Pointer.Y +
+                             " Pointer: X = " + gesture.Pointer.X.ToString(System.Globalization.CultureInfo.InvariantCulture) + " Y = " + gesture.Pointer.Y.ToString(System.Globalization.CultureInfo.InvariantCulture) +
                              " Cell: X = " + cell.X + " Y = " + cell.Y;
-
-            LogComment(message);
+            
         }
 
         /// <summary>
@@ -162,8 +169,7 @@ namespace SW9_Project.Logging
                              " Shape: " + gesture.Shape;
 
             LogComment(message);
-
-            Console.WriteLine(message);
+            
         }
 
         /// <summary>

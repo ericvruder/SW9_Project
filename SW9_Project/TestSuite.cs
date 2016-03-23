@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using SW9_Project.Logging;
 using System.Windows;
+using DataSetGenerator;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
     class TestSuite {
@@ -30,7 +33,6 @@ namespace SW9_Project {
         }
 
         public int UserID { get; }
-        public bool Done { get { return done; } }
 
         bool firstDirectionRun = false, done = false;
 
@@ -60,6 +62,7 @@ namespace SW9_Project {
             }
             else if (!practiceDone){
                 practiceDone = true;
+                Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
                 board.PracticeDone();
             }
 
@@ -67,17 +70,31 @@ namespace SW9_Project {
                 board.CreateTarget(targetSequence.Dequeue());
             }
             else {
-                if(gestureTypeList.Count == 0) {
-                    if(!firstDirectionRun) { firstDirectionRun = true; }
-                    else { done = true; }
-                }
                 board.CurrentGestureDone();
+                if (gestureTypeList.Count == 0 && done) {
+                    Finish();
+                }
+                else if (gestureTypeList.Count == 0) {
+                    if(!firstDirectionRun) { firstDirectionRun = true; }
+                }
             }
+        }
+
+        private void Finish() {
+            Logger.CurrentLogger.EndUser();
+            Test currentTest = new Test(UserID);
+            DataGenerator.SaveTestToDatabase(currentTest);
+            board.EndTest();
         }
         
         static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
-            if (gestureTypeList.Count == 0) { return false; }
+            if(gestureTypeList.Count == 0 && firstDirectionRun) {
+                GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
+                StartTest(direction);
+                done = true;
+                return true;
+            }
             practiceDone = false;
             targetSequence = Target.GetNextSequence();
             practiceSequence = Target.GetPracticeTargets();
@@ -91,8 +108,8 @@ namespace SW9_Project {
             if(techniquePlayer != null) {
                 techniquePlayer.Close();
             }
+            Logger.CurrentLogger.StartPracticeTime(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
             techniquePlayer = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
-            Logger.CurrentLogger.StartNewgestureTest(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
             Console.WriteLine($"Changed to gesture: {GestureParser.GetTypeContext()} {GestureParser.GetDirectionContext()}");
             return true;
         }
@@ -101,7 +118,7 @@ namespace SW9_Project {
 
         private Queue<GestureType> GetRandomGestureList() {
             
-            List<GestureType> types = new List<GestureType> { GestureType.Pinch /*, GestureType.Swipe,  GestureType.Throw, GestureType.Tilt*/ };
+            List<GestureType> types = new List<GestureType> { GestureType.Pinch , GestureType.Swipe,  GestureType.Throw, GestureType.Tilt };
             types.Shuffle();
             return new Queue<GestureType>(types);
         }

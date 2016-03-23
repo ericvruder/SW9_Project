@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using DataSetGenerator;
+
 namespace SW9_Project {
     public class Target {
         public int X { get; }
@@ -73,6 +75,7 @@ namespace SW9_Project {
             Queue<Target> targets = new Queue<Target>();
             using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
                 string line = "";
+                int count = 0;
                 while((line = sr.ReadLine()) != null) { 
                     if(line == "") { break; }
                     string[] targetInfo = line.Split(',');
@@ -89,6 +92,7 @@ namespace SW9_Project {
                     }
                     Target t = new Target(x, y, size, length);
                     targets.Enqueue(t);
+                    if (++count >= 3) break;
                 }
             }
             return targets;

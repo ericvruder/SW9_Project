@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using SW9_Project.Logging;
 using System.Windows.Shapes;
+using DataSetGenerator;
+using System.Globalization;
 
 namespace SW9_Project {
     static class GestureParser {
@@ -12,8 +14,6 @@ namespace SW9_Project {
         static private KinectGesture waitingKinectGesture;
         static private MobileGesture waitingMobileGesture;
         static private KinectGesture awaitingGesture;
-
-        private static Gyroscope gyro;
         private static Connection connection;
 
         static private GestureDirection directionContext = GestureDirection.Push;
@@ -34,7 +34,7 @@ namespace SW9_Project {
                 KinectGesture t = awaitingGesture;
                 awaitingGesture = null;
                 if(t != null) {
-                    Console.WriteLine($"{DateTime.Now}: Activating gesture {t.Type} {t.Direction}");
+                    Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: Activating gesture {t.Type} {t.Direction}");
                 }
                 return t;
             }
@@ -65,6 +65,7 @@ namespace SW9_Project {
         }
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
+            Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: MOBILE: {receivedGesture.Type} {receivedGesture.Direction}");
             if (paused) return;
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
             if (receivedGesture.Type == typeContext) {
@@ -109,7 +110,7 @@ namespace SW9_Project {
             }
         }
 
-        static private void ClearGestures() {
+        static public void ClearGestures() {
             waitingKinectGesture = null;
             waitingMobileGesture = null;
             awaitingGesture = null;
@@ -120,17 +121,8 @@ namespace SW9_Project {
             connection = conn;
         }
 
-        static public void SetGyro(Gyroscope _gyro)
-        {
-            gyro = _gyro;
-        }
-
-        static public void Reset()
-        {
-            gyro.ResetGyroscope();
-        }
-
         static public void AddKinectGesture(KinectGesture receivedGesture) {
+            Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: KINECT: {receivedGesture.Type} {receivedGesture.Direction}");
             if (paused) return;
             Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
             if (typeContext == receivedGesture.Type) {

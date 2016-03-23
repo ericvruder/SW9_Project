@@ -7,8 +7,11 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 using SW9_Project.Logging;
+using DataSetGenerator;
 using System.Windows.Media.Animation;
 using System.Media;
+
+using Point = System.Windows.Point;
 
 namespace SW9_Project {
 
@@ -38,13 +41,15 @@ namespace SW9_Project {
         static Connection connection;
         TestSuite currentTest;
         List<String> shapes;
+        List<String> shapes_FT; //shapes for field testing
         Brush targetColor = Brushes.DarkGray;
         Point lastGyroPoint { get; set; }
+        
         double xPoint = 0;
         double yPoint = 0;
 
         public CanvasWindow(bool targetPractice = true) {
-
+            
             this.targetPractice = targetPractice;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
@@ -53,6 +58,9 @@ namespace SW9_Project {
             shapes = new List<String>();
             shapes.Add("circle");
             shapes.Add("square");
+            shapes_FT = new List<String>();
+            shapes_FT.Add("document");
+            shapes_FT.Add("image");
             GestureParser.Initialize(this);
             currentSize = targetPractice ? GridSize.Small : GridSize.Large;
             window = this;
@@ -85,7 +93,6 @@ namespace SW9_Project {
         
         bool runningGesture = false;
         public void CurrentGestureDone() {
-            GestureParser.SetTypeContext(GestureType.Swipe);
             foreach(var cell in grid) {
                 cell.GridCell.Fill = Brushes.White;
             }
@@ -97,6 +104,8 @@ namespace SW9_Project {
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
             runningTest = true;
+            UnlockPointer();
+            GestureParser.ClearGestures();
         }
 
         public void PracticeDone() {
@@ -141,14 +150,16 @@ namespace SW9_Project {
             nextTarget = target;
             
         }
-
-        bool runningTest = false;
         JumpLength currentLength = JumpLength.NA;
+        bool runningTest = false;
         public void DrawNextTargets() {
             if (runningTest && runningGesture) {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
+                    if (!targetPractice){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
+                    
+                    
                     if(currentSize != nextTarget.Size) {
                         Logger.CurrentLogger.ChangeSize(nextTarget.Size);
                     }
@@ -156,7 +167,7 @@ namespace SW9_Project {
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         connection?.SetNextShape(shape);
-                        string extraShape = shape == "circle" ? "square" : "circle";
+                        string extraShape = shape == "circle" ? "square" : "circle"; 
                         int t = nextTarget.Size == GridSize.Large ? 1 : 2;
                         List<int> xPossibilities = new List<int>();
                         List<int> yPossibilities = new List<int>();
@@ -182,7 +193,10 @@ namespace SW9_Project {
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
-                    target.Shape.Fill = Brushes.Black;
+                    if (targetPractice)
+                    {
+                        target.Shape.Fill = Brushes.Black;
+                    } 
 
                 }
             }
@@ -235,7 +249,7 @@ namespace SW9_Project {
             GyroPositionX = 0;
             GyroPositionY = 0;
         }
-
+        
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
@@ -260,8 +274,8 @@ namespace SW9_Project {
                 lastGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             }
 
-            xPoint = xFromMid + lastGyroPoint.X;
-            yPoint = yFromMid + lastGyroPoint.Y;
+            xPoint = xFromMid;
+            yPoint = yFromMid;
 
             if (!lockedPointer) {
                 pointer = GetPoint(xPoint, yPoint);
@@ -277,7 +291,9 @@ namespace SW9_Project {
                     bool hit = currCell == target;
                     bool correctShape = true;
                     string shape = target.Shape is Ellipse ? "circle" : "square";
-                    if (GestureParser.GetDirectionContext() == GestureDirection.Push) {
+                    GestureDirection direction = GestureParser.GetDirectionContext();
+                    GestureType type = GestureParser.GetTypeContext();
+                    if (direction == GestureDirection.Push) {
                         correctShape = shape == gesture.Shape;
                     }
                     currentTest.TargetHit(hit, correctShape, target, pointer, currCell, currentLength);
@@ -294,18 +310,6 @@ namespace SW9_Project {
 
         public static Point GetCurrentPoint() {
             return window.pointer;
-        }
-
-        private Shape PullShape(Point p) {
-            Cell cell = GetCell(p);
-            Shape returnShape = cell.Shape;
-            canvas.Children.Remove(returnShape);
-            cell.Shape = null;
-            return returnShape;
-        }
-
-        private void PushShape(string shape, Point p) {
-            PushShape(shape, GetCell(p));
         }
 
         private void PushShape(string shape, Cell cell) {
@@ -407,7 +411,7 @@ namespace SW9_Project {
         }
 
         public void EndTest() {
-            runningTest = false;
+
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -416,24 +420,6 @@ namespace SW9_Project {
             da.To = to;
             da.Duration = TimeSpan.FromSeconds(seconds);
             return da;
-        }
-
-        /// <summary>
-        /// Register a key up event. (Better for the kinect)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.OemPlus)
-            {
-                
-                kinectManager.RaiseAngle(2);
-            }
-            else if (e.Key == System.Windows.Input.Key.OemMinus)
-            {
-                kinectManager.LowerAngle(2);
-            }
         }
 
         /// <summary>
@@ -448,11 +434,7 @@ namespace SW9_Project {
                     connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                     return;
                 }
-                if (currentTest == null || currentTest.Done) {
-                    if (currentTest?.Done == true)
-                    {
-                        Application.Current.Shutdown(); // app close
-                    }
+                if (currentTest == null) {
                     currentTest = new TestSuite(this);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));

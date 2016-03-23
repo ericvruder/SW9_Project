@@ -5,18 +5,18 @@ using Microsoft.Kinect;
 using System.ComponentModel;
 using System.Timers;
 using System.Windows;
-using Microsoft.Kinect.Toolkit.Interaction;
-using SW9_Project.Gestures;
-using SW9_Project.Logging;
+
+using DataSetGenerator;
+using Point = System.Windows.Point;
+using System.Windows.Media.Imaging;
 
 namespace SW9_Project {
     class KinectManager {
 
         KinectSensor kinectSensor;
         IDrawingBoard board;
-        private GestureController gestureController;
-        private InteractionStream _interactionStream;
-        private UserInfo[] userInfos;
+        Body[] bodies;
+        KinectJointFilter filter;
 
         private Timer handChangeTimer;
         private double handChangeTime = 2; //seconds to wait for hand change
@@ -24,295 +24,170 @@ namespace SW9_Project {
         public KinectManager(IDrawingBoard board) {
             
             this.board = board;
-
-            DiscoverKinectSensor();
+            filter = new KinectJointFilter(0.5f, 0.5f, 0.5f, 0.05f, 0.04f);
+            //filter = new KinectJointFilter(0.7f, 0.3f, 1f, 1f, 1f);
             StartKinect();
             
         }
 
-        public void RaiseAngle(int angleChange)
-        {
-            try
-            {
-                kinectSensor.ElevationAngle += angleChange;
-            }
-            catch { }
-        }
-
-        public void LowerAngle(int  angleChange)
-        {
-            try
-            { 
-                kinectSensor.ElevationAngle -= angleChange;
-            } catch { }
-        }
-
         private bool LeftHand = true;
-
+        private HandState currentHandState = HandState.Open;
+        private KinectGesture handGesture;
+        
+        MultiSourceFrameReader msfr;
         private bool StartKinect() {
 
-            //kinectSensor.ColorStream.Enable();
-            //kinectSensor.DepthStream.Range = DepthRange.Near;
-            //kinectSensor.SkeletonStream.TrackingMode = SkeletonTrackingMode.Seated;
-            if (kinectSensor == null)
-                return false;
 
-            kinectSensor.SkeletonStream.Enable(new TransformSmoothParameters() {
-                Smoothing = 0.7f,
-                Correction = 0.3f,
-                Prediction = 1.0f,
-                JitterRadius = 1.0f,
-                MaxDeviationRadius = 1.0f
-            });
-            kinectSensor.DepthStream.Enable();
-            // initialize the gesture recognizer
-            gestureController = new GestureController();
-            gestureController.GestureRecognized += OnGestureRecognized;
+            try {
+                kinectSensor = KinectSensor.GetDefault();
+                bodies = new Body[6];
+                msfr = kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Body);
+                msfr.MultiSourceFrameArrived += KinectManager_MultiSourceFrameArrived;
+                kinectSensor.Open();
+            }
+            catch (Exception e) {
+                Console.WriteLine("Could not start kinect! E: " + e.Message);
+                return false;
+            }
 
             //prepare the hand change timer
             handChangeTimer = new Timer();
             handChangeTimer.Interval = TimeSpan.FromSeconds(handChangeTime).TotalMilliseconds;
             handChangeTimer.Elapsed += HandChangeTimer_Elapsed;
 
-            // register the gestures for this demo
-            RegisterGestures(LeftHand);
+            Timer initializeTime = new Timer();
+            initializeTime.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+            initializeTime.Elapsed += (sender, e) => {
+                initialized = true;
+                initializeTime.Dispose();
+            };
+            initializeTime.Start();
 
-            userInfos = new UserInfo[InteractionFrame.UserInfoArrayLength];
-            _interactionStream = new InteractionStream(kinectSensor, new InteractionClient());
-            _interactionStream.InteractionFrameReady += InteractionStreamOnInteractionFrameReady;
-            kinectSensor.AllFramesReady += KinectSensor_AllFramesReady;
-            try {
-                kinectSensor.Start();
-                kinectSensor.ElevationAngle = 18;
-            }
-            catch(Exception e) {
-                Console.WriteLine("Could not start kinect! E: " + e.Message);
-                return false;
-            }
             return true;
 
         }
 
-        private void HandChangeTimer_Elapsed(object sender, ElapsedEventArgs e) {
-            LeftHand = !LeftHand;
-            RegisterGestures(LeftHand);
-        }
+        Queue<float> throwHandLocations = new Queue<float>();
+        bool initialized = false;
 
-        Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
-        /// <summary>
-        /// This event is fired when all frames of the Kinect are ready.
-        /// This includes depth, color and skeleton frames.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void KinectSensor_AllFramesReady(object sender, AllFramesReadyEventArgs e) {
-            using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame()) {
-                if (skeletonFrame != null) {
-                    Skeleton[] skeletonData = new Skeleton[skeletonFrame.SkeletonArrayLength];
+        private void KinectManager_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e) {
+            MultiSourceFrame msf = e.FrameReference.AcquireFrame();
 
-                    skeletonFrame.CopySkeletonDataTo(skeletonData);
-                    _interactionStream.ProcessSkeleton(skeletonData, kinectSensor.AccelerometerGetCurrentReading(), skeletonFrame.Timestamp);
-                    
-                    var skeletons = (from s in skeletonData
-                                     where s.TrackingState == SkeletonTrackingState.Tracked
-                                     select s);
-                    Skeleton playerSkeleton = (from t in skeletons
-                                               where t.Joints[JointType.Head].Position.Z == skeletons.Min(x => x.Joints[JointType.Head].Position.Z)
-                                               select t).FirstOrDefault();
-                    if (playerSkeleton != null) {
+            using (BodyFrame body = msf.BodyFrameReference.AcquireFrame()) {
+                if (body != null) {
 
+                    body.GetAndRefreshBodyData(bodies);
 
-                        float center = playerSkeleton.Joints[JointType.ShoulderCenter].Position.Y;
-                        
-                        Joint handLeft = playerSkeleton.Joints[JointType.HandLeft];
-                        Joint handRight = playerSkeleton.Joints[JointType.HandRight];
+                    Body playerBody = (from b in bodies
+                                       where b.IsTracked
+                                       select b).FirstOrDefault();
 
-                        bool t = handLeft.Position.Z < handRight.Position.Z;
-                        if (LeftHand != t) {
-                            if (!handChangeTimer.Enabled) {
-                                handChangeTimer.Start();
-                            }
-                        }
-                        else {
-                            if (handChangeTimer.Enabled) {
-                                handChangeTimer.Stop();
-                            }
-                        }
-
-                        Joint pointer = LeftHand ? handLeft : handRight;
-                        Joint throwHand = LeftHand ? handRight : handLeft;
-
-                        var pos = throwHand.Position;
-                        double distance = Math.Sqrt(Math.Pow((0 - pos.X), 2) + Math.Pow((0 - pos.Y), 2) + Math.Pow((0 - pos.Z), 2));
-
-                        Tuple<long, double> currentPoint = new Tuple<long, double>(skeletonFrame.Timestamp, distance);
-
-                        KinectGesture throwGesture = IsThrowing(currentPoint, lastPoint);
-
-                        if(throwGesture != null) {
-                            GestureParser.AddKinectGesture(throwGesture);
-                        }
-
-                        lastPoint = currentPoint;
-
-                        gestureController.UpdateAllGestures(playerSkeleton);
-
-                        board.PointAt(pointer.Position.X, pointer.Position.Y - center); 
-
+                    if (playerBody != null) {
+                        ParseBody(playerBody, (long)body.RelativeTime.TotalMilliseconds);
                     }
                 }
             }
 
-            using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
-            {
-                if(depthFrame != null)
+        }
+
+        private bool HandStateChanged(HandState handstate) {
+            if(handstate == HandState.Unknown) { return false; }
+            if(handstate != currentHandState) {
+                if(handstate == HandState.Open) {
+                    currentHandState = handstate;
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Push);
+                    return true;
+                } else if (handstate == HandState.Closed) {
+                    currentHandState = handstate;
+                    handGesture = new KinectGesture(GestureType.Pinch, GestureDirection.Pull);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private void HandChangeTimer_Elapsed(object sender, ElapsedEventArgs e) {
+            LeftHand = !LeftHand;
+        }
+
+        Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
+        public void ParseBody(Body playerBody, long timeStamp) {
+
+            filter.UpdateFilter(playerBody);
+            var joints = filter.GetFilteredJoints();
+
+            float center = joints[(int)JointType.SpineShoulder].Y;
+
+            JointType pointerHand = LeftHand ? JointType.HandLeft : JointType.HandRight;
+            JointType throwHand = LeftHand ? JointType.HandRight : JointType.HandLeft;
+
+            var pointerLocation = joints[(int)pointerHand];
+            var throwLocation = joints[(int)throwHand];
+
+            var throwTrackingState = playerBody.Joints[throwHand].TrackingState;
+            HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
+
+            if (!initialized) {
+                LeftHand = joints[(int)JointType.HandLeft].Z < joints[(int)JointType.HandRight].Z;
+                board.PointAt(pointerLocation.X, pointerLocation.Y - center);
+                return;
+
+            }
+
+            bool t = joints[(int)JointType.HandLeft].Z < joints[(int)JointType.HandRight].Z;
+            if (LeftHand != t) {
+                if (!handChangeTimer.Enabled)
                 {
-                    _interactionStream.ProcessDepth(depthFrame.GetRawPixelData(), depthFrame.Timestamp);
+                    handChangeTimer.Start();
                 }
             }
+            else {
+                if (handChangeTimer.Enabled) {
+                    handChangeTimer.Stop();
+                }
+            }
+
+            KinectGesture throwGesture = IsThrowing(throwLocation.Z, timeStamp);
+
+            if (throwGesture != null && 
+                throwTrackingState == TrackingState.Tracked &&
+                playerBody.Joints[pointerHand].Position.Y > playerBody.Joints[JointType.HipRight].Position.Y) {
+                    GestureParser.AddKinectGesture(throwGesture);
+            }
+            
+
+            if (HandStateChanged(handState)) {
+                GestureParser.AddKinectGesture(handGesture);
+            }
+            board.PointAt(pointerLocation.X, pointerLocation.Y - center);
         }
 
         long lastThrowEvent = 0;
 
-        private KinectGesture IsThrowing(Tuple<long,double> current, Tuple<long,double> last) {
+        private void CheckHandState(CameraSpacePoint[] joints) {
 
-            double distance = current.Item2 - last.Item2;
+        }
 
-            if(current.Item1 - lastThrowEvent < 1000) { return null; }
+        private KinectGesture IsThrowing(float currentLocation, long timestamp) {
 
-            if(distance < -0.05 && GestureParser.GetDirectionContext() == GestureDirection.Push) {
-                Console.WriteLine("Throw Push");
-                lastThrowEvent = current.Item1;
-                return new KinectGesture(GestureType.Throw, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
-            }
-            else if(distance > 0.05 && GestureParser.GetDirectionContext() == GestureDirection.Pull) {
-                Console.WriteLine("Throw Pull");
-                lastThrowEvent = current.Item1;
-                return new KinectGesture(GestureType.Throw, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
+            throwHandLocations.Enqueue(currentLocation);
+            if (throwHandLocations.Count >= 15) {
+                float initialPosition = throwHandLocations.Dequeue();
+
+                if (timestamp - lastThrowEvent < 1000) { return null; }
+                bool push = GestureParser.GetDirectionContext() == GestureDirection.Push ? true : false;
+                if(initialPosition - currentLocation > 0.3 && push) {
+                    lastThrowEvent = timestamp;
+                    return new KinectGesture(GestureType.Throw, GestureDirection.Push);
+                }
+                else if(currentLocation - initialPosition > 0.3 && !push) {
+                    lastThrowEvent = timestamp;
+                    return new KinectGesture(GestureType.Throw, GestureDirection.Pull);
+                }
             }
 
             return null;
-        }
-
-        private void DiscoverKinectSensor() {
-            foreach (KinectSensor sensor in KinectSensor.KinectSensors) {
-                if (sensor.Status == KinectStatus.Connected) {
-                    // Found one, set our sensor to this
-                    kinectSensor = sensor;
-                    break;
-                }
-            }
-        }
-
-        private void RegisterGestures(bool leftHand)
-        {
-            gestureController.ClearAllGestures();
-            IRelativeGestureSegment[] ThrowPush = new IRelativeGestureSegment[2];
-            IRelativeGestureSegment[] ThrowPull = new IRelativeGestureSegment[2];
-
-
-            ThrowPush[0] = new SwingSegmentBehind(leftHand);
-            ThrowPush[1] = new SwingSegmentInfront(leftHand);
-
-            ThrowPull[0] = new SwingSegmentInfront(leftHand);
-            ThrowPull[1] = new SwingSegmentBehind(leftHand);
-
-            gestureController.AddGesture("ThrowPush", ThrowPush);
-            gestureController.AddGesture("ThrowPull", ThrowPull);
-        }
-
-        private void OnGestureRecognized(object sender, GestureEventArgs e) { 
-
-            Point pointer = board.GetPoint(e.Position.X, e.Position.Y);
-
-            if(e.GestureName == "ThrowPush")
-            {
-                //Console.WriteLine("Throw Push");
-                KinectGesture thrown = new KinectGesture(GestureType.Throw, GestureDirection.Push, pointer);
-                GestureParser.AddKinectGesture(thrown);
-
-            }
-            else if(e.GestureName == "ThrowPull") {
-                //Console.WriteLine("Throw Pull");
-                KinectGesture pull = new KinectGesture(GestureType.Throw, GestureDirection.Pull, pointer);
-                GestureParser.AddKinectGesture(pull);
-            }
-            
-        }
-
-        private void InteractionStreamOnInteractionFrameReady(object sender, InteractionFrameReadyEventArgs e)
-        {
-            using (InteractionFrame frame = e.OpenInteractionFrame())
-            {
-                if (frame != null)
-                {
-                    if (this.userInfos == null)
-                    {
-                        this.userInfos = new UserInfo[InteractionFrame.UserInfoArrayLength];
-                    }
-
-                    frame.CopyInteractionDataTo(this.userInfos);
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-
-
-            foreach (UserInfo userInfo in this.userInfos)
-            {
-                foreach (InteractionHandPointer handPointer in userInfo.HandPointers)
-                {
-                    string action = null;
-
-                    switch (handPointer.HandEventType)
-                    {
-                        case InteractionHandEventType.Grip:
-                            action = "gripped";
-                            break;
-
-                        case InteractionHandEventType.GripRelease:
-                            action = "released";
-
-                            break;
-                    }
-
-                    if (action != null)
-                    {
-                        string handSide = "unknown";
-
-                        switch (handPointer.HandType)
-                        {
-                            case InteractionHandType.Left:
-                                handSide = "left";
-                                break;
-
-                            case InteractionHandType.Right:
-                                handSide = "right";
-                                break;
-                        }
-
-                        string correct = LeftHand ? "left" : "right";
-                        if (handSide == correct)
-                        {
-                            if (action == "released")
-                            {
-                                Console.WriteLine("Release");
-                                KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Push, CanvasWindow.GetCurrentPoint());
-                                GestureParser.AddKinectGesture(kinectGesture);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Grip");
-                                KinectGesture kinectGesture = new KinectGesture(null, GestureType.Pinch, GestureDirection.Pull, CanvasWindow.GetCurrentPoint());
-                                GestureParser.AddKinectGesture(kinectGesture);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

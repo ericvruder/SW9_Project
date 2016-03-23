@@ -33,7 +33,7 @@ import com.nui.android.activities.BaseActivity;
 public class Network implements IServer {
 
     String TAG = "Network";
-    private static final String SERVER_IP = BuildConfig.IP_ADDRESS;
+    private static final String SERVER_IP = "192.168.1.2";
 
     Socket clientSocket;
     String host;
@@ -75,7 +75,7 @@ public class Network implements IServer {
     }
 
     public void Reconnect() {
-        Log.d("NETWORK", "Reconnecting");
+        Log.d("NETWORK", "Reconnecting...");
         Thread connectionThread = new Thread(){
             public void run(){
                 SetupConnection();
@@ -89,6 +89,7 @@ public class Network implements IServer {
     public DatagramSocket ds;
 
     private void SetupConnection() {
+        Log.d("NETWORK", "Setting up connection...");
         try{
             if(activity.nt != null)
                 synchronized(activity.nt) {
@@ -116,6 +117,7 @@ public class Network implements IServer {
             StartListener((clientSocket.getInputStream()));
         } catch (Exception e) {
             if(e instanceof IOException || e instanceof EOFException){
+                Log.d("NETWORK", "Could not set up connection");
                 Reconnect();
             } else {
                 Log.i(TAG, "Could not open a socket to " + host + ":" + port);
@@ -196,20 +198,25 @@ public class Network implements IServer {
         }
     }
 
-    public void SendMessage(String message){
+    public boolean SendMessage(String message){
         try {
             out.println(message);
             out.flush();
+            return true;
         }catch (Exception e){
             if(e instanceof IOException || e instanceof EOFException) {
                 Reconnect();
+                return false;
             } else {
                 Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+                return false;
             }
         }
     }
 
     public void SendData(MobileGesture data){
+        if(!activity.GetGesture().equalsIgnoreCase(data.Type))
+            return;
         if (clientSocket == null)
             return;
         if(activity.PushOrPull() && data.Shape == null)

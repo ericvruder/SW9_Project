@@ -25,8 +25,6 @@ import com.nui.android.AccelerometerMonitor;
 import com.nui.android.Network;
 import com.nui.android.PinchGestureListener;
 import com.nui.android.R;
-import com.nui.android.RotationMonitor;
-import com.nui.android.SensorMonitor;
 import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
@@ -44,10 +42,10 @@ public class BaseActivity extends Activity {
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
     private AccelerometerMonitor acceloremeterSensor;
-    private RotationMonitor rotationSensor;
 
     private SwipeGestureListener swipeGestureListener;
     private PinchGestureListener pinchGestureListener;
+    private TouchGestureListener touchGestureListener;
 
     public static String shape;
     public static String nextShape;
@@ -62,7 +60,7 @@ public class BaseActivity extends Activity {
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
-    private boolean menuActive = true;
+    private boolean menuActive = false;
     public boolean calibrated = false;
 
     @Override
@@ -82,12 +80,12 @@ public class BaseActivity extends Activity {
 
         initNetwork();
         swipeGestureListener = new SwipeGestureListener(Network.getInstance());
-        pinchGestureListener = new PinchGestureListener(Network.getInstance(), swipeGestureListener);
-        rotationSensor = new RotationMonitor(Network.getInstance(), this);
-        acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), rotationSensor, this);
+        pinchGestureListener = new PinchGestureListener(Network.getInstance());
+        touchGestureListener =  new TouchGestureListener(Network.getInstance());
+        acceloremeterSensor = new AccelerometerMonitor(Network.getInstance(), this);
         swipeDetector = new GestureDetectorCompat(this, swipeGestureListener);
         pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
-        touchDetector = new GestureDetectorCompat(this, new TouchGestureListener(this, Network.getInstance()));
+        touchDetector = new GestureDetectorCompat(this, touchGestureListener);
 
         circleView = (ImageView) findViewById(R.id.circle);
         squareView = (ImageView) findViewById(R.id.square);
@@ -97,30 +95,19 @@ public class BaseActivity extends Activity {
         squareView.setVisibility(View.INVISIBLE);
         count = 0;
 
-        /*
-        moveCursor = (Button) findViewById(R.id.move_cursor);
-        moveCursor.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View view, MotionEvent event) {
-                if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-                    Log.d("TouchTest", "Touch down");
-                    sendGyroData = true;
-                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorDarkGrey));
-                    return true;
-                } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                    Log.d("TouchTest", "Touch up");
-                    moveCursor.setBackgroundColor(ContextCompat.getColor(moveCursor.getContext(), R.color.colorLightGrey));
-                    sendGyroData = false;
-                    return true;
-                }
-                return false;
-            }
-        });
-        */
+    }
+
+    private boolean pushOrPull;
+
+    private boolean gyroRunning = false;
+    private void InitGyroScope(){
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
         // TODO provide support for gyroscope (rotation vector is flawed in early
         // versions of android)
         rv = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        gyroRunning = true;
 
         // network thread
         nt = new Thread(new Runnable() {
@@ -157,8 +144,6 @@ public class BaseActivity extends Activity {
 
     }
 
-    private boolean pushOrPull;
-
     public boolean PushOrPull(){
         //True = push, false = pull
         return pushOrPull;
@@ -189,7 +174,9 @@ public class BaseActivity extends Activity {
         });
     }
 
+    String gesture = "";
     public void SetGesture(String gesture){
+        this.gesture = gesture;
         sendGyroData = false;
         pinchGestureListener.Stop();
         swipeGestureListener.Stop();
@@ -206,6 +193,10 @@ public class BaseActivity extends Activity {
             }
             default: break;
         }
+    }
+
+    public String GetGesture(){
+        return gesture;
     }
 
     public void StartPushTest(){
@@ -259,10 +250,6 @@ public class BaseActivity extends Activity {
         pullPinchWaiting = waiting;
     }
 
-    public boolean IsWaitingForPinch(){
-        return pullPinchWaiting;
-    }
-
     public void ClearShapes(){
         shape = null;
         squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
@@ -289,7 +276,6 @@ public class BaseActivity extends Activity {
 
     public void SetShape(String shape) {
         ClearShapes();
-        shape = shape;
 
         if(shape.equals("circle")) {
             pullShape.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
@@ -337,6 +323,8 @@ public class BaseActivity extends Activity {
                 return true;
             case R.id.resetGyro:
                 calibrated = !calibrated;
+                rv_sel.countX = 0;
+                rv_sel.countZ = 0;
                 Network.getInstance().SendMessage("resetgyro");
                 return true;
             case R.id.close_app_action:
@@ -352,7 +340,9 @@ public class BaseActivity extends Activity {
     protected void onPause(){
         super.onPause();
         acceloremeterSensor.Pause();
-        sm.unregisterListener(rv_sel);
+        if(gyroRunning){
+            sm.unregisterListener(rv_sel);
+        }
         Network.getInstance().Pause();
     }
 
@@ -361,14 +351,18 @@ public class BaseActivity extends Activity {
         super.onResume();
         Network.getInstance().Resume();
         acceloremeterSensor.Resume();
-        sm.registerListener(rv_sel, rv, SensorManager.SENSOR_DELAY_GAME);
+        if(gyroRunning) {
+            sm.registerListener(rv_sel, rv, SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (nt.isAlive()) {
-            end_nt = true;
+        if(nt != null) {
+            if (nt.isAlive()) {
+                end_nt = true;
+            }
         }
     }
 
@@ -395,6 +389,8 @@ public class BaseActivity extends Activity {
         private float virtualY = 0;
         private float virtualZ = 0;
 //		private String info_text;
+        public float countX = 0;
+        public float countZ = 0;
 
         public long getLatestTimestamp() {
             return time;
@@ -409,6 +405,9 @@ public class BaseActivity extends Activity {
             float y = event.values[1];
             float z = event.values[2];
 
+            countX += x;
+            countZ += z;
+
             if(!calibrated){
                 calibrateZ = z;
                 calibrateX = x;
@@ -421,7 +420,7 @@ public class BaseActivity extends Activity {
             virtualZ = z-calibrateZ;
 
             //Log.d("Gyro: ", "X: " + x + " Y: " + y + " Z: " + z);
-            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+x+":y:"+y+":z:"+z).getBytes();
+            byte[] buf = ("gyrodata:time:"+ event.timestamp +":x:"+countX+":y:"+y+":z:"+countZ).getBytes();
             dp.setData(buf);
             time = event.timestamp;
         }

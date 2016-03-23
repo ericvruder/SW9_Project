@@ -43,6 +43,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -52,6 +60,7 @@
       <HintPath>.\Spss.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -62,25 +71,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attempt.cs" />
+    <Compile Include="AttemptContext.cs" />
     <Compile Include="DataGenerator.cs" />
+    <Compile Include="GestureType.cs" />
     <Compile Include="HitboxDrawer.cs" />
+    <Compile Include="MathHelper.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TechniqueInfo.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SW9_Project\SW9_Project.csproj">
-      <Project>{3f2fb401-a2c7-4296-99e9-6766480e4bc8}</Project>
-      <Name>SW9_Project</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebDataParser\WebDataParser.csproj">
-      <Project>{91d7bb22-3795-4f4d-ad37-af1d4973242c}</Project>
-      <Name>WebDataParser</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Spss.dll" />
