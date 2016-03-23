@@ -10,6 +10,10 @@ namespace DataSetGenerator {
 
         public TechniqueInfo(List<Attempt> attempts) {
 
+            Direction = attempts[0].Direction;
+            Type = attempts[0].Type;
+
+
             HPM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
             TTM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
             ACCM = (float)attempts.Sum(attempt => attempt.Hit ? 0 : MathHelper.DistanceToTargetCell(attempt)) / (float)attempts.Count;

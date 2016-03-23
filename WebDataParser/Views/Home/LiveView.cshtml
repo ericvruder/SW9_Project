@@ -1,9 +1,90 @@
-﻿@model IEnumerable<DataSetGenerator.TechniqueInfo>
+﻿@using DataSetGenerator
+@model IEnumerable<DataSetGenerator.TechniqueInfo>
 
 @{
     ViewBag.Title = "LiveView";
 }
+<script type="text/javascript">
 
+    $(document).ready(function () {
+
+        var options = {
+            legend: { position: "sw", show: true }, series: { lines: { show: false } },
+            xaxis: { min: 0.5, max: 4.5, ticks: [[1, 'Pinch'], [2, 'Swipe'], [3, 'Throw'], [4, 'Tilt']] }
+        };
+
+        var std_bars = {
+            //do not show points
+            radius: 0,
+            errorbars: "y",
+            yerr: { show: true, upperCap: "-", lowerCap: "-", radius: 5 }
+        };
+
+        @{ 
+            string allHit = "", allTime = "", allAcc = "";
+            foreach(var direction in DataGenerator.AllDirections) {
+
+                string hitOut = $"var hit{direction} = [ ";
+                string timeOut = $"var time{direction} = [ ";
+                string accOut = $"var acc{direction} = [ ";
+                int count = 1;
+
+                foreach (var technique in DataGenerator.AllTechniques) {
+                    var info = Model.Where(x => x.Type == technique && x.Direction == direction).FirstOrDefault();
+                    hitOut += $"[{count}, {info.HPM}, {info.HPSTD}]";
+                    if(count++ != 4) { hitOut += ",\n"; }
+                    else { hitOut += "];\n\n"; }
+                }
+                count = 1;
+
+                foreach (var technique in DataGenerator.AllTechniques) {
+                    var info = Model.Where(x => x.Type == technique && x.Direction == direction).FirstOrDefault();
+                    timeOut += $"[{count}, {info.TTM)}, {info.TTSTD}]";
+                    if (count++ != 4) { timeOut += ",\n"; }
+                    else { timeOut += "];\n\n"; }
+                }
+                count = 1;
+
+                foreach (var technique in DataGenerator.AllTechniques) {
+                    var info = Model.Where(x => x.Type == technique && x.Direction == direction).FirstOrDefault();
+                    accOut += $"[{count}, {info.ACCM}, {info.ACCSTD}]";
+                    if (count++ != 4) { accOut += ",\n"; }
+                    else { accOut += "];\n\n"; }
+                }
+
+                allHit += hitOut;
+                allAcc += accOut;
+                allTime += timeOut;
+
+            }
+
+            @allHit
+            @allAcc
+            @allTime
+        }
+
+        var hitData = [{ color: "green", lines: { show: true }, points: std_bars, data: hitPush, label: "Push" },
+						{ color: "red", lines: { show: true }, points: std_bars, data: hitPull, label: "Pull" }];
+
+        var timeData = [{ color: "green", lines: { show: true }, points: std_bars, data: timePush, label: "Push" },
+						{ color: "red", lines: { show: true }, points: std_bars, data: timePull, label: "Pull" }];
+
+        var accData = [{ color: "green", lines: { show: true }, points: std_bars, data: accPush, label: "Push" },
+						{ color: "red", lines: { show: true }, points: std_bars, data: accPull, label: "Pull" }];
+
+
+        options.yaxis = { min: 0, max: 1.5 }
+        $.plot("#HitPercentage", hitData, options);
+
+        options.yaxis = { min: 0, max: 16 }
+        $.plot("#TimeTaken", timeData, options);
+
+        options.yaxis = { min: -150, max: 300 }
+        $.plot("#Accuracy", accData, options);
+
+    });
+
+</script>
 
 <div id="header">
     <h2>LiveView Statistics</h2>

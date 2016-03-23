@@ -138,8 +138,8 @@ namespace DataSetGenerator {
             }
         }
 
-        public Test(string id, List<Attempt> attempts) {
-            ID = id;
+        public Test(List<Attempt> attempts) : this() {
+            ID = attempts[0].ID;
             foreach(var technique in DataGenerator.AllTechniques) {
                 var techniqueQuery = from attempt in attempts
                                      where attempt.Type == technique

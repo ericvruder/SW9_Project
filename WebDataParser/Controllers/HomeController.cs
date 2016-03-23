@@ -6,18 +6,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-using WebDataParser;
+using DataSetGenerator;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
         public ActionResult Index(string testId) {
-            HttpServerUtilityBase utilityBase = HttpContext.Server;
 
             if(testId == null) {
                 testId = "average";
             }
 
-            int totalCount = TestDataViewModelFactory.GetTotalTestCount(utilityBase);
+            int totalCount = TestDataViewModelFactory.GetTotalTestCount();
             if(testId == "average") {
                 ViewBag.NextLink = 1;
                 ViewBag.PrevLink = totalCount;
@@ -38,13 +37,25 @@ namespace WebDataParser.Controllers {
                 }
             }
 
-            return View(TestDataViewModelFactory.GetTest(utilityBase, testId));
+            return View(TestDataViewModelFactory.GetTest(testId));
         }
 
-        public ActionResult LiveView()
-        {
+        public ActionResult LiveView() {
 
-            return View();
+            var allAttempts = (from attempt in DataGenerator.Database.Attempts
+                                       select attempt).ToList();
+
+            List<TechniqueInfo> techInfo = new List<TechniqueInfo>();
+
+            foreach(var technique in DataGenerator.AllTechniques) {
+                foreach(var direction in DataGenerator.AllDirections) {
+                    var selected = allAttempts.Where(x => x.Type == technique && x.Direction == direction); 
+
+                    techInfo.Add(new TechniqueInfo(selected.ToList()));
+                }
+            }                  
+
+            return View(techInfo);
         }
 
         public ActionResult GetImage(string testId, string type) {

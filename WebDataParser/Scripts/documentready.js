@@ -48,11 +48,9 @@
 		        tickDecimals: 0
 		    }, 
 		    xaxis: {
-		        ticks: 18,
-		        min: 1,
+		        mode: "categories",
 		        axisLabel: "Target",
 		        axisLabelFontFamily: 'Times New Roman',
-		        max: 18,
 		        tickDecimals: 0
 		    },
 		    grid: {
