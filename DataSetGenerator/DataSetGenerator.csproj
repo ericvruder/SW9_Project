@@ -76,6 +76,7 @@
     <Compile Include="DataGenerator.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="HitboxDrawer.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

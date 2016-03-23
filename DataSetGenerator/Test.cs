@@ -137,30 +137,5 @@ namespace DataSetGenerator {
                 TotalTime[gesture.Key] = totTime;
             }
         }
-
-        public static float[] GetHitsPerTry(List<Attempt> attempts) {
-
-            int hits = 0; float[] hitsAtTries = new float[attempts.Count]; int currentAttempt = 0;
-            foreach (var attempt in attempts) {
-                if (attempt.Hit) {
-                    hits++;
-                }
-                hitsAtTries[currentAttempt++] = (float)hits / ((float)currentAttempt);
-            }
-
-
-            return hitsAtTries;
-        }
-
-        public static float[] GetTimePerTarget(List<Attempt> attempts) {
-
-            float[] timeAtTries = new float[attempts.Count]; int currentAttempt = 0;
-            foreach (var attempt in attempts) {
-
-                timeAtTries[currentAttempt++] = (float)attempt.Time.TotalSeconds;
-            }
-
-            return timeAtTries;
-        }
     }
 }
