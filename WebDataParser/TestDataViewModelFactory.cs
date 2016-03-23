@@ -86,9 +86,9 @@ namespace WebDataParser {
             
             foreach (var gesture in AllGestures) {
                 GestureInfo info = new GestureInfo();
-                var hitsPerTry = Test.GetHitsPerTry(Tests[id].Attempts[gesture]);
+                var hitsPerTry = MathHelper.GetHitsPerTry(Tests[id].Attempts[gesture]);
                 info.HitData = GetJSPercentageArray(hitsPerTry, gesture);
-                info.TimeData = GetJSTimeArray(Test.GetTimePerTarget(Tests[id].Attempts[gesture]), gesture);
+                info.TimeData = GetJSTimeArray(MathHelper.GetTimePerTarget(Tests[id].Attempts[gesture]), gesture);
                 info.HitPercentage = hitsPerTry.Last() * 100f;
                 info.Img = DrawHitBox(Tests[id].Attempts[gesture]);
 
@@ -123,7 +123,7 @@ namespace WebDataParser {
                 List<float[]> percentages = new List<float[]>();
 
                 foreach (var test in tests) {
-                    percentages.Add(Test.GetHitsPerTry(test.Attempts[gesture]));
+                    percentages.Add(MathHelper.GetHitsPerTry(test.Attempts[gesture]));
                 }
 
                 for (int i = 0; i < avgPercentage.Length; i++) {
@@ -149,7 +149,7 @@ namespace WebDataParser {
                 List<float[]> times = new List<float[]>();
 
                 foreach (var test in tests) {
-                    times.Add(Test.GetTimePerTarget(test.Attempts[gesture]));
+                    times.Add(MathHelper.GetTimePerTarget(test.Attempts[gesture]));
                 }
 
                 for (int i = 0; i < averageTime.Length; i++) {
