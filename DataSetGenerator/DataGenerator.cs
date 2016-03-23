@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 
 using Spss;
+using System.Threading.Tasks;
 
 namespace DataSetGenerator {
 
@@ -66,38 +67,41 @@ namespace DataSetGenerator {
                 return ".\\..\\..\\..\\Data/";
             }
         }
-        public static void SaveTestsToDatabase() {
-            SaveTestsToDatabase(GetTests());
-        }
 
-        public static void SaveTestsToDatabase(List<Test> tests) {
-            foreach(var test in tests) {
-                SaveTestToDatabase(test);
-            }
-        }
+        public static DatabaseSaveStatus SaveStatus { get; set; }
+
         public static void SaveTestToDatabase(Test test) {
-            if (TargetPractice) {
-                int count = 0;
-                bool success = false;
-                while (!success || count <= 3) { 
+            Task.Factory.StartNew(() => {
+                if (TargetPractice) {
+                    SaveStatus = DatabaseSaveStatus.Saving;
+                    int count = 0;
+                    bool success = false;
                     try {
                         var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-                        if (testFound) return;
+
+                        if (testFound) {
+                            Console.WriteLine($"Test ID {test.ID} already exists in database");
+                            SaveStatus = DatabaseSaveStatus.Failed;
+                            return;
+                        }
                         foreach (var technique in AllTechniques) {
                             Database.Attempts.AddRange(test.Attempts[technique]);
                         }
 
                         Database.SaveChanges();
+                        success = true;
                         Console.WriteLine($"Successfully saved test number {test.ID} to database");
                     }
-                    catch {
+                    catch (Exception e) {
                         Console.WriteLine("Failed saving to database, trying again. Try number: " + ++count);
+                        Console.WriteLine("Message: " + e.Message);
                     }
+                    SaveStatus = success ? DatabaseSaveStatus.Success : DatabaseSaveStatus.Failed;
                 }
-            }
-            else {
-                Console.WriteLine("Database saves only available to Target Practice");
-            }
+                else {
+                    Console.WriteLine("Database saves only available to Target Practice");
+                }
+            });
         }
 
         public static List<Test> GetTests() {

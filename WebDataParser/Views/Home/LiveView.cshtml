@@ -1,0 +1,28 @@
+﻿@model IEnumerable<DataSetGenerator.TechniqueInfo>
+
+@{
+    ViewBag.Title = "LiveView";
+}
+
+
+<div id="header">
+    <h2>LiveView Statistics</h2>
+</div>
+
+<div class="table-container">
+    <div class="row">
+        <div class="graph-container">
+            <div id="HitPercentage" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <div id="TimeTaken" class="graph"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="graph-container">
+            <div id="Accuracy" class="graph"></div>
+        </div>
+    </div>
+
+</div>

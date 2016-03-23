@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using DataSetGenerator;
 
 namespace SW9_Project {
     /// <summary>
@@ -21,6 +22,7 @@ namespace SW9_Project {
 
 
         public MainWindow() {
+            DataGenerator.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
 
             Task.Factory.StartNew(() => {
@@ -46,9 +48,7 @@ namespace SW9_Project {
                 }
             }*/
 
-            isBuletinBoard = !DataSetGenerator.DataGenerator.TargetPracticeComputer();
-
-
+            isBuletinBoard = !DataGenerator.TargetPracticeComputer();
 
             StartCanvasWindow(isBuletinBoard);
             
