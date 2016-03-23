@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Forms;
 
 using DataSetGenerator;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SW9_Project
 {
@@ -75,7 +77,25 @@ namespace SW9_Project
                 };
             }
             videoMediaElement.Play();
+
+            Task task = Task.Factory.StartNew(() =>
+            {
+                while(GetMediaState(videoMediaElement) != MediaState.Play)
+                {
+                    videoMediaElement.Play();
+                }
+            });
         }
+
+        private MediaState GetMediaState(MediaElement myMedia)
+        {
+            FieldInfo hlp = typeof(MediaElement).GetField("_helper", BindingFlags.NonPublic | BindingFlags.Instance);
+            object helperObject = hlp.GetValue(myMedia);
+            FieldInfo stateField = helperObject.GetType().GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
+            MediaState state = (MediaState)stateField.GetValue(helperObject);
+            return state;
+        }
+
         static CanvasWindow canvasWindow;
         public static void SetCanvasWindow(CanvasWindow window) {
             canvasWindow = window;
@@ -90,5 +110,6 @@ namespace SW9_Project
             videoMediaElement.Close();
             this.Close();
         }
+
     }
 }
