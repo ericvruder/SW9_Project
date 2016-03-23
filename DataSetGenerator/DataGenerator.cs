@@ -67,48 +67,57 @@ namespace DataSetGenerator {
             string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
             foreach (var file in files) {
                 string id = file.Split('/').Last().Split('.')[0];
-                tests.Add(new Test(file));
-                /*
-                switch (tests.Last().ID)
-                {
-                    case "1":
-                        tests.Last().Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                        tests.Last().Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                        tests.Last().Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Swipe][5].Size = GridSize.Large;
-                        tests.Last().Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Swipe][11].Size = GridSize.Large;
-                        tests.Last().Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Swipe][13].Size = GridSize.Large;
-                        break;
-                    case "2":
-                        tests.Last().Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                        break;
-                    case "4":
-                        tests.Last().Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
-                        tests.Last().Attempts[GestureType.Throw][17].Size = GridSize.Large;
-                        tests.Last().Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
-                        tests.Last().Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                        tests.Last().Attempts[GestureType.Tilt][14].Size = GridSize.Small;
-                        break;
-                    case "5":
-                        tests.Last().Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
-                        break;
-                    case "8":
-                        tests.Last().Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                        tests.Last().Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                        break;
-                    default:
-                        break;
-                }*/
+                Test test = null;
+                if (OldData) {
+                    test = new Test(file, OldData);
+                    FixTest(test);
+                }
+                else {
+                    test = new Test(file);
+                }
+                tests.Add(test);
             }
             return tests;
         }
 
-        
+        static void FixTest(Test test) {
+            switch (test.ID) {
+                case "1":
+                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                    test.Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Swipe][5].Size = GridSize.Large;
+                    test.Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Swipe][11].Size = GridSize.Large;
+                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Swipe][13].Size = GridSize.Large;
+                    break;
+                case "2":
+                    test.Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                    break;
+                case "4":
+                    test.Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
+                    test.Attempts[GestureType.Throw][17].Size = GridSize.Large;
+                    test.Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
+                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                    test.Attempts[GestureType.Tilt][14].Size = GridSize.Small;
+                    break;
+                case "5":
+                    test.Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
+                    break;
+                case "8":
+                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                    break;
+                default:
+                    break;
+            }
+        }
 
+        
+        
         public static void CreateCSVDocument() {
 
             List<int> testing = new List<int>();
