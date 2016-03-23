@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Newtonsoft.Json;
+using System.Net.NetworkInformation;
 
 using Spss;
 
@@ -13,12 +13,36 @@ namespace DataSetGenerator {
         public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
+        static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984" };
+
         public static string TestFileDirectory {
             get {
-                if (OldData) return ".\\..\\..\\..\\Testlog.SW9/";
-                return ".\\..\\..\\..\\Testlog/";
+                if (OldData) { return ".\\..\\..\\..\\Testlog.SW9/"; }
+                else {
+                    if (TargetPractice) {
+                        if (!Directory.Exists(".\\..\\..\\..\\TargetTestlog/")) {
+                            Directory.CreateDirectory(".\\..\\..\\..\\TargetTestlog/");
+                        }
+                        return ".\\..\\..\\..\\TargetTestlog/";
+                    }
+                    else {
+                        if (!Directory.Exists(".\\..\\..\\..\\FieldTestlog/")) {
+                            Directory.CreateDirectory(".\\..\\..\\..\\FieldTestlog/");
+                        }
+                        return ".\\..\\..\\..\\FieldTestlog/";
+                    }
+                }
             }
         }
+
+        public static bool TargetPracticeComputer() {
+            var mac = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Select(nic => nic.GetPhysicalAddress().ToString())
+                .FirstOrDefault();
+            return TargetPracticeComputers.Contains(mac);
+        }
+
 
         private static AttemptContext database;
         public static AttemptContext Database { get {
@@ -30,6 +54,7 @@ namespace DataSetGenerator {
         }
 
         public static bool OldData { get; set; }
+        public static bool TargetPractice { get; set; }
 
         public static string DataDirectory
         {
@@ -51,15 +76,28 @@ namespace DataSetGenerator {
             }
         }
         public static void SaveTestToDatabase(Test test) {
-            var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-            if (testFound) return;
-            foreach(var technique in AllTechniques) {
-                foreach(var attempt in test.Attempts[technique]) {
-                    Database.Attempts.Add(attempt);
+            if (TargetPractice) {
+                int count = 0;
+                bool success = false;
+                while (!success || count <= 3) { 
+                    try {
+                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
+                        if (testFound) return;
+                        foreach (var technique in AllTechniques) {
+                            Database.Attempts.AddRange(test.Attempts[technique]);
+                        }
+
+                        Database.SaveChanges();
+                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
+                    }
+                    catch {
+                        Console.WriteLine("Failed saving to database, trying again. Try number: " + ++count);
+                    }
                 }
             }
-
-            Database.SaveChanges();
+            else {
+                Console.WriteLine("Database saves only available to Target Practice");
+            }
         }
 
         public static List<Test> GetTests() {

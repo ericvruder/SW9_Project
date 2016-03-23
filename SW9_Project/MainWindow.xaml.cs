@@ -28,6 +28,7 @@ namespace SW9_Project {
                 Connection.StartService();
             });
 
+            /*
             //TODO: Implement at preprossor definition :D - JK
             if (System.Environment.GetCommandLineArgs().Length > 0)
             {
@@ -43,7 +44,11 @@ namespace SW9_Project {
 
                     }
                 }
-            }
+            }*/
+
+            isBuletinBoard = !DataSetGenerator.DataGenerator.TargetPracticeComputer();
+
+
 
             StartCanvasWindow(isBuletinBoard);
             

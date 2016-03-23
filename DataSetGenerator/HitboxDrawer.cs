@@ -53,6 +53,7 @@ namespace DataSetGenerator {
 
         public static void CreateHitboxes() {
             var tests = DataGenerator.GetTests();
+            if (tests.Count == 0) return;
             Dictionary<GestureType, List<Attempt>> techAttempts = new Dictionary<GestureType, List<Attempt>>();
             Dictionary<GridSize, List<Attempt>> sizeAttempts = new Dictionary<GridSize, List<Attempt>>();
             sizeAttempts.Add(GridSize.Large, new List<Attempt>());

@@ -51,6 +51,7 @@ namespace SW9_Project {
         public CanvasWindow(bool targetPractice = true) {
             
             this.targetPractice = targetPractice;
+            DataGenerator.TargetPractice = targetPractice;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));

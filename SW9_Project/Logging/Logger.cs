@@ -16,7 +16,7 @@ namespace SW9_Project.Logging
 {
     class Logger
     {
-        private static string directory = "..\\..\\..\\Testlog/";
+        private static string directory = DataGenerator.TestFileDirectory;
         StreamWriter testStreamWriter; //FIX
 
         int userID = 0;
