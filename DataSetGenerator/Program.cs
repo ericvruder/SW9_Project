@@ -8,7 +8,10 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
-            DataGenerator.TargetPractice = DataGenerator.TargetPracticeComputer();
+            DataGenerator.TargetPracticeComputer();
+
+            DataGenerator.OldData = true;
+            DataGenerator.SaveOldTestToDatabase();
 
             DataGenerator.VerifyTests();
             DataGenerator.GenerateJSONDocument();

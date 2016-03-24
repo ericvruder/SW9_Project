@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using DataSetGenerator;
+using WebDataParser.Models;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
@@ -56,6 +57,22 @@ namespace WebDataParser.Controllers {
             }                  
 
             return View(techInfo);
+        }
+
+        public JsonResult GetTechniqueData() {
+            /*
+            var test = new[] {
+                new[] { 1, 2,5 },
+                new[] { 3, 4,7 },
+                new[] { 4, 5 ,9},
+                new[] { 6, 7,0 }
+            };
+            return Json(test, JsonRequestBehavior.AllowGet);
+            
+            */
+            var attempts = DataGenerator.Database.Attempts;
+            var info = new TechniqueInformationViewModel(attempts);
+            return Json(info, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetImage(string testId, string type) {

@@ -14,7 +14,7 @@ namespace DataSetGenerator {
         public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
-        static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984", "A44E31B190E4" };
+        static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984", "A44E31B190E4" , "485D60CA70DA" };
 
         public static string TestFileDirectory {
             get {
@@ -41,6 +41,7 @@ namespace DataSetGenerator {
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
                 .Select(nic => nic.GetPhysicalAddress().ToString())
                 .FirstOrDefault();
+            TargetPractice = TargetPracticeComputers.Contains(mac);
             return TargetPracticeComputers.Contains(mac);
         }
 
@@ -51,6 +52,18 @@ namespace DataSetGenerator {
                     database = new AttemptContext();
                 }
                 return database;
+            }
+        }
+
+        private static OldAttemptContext oldDatabase;
+        public static OldAttemptContext OldDatabase
+        {
+            get
+            {
+                if (oldDatabase == null) {
+                    oldDatabase = new OldAttemptContext();
+                }
+                return oldDatabase;
             }
         }
 
@@ -69,6 +82,39 @@ namespace DataSetGenerator {
         }
 
         public static DatabaseSaveStatus SaveStatus { get; set; }
+
+        public static void SaveOldTestToDatabase() {
+            bool t = OldData;
+            OldData = true;
+            List<Test> tests = GetTests();
+
+            Task.Factory.StartNew(() => {
+                foreach(var test in tests) {
+                    try {
+                        Console.WriteLine($"Searching for {test.ID} in database...");
+                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
+
+                        if (testFound) {
+                            Console.WriteLine($"Test ID {test.ID} already exists in database");
+                            continue;
+                        }
+                        else {
+                            Console.WriteLine($"Not found, saving {test.ID} to database...");
+                        }
+                        foreach (var technique in AllTechniques) {
+                            OldDatabase.Attempts.AddRange(test.Attempts[technique]);
+                        }
+
+                        Database.SaveChanges();
+                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
+                    } catch (Exception e) {
+                        Console.WriteLine("Message: " + e.Message);
+                    }
+                } 
+            });
+
+            OldData = t;
+        }
 
         public static void SaveTestToDatabase(Test test) {
             Task.Factory.StartNew(() => {
@@ -419,10 +465,17 @@ namespace DataSetGenerator {
                     var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
                     var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
 
-                    var aPushS = new TechniqueInfo(attemptsPush).ToJson();
-                    var aPullS = new TechniqueInfo(attemptsPull).ToJson();
+                    if (attemptsPull.Count != 0) {
+                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
+                        var aPullS = new TechniqueInfo(attemptsPull).ToJson();
 
-                    total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+
+                    } else { 
+                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
+
+                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS} }},\n";
+                    }
 
                 }
 
