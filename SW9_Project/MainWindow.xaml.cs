@@ -68,7 +68,7 @@ namespace SW9_Project {
                 canvas.Topmost = true;
             }
             else {
-                Screen s1 = Screen.AllScreens[1];
+                Screen s1 = Screen.AllScreens[0];
                 System.Drawing.Rectangle r1 = s1.WorkingArea;
                 canvas.Top = r1.Top;
                 canvas.Left = r1.Left;
