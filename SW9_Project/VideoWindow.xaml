@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SW9_Project"
         mc:Ignorable="d"
-        Title="VideoWindow" Height="300" Width="300">
+        Title="VideoWindow" 
+        Height="300" Width="300"
+        WindowStartupLocation="Manual">
     <Grid>
         <MediaElement x:Name="videoMediaElement" />
     </Grid>

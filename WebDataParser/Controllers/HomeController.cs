@@ -41,22 +41,9 @@ namespace WebDataParser.Controllers {
             return View(TestDataViewModelFactory.GetTest(testId));
         }
 
-        public ActionResult LiveView() {
+        public ActionResult LiveView() {            
 
-            var allAttempts = (from attempt in DataGenerator.Database.Attempts
-                                       select attempt).ToList();
-
-            List<TechniqueInfo> techInfo = new List<TechniqueInfo>();
-
-            foreach(var technique in DataGenerator.AllTechniques) {
-                foreach(var direction in DataGenerator.AllDirections) {
-                    var selected = allAttempts.Where(x => x.Type == technique && x.Direction == direction); 
-
-                    techInfo.Add(new TechniqueInfo(selected.ToList()));
-                }
-            }                  
-
-            return View(techInfo);
+            return View();
         }
 
         public JsonResult GetTechniqueData() {

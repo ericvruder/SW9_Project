@@ -55,18 +55,6 @@ namespace DataSetGenerator {
             }
         }
 
-        private static OldAttemptContext oldDatabase;
-        public static OldAttemptContext OldDatabase
-        {
-            get
-            {
-                if (oldDatabase == null) {
-                    oldDatabase = new OldAttemptContext();
-                }
-                return oldDatabase;
-            }
-        }
-
         public static bool OldData { get; set; }
         public static bool TargetPractice { get; set; }
 
@@ -87,31 +75,29 @@ namespace DataSetGenerator {
             bool t = OldData;
             OldData = true;
             List<Test> tests = GetTests();
+            
+            foreach(var test in tests) {
+                try {
+                    Console.WriteLine($"Searching for {test.ID} in database...");
+                    var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
 
-            Task.Factory.StartNew(() => {
-                foreach(var test in tests) {
-                    try {
-                        Console.WriteLine($"Searching for {test.ID} in database...");
-                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-
-                        if (testFound) {
-                            Console.WriteLine($"Test ID {test.ID} already exists in database");
-                            continue;
-                        }
-                        else {
-                            Console.WriteLine($"Not found, saving {test.ID} to database...");
-                        }
-                        foreach (var technique in AllTechniques) {
-                            OldDatabase.Attempts.AddRange(test.Attempts[technique]);
-                        }
-
-                        Database.SaveChanges();
-                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
-                    } catch (Exception e) {
-                        Console.WriteLine("Message: " + e.Message);
+                    if (testFound) {
+                        Console.WriteLine($"Test ID {test.ID} already exists in database");
+                        continue;
                     }
-                } 
-            });
+                    else {
+                        Console.WriteLine($"Not found, saving {test.ID} to database...");
+                    }
+                    foreach (var technique in AllTechniques) {
+                        Database.Attempts.AddRange(test.Attempts[technique]);
+                    }
+
+                    Database.SaveChanges();
+                    Console.WriteLine($"Successfully saved test number {test.ID} to database");
+                } catch (Exception e) {
+                    Console.WriteLine("Message: " + e.Message);
+                }
+            } 
 
             OldData = t;
         }

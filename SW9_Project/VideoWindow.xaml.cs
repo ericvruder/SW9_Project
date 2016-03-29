@@ -31,8 +31,8 @@ namespace SW9_Project
             this.Title = type + " " + direction;
             this.Show();
 
-            videoMediaElement.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
-            videoMediaElement.UnloadedBehavior = System.Windows.Controls.MediaState.Manual;
+            videoMediaElement.LoadedBehavior = MediaState.Manual;
+            videoMediaElement.UnloadedBehavior = MediaState.Manual;
             string videoDirectory = @"techniques/";
             string video = direction.ToString() + "_" + type.ToString() + ".mp4";
 
@@ -61,8 +61,7 @@ namespace SW9_Project
                 Uri videoUri = new Uri(videoPath, UriKind.Relative);
                 videoMediaElement.Source = videoUri;
             }
-
-
+            
             if (reopen) {
                 this.Activate();
                 canvasWindow.Activate();
@@ -80,8 +79,10 @@ namespace SW9_Project
 
             Task task = Task.Factory.StartNew(() =>
             {
+                Console.WriteLine("Started video check");
                 while(GetMediaState(videoMediaElement) != MediaState.Play)
                 {
+                    Console.WriteLine("Video not playing, attempting to play");
                     videoMediaElement.Play();
                 }
             });

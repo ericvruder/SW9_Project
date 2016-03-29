@@ -29,8 +29,7 @@ namespace SW9_Project {
                 AllocConsole();
                 Connection.StartService();
             });
-
-            /*
+            
             //TODO: Implement at preprossor definition :D - JK
             if (System.Environment.GetCommandLineArgs().Length > 0)
             {
@@ -46,9 +45,7 @@ namespace SW9_Project {
 
                     }
                 }
-            }*/
-
-            isBuletinBoard = !DataGenerator.TargetPracticeComputer();
+            }
 
             StartCanvasWindow(isBuletinBoard);
             
