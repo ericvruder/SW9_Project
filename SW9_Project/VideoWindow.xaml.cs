@@ -21,17 +21,11 @@ namespace SW9_Project
         public VideoWindow() {
             InitializeComponent();
         }
-        static bool softwareAccSet = true;
+
         public static void PlayVideo(GestureDirection direction, GestureType type) {
             GestureParser.Pause(true);
             if(currentVideoWindow == null) {
                 currentVideoWindow = new VideoWindow();
-            }
-            else if(!softwareAccSet){
-                //softwareAccSet = true;
-                HwndSource hwndSource = PresentationSource.FromVisual(currentVideoWindow) as HwndSource;
-                HwndTarget hwndTarget = hwndSource.CompositionTarget;
-                hwndTarget.RenderMode = RenderMode.SoftwareOnly;
             }
             
             string videoPath = GetVideoPath(direction, type);
@@ -55,7 +49,6 @@ namespace SW9_Project
                 };
 
                 currentVideoWindow.videoMediaElement.MediaEnded += handler;
-
                 
             }
         }
