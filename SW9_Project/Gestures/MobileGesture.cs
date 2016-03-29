@@ -29,10 +29,10 @@ namespace SW9_Project {
                 default: break;
             }
             Timestamp = DateTime.Now;
-            if (jsonObject["ImgID"])
-            {
-                ImgID = jsonObject[ImgID];
-            }
+            //if (jsonObject["ImgID"])
+            //{
+            //    ImgID = jsonObject[ImgID];
+            //}
         }
 
     }
