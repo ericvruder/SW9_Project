@@ -407,16 +407,7 @@ namespace SW9_Project {
         public Point GetPoint(double xFromMid, double yFromMid)
         {
             double x = Scale(canvas.ActualWidth, .25f, xFromMid);
-            double y = Scale(canvas.ActualHeight, .26f, yFromMid);
-            Point p = new Point(x, y);
-
-            return p;
-        }
-
-        public Point GetPoint(double xFromMid, double yFromMid, float scaleX, float scaleY)
-        {
-            double x = Scale(canvas.ActualWidth, scaleX, xFromMid);
-            double y = Scale(canvas.ActualHeight, scaleY, yFromMid);
+            double y = Scale(canvas.ActualHeight, .20f, yFromMid);
             Point p = new Point(x, y);
 
             return p;
@@ -439,6 +430,7 @@ namespace SW9_Project {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        Queue<GestureType> types = new Queue<GestureType>(DataGenerator.AllTechniques);
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if (e.Key == System.Windows.Input.Key.Space) {
@@ -473,6 +465,10 @@ namespace SW9_Project {
             } else if (e.Key == System.Windows.Input.Key.R) {
                 StartDebugTest(GestureType.Tilt);
             } 
+
+            else if (e.Key == System.Windows.Input.Key.U) {
+                VideoWindow.PlayVideo(GestureDirection.Pull, types.Dequeue());
+            }
             
             else if (e.Key == System.Windows.Input.Key.A) {
                 ShowStatusMessage("Push");

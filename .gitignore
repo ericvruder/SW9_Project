@@ -12,6 +12,7 @@
 
 # Media files
 *.mp4
+*.wmv
 
 # Build results
 [Dd]ebug/

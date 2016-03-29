@@ -87,7 +87,6 @@ namespace SW9_Project {
             board.EndTest();
         }
         
-        static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if(gestureTypeList.Count == 0 && firstDirectionRun) {
                 GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
@@ -105,11 +104,9 @@ namespace SW9_Project {
             board.StartNewGesture();
             board.CreateTarget(practiceSequence.Dequeue());
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
-            if(techniquePlayer != null) {
-                techniquePlayer.Close();
-            }
+
             Logger.CurrentLogger.StartPracticeTime(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
-            techniquePlayer = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
+            VideoWindow.PlayVideo(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Console.WriteLine($"Changed to gesture: {GestureParser.GetTypeContext()} {GestureParser.GetDirectionContext()}");
             return true;
         }

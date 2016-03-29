@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using DataSetGenerator;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Interop;
 
 namespace SW9_Project
 {
@@ -17,37 +18,70 @@ namespace SW9_Project
 
         static VideoWindow currentVideoWindow;
 
-        public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
-        {
-            if(currentVideoWindow != null) {
-                currentVideoWindow.CloseWindow();
-                currentVideoWindow = this;
-            }
-            else {
-                currentVideoWindow = this;
-            }
-            GestureParser.Pause(!reopen);
+        public VideoWindow() {
             InitializeComponent();
-            this.Title = type + " " + direction;
-            this.Show();
+        }
+        static bool softwareAccSet = true;
+        public static void PlayVideo(GestureDirection direction, GestureType type) {
+            GestureParser.Pause(true);
+            if(currentVideoWindow == null) {
+                currentVideoWindow = new VideoWindow();
+            }
+            else if(!softwareAccSet){
+                //softwareAccSet = true;
+                HwndSource hwndSource = PresentationSource.FromVisual(currentVideoWindow) as HwndSource;
+                HwndTarget hwndTarget = hwndSource.CompositionTarget;
+                hwndTarget.RenderMode = RenderMode.SoftwareOnly;
+            }
+            
+            string videoPath = GetVideoPath(direction, type);
+            if (File.Exists(videoPath)) {
+                currentVideoWindow.videoMediaElement.Source = new Uri(videoPath, UriKind.Relative);
+                currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
+                currentVideoWindow.MoveWindow(true);
 
-            videoMediaElement.LoadedBehavior = MediaState.Manual;
-            videoMediaElement.UnloadedBehavior = MediaState.Manual;
-            string videoDirectory = @"techniques/";
-            string video = direction.ToString() + "_" + type.ToString() + ".mp4";
+                RoutedEventHandler handler = null;
 
+                handler = (sender, e) => {
+                    GestureParser.Pause(false);
+                    currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero; 
+                    
+                    currentVideoWindow.videoMediaElement.MediaEnded -= handler;
+                    currentVideoWindow.MoveWindow(false);
+                    currentVideoWindow.videoMediaElement.MediaEnded += (senderI, eI) => {
+                        currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
+                    };
+                    canvasWindow.Activate();
+                };
+
+                currentVideoWindow.videoMediaElement.MediaEnded += handler;
+
+                
+            }
+        }
+        
+
+
+
+        static CanvasWindow canvasWindow;
+        public static void SetCanvasWindow(CanvasWindow window) {
+            canvasWindow = window;
+        }
+
+        private void MoveWindow(bool primaryScreen) {
 
             if (Screen.AllScreens.Length > 1) {
                 int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
                 int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
-                Screen s = reopen ? Screen.AllScreens[secScreen] : Screen.AllScreens[mainScreen];
-                System.Drawing.Rectangle r = s.WorkingArea;
+                Screen s = primaryScreen ? Screen.AllScreens[mainScreen] : Screen.AllScreens[secScreen];
+                System.Drawing.Rectangle r = s.Bounds;
+                this.Topmost = true;
                 this.Top = r.Top;
                 this.Left = r.Left;
-                this.Topmost = true;
+                this.Width = r.Width;
+                this.Height = r.Height;
                 this.Show();
-                this.WindowStyle = WindowStyle.None;
-                this.WindowState = WindowState.Maximized;
+                this.Activate();
             }
             else {
                 Screen s = Screen.AllScreens[0];
@@ -56,60 +90,15 @@ namespace SW9_Project
                 this.Left = r.Left;
                 this.Show();
             }
-            String videoPath = CreateAbsolutePathTo(videoDirectory + video);
-            if (File.Exists(videoPath)) {
-                Uri videoUri = new Uri(videoPath, UriKind.Relative);
-                videoMediaElement.Source = videoUri;
-            }
-            
-            if (reopen) {
-                this.Activate();
-                canvasWindow.Activate();
-                videoMediaElement.MediaEnded += (sender, args) => {
-                    videoMediaElement.Stop();
-                    videoMediaElement.Position = TimeSpan.Zero;
-                };
-            } else {
-                videoMediaElement.MediaEnded += (sender, args) => {
-                    this.CloseWindow();
-                    var t = new VideoWindow(direction, type, true);
-                };
-            }
-            videoMediaElement.Play();
 
-            Task task = Task.Factory.StartNew(() =>
-            {
-                Console.WriteLine("Started video check");
-                while(GetMediaState(videoMediaElement) != MediaState.Play)
-                {
-                    Console.WriteLine("Video not playing, attempting to play");
-                    videoMediaElement.Play();
-                }
-            });
-        }
-
-        private MediaState GetMediaState(MediaElement myMedia)
-        {
-            FieldInfo hlp = typeof(MediaElement).GetField("_helper", BindingFlags.NonPublic | BindingFlags.Instance);
-            object helperObject = hlp.GetValue(myMedia);
-            FieldInfo stateField = helperObject.GetType().GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
-            MediaState state = (MediaState)stateField.GetValue(helperObject);
-            return state;
-        }
-
-        static CanvasWindow canvasWindow;
-        public static void SetCanvasWindow(CanvasWindow window) {
-            canvasWindow = window;
         }
         
-        private static string CreateAbsolutePathTo(string mediaFile) {
-            return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
-        }
+        private static string GetVideoPath(GestureDirection direction, GestureType type) {
 
-        private void CloseWindow() {
-            videoMediaElement.Stop();
-            videoMediaElement.Close();
-            this.Close();
+            string videoDirectory = @"techniques/";
+            string video = direction.ToString() + "_" + type.ToString() + ".wmv";
+
+            return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, videoDirectory + video);
         }
 
     }

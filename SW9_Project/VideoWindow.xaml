@@ -7,8 +7,10 @@
         mc:Ignorable="d"
         Title="VideoWindow" 
         Height="300" Width="300"
-        WindowStartupLocation="Manual">
+        WindowStartupLocation="Manual"
+        WindowStyle="None"
+        >
     <Grid>
-        <MediaElement x:Name="videoMediaElement" />
+        <MediaElement x:Name="videoMediaElement"/>
     </Grid>
 </Window>
