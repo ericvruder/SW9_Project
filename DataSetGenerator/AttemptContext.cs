@@ -11,4 +11,10 @@ namespace DataSetGenerator {
         public AttemptContext() : base("SW9_Project") { }
         public DbSet<Attempt> Attempts { get; set; }
     }
+
+    public class OldAttemptContext : DbContext {
+        public OldAttemptContext() : base("SW9_Project") { }
+        public DbSet<Attempt> Attempts { get; set; }
+
+    }
 }

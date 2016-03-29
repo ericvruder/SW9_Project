@@ -137,5 +137,15 @@ namespace DataSetGenerator {
                 TotalTime[gesture.Key] = totTime;
             }
         }
+
+        public Test(List<Attempt> attempts) : this() {
+            ID = attempts[0].ID;
+            foreach(var technique in DataGenerator.AllTechniques) {
+                var techniqueQuery = from attempt in attempts
+                                     where attempt.Type == technique
+                                     select attempt;
+                Attempts[technique] = techniqueQuery.ToList();
+            }
+        }
     }
 }

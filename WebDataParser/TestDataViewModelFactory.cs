@@ -18,23 +18,29 @@ namespace WebDataParser {
         static Dictionary<string, TestDataViewModel> TestViewModels = new Dictionary<string, TestDataViewModel>();
         static List<GestureType> AllGestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
-        public static int GetTotalTestCount(HttpServerUtilityBase utility) {
-            return Directory.GetFiles(utility.MapPath("~/Testlog/"), "*.test").Count();
+        public static int GetTotalTestCount() {
+
+            return (from attempt in DataGenerator.Database.Attempts
+                        group attempt by attempt.ID into testsFound
+                        select testsFound).Count();
+
         }
-        private static TestDataViewModel GetTest(HttpServerUtilityBase utlity) {
+        private static TestDataViewModel GetTest() {
 
             if (TestViewModels.ContainsKey("average")) {
                 return TestViewModels["average"];
             }
             TestViewModels.Add("average", new TestDataViewModel("average"));
 
-            string directory = utlity.MapPath("~/Testlog/");
-            string[] files = Directory.GetFiles(directory, "*.test");
-            if (Tests.Count != files.Count()) {
+            var allTests = (from attempt in DataGenerator.Database.Attempts
+                           group attempt by attempt.ID into testsFound
+                           select testsFound).ToList();
+            
+            
+            if (Tests.Count != allTests.Count()) {
                 Tests.Clear();
-                foreach (var s in files) {
-                    var test = new Test(s);
-                    Tests.Add(test.ID, test);
+                foreach(var testgrouping in allTests.ToList()) {
+                    Tests.Add(testgrouping.Key, new Test(testgrouping.ToList()));
                 }
             }
 
@@ -67,10 +73,10 @@ namespace WebDataParser {
             return TestViewModels[id].GestureInformation[type].Img;
         }
 
-        public static TestDataViewModel GetTest(HttpServerUtilityBase utility, string id) {
+        public static TestDataViewModel GetTest(string id) {
 
             if(id == "average") {
-                return GetTest(utility);
+                return GetTest();
             }
 
             if (TestViewModels.ContainsKey(id)) {
@@ -81,7 +87,11 @@ namespace WebDataParser {
 
              
             if (!Tests.ContainsKey(id)) {
-                Tests[id] = new Test(utility.MapPath("~/Testlog/" + id + ".test"));
+                var attempts = from attempt in DataGenerator.Database.Attempts
+                               where attempt.ID == id
+                               select attempt;
+
+                Tests[id] = new Test(attempts.ToList());
             }
             
             foreach (var gesture in AllGestures) {

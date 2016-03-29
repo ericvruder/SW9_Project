@@ -51,6 +51,7 @@ namespace SW9_Project {
         public CanvasWindow(bool targetPractice = true) {
             
             this.targetPractice = targetPractice;
+            DataGenerator.TargetPractice = targetPractice;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
@@ -249,7 +250,8 @@ namespace SW9_Project {
             GyroPositionX = 0;
             GyroPositionY = 0;
         }
-        
+
+        bool savingToDB = false;
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
@@ -267,6 +269,16 @@ namespace SW9_Project {
             }
 
             DrawNextTargets();
+            if(DataGenerator.SaveStatus == DatabaseSaveStatus.Saving && !savingToDB) {
+                savingToDB = true;
+                ShowStatusMessage("Saving to database...");
+            }
+            if(savingToDB && DataGenerator.SaveStatus != DatabaseSaveStatus.Saving) {
+                savingToDB = false;
+                string status = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? "Failed!" : "Success!";
+                ShowStatusMessage(status);
+                Background = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? Brushes.Red : Brushes.Blue;
+            }
 
             Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
             if (currentGyroPoint != lastGyroPoint)
@@ -430,6 +442,7 @@ namespace SW9_Project {
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if (e.Key == System.Windows.Input.Key.Space) {
+                Background = Brushes.Black;
                 if (connection == null || !connection.Connected) {
                     connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                     return;
@@ -462,14 +475,18 @@ namespace SW9_Project {
             } 
             
             else if (e.Key == System.Windows.Input.Key.A) {
-                gestureTypeLabel.Content = "Push";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+                ShowStatusMessage("Push");
                 GestureParser.SetDirectionContext(GestureDirection.Push);
             } else if (e.Key == System.Windows.Input.Key.S) {
-                gestureTypeLabel.Content = "Pull";
-                gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+                ShowStatusMessage("Pull");
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
             }
+        }
+
+        private void ShowStatusMessage(string message) {
+            gestureTypeLabel.Content = message;
+            gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+
         }
 
         private void StartDebugTest(GestureType type) {
@@ -478,8 +495,8 @@ namespace SW9_Project {
                 return;
             }
             Logger.CurrentLogger.DebugMode = true;
-            gestureTypeLabel.Content = type.ToString();
-            gestureTypeLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
+
+            ShowStatusMessage(type.ToString());
             currentTest = new TestSuite(this);
             currentTest.StartDebugTest(type);
 

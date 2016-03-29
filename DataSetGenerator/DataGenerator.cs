@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Newtonsoft.Json;
+using System.Net.NetworkInformation;
 
 using Spss;
+using System.Threading.Tasks;
 
 namespace DataSetGenerator {
 
@@ -13,12 +14,37 @@ namespace DataSetGenerator {
         public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
 
+        static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984", "A44E31B190E4" , "485D60CA70DA" };
+
         public static string TestFileDirectory {
             get {
-                if (OldData) return ".\\..\\..\\..\\Testlog.SW9/";
-                return ".\\..\\..\\..\\Testlog/";
+                if (OldData) { return ".\\..\\..\\..\\Testlog.SW9/"; }
+                else {
+                    if (TargetPractice) {
+                        if (!Directory.Exists(".\\..\\..\\..\\TargetTestlog/")) {
+                            Directory.CreateDirectory(".\\..\\..\\..\\TargetTestlog/");
+                        }
+                        return ".\\..\\..\\..\\TargetTestlog/";
+                    }
+                    else {
+                        if (!Directory.Exists(".\\..\\..\\..\\FieldTestlog/")) {
+                            Directory.CreateDirectory(".\\..\\..\\..\\FieldTestlog/");
+                        }
+                        return ".\\..\\..\\..\\FieldTestlog/";
+                    }
+                }
             }
         }
+
+        public static bool TargetPracticeComputer() {
+            var mac = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
+                .Select(nic => nic.GetPhysicalAddress().ToString())
+                .FirstOrDefault();
+            TargetPractice = TargetPracticeComputers.Contains(mac);
+            return TargetPracticeComputers.Contains(mac);
+        }
+
 
         private static AttemptContext database;
         public static AttemptContext Database { get {
@@ -29,7 +55,20 @@ namespace DataSetGenerator {
             }
         }
 
+        private static OldAttemptContext oldDatabase;
+        public static OldAttemptContext OldDatabase
+        {
+            get
+            {
+                if (oldDatabase == null) {
+                    oldDatabase = new OldAttemptContext();
+                }
+                return oldDatabase;
+            }
+        }
+
         public static bool OldData { get; set; }
+        public static bool TargetPractice { get; set; }
 
         public static string DataDirectory
         {
@@ -41,25 +80,74 @@ namespace DataSetGenerator {
                 return ".\\..\\..\\..\\Data/";
             }
         }
-        public static void SaveTestsToDatabase() {
-            SaveTestsToDatabase(GetTests());
+
+        public static DatabaseSaveStatus SaveStatus { get; set; }
+
+        public static void SaveOldTestToDatabase() {
+            bool t = OldData;
+            OldData = true;
+            List<Test> tests = GetTests();
+
+            Task.Factory.StartNew(() => {
+                foreach(var test in tests) {
+                    try {
+                        Console.WriteLine($"Searching for {test.ID} in database...");
+                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
+
+                        if (testFound) {
+                            Console.WriteLine($"Test ID {test.ID} already exists in database");
+                            continue;
+                        }
+                        else {
+                            Console.WriteLine($"Not found, saving {test.ID} to database...");
+                        }
+                        foreach (var technique in AllTechniques) {
+                            OldDatabase.Attempts.AddRange(test.Attempts[technique]);
+                        }
+
+                        Database.SaveChanges();
+                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
+                    } catch (Exception e) {
+                        Console.WriteLine("Message: " + e.Message);
+                    }
+                } 
+            });
+
+            OldData = t;
         }
 
-        public static void SaveTestsToDatabase(List<Test> tests) {
-            foreach(var test in tests) {
-                SaveTestToDatabase(test);
-            }
-        }
         public static void SaveTestToDatabase(Test test) {
-            var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-            if (testFound) return;
-            foreach(var technique in AllTechniques) {
-                foreach(var attempt in test.Attempts[technique]) {
-                    Database.Attempts.Add(attempt);
-                }
-            }
+            Task.Factory.StartNew(() => {
+                if (TargetPractice) {
+                    SaveStatus = DatabaseSaveStatus.Saving;
+                    int count = 0;
+                    bool success = false;
+                    try {
+                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
 
-            Database.SaveChanges();
+                        if (testFound) {
+                            Console.WriteLine($"Test ID {test.ID} already exists in database");
+                            SaveStatus = DatabaseSaveStatus.Failed;
+                            return;
+                        }
+                        foreach (var technique in AllTechniques) {
+                            Database.Attempts.AddRange(test.Attempts[technique]);
+                        }
+
+                        Database.SaveChanges();
+                        success = true;
+                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("Failed saving to database, trying again. Try number: " + ++count);
+                        Console.WriteLine("Message: " + e.Message);
+                    }
+                    SaveStatus = success ? DatabaseSaveStatus.Success : DatabaseSaveStatus.Failed;
+                }
+                else {
+                    Console.WriteLine("Database saves only available to Target Practice");
+                }
+            });
         }
 
         public static List<Test> GetTests() {
@@ -377,10 +465,17 @@ namespace DataSetGenerator {
                     var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
                     var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
 
-                    var aPushS = new TechniqueInfo(attemptsPush).ToJson();
-                    var aPullS = new TechniqueInfo(attemptsPull).ToJson();
+                    if (attemptsPull.Count != 0) {
+                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
+                        var aPullS = new TechniqueInfo(attemptsPull).ToJson();
 
-                    total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
+
+                    } else { 
+                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
+
+                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS} }},\n";
+                    }
 
                 }
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using DataSetGenerator;
 
 namespace SW9_Project {
     /// <summary>
@@ -21,6 +22,7 @@ namespace SW9_Project {
 
 
         public MainWindow() {
+            DataGenerator.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
 
             Task.Factory.StartNew(() => {
@@ -28,6 +30,7 @@ namespace SW9_Project {
                 Connection.StartService();
             });
 
+            /*
             //TODO: Implement at preprossor definition :D - JK
             if (System.Environment.GetCommandLineArgs().Length > 0)
             {
@@ -43,7 +46,9 @@ namespace SW9_Project {
 
                     }
                 }
-            }
+            }*/
+
+            isBuletinBoard = !DataGenerator.TargetPracticeComputer();
 
             StartCanvasWindow(isBuletinBoard);
             
@@ -63,7 +68,7 @@ namespace SW9_Project {
                 canvas.Topmost = true;
             }
             else {
-                Screen s1 = Screen.AllScreens[1];
+                Screen s1 = Screen.AllScreens[0];
                 System.Drawing.Rectangle r1 = s1.WorkingArea;
                 canvas.Top = r1.Top;
                 canvas.Left = r1.Left;
