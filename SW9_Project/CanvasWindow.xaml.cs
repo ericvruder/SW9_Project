@@ -302,7 +302,12 @@ namespace SW9_Project {
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
                     bool correctShape = true;
+                    
                     string shape = target.Shape is Ellipse ? "circle" : "square";
+                    if (targetPractice)
+                    {
+                        shape = target.Shape.Name;
+                    }
                     GestureDirection direction = GestureParser.GetDirectionContext();
                     GestureType type = GestureParser.GetTypeContext();
                     if (direction == GestureDirection.Push) {

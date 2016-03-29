@@ -22,10 +22,24 @@ namespace SW9_Project {
                 case "square": return CreateSquare(size * 0.8);
                 case "triangle": return CreateTriangle(size);
                 case "pentagon": return CreatePentagon(size);
-                case "document": return CreateSquareTextured(size * 0.8, new BitmapImage(new Uri("resources/DocumentShape.png", UriKind.RelativeOrAbsolute)));
-                case "image": return CreateSquareTextured(size * 0.8, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)));
+                case "document": return CreateDocument(size);
+                case "image": return CreateImage(size);
                 default: return CreateStar(size, 5);
             }
+        }
+
+        public static Shape CreateDocument(double size)
+        {
+            Image img = new Image();
+            img.Source = new BitmapImage(new Uri("resources/DocumentShape.png", UriKind.RelativeOrAbsolute));
+            return CreateSquareTextured("document", size * 0.8, img);
+        }
+
+        public static Shape CreateImage(double size)
+        {
+            Image img = new Image();
+            img.Source = new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute));
+            return CreateSquareTextured("image", size * 0.8, img);
         }
 
         public static UIElement CreatePointer() {
@@ -82,12 +96,12 @@ namespace SW9_Project {
             return square;
         }
 
-        public static Rectangle CreateSquareTextured(double size, BitmapImage bitimage)
+        public static Rectangle CreateSquareTextured(string name, double size, Image bitimage)
         {
             Rectangle square = new Rectangle();
-            if (bitimage != null && System.IO.File.Exists(bitimage.UriSource.ToString())) //This is slightly overkill, better safe than sory
+            if (((BitmapImage)bitimage.Source).UriSource == null) //This is slightly overkill, better safe than sory
             {
-                ImageBrush brush = new ImageBrush(bitimage);
+                ImageBrush brush = new ImageBrush(bitimage.Source);
                 brush.TileMode = TileMode.None;
                 square.Fill = brush;
             }
@@ -100,7 +114,7 @@ namespace SW9_Project {
             square.Stroke = Brushes.Black;
             square.Height = size;
             square.Width = size;
-
+            square.Name = name;
             return square;
         }
 

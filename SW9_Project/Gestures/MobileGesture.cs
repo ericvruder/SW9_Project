@@ -11,8 +11,10 @@ namespace SW9_Project {
         public GestureType Type;
         public GestureDirection Direction;
         public DateTime Timestamp;
+        public int ImgID;
 
         public MobileGesture(dynamic jsonObject) {
+            ImgID = 0; //No image, default 
             Shape = jsonObject["Shape"];
             switch ((string)jsonObject["Type"]) {
                 case "Throw": Type = GestureType.Throw; break;
@@ -27,6 +29,10 @@ namespace SW9_Project {
                 default: break;
             }
             Timestamp = DateTime.Now;
+            if (jsonObject["ImgID"])
+            {
+                ImgID = jsonObject[ImgID];
+            }
         }
 
     }
