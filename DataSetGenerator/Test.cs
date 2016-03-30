@@ -84,6 +84,9 @@ namespace DataSetGenerator {
                 GestureType type = GestureType.Pinch;
                 GestureDirection direction = GestureDirection.Push;
                 while ((line = sr.ReadLine()) != null) {
+                    if(line == "") { continue; }
+                    string[] time = line.Trim().Split('[', ']')[1].Split(':');
+                    TimeSpan entryTime = new TimeSpan(Int32.Parse(time[0]), Int32.Parse(time[1]), Int32.Parse(time[2]));
                     if (line.Contains("Started new gesture test.")) {
 
                         string tobesearched = "Type: ";
@@ -103,7 +106,7 @@ namespace DataSetGenerator {
                         }
 
                         string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                        PracticeTime.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
+                        PracticeTime.Add(type, entryTime);
 
                     }
                     else if (line.Contains("Grid height: 10")) {
@@ -113,7 +116,7 @@ namespace DataSetGenerator {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        Attempt attempt = new Attempt(ID, line, TimeSpan.Zero, size, direction, type);
+                        Attempt attempt = new Attempt(ID, line, entryTime, size, direction, type);
                         Attempts[type].Add(attempt);
                     }
                 }

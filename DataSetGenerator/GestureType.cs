@@ -21,8 +21,4 @@ namespace DataSetGenerator {
     public enum DatabaseSaveStatus {
         Saving, Success, Failed
     }
-
-    public enum DataType {
-        TimeTaken, HitRate, Accuracy
-    }
 }
