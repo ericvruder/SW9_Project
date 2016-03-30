@@ -300,12 +300,12 @@ public class Bboard extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        menu.add(Menu.NONE, R.id.network_discovery, Menu.NONE, R.string.network_discovery);
-        menu.add(Menu.NONE, R.id.reconnect_action, Menu.NONE, R.string.reconnect_action);
-        menu.add(Menu.NONE, R.id.resetGyro, Menu.NONE, R.string.resetGyro);
-        menu.add(Menu.NONE, R.id.close_app_action, Menu.NONE, R.string.close_app_action);
+        menu.add(Menu.NONE, R.id.network_discovery, Menu.NONE, "11");
+        menu.add(Menu.NONE, R.id.reconnect_action, Menu.NONE, "22");
+        menu.add(Menu.NONE, R.id.resetGyro, Menu.NONE, "33");
+        menu.add(Menu.NONE, R.id.close_app_action, Menu.NONE, "44");
 
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
