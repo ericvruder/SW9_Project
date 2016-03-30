@@ -116,6 +116,9 @@ namespace SW9_Project {
         public void LockScreen(GestureType type, GestureDirection direction) {
             GestureParser.Pause(true);
             LockPointer();
+            videoLabel.Content = $"{type.ToString()} {direction.ToString()} \nPlease watch the \nvideo to the right";
+            videoLabel.Visibility = Visibility.Visible;
+            videoBackground.Visibility = Visibility.Visible;
 
             BlurEffect effect = new BlurEffect();
             effect.Radius = 20;
@@ -126,6 +129,8 @@ namespace SW9_Project {
 
         public void UnlockScreen() {
             UnlockPointer();
+            videoLabel.Visibility = Visibility.Hidden;
+            videoBackground.Visibility = Visibility.Hidden;
             GestureParser.Pause(false);
             ((BlurEffect)canvas.Effect).Radius = 0;
         }
