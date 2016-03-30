@@ -18,6 +18,8 @@ namespace SW9_Project
 
         static VideoWindow currentVideoWindow;
 
+        static string format = ".mp4";
+
         public VideoWindow() {
             InitializeComponent();
             MoveWindow(false);
@@ -78,7 +80,7 @@ namespace SW9_Project
         private static string GetVideoPath(GestureDirection direction, GestureType type) {
 
             string videoDirectory = @"techniques/";
-            string video = direction.ToString() + "_" + type.ToString() + ".wmv";
+            string video = direction.ToString() + "_" + type.ToString() + format;
 
             return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, videoDirectory + video);
         }
