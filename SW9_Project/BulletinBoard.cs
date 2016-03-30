@@ -58,9 +58,9 @@ namespace SW9_Project {
         /// This gets called every draw cycle, IE every time the kinect captures a frame. 
         /// </summary>
         /// <param name="gesture">Any gestures that were captured. Can be null</param>
-        public override void ExtendedDraw(KinectGesture gesture) {
+        //public override void ExtendedDraw(KinectGesture gesture) {
 
-        }
+        //}
 
 
 
