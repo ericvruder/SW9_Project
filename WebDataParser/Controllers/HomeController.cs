@@ -11,26 +11,31 @@ using WebDataParser.Models;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
-        public ActionResult Index(string testId) {
+        public ActionResult Index() {
 
-            if(testId == null) {
+            return View();
+        }
+
+        public ActionResult UserInfo(string testId) {
+
+            if (testId == null) {
                 testId = "average";
             }
 
             int totalCount = TestDataViewModelFactory.GetTotalTestCount();
-            if(testId == "average") {
+            if (testId == "average") {
                 ViewBag.NextLink = 1;
                 ViewBag.PrevLink = totalCount;
             }
             else {
                 int curr = Int32.Parse(testId);
-                if(curr + 1 > totalCount) {
+                if (curr + 1 > totalCount) {
                     ViewBag.NextLink = "average";
                 }
                 else {
                     ViewBag.NextLink = (curr + 1).ToString();
                 }
-                if(curr - 1 < 1) {
+                if (curr - 1 < 1) {
                     ViewBag.PrevLink = "average";
                 }
                 else {
@@ -41,22 +46,7 @@ namespace WebDataParser.Controllers {
             return View(TestDataViewModelFactory.GetTest(testId));
         }
 
-        public ActionResult LiveView() {            
-
-            return View();
-        }
-
         public JsonResult GetTechniqueData() {
-            /*
-            var test = new[] {
-                new[] { 1, 2,5 },
-                new[] { 3, 4,7 },
-                new[] { 4, 5 ,9},
-                new[] { 6, 7,0 }
-            };
-            return Json(test, JsonRequestBehavior.AllowGet);
-            
-            */
             var attempts = DataGenerator.Database.Attempts;
             var info = new TechniqueInformationViewModel(attempts);
             return Json(info, JsonRequestBehavior.AllowGet);

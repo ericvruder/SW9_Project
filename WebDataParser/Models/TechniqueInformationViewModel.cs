@@ -26,15 +26,25 @@ namespace WebDataParser.Models {
                                                 where attempt.Direction == GestureDirection.Pull
                                                 select attempt).ToList();
 
-            PushTime = GetTimeInformation(pushAttempts);
             PullTime = GetTimeInformation(pullAttempts);
+            PushTime = GetTimeInformation(pushAttempts);
 
             PullHitRate = GetHitRateInformation(pullAttempts); 
-            PushHitRate = GetHitRateInformation(pullAttempts);
+            PushHitRate = GetHitRateInformation(pushAttempts);
 
             PullAccuracy = GetAccuracyInformation(pullAttempts);
-            PushAccuracy = GetAccuracyInformation(pullAttempts);
+            PushAccuracy = GetAccuracyInformation(pushAttempts);
 
+        }
+
+        public TechniqueInformationViewModel() {
+            PushTime = new[] {
+                new[] { 1.0f, 2.0f, 1.3f },
+                new[] { 2.0f, 3.0f, 1.3f },
+                new[] { 3.0f, 4.0f, 1.3f },
+                new[] { 4.0f, 4.0f, 1.3f },
+
+            };
         }
 
         private float[][] GetHitRateInformation(List<Attempt> attempts) {
@@ -47,8 +57,13 @@ namespace WebDataParser.Models {
                 var techAttempts = attempts.Where(attempt => attempt.Type == technique);
 
                 float tNum = (float)technique + 1;
+
                 float tMean = (float)techAttempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / techAttempts.Count();
+                if (float.IsNaN(tMean)) tMean = 0;
+                
                 float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - tMean, 2)) / techAttempts.Count());
+                if (float.IsNaN(tStd)) tStd = 0;
+
                 hitRateInfo[(int)technique] = new float[] { tNum, tMean, tStd };
             }
             return hitRateInfo;
@@ -67,8 +82,13 @@ namespace WebDataParser.Models {
                 var techAttempts = attempts.Where(attempt => attempt.Type == technique);
 
                 float tNum = (float)technique + 1;
+
                 float tMean = (float)techAttempts.Sum(attempt => attempt.Hit ? 0 : MathHelper.DistanceToTargetCell(attempt)) / techAttempts.Count();
+                if (float.IsNaN(tMean)) tMean = 0;
+
                 float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow(MathHelper.DistanceToTargetCell(attempt) - tMean, 2)) / techAttempts.Count());
+                if (float.IsNaN(tStd)) tStd = 0;
+
                 accuracyInfo[(int)technique] = new float[] { tNum, tMean, tStd };
             }
             return accuracyInfo;
@@ -84,8 +104,13 @@ namespace WebDataParser.Models {
                 var techAttempts = attempts.Where(attempt => attempt.Type == technique);
 
                 float tNum = (float)technique + 1;
+
                 float tMean = (float)techAttempts.Sum(attempt => attempt.Time.TotalSeconds) / techAttempts.Count();
+                if (float.IsNaN(tMean)) tMean = 0;
+
                 float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - tMean, 2)) / techAttempts.Count());
+                if (float.IsNaN(tStd)) tStd = 0;
+
                 timeInfo[(int)technique] = new float[]{ tNum, tMean, tStd };
             }
             return timeInfo;

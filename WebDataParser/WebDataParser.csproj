@@ -183,7 +183,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\UserInfo.cshtml" />
     <Content Include="Testlog\1.comment">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -510,7 +510,7 @@
     <Content Include="Testlog\50.test">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Home\LiveView.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
