@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attempt.cs" />
-    <Compile Include="AttemptContext.cs" />
+    <Compile Include="AttemptRepository.cs" />
     <Compile Include="DataGenerator.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="HitboxDrawer.cs" />

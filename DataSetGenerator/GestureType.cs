@@ -21,4 +21,8 @@ namespace DataSetGenerator {
     public enum DatabaseSaveStatus {
         Saving, Success, Failed
     }
+
+    public enum DataSource {
+        Target, Field, Old
+    }
 }
