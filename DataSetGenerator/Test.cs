@@ -54,10 +54,8 @@ namespace DataSetGenerator {
                         if (!Attempts.ContainsKey(type)) {
                             Attempts.Add(type, new List<Attempt>());
                         }
-
-                        string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                        PracticeTime.Add(type, entryTime);
-                        currentTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
+                        
+                        currentTime = entryTime;
                     }
                     else if (line.Contains("Grid height: 10")) {
                         size = GridSize.Small;
@@ -66,43 +64,17 @@ namespace DataSetGenerator {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        if (source != DataSource.Old)
-                        {
-                            string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                            var cTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
-                            attemptTime = cTime - currentTime;
-                            currentTime = cTime;
+                        if (line.Contains("JL: NA")) {
+                            currentTime = entryTime;
+                            continue;
                         }
-                        else
-                        {
-                            attemptTime = TimeSpan.Zero;
-                        }
+                        attemptTime = entryTime - currentTime;
+                        currentTime = entryTime;
+                        
 
                         Attempt attempt = new Attempt(ID, line, attemptTime, size, direction, type);
                         Attempts[type].Add(attempt);
                     }
-                }
-            }
-
-            if (source == DataSource.Old)
-            {
-                foreach (var g in Attempts) {
-                    TotalTime.Add(g.Key, g.Value[0].Time);
-                    g.Value.RemoveAt(0);
-                    PracticeTime[g.Key] = TotalTime[g.Key] - PracticeTime[g.Key];
-
-
-                }
-                foreach (var gesture in Attempts) {
-                    TimeSpan currTime = TotalTime[gesture.Key];
-                    TimeSpan totTime = TimeSpan.Zero;
-                    foreach (var attempt in Attempts[gesture.Key]) {
-                        TimeSpan t = new TimeSpan(attempt.Time.Ticks);
-                        attempt.Time = t - currTime;
-                        currTime = t;
-                        totTime += attempt.Time;
-                    }
-                    TotalTime[gesture.Key] = totTime;
                 }
             }
         }
