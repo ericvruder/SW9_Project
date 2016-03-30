@@ -17,9 +17,9 @@ namespace DataSetGenerator {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
         }
 
-        public Test(int id) : this(DataGenerator.TestFileDirectory + id + ".test") { }
+        public Test(int id, DataSource source) : this(DataGenerator.TestFileDirectory(source) + id + ".test", source) { }
         
-        public Test(String path, bool old = false) : this() {
+        public Test(String path, DataSource source) : this() {
             StreamReader sr = new StreamReader(path);
             ID = path.Split('/').Last().Split('.')[0];
 
@@ -66,7 +66,7 @@ namespace DataSetGenerator {
                         size = GridSize.Large;
                     }
                     else if (line.Contains("Target")) {
-                        if (!old)
+                        if (source != DataSource.Old)
                         {
                             string[] para = line.Trim().Split('[', ']')[1].Split(':');
                             var cTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
@@ -84,7 +84,7 @@ namespace DataSetGenerator {
                 }
             }
 
-            if (old)
+            if (source == DataSource.Old)
             {
                 foreach (var g in Attempts) {
                     TotalTime.Add(g.Key, g.Value[0].Time);

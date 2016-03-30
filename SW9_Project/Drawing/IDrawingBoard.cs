@@ -25,5 +25,7 @@ namespace SW9_Project {
         void LockPointer();
         void UnlockPointer();
         void ResetGyro();
+        void LockScreen(GestureType type, GestureDirection direction);
+        void UnlockScreen();
     }
 }

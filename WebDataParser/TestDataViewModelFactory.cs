@@ -19,10 +19,11 @@ namespace WebDataParser {
         static List<GestureType> AllGestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
         public static int GetTotalTestCount() {
-
+            //FIX
+            return 0; /*
             return (from attempt in DataGenerator.Database.Attempts
                         group attempt by attempt.ID into testsFound
-                        select testsFound).Count();
+                        select testsFound).Count();*/
 
         }
         private static TestDataViewModel GetTest() {
@@ -32,6 +33,7 @@ namespace WebDataParser {
             }
             TestViewModels.Add("average", new TestDataViewModel("average"));
 
+            var allTests = new List<Test>(); /* FIX
             var allTests = (from attempt in DataGenerator.Database.Attempts
                            group attempt by attempt.ID into testsFound
                            select testsFound).ToList();
@@ -42,7 +44,7 @@ namespace WebDataParser {
                 foreach(var testgrouping in allTests.ToList()) {
                     Tests.Add(testgrouping.Key, new Test(testgrouping.ToList()));
                 }
-            }
+            }*/
 
             var tests = Tests.Values.ToList();
 
@@ -87,9 +89,11 @@ namespace WebDataParser {
 
              
             if (!Tests.ContainsKey(id)) {
+                var attempts = new List<Attempt>();
+                /*
                 var attempts = from attempt in DataGenerator.Database.Attempts
                                where attempt.ID == id
-                               select attempt;
+                               select attempt;*/
 
                 Tests[id] = new Test(attempts.ToList());
             }

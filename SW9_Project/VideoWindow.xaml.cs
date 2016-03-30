@@ -20,10 +20,11 @@ namespace SW9_Project
 
         public VideoWindow() {
             InitializeComponent();
+            MoveWindow(false);
         }
 
         public static void PlayVideo(GestureDirection direction, GestureType type) {
-            GestureParser.Pause(true);
+            canvasWindow.LockScreen(type, direction);
             if(currentVideoWindow == null) {
                 currentVideoWindow = new VideoWindow();
             }
@@ -32,23 +33,12 @@ namespace SW9_Project
             if (File.Exists(videoPath)) {
                 currentVideoWindow.videoMediaElement.Source = new Uri(videoPath, UriKind.Relative);
                 currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
-                currentVideoWindow.MoveWindow(true);
-
-                RoutedEventHandler handler = null;
-
-                handler = (sender, e) => {
-                    GestureParser.Pause(false);
+                
+                currentVideoWindow.videoMediaElement.MediaEnded += (sender, e) => {
+                    canvasWindow.UnlockScreen();
                     currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero; 
-                    
-                    currentVideoWindow.videoMediaElement.MediaEnded -= handler;
-                    currentVideoWindow.MoveWindow(false);
-                    currentVideoWindow.videoMediaElement.MediaEnded += (senderI, eI) => {
-                        currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
-                    };
                     canvasWindow.Activate();
                 };
-
-                currentVideoWindow.videoMediaElement.MediaEnded += handler;
                 
             }
         }
@@ -74,7 +64,6 @@ namespace SW9_Project
                 this.Width = r.Width;
                 this.Height = r.Height;
                 this.Show();
-                this.Activate();
             }
             else {
                 Screen s = Screen.AllScreens[0];

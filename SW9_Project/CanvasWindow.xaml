@@ -12,10 +12,16 @@
         WindowStyle="SingleBorderWindow"
         WindowState="Normal" KeyDown="Window_KeyDown"
         Background="Black"
-        
         >
 
     <Grid>
+        <Label x:Name="VideoLabel"
+           Content="ASDASDASDA"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               Foreground="Wheat"
+               FontSize="100"
+           />
         <Canvas x:Name="canvas" Loaded="canvas_Loaded" SizeChanged="canvas_SizeChanged" Margin="40, 60, 40, 60">
         </Canvas>
         
@@ -42,6 +48,15 @@
                Content="None" 
                HorizontalAlignment="Right" 
                Margin="0,14,444,0" 
+               VerticalAlignment="Top" 
+               Width="287" Height="46" 
+               Foreground ="White" 
+               Opacity="0"
+               FontSize="26.667" />
+        <Label x:Name="progressLabel" 
+               Content="None" 
+               HorizontalAlignment="Right" 
+               Margin="0,636,444,0" 
                VerticalAlignment="Top" 
                Width="287" Height="46" 
                Foreground ="White" 

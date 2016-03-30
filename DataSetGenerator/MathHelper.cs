@@ -7,6 +7,19 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     public static class MathHelper {
 
+        public static Tuple<double, double, double> GetDistances(Attempt attempt) {
+            Tuple<double, double, double> result = new Tuple<double, double, double>(0, 0, 0);
+            if (!attempt.Hit) {
+                var distances = GetXYDistance(attempt);
+                var distance = DistanceToTargetCell(attempt);
+                if (distances.Item2 == 0 && distances.Item1 == 0) {
+                    distance = 1;
+                    distances = new Tuple<double, double>(1, 1);
+                }
+                result = new Tuple<double, double, double>(distance, distances.Item1, distances.Item2);
+            }
+            return result;
+        }
         private static double DistanceSquare(Point v, Point w) {
             return Math.Pow(v.X - w.X, 2) + Math.Pow(v.Y - w.Y, 2);
         }

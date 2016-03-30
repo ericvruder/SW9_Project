@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Media;
 
 using Point = System.Windows.Point;
+using System.Windows.Media.Effects;
 
 namespace SW9_Project {
 
@@ -33,6 +34,8 @@ namespace SW9_Project {
         Target nextTarget;
         GridSize currentSize;
 
+        DataSource source;
+
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
         double squareHeight = 0, squareWidth = 0;
@@ -51,7 +54,8 @@ namespace SW9_Project {
         public CanvasWindow(bool targetPractice = true) {
             
             this.targetPractice = targetPractice;
-            DataGenerator.TargetPractice = targetPractice;
+
+            source = targetPractice ? DataSource.Target : DataSource.Field;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
@@ -107,6 +111,23 @@ namespace SW9_Project {
             runningTest = true;
             UnlockPointer();
             GestureParser.ClearGestures();
+        }
+
+        public void LockScreen(GestureType type, GestureDirection direction) {
+            GestureParser.Pause(true);
+            LockPointer();
+
+            BlurEffect effect = new BlurEffect();
+            effect.Radius = 20;
+            effect.KernelType = KernelType.Box;
+            
+            canvas.Effect = effect;
+        }
+
+        public void UnlockScreen() {
+            UnlockPointer();
+            GestureParser.Pause(false);
+            ((BlurEffect)canvas.Effect).Radius = 0;
         }
 
         public void PracticeDone() {
@@ -269,15 +290,15 @@ namespace SW9_Project {
             }
 
             DrawNextTargets();
-            if(DataGenerator.SaveStatus == DatabaseSaveStatus.Saving && !savingToDB) {
+            if(AttemptRepository.SaveStatus == DatabaseSaveStatus.Saving && !savingToDB) {
                 savingToDB = true;
                 ShowStatusMessage("Saving to database...");
             }
-            if(savingToDB && DataGenerator.SaveStatus != DatabaseSaveStatus.Saving) {
+            if(savingToDB && AttemptRepository.SaveStatus != DatabaseSaveStatus.Saving) {
                 savingToDB = false;
-                string status = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? "Failed!" : "Success!";
+                string status = AttemptRepository.SaveStatus == DatabaseSaveStatus.Failed ? "Failed!" : "Success!";
                 ShowStatusMessage(status);
-                Background = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? Brushes.Red : Brushes.Blue;
+                Background = AttemptRepository.SaveStatus == DatabaseSaveStatus.Failed ? Brushes.Red : Brushes.Blue;
             }
 
             Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
@@ -304,7 +325,7 @@ namespace SW9_Project {
                     bool correctShape = true;
                     
                     string shape = target.Shape is Ellipse ? "circle" : "square";
-                    if (targetPractice)
+                    if (!targetPractice)
                     {
                         shape = target.Shape.Name;
                     }
@@ -404,8 +425,8 @@ namespace SW9_Project {
                 canvas.Children.RemoveRange(0, canvas.Children.Count);
             }
             CreateGrid(currentSize);
-            TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
-            Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
+            TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
+            Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
         }
         
 

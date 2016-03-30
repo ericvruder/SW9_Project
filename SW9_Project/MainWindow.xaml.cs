@@ -22,7 +22,7 @@ namespace SW9_Project {
 
 
         public MainWindow() {
-            DataGenerator.SaveStatus = DatabaseSaveStatus.Success;
+            AttemptRepository.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
 
             Task.Factory.StartNew(() => {

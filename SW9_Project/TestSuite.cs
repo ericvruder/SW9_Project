@@ -16,7 +16,8 @@ namespace SW9_Project {
         private static int sgHeight, sgWidth, lgHeight, lgWidth;
         private static double canvasHeight, canvasWidth;
 
-        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
+        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth, DataSource _source) {
+            source = _source;
             sgHeight = sHeight;
             sgWidth = sWidth;
             lgHeight = lHeight;
@@ -26,6 +27,7 @@ namespace SW9_Project {
         }
 
         IDrawingBoard board;
+        static DataSource source;
 
         public TestSuite(IDrawingBoard board) {
             this.board = board;
@@ -82,8 +84,8 @@ namespace SW9_Project {
 
         private void Finish() {
             Logger.CurrentLogger.EndUser();
-            Test currentTest = new Test(UserID);
-            DataGenerator.SaveTestToDatabase(currentTest);
+            Test currentTest = new Test(UserID, source);
+            AttemptRepository.SaveTestToDatabase(currentTest);
             board.EndTest();
         }
         

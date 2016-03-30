@@ -46,8 +46,8 @@ namespace WebDataParser.Controllers {
             return View(TestDataViewModelFactory.GetTest(testId));
         }
 
-        public JsonResult GetTechniqueData() {
-            var attempts = DataGenerator.Database.Attempts;
+        public JsonResult GetTechniqueData(DataSource source = DataSource.Old) {
+            var attempts = AttemptRepository.GetAttempts(source);
             var info = new TechniqueInformationViewModel(attempts);
             return Json(info, JsonRequestBehavior.AllowGet);
         }
