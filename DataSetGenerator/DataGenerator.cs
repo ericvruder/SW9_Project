@@ -46,10 +46,10 @@ namespace DataSetGenerator {
         }
 
 
-        private static AttemptContext database;
-        public static AttemptContext Database { get {
+        private static AttemptRepository database;
+        public static AttemptRepository Database { get {
                 if(database == null) {
-                    database = new AttemptContext();
+                    database = new AttemptRepository();
                 }
                 return database;
             }

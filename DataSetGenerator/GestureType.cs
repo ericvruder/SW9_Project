@@ -22,7 +22,7 @@ namespace DataSetGenerator {
         Saving, Success, Failed
     }
 
-    public enum DataType {
-        TimeTaken, HitRate, Accuracy
+    public enum DataSource {
+        Target, Field, Old
     }
 }

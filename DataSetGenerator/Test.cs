@@ -34,6 +34,9 @@ namespace DataSetGenerator {
                 GestureDirection direction = GestureDirection.Push;
                 TimeSpan currentTime = TimeSpan.Zero;
                 while ((line = sr.ReadLine()) != null) {
+                    if(line == "") { continue; }
+                    string[] time = line.Trim().Split('[', ']')[1].Split(':');
+                    TimeSpan entryTime = new TimeSpan(Int32.Parse(time[0]), Int32.Parse(time[1]), Int32.Parse(time[2]));
                     if (line.Contains("Started new gesture test.")) {
 
                         string tobesearched = "Type: ";
@@ -53,7 +56,7 @@ namespace DataSetGenerator {
                         }
 
                         string[] para = line.Trim().Split('[', ']')[1].Split(':');
-                        PracticeTime.Add(type, new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2])));
+                        PracticeTime.Add(type, entryTime);
                         currentTime = new TimeSpan(Int32.Parse(para[0]), Int32.Parse(para[1]), Int32.Parse(para[2]));
                     }
                     else if (line.Contains("Grid height: 10")) {
