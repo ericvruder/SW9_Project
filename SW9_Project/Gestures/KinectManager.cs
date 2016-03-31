@@ -111,13 +111,13 @@ namespace SW9_Project {
             LeftHand = !LeftHand;
         }
 
+        float center = 0;
         Tuple<long, double> lastPoint = new Tuple<long, double>(0, 0);
         public void ParseBody(Body playerBody, long timeStamp) {
 
             filter.UpdateFilter(playerBody);
             var joints = filter.GetFilteredJoints();
 
-            float center = joints[(int)JointType.SpineShoulder].Y;
 
             JointType pointerHand = LeftHand ? JointType.HandLeft : JointType.HandRight;
             JointType throwHand = LeftHand ? JointType.HandRight : JointType.HandLeft;
@@ -129,6 +129,7 @@ namespace SW9_Project {
             HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
 
             if (!initialized) {
+                center = joints[(int)JointType.SpineShoulder].Y;
                 LeftHand = joints[(int)JointType.HandLeft].Z < joints[(int)JointType.HandRight].Z;
                 board.PointAt(pointerLocation.X, pointerLocation.Y - center);
                 return;

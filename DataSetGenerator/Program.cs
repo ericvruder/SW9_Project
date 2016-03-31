@@ -9,8 +9,7 @@ namespace DataSetGenerator {
         static void Main(string[] args) {
 
             DataGenerator.TargetPracticeComputer();
-
-            //DataGenerator.FixLargeJump();
+            
 
             var oldTest = DataGenerator.GetTests(DataSource.Old);
             var newTest = DataGenerator.GetTests(DataSource.Target);

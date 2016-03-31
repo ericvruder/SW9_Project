@@ -60,63 +60,6 @@ namespace DataSetGenerator {
             return tests;
         }
 
-
-        public static void FixLargeJump() {
-            var files = Directory.GetFiles(TestFileDirectory(DataSource.Old), "*.test");
-            foreach(var file in files) {
-                List<string> lines = new List<string>();
-                using(StreamReader sr = new StreamReader(file)) {
-                    bool found = false;
-                    string line = ""; int count = 0;
-                    while ((line = sr.ReadLine()) != null) {
-                        if (line.Contains("Started new gesture")) {
-                            lines.Add(line);
-                            found = false;
-                        }
-                        else if (line.Contains("JL: NA")) {
-                            if (!found) {
-                                lines.Add(line);
-                                found = true;
-                            }
-                            else {
-                                count++;
-                                line = line.Replace("JL: NA", "JL: Long");
-                                lines.Add(line);
-                            }
-                        }
-                        else {
-                            lines.Add(line);
-                        }
-                    }
-                    Console.WriteLine("Before: " + count);
-                }
-                using(StreamWriter sw = new StreamWriter(new FileStream(file, FileMode.Create))) {
-                    foreach(var line in lines) {
-                        sw.WriteLine(line);
-                    }
-                }
-
-                using (StreamReader sr = new StreamReader(file)) {
-                    bool found = false;
-                    string line = ""; int count = 0;
-                    while ((line = sr.ReadLine()) != null) {
-                        if (line.Contains("Started new gesture")) {
-                            found = false;
-                        }
-                        if (line.Contains("JL: NA")) {
-                            if (!found) {
-                                found = true;
-                            }
-                            else {
-                                count++;
-                            }
-                        }
-                    }
-                    Console.WriteLine("After: " + count);
-                }
-            }
-        }
-
         
         
         public static void CreateCSVDocument(DataSource source) {
