@@ -430,7 +430,7 @@ namespace SW9_Project {
                 canvas.Children.RemoveRange(0, canvas.Children.Count);
             }
             CreateGrid(currentSize);
-            TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
+            TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
             Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
         }
         
@@ -471,7 +471,7 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
-                    currentTest = new TestSuite(this);
+                    currentTest = new TestSuite(this, source);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
                 } else if (runningTest && !runningGesture) {
@@ -524,7 +524,7 @@ namespace SW9_Project {
             Logger.CurrentLogger.DebugMode = true;
 
             ShowStatusMessage(type.ToString());
-            currentTest = new TestSuite(this);
+            currentTest = new TestSuite(this, source);
             currentTest.StartDebugTest(type);
 
         }

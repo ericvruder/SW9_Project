@@ -53,52 +53,67 @@ namespace DataSetGenerator {
 
         public static List<Test> GetTests(DataSource source) {
             List<Test> tests = new List<Test>();
-            string[] files = Directory.GetFiles(TestFileDirectory(source), "*.test");
-            foreach (var file in files) {
-                string id = file.Split('/').Last().Split('.')[0];
-                Test test = null;
-                test = new Test(file, source);
-                if (source == DataSource.Old) {
-                    FixTest(test);
-                }
-                tests.Add(test);
+            int count = Directory.GetFiles(TestFileDirectory(source), "*.test").Count();
+            for(int i = 1; i <= count; i++) {
+                tests.Add(new Test(i, source));
             }
             return tests;
         }
 
-        static void FixTest(Test test) {
-            switch (test.ID) {
-                case "1":
-                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                    test.Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][5].Size = GridSize.Large;
-                    test.Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][11].Size = GridSize.Large;
-                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][13].Size = GridSize.Large;
-                    break;
-                case "2":
-                    test.Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                    break;
-                case "4":
-                    test.Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
-                    test.Attempts[GestureType.Throw][17].Size = GridSize.Large;
-                    test.Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
-                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Tilt][14].Size = GridSize.Small;
-                    break;
-                case "5":
-                    test.Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
-                    break;
-                case "8":
-                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                    break;
-                default:
-                    break;
+
+        public static void FixLargeJump() {
+            var files = Directory.GetFiles(TestFileDirectory(DataSource.Old), "*.test");
+            foreach(var file in files) {
+                List<string> lines = new List<string>();
+                using(StreamReader sr = new StreamReader(file)) {
+                    bool found = false;
+                    string line = ""; int count = 0;
+                    while ((line = sr.ReadLine()) != null) {
+                        if (line.Contains("Started new gesture")) {
+                            lines.Add(line);
+                            found = false;
+                        }
+                        else if (line.Contains("JL: NA")) {
+                            if (!found) {
+                                lines.Add(line);
+                                found = true;
+                            }
+                            else {
+                                count++;
+                                line = line.Replace("JL: NA", "JL: Long");
+                                lines.Add(line);
+                            }
+                        }
+                        else {
+                            lines.Add(line);
+                        }
+                    }
+                    Console.WriteLine("Before: " + count);
+                }
+                using(StreamWriter sw = new StreamWriter(new FileStream(file, FileMode.Create))) {
+                    foreach(var line in lines) {
+                        sw.WriteLine(line);
+                    }
+                }
+
+                using (StreamReader sr = new StreamReader(file)) {
+                    bool found = false;
+                    string line = ""; int count = 0;
+                    while ((line = sr.ReadLine()) != null) {
+                        if (line.Contains("Started new gesture")) {
+                            found = false;
+                        }
+                        if (line.Contains("JL: NA")) {
+                            if (!found) {
+                                found = true;
+                            }
+                            else {
+                                count++;
+                            }
+                        }
+                    }
+                    Console.WriteLine("After: " + count);
+                }
             }
         }
 

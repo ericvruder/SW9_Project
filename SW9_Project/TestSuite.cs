@@ -16,8 +16,7 @@ namespace SW9_Project {
         private static int sgHeight, sgWidth, lgHeight, lgWidth;
         private static double canvasHeight, canvasWidth;
 
-        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth, DataSource _source) {
-            source = _source;
+        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
             sgHeight = sHeight;
             sgWidth = sWidth;
             lgHeight = lHeight;
@@ -27,9 +26,10 @@ namespace SW9_Project {
         }
 
         IDrawingBoard board;
-        static DataSource source;
+        DataSource source;
 
-        public TestSuite(IDrawingBoard board) {
+        public TestSuite(IDrawingBoard board, DataSource source) {
+            this.source = source;
             this.board = board;
             UserID = Logger.CurrentLogger.NewUser();
         }

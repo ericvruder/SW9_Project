@@ -16,15 +16,12 @@ namespace DataSetGenerator {
         private Test() {
             Attempts = new Dictionary<GestureType, List<Attempt>>();
         }
-
-        public Test(int id, DataSource source) : this(DataGenerator.TestFileDirectory(source) + id + ".test", source) { }
         
-        public Test(String path, DataSource source) : this() {
+        public Test(int id, DataSource source) : this() {
+            string path = DataGenerator.TestFileDirectory(source) + id + ".test";
             StreamReader sr = new StreamReader(path);
             ID = path.Split('/').Last().Split('.')[0];
-
-            var TotalTime = new Dictionary<GestureType, TimeSpan>();
-            var PracticeTime = new Dictionary<GestureType, TimeSpan>();
+            
             TimeSpan attemptTime = default(TimeSpan);
 
             using (sr) {
@@ -77,6 +74,10 @@ namespace DataSetGenerator {
                     }
                 }
             }
+
+            if(source == DataSource.Old) {
+                FixTest();
+            }
         }
 
         public Test(List<Attempt> attempts) : this() {
@@ -86,6 +87,44 @@ namespace DataSetGenerator {
                                      where attempt.Type == technique
                                      select attempt;
                 Attempts[technique] = techniqueQuery.ToList();
+            }
+        }
+
+
+
+        private void FixTest() {
+            switch (ID) {
+                case "1":
+                    Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                    Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                    Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Swipe][5].Size = GridSize.Large;
+                    Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Swipe][11].Size = GridSize.Large;
+                    Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Swipe][13].Size = GridSize.Large;
+                    break;
+                case "2":
+                    Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                    break;
+                case "4":
+                    Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
+                    Attempts[GestureType.Throw][17].Size = GridSize.Large;
+                    Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
+                    Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Tilt][14].Size = GridSize.Small;
+                    break;
+                case "5":
+                    Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
+                    break;
+                case "8":
+                    Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
+                    Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                    break;
+                default:
+                    break;
             }
         }
     }

@@ -47,6 +47,8 @@ namespace SW9_Project {
                 }
             }
 
+            Target.Initialize();
+
             StartCanvasWindow(isBuletinBoard);
             
         }
