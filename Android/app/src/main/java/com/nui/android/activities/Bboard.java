@@ -45,7 +45,7 @@ public class Bboard extends BaseActivity {
 
     public static String shape;
     public static String nextShape;
-
+    //TODO ImageView - exchange (data?) with Document and Image
     private ImageView circleView;
     private ImageView squareView;
 
@@ -96,10 +96,11 @@ public class Bboard extends BaseActivity {
     private boolean pushOrPull;
 
     private boolean gyroRunning = false;
+    //TODO Overide and empty - making sure no gyro is used to avoid power drain.
     private void InitGyroScope(){
 
         sm = (SensorManager) getSystemService(SENSOR_SERVICE);
-        // TODO provide support for gyroscope (rotation vector is flawed in early
+        // ODO provide support for gyroscope (rotation vector is flawed in early
         // versions of android)
         rv = sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
@@ -135,21 +136,21 @@ public class Bboard extends BaseActivity {
         }else {
             Network.getInstance().Reconnect();
         }
-        // TODO rewrite the sensor acquisition with NDK
+        // ODO rewrite the sensor acquisition with NDK
         rv_sel = new RotationVectorListener();
 
     }
-
+    //TODO should just use SUPER
     public boolean PushOrPull(){
         //True = push, false = pull
         return pushOrPull;
     }
-
+    //TODO should just use SUPER
     protected void initNetwork()
     {
         Network.initInstance(this);
     }
-
+    //TODO not needed for fieldtest 1, return true?
     public void StartPullTest(){
         pushOrPull = false;
         circleView.setVisibility(View.INVISIBLE);
@@ -171,6 +172,7 @@ public class Bboard extends BaseActivity {
     }
 
     String gesture = "";
+    //TODO should just use SUPER
     public void SetGesture(String gesture){
         this.gesture = gesture;
         sendGyroData = false;
@@ -190,11 +192,13 @@ public class Bboard extends BaseActivity {
             default: break;
         }
     }
-
+    //TODO should just use SUPER
     public String GetGesture(){
         return gesture;
     }
 
+    //TODO overide, need to use different shape views.
+    // can perhaps use super if image data can be overrided by the bboard xml file.
     public void StartPushTest(){
 
         pushOrPull = true;
@@ -240,18 +244,20 @@ public class Bboard extends BaseActivity {
 
         });
     }
-
+    //TODO use super
     boolean pullPinchWaiting = false;
     public void AwaitingPullPinch(boolean waiting){
         pullPinchWaiting = waiting;
     }
-
+    //TODO overide, need to use different shape views.
+    // can perhaps use super if image data can be overrided by the bboard xml file.
     public void ClearShapes(){
         shape = null;
         squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
         circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
     }
-
+    //TODO overide, need to use different shape views.
+    // can perhaps use super if image data can be overrided by the bboard xml file.
     public void SwitchPosition() {
         ClearShapes();
         if(count > MAX_COUNT || random.nextBoolean()) {
@@ -269,7 +275,7 @@ public class Bboard extends BaseActivity {
             count++;
         }
     }
-
+    //TODO not needed for 1.st FS , return true?
     public void SetShape(String shape) {
         ClearShapes();
 
@@ -288,7 +294,7 @@ public class Bboard extends BaseActivity {
     public static String GetSelectedShape(){
         return shape;
     }
-
+    //TODO: fix crash?
     public void CloseApp(){
         this.finish();
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -297,6 +303,7 @@ public class Bboard extends BaseActivity {
         startActivity(intent);
     }
 
+    // fixed by bjarke
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
