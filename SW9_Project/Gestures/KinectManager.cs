@@ -67,6 +67,10 @@ namespace SW9_Project {
 
         }
 
+        public void Recalibrate() {
+            initialized = false;
+        }
+
         Queue<float> throwHandLocations = new Queue<float>();
         bool initialized = false;
 

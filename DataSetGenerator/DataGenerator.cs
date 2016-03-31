@@ -60,6 +60,10 @@ namespace DataSetGenerator {
             return tests;
         }
 
+        public static Test GetTest(int test, DataSource source) {
+            return new Test(test, source);
+        }
+
         
         
         public static void CreateCSVDocument(DataSource source) {

@@ -17,7 +17,10 @@ namespace WebDataParser.Models {
         public float[][] PullHitRate { get; set; }
         public float[][] PullAccuracy { get; set; }
 
-        public TechniqueInformationViewModel(IEnumerable<Attempt> attempts) {
+        public int TotalUsers { get; set; }
+        public int TotalAttempts { get; set; }
+
+        public TechniqueInformationViewModel(IEnumerable<Attempt> attempts, int count) {
 
             List<Attempt> pushAttempts = (from attempt in attempts
                                                 where attempt.Direction == GestureDirection.Push
@@ -25,6 +28,9 @@ namespace WebDataParser.Models {
             List<Attempt> pullAttempts = (from attempt in attempts
                                                 where attempt.Direction == GestureDirection.Pull
                                                 select attempt).ToList();
+
+            TotalUsers = count;
+            TotalAttempts = pushAttempts.Count;
 
             PullTime = GetTimeInformation(pullAttempts);
             PushTime = GetTimeInformation(pushAttempts);
@@ -35,16 +41,6 @@ namespace WebDataParser.Models {
             PullAccuracy = GetAccuracyInformation(pullAttempts);
             PushAccuracy = GetAccuracyInformation(pushAttempts);
 
-        }
-
-        public TechniqueInformationViewModel() {
-            PushTime = new[] {
-                new[] { 1.0f, 2.0f, 1.3f },
-                new[] { 2.0f, 3.0f, 1.3f },
-                new[] { 3.0f, 4.0f, 1.3f },
-                new[] { 4.0f, 4.0f, 1.3f },
-
-            };
         }
 
         private float[][] GetHitRateInformation(List<Attempt> attempts) {

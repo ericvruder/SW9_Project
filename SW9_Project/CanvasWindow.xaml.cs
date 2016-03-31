@@ -498,6 +498,11 @@ namespace SW9_Project {
                 StartDebugTest(GestureType.Tilt);
             } 
 
+            else if(e.Key == System.Windows.Input.Key.Enter) {
+                kinectManager.Recalibrate();
+                ShowStatusMessage("Recalibrating...");
+            }
+
             else if (e.Key == System.Windows.Input.Key.U) {
                 VideoWindow.PlayVideo(GestureDirection.Pull, types.Dequeue());
             }

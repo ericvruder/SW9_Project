@@ -12,7 +12,7 @@
             type: "GET",
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            url: '/Home/GetTechniqueData',
+            url: '/Home/GetTechniqueData/?source=@ViewBag.Source',
             error: function (asd, errorText) {
                 alert("An error occurred: " + errorText);
             },

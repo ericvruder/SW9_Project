@@ -17,7 +17,7 @@ namespace SW9_Project.Logging
     class Logger
     {
         private static string directory;
-        StreamWriter testStreamWriter; //FIX
+        StreamWriter testStreamWriter; 
 
         int userID = 0;
 
@@ -222,7 +222,7 @@ namespace SW9_Project.Logging
                             }
                         }
                     }
-                } catch (Exception) { } //TODO: FIX
+                } catch (Exception) { } 
             }
         }
 

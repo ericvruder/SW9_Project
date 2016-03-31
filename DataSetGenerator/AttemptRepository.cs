@@ -28,51 +28,74 @@ namespace DataSetGenerator {
             List<Test> tests = DataGenerator.GetTests(DataSource.Old);
 
             foreach (var test in tests) {
-                try {
-                    Console.WriteLine($"Searching for {test.ID} in database...");
-                    var testFound = Repository.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-
-                    if (testFound) {
-                        Console.WriteLine($"Test ID {test.ID} already exists in database");
-                        continue;
-                    }
-                    else {
-                        Console.WriteLine($"Not found, saving {test.ID} to database...");
-                    }
-                    foreach (var technique in DataGenerator.AllTechniques) {
-                        Repository.Attempts.AddRange(test.Attempts[technique]);
-                    }
-
-                    Repository.SaveChanges();
-                    Console.WriteLine($"Successfully saved test number {test.ID} to database");
-                }
-                catch (Exception e) {
-                    Console.WriteLine("Message: " + e.Message);
-                }
+                SaveTest(test); 
             }
         }
 
         public static List<Attempt> GetAttempts(DataSource source) {
-            return attemptRepository.Attempts.ToList();
+            List<Attempt> attempts = null;
+            lock (Repository) {
+                attempts = Repository.Attempts
+                .Where(x => x.Source == source).ToList();
+            }
+            return attempts;
+        }
+
+        public static int GetTestCount(DataSource source) {
+
+            int count = 0;
+            lock (Repository) {
+                count = (from attempt in Repository.Attempts
+                         where attempt.Source == source
+                         group attempt by attempt.ID into testsFound
+                         select testsFound).Count();
+            }
+            return count;
+
+        }
+
+        public static Test GetTest(string id, DataSource source) {
+            List<Attempt> attempts = null;
+            lock(Repository) {
+                attempts = Repository.Attempts
+                    .Where(x => x.Source == source && x.ID == id)
+                    .ToList();
+            }
+
+            return new Test(attempts);
         }
 
         public static List<Test> GetTests(DataSource source) {
-            return new List<Test>();
+
+            List<Test> tests = new List<Test>();
+
+            lock (Repository) {
+                var allTests = Repository.Attempts
+                    .Where(attempt => attempt.Source == source)
+                    .GroupBy(attempt => attempt.ID, attempt => attempt);
+
+                foreach (var testgrouping in allTests) {
+                    tests.Add(new Test(testgrouping.ToList()));
+                }
+            }
+            
+            return tests;
         }
 
-        public static void SaveTestToDatabase(Test test) {
-            Task.Factory.StartNew(() => {
+        private static void SaveTest(Test test) {
+            lock (Repository) {
                 SaveStatus = DatabaseSaveStatus.Saving;
-                int count = 0;
+                DataSource source = test.Attempts.First().Value.First().Source;
                 bool success = false;
                 try {
-                    var testFound = Repository.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-
+                    Console.WriteLine($"Searching for {test.ID} in database...");
+                    var testFound = Repository.Attempts.Where(z => z.ID == test.ID && z.Source == source).Count() > 0;
                     if (testFound) {
-                        Console.WriteLine($"Test ID {test.ID} already exists in database");
+                        Console.WriteLine($"Test ID {test.ID} from {source} data source already exists in database");
                         SaveStatus = DatabaseSaveStatus.Failed;
                         return;
                     }
+                    Console.WriteLine($"Test ID {test.ID} not found, saving...");
                     foreach (var technique in DataGenerator.AllTechniques) {
                         Repository.Attempts.AddRange(test.Attempts[technique]);
                     }
@@ -82,10 +105,16 @@ namespace DataSetGenerator {
                     Console.WriteLine($"Successfully saved test number {test.ID} to database");
                 }
                 catch (Exception e) {
-                    Console.WriteLine("Failed saving to database, trying again. Try number: " + ++count);
+                    Console.WriteLine("Failed saving to database");
                     Console.WriteLine("Message: " + e.Message);
                 }
                 SaveStatus = success ? DatabaseSaveStatus.Success : DatabaseSaveStatus.Failed;
+            }
+        }
+
+        public static void SaveTestToDatabase(Test test) {
+            Task.Factory.StartNew(() => {
+                SaveTest(test);
             });
         }
     }

@@ -11,18 +11,18 @@ using WebDataParser.Models;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
-        public ActionResult Index() {
-
+        public ActionResult Index(DataSource source = DataSource.Old) {
+            ViewBag.Source = source;
             return View();
         }
 
-        public ActionResult UserInfo(string testId) {
+        public ActionResult UserInfo(string testId, DataSource source = DataSource.Old) {
 
             if (testId == null) {
                 testId = "average";
             }
 
-            int totalCount = TestDataViewModelFactory.GetTotalTestCount();
+            int totalCount = AttemptRepository.GetTestCount(source);
             if (testId == "average") {
                 ViewBag.NextLink = 1;
                 ViewBag.PrevLink = totalCount;
@@ -43,12 +43,13 @@ namespace WebDataParser.Controllers {
                 }
             }
 
-            return View(TestDataViewModelFactory.GetTest(testId));
+            return View(TestDataViewModelFactory.GetTest(testId, source));
         }
 
         public JsonResult GetTechniqueData(DataSource source = DataSource.Old) {
             var attempts = AttemptRepository.GetAttempts(source);
-            var info = new TechniqueInformationViewModel(attempts);
+            var count = AttemptRepository.GetTestCount(source);
+            var info = new TechniqueInformationViewModel(attempts, count);
             return Json(info, JsonRequestBehavior.AllowGet);
         }
 

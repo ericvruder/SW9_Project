@@ -69,7 +69,7 @@ namespace DataSetGenerator {
                         currentTime = entryTime;
                         
 
-                        Attempt attempt = new Attempt(ID, line, attemptTime, size, direction, type);
+                        Attempt attempt = new Attempt(ID, line, attemptTime, size, direction, type, source);
                         Attempts[type].Add(attempt);
                     }
                 }
