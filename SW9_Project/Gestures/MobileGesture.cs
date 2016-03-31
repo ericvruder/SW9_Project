@@ -29,10 +29,12 @@ namespace SW9_Project {
                 default: break;
             }
             Timestamp = DateTime.Now;
-            //if (jsonObject["ImgID"])
-            //{
-            //    ImgID = jsonObject[ImgID];
-            //}
+
+            //for field study
+            if (jsonObject.Property("ImgID") != null)
+            {
+                ImgID = jsonObject["ImgID"];
+            }
         }
 
     }
