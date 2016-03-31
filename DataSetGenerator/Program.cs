@@ -11,6 +11,7 @@ namespace DataSetGenerator {
             var oldTest = DataGenerator.GetTests(DataSource.Old);
             var targetTest = DataGenerator.GetTests(DataSource.Target);
             var fieldTest = DataGenerator.GetTests(DataSource.Field);
+
             Console.Read();
             
         }

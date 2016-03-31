@@ -1,8 +1,6 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "LiveView";
 }
-
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -53,6 +51,8 @@
                 options.yaxis = { min: -150, max: 300 }
                 $.plot("#Accuracy", accData, options);
 
+                $('#TotalUsers').append(data["TotalUsers"]);
+                $('#TotalAttempts').append(data["TotalAttempts"]);
             }
 
         });
@@ -82,6 +82,10 @@
         <div class="graph-container">
             <p> Accuracy </p>
             <div id="Accuracy" class="graph"></div>
+        </div>
+        <div>
+            <p id="TotalUsers">Total amount of users: </p>
+            <p id="TotalAttempts">Total amount of attempts: </p>
         </div>
     </div>
 
