@@ -107,6 +107,7 @@ namespace SW9_Project {
 
         public void StartNewGesture() {
             this.Background = Brushes.DarkGoldenrod;
+            gestureCount++;
             runningGesture = true;
             runningTest = true;
             UnlockPointer();
@@ -116,7 +117,7 @@ namespace SW9_Project {
         public void LockScreen(GestureType type, GestureDirection direction) {
             GestureParser.Pause(true);
             LockPointer();
-            videoLabel.Content = $"{type.ToString()} {direction.ToString()} \nPlease watch the \nvideo to the right";
+            videoLabel.Content = $"#{gestureCount} {type.ToString()} {direction.ToString()} \nPlease watch the \nvideo to the right";
             videoLabel.Visibility = Visibility.Visible;
             videoBackground.Visibility = Visibility.Visible;
 
@@ -544,6 +545,7 @@ namespace SW9_Project {
         }
 
         private bool _inStateChange;
+        private int gestureCount;
 
         public static double GyroPositionX { get; set; }
         public static double GyroPositionY { get; set; }
