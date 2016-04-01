@@ -50,7 +50,11 @@ namespace SW9_Project {
         /// </summary>
         public BulletinBoard() : base(false) {
             canvas.Background = Brushes.Gray;
-            imgContainer = new ImageContainer();
+            imgContainer = new ImageContainer(); //used for storing images/documents on the screen.
+            //TODO: implement document (image + label) and make the image container able to contain that.
+            //Then a image is simply with an empty string.
+            //documents doesn't need to be resized.
+            //TODO: target image MUST float ontop of exsiting images.
             
         }
 
@@ -94,7 +98,6 @@ namespace SW9_Project {
         private static TransformedBitmap ResizeImage(BitmapImage image, double width, double height, double owidth, double oheight)
         {
             var bitmap = new TransformedBitmap(image, new ScaleTransform( width / owidth,  height / oheight));
-
             return bitmap;
         }
 

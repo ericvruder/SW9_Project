@@ -27,7 +27,7 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
-        bool targetPractice = true;
+        bool targetPractice = true; // this is Eric and Bjarke's test (true), else FieldTest(false);
 
         Cell[,] grid;
         Cell target, extraTarget;
@@ -186,12 +186,19 @@ namespace SW9_Project {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
                     if (!targetPractice){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
-                    
-                    
-                    if(currentSize != nextTarget.Size) {
-                        Logger.CurrentLogger.ChangeSize(nextTarget.Size);
+
+                    if (targetPractice)
+                    {
+                        if (currentSize != nextTarget.Size)
+                        {
+                            Logger.CurrentLogger.ChangeSize(nextTarget.Size);
+                        }
+                        CreateGrid(nextTarget.Size);
                     }
-                    CreateGrid(nextTarget.Size);
+                    else
+                    {
+                        CreateGrid(GridSize.Large); //we need large all the time for FieldTest
+                    }
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         connection?.SetNextShape(shape);
@@ -363,6 +370,11 @@ namespace SW9_Project {
             double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.Width / 2);
             double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.Height / 2);
             Canvas.SetZIndex(t, 500);
+            if (!targetPractice)
+            {
+                //TODO: zorder = pos +1 (starts at 501) - Add a pushback in the imagecontainer code for recycling.
+                Canvas.SetZIndex(t, 500);
+            }
 
             canvas.Children.Add(t);
             cell.Shape = t;
