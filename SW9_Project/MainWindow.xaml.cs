@@ -40,21 +40,21 @@ namespace SW9_Project {
                     switch (argument)
                     {
                         case "-BB":
-                            isBuletinBoard = true;
+                            GlobalVars.isTargetPractice = false;
                             break;
 
                     }
                 }
             }
-
+            GlobalVars.isTargetPractice = true;
             Target.Initialize();
 
-            StartCanvasWindow(isBuletinBoard);
+            StartCanvasWindow(GlobalVars.isTargetPractice);
             
         }
 
-        private void StartCanvasWindow(bool bulletinBoard) {
-            CanvasWindow canvas = bulletinBoard ? new BulletinBoard() : new CanvasWindow();
+        private void StartCanvasWindow(bool targetPractice) {
+            CanvasWindow canvas = targetPractice ? new CanvasWindow(): new BulletinBoard() ;
             if (Screen.AllScreens.Length > 1) {
                 int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
                 Screen s2 = Screen.AllScreens[mainScreen];
