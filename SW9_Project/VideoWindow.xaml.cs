@@ -43,6 +43,12 @@ namespace SW9_Project
                 };
                 
             }
+            else
+            {
+                canvasWindow.UnlockScreen();
+                currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
+                canvasWindow.Activate();
+            }
         }
         
 
