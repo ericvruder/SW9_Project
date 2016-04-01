@@ -106,8 +106,8 @@ namespace SW9_Project {
         }
 
         public void StartNewGesture() {
+            progressLabel.Content = $"Progress: {++gestureCount}/8";
             this.Background = Brushes.DarkGoldenrod;
-            gestureCount++;
             runningGesture = true;
             runningTest = true;
             UnlockPointer();
@@ -541,7 +541,7 @@ namespace SW9_Project {
         }
 
         private bool _inStateChange;
-        private int gestureCount;
+        private int gestureCount = 0;
 
         public static double GyroPositionX { get; set; }
         public static double GyroPositionY { get; set; }

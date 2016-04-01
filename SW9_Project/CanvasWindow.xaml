@@ -65,13 +65,12 @@
                Opacity="0"
                FontSize="26.667" />
         <Label x:Name="progressLabel" 
-               Content="None" 
+               Content="" 
                HorizontalAlignment="Right" 
-               Margin="0,636,444,0" 
+               Margin="0,668,444,-21" 
                VerticalAlignment="Top" 
                Width="287" Height="46" 
                Foreground ="White" 
-               Opacity="0"
                FontSize="26.667" />
     </Grid>
 </Window>
