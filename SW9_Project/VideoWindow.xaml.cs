@@ -22,7 +22,6 @@ namespace SW9_Project {
         public static void PlayVideo(GestureDirection direction, GestureType type) {
             videoWindow?.Close();
             videoWindow = new VideoWindow(direction, type);
-            canvasWindow.LockScreen(type, direction);
         }
 
         public VideoWindow(GestureDirection direction, GestureType type) {
@@ -30,19 +29,35 @@ namespace SW9_Project {
             InitializeComponent();
             this.Title = type + " " + direction;
 
-            SetScreen(false);
-
             vlc = new AxVLCPlugin2();
-
             formHost.Child = vlc;
-
-            var uri = CreateUriTo(type, direction);
-            var convertedURI = uri.AbsoluteUri;
             vlc.CreateControl();
-            vlc.playlist.add(convertedURI);
+
+
+            var videoPath = CreateUriTo(type, direction);
+            MoveScreen(true);
+            GestureParser.Pause(true);
+            vlc.playlist.add(videoPath);
             vlc.playlist.play();
+
+            EventHandler handler = null;
+
+            handler = (sender, e) => {
+                vlc.MediaPlayerEndReached -= handler;
+                GestureParser.Pause(false);
+                MoveScreen(false);
+                canvasWindow.Activate();
+                vlc.playlist.play();
+                vlc.MediaPlayerEndReached += (senderI, eI) => {
+                    vlc.playlist.play();
+                };
+
+            };
+
+            vlc.MediaPlayerEndReached += handler;
         }
-        private void SetScreen(bool primaryScreen) {
+
+        private void MoveScreen(bool primaryScreen) {
 
             if (Screen.AllScreens.Length > 1) {
                 int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
@@ -63,7 +78,6 @@ namespace SW9_Project {
                 Left = r.Left;
                 Show();
             }
-            canvasWindow.Activate();
 
         }
         static CanvasWindow canvasWindow;
@@ -71,11 +85,11 @@ namespace SW9_Project {
             canvasWindow = window;
         }
 
-        private static Uri CreateUriTo(GestureType type, GestureDirection direction) {
+        private static string CreateUriTo(GestureType type, GestureDirection direction) {
 
             string videoDirectory = @"techniques/" + direction.ToString() + "_" + type.ToString() + ".mp4";
             string path = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, videoDirectory);
-            return new Uri(path);
+            return new Uri(path).AbsoluteUri;
 
         }
 

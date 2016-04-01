@@ -113,28 +113,7 @@ namespace SW9_Project {
             UnlockPointer();
             GestureParser.ClearGestures();
         }
-
-        public void LockScreen(GestureType type, GestureDirection direction) {
-            GestureParser.Pause(true);
-            LockPointer();
-            videoLabel.Content = $"#{gestureCount} {type.ToString()} {direction.ToString()} \nPlease watch the \nvideo to the right";
-            videoLabel.Visibility = Visibility.Visible;
-            videoBackground.Visibility = Visibility.Visible;
-
-            BlurEffect effect = new BlurEffect();
-            effect.Radius = 20;
-            effect.KernelType = KernelType.Box;
-            
-            canvas.Effect = effect;
-        }
-
-        public void UnlockScreen() {
-            UnlockPointer();
-            videoLabel.Visibility = Visibility.Hidden;
-            videoBackground.Visibility = Visibility.Hidden;
-            GestureParser.Pause(false);
-            ((BlurEffect)canvas.Effect).Radius = 0;
-        }
+        
 
         public void PracticeDone() {
             this.Background = Brushes.Black;
