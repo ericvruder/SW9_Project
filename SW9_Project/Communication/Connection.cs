@@ -109,7 +109,6 @@ namespace SW9_Project {
                     sw.AutoFlush = true;
                     string start = GestureParser.GetDirectionContext() == GestureDirection.Pull ? "startpull" : "startpush";
                     sw.WriteLine(start);
-
                     if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         sw.WriteLine(nextShape);
                     }
