@@ -109,15 +109,16 @@ namespace SW9_Project {
                     sw.AutoFlush = true;
                     string start = GestureParser.GetDirectionContext() == GestureDirection.Pull ? "startpull" : "startpush";
                     sw.WriteLine(start);
+                    if(GestureParser.GetDirectionContext() == GestureDirection.Pull) {
+                        sw.WriteLine(nextShape);
+                    }
+
                     SetGesture(GestureParser.GetTypeContext());
                     while (true)
                     {
                         String line = sr.ReadLine();
-                        if (line.Contains("nextshape:"))
-                        {
-                            nextShape = line.Split(':')[1];
-                        }
-                        else if (line.Contains("resetgyro"))
+
+                        if (line.Contains("resetgyro"))
                         {
                             gyro.ResetGyroscope();
                         }
@@ -165,6 +166,7 @@ namespace SW9_Project {
 
         String nextShape = "";
         public void SetNextShape(string shape) {
+            nextShape = shape;
             sw.WriteLine("nextshape:" + shape);
         }
 
