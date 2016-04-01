@@ -11,12 +11,20 @@ public class MobileGesture {
         Direction = direction;
     }
 
+    public MobileGesture(String shape, String type, String direction, Integer imgid){
+        Type = type;
+        Shape = shape;
+        Direction = direction;
+        ImgID = imgid;
+    }
+
     public MobileGesture(String shape, String type){
-        this(shape, type, "");
+        this(shape, type, "", 0);
     }
 
     public String Type;
     public String Shape;
     public String Direction;
+    public Integer ImgID;
 
 }

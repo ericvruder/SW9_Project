@@ -51,8 +51,8 @@ namespace DataSetGenerator {
 
         }
 
-        public static void CreateHitboxes() {
-            var tests = DataGenerator.GetTests();
+        public static void CreateHitboxes(DataSource source) {
+            var tests = DataGenerator.GetTests(source);
             if (tests.Count == 0) return;
             Dictionary<GestureType, List<Attempt>> techAttempts = new Dictionary<GestureType, List<Attempt>>();
             Dictionary<GridSize, List<Attempt>> sizeAttempts = new Dictionary<GridSize, List<Attempt>>();

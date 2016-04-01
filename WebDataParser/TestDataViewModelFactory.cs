@@ -18,29 +18,18 @@ namespace WebDataParser {
         static Dictionary<string, TestDataViewModel> TestViewModels = new Dictionary<string, TestDataViewModel>();
         static List<GestureType> AllGestures = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
 
-        public static int GetTotalTestCount() {
-
-            return (from attempt in DataGenerator.Database.Attempts
-                        group attempt by attempt.ID into testsFound
-                        select testsFound).Count();
-
-        }
-        private static TestDataViewModel GetTest() {
+        private static TestDataViewModel GetTest(DataSource source) {
 
             if (TestViewModels.ContainsKey("average")) {
                 return TestViewModels["average"];
             }
             TestViewModels.Add("average", new TestDataViewModel("average"));
 
-            var allTests = (from attempt in DataGenerator.Database.Attempts
-                           group attempt by attempt.ID into testsFound
-                           select testsFound).ToList();
-            
-            
-            if (Tests.Count != allTests.Count()) {
+
+            if (Tests.Count != AttemptRepository.GetTestCount(source)) {
                 Tests.Clear();
-                foreach(var testgrouping in allTests.ToList()) {
-                    Tests.Add(testgrouping.Key, new Test(testgrouping.ToList()));
+                foreach(var test in AttemptRepository.GetTests(source)) {
+                    Tests.Add(test.ID, test);
                 }
             }
 
@@ -73,10 +62,10 @@ namespace WebDataParser {
             return TestViewModels[id].GestureInformation[type].Img;
         }
 
-        public static TestDataViewModel GetTest(string id) {
+        public static TestDataViewModel GetTest(string id, DataSource source) {
 
             if(id == "average") {
-                return GetTest();
+                return GetTest(source);
             }
 
             if (TestViewModels.ContainsKey(id)) {
@@ -87,11 +76,8 @@ namespace WebDataParser {
 
              
             if (!Tests.ContainsKey(id)) {
-                var attempts = from attempt in DataGenerator.Database.Attempts
-                               where attempt.ID == id
-                               select attempt;
 
-                Tests[id] = new Test(attempts.ToList());
+                Tests[id] = AttemptRepository.GetTest(id, source);
             }
             
             foreach (var gesture in AllGestures) {

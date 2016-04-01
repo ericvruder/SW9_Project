@@ -16,8 +16,8 @@ namespace SW9_Project.Logging
 {
     class Logger
     {
-        private static string directory = DataGenerator.TestFileDirectory;
-        StreamWriter testStreamWriter; //FIX
+        private static string directory;
+        StreamWriter testStreamWriter; 
 
         int userID = 0;
 
@@ -28,7 +28,8 @@ namespace SW9_Project.Logging
 
         public bool DebugMode { get; set; }
 
-        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth) {
+        public static void Intialize(int sHeight, int sWidth, int lHeight, int lWidth, double cnvasHeight, double cnvasWidth, DataSource source) {
+            directory = DataGenerator.TestFileDirectory(source);
             if (CurrentLogger == null) {
                 CurrentLogger = new Logger();
                 CurrentLogger.DebugMode = false;
@@ -221,7 +222,7 @@ namespace SW9_Project.Logging
                             }
                         }
                     }
-                } catch (Exception) { } //TODO: FIX
+                } catch (Exception) { } 
             }
         }
 

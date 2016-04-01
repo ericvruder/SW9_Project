@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Media;
 
 using Point = System.Windows.Point;
+using System.Windows.Media.Effects;
 
 namespace SW9_Project {
 
@@ -26,12 +27,14 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
-        bool targetPractice = true;
+        bool targetPractice = true; // this is Eric and Bjarke's test (true), else FieldTest(false);
 
         Cell[,] grid;
         Cell target, extraTarget;
         Target nextTarget;
         GridSize currentSize;
+
+        DataSource source;
 
         int gridHeight, gridWidth;
         public static int sgHeight = 10, sgWidth = 20, lgHeight = sgHeight/2, lgWidth = sgWidth/2;
@@ -51,7 +54,8 @@ namespace SW9_Project {
         public CanvasWindow(bool targetPractice = true) {
             
             this.targetPractice = targetPractice;
-            DataGenerator.TargetPractice = targetPractice;
+
+            source = targetPractice ? DataSource.Target : DataSource.Field;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
@@ -102,12 +106,14 @@ namespace SW9_Project {
         }
 
         public void StartNewGesture() {
+            progressLabel.Content = $"Progress: {++gestureCount}/8";
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
             runningTest = true;
             UnlockPointer();
             GestureParser.ClearGestures();
         }
+        
 
         public void PracticeDone() {
             this.Background = Brushes.Black;
@@ -159,12 +165,19 @@ namespace SW9_Project {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
                     string shape = shapes[randomizer.Next(shapes.Count)];
                     if (!targetPractice){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
-                    
-                    
-                    if(currentSize != nextTarget.Size) {
-                        Logger.CurrentLogger.ChangeSize(nextTarget.Size);
+
+                    if (targetPractice)
+                    {
+                        if (currentSize != nextTarget.Size)
+                        {
+                            Logger.CurrentLogger.ChangeSize(nextTarget.Size);
+                        }
+                        CreateGrid(nextTarget.Size);
                     }
-                    CreateGrid(nextTarget.Size);
+                    else
+                    {
+                        CreateGrid(GridSize.Large); //we need large all the time for FieldTest
+                    }
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         connection?.SetNextShape(shape);
@@ -269,15 +282,15 @@ namespace SW9_Project {
             }
 
             DrawNextTargets();
-            if(DataGenerator.SaveStatus == DatabaseSaveStatus.Saving && !savingToDB) {
+            if(AttemptRepository.SaveStatus == DatabaseSaveStatus.Saving && !savingToDB) {
                 savingToDB = true;
                 ShowStatusMessage("Saving to database...");
             }
-            if(savingToDB && DataGenerator.SaveStatus != DatabaseSaveStatus.Saving) {
+            if(savingToDB && AttemptRepository.SaveStatus != DatabaseSaveStatus.Saving) {
                 savingToDB = false;
-                string status = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? "Failed!" : "Success!";
+                string status = AttemptRepository.SaveStatus == DatabaseSaveStatus.Failed ? "Failed!" : "Success!";
                 ShowStatusMessage(status);
-                Background = DataGenerator.SaveStatus == DatabaseSaveStatus.Failed ? Brushes.Red : Brushes.Blue;
+                Background = AttemptRepository.SaveStatus == DatabaseSaveStatus.Failed ? Brushes.Red : Brushes.Blue;
             }
 
             Point currentGyroPoint = new Point(GyroPositionX, -GyroPositionY);
@@ -302,7 +315,12 @@ namespace SW9_Project {
                     Cell currCell = GetCell(pointer);
                     bool hit = currCell == target;
                     bool correctShape = true;
+                    
                     string shape = target.Shape is Ellipse ? "circle" : "square";
+                    if (!targetPractice)
+                    {
+                        shape = target.Shape.Name;
+                    }
                     GestureDirection direction = GestureParser.GetDirectionContext();
                     GestureType type = GestureParser.GetTypeContext();
                     if (direction == GestureDirection.Push) {
@@ -331,6 +349,11 @@ namespace SW9_Project {
             double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.Width / 2);
             double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.Height / 2);
             Canvas.SetZIndex(t, 500);
+            if (!targetPractice)
+            {
+                //TODO: zorder = pos +1 (starts at 501) - Add a pushback in the imagecontainer code for recycling.
+                Canvas.SetZIndex(t, 500);
+            }
 
             canvas.Children.Add(t);
             cell.Shape = t;
@@ -400,23 +423,14 @@ namespace SW9_Project {
             }
             CreateGrid(currentSize);
             TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
-            Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
+            Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
         }
         
 
         public Point GetPoint(double xFromMid, double yFromMid)
         {
             double x = Scale(canvas.ActualWidth, .25f, xFromMid);
-            double y = Scale(canvas.ActualHeight, .26f, yFromMid);
-            Point p = new Point(x, y);
-
-            return p;
-        }
-
-        public Point GetPoint(double xFromMid, double yFromMid, float scaleX, float scaleY)
-        {
-            double x = Scale(canvas.ActualWidth, scaleX, xFromMid);
-            double y = Scale(canvas.ActualHeight, scaleY, yFromMid);
+            double y = Scale(canvas.ActualHeight, .20f, yFromMid);
             Point p = new Point(x, y);
 
             return p;
@@ -439,6 +453,7 @@ namespace SW9_Project {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        Queue<GestureType> types = new Queue<GestureType>(DataGenerator.AllTechniques);
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if (e.Key == System.Windows.Input.Key.Space) {
@@ -448,7 +463,7 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
-                    currentTest = new TestSuite(this);
+                    currentTest = new TestSuite(this, source);
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
                 } else if (runningTest && !runningGesture) {
@@ -473,6 +488,15 @@ namespace SW9_Project {
             } else if (e.Key == System.Windows.Input.Key.R) {
                 StartDebugTest(GestureType.Tilt);
             } 
+
+            else if(e.Key == System.Windows.Input.Key.Enter) {
+                kinectManager.Recalibrate();
+                ShowStatusMessage("Recalibrating...");
+            }
+
+            else if (e.Key == System.Windows.Input.Key.U) {
+                VideoWindow.PlayVideo(GestureDirection.Pull, types.Dequeue());
+            }
             
             else if (e.Key == System.Windows.Input.Key.A) {
                 ShowStatusMessage("Push");
@@ -497,7 +521,7 @@ namespace SW9_Project {
             Logger.CurrentLogger.DebugMode = true;
 
             ShowStatusMessage(type.ToString());
-            currentTest = new TestSuite(this);
+            currentTest = new TestSuite(this, source);
             currentTest.StartDebugTest(type);
 
         }
@@ -517,6 +541,7 @@ namespace SW9_Project {
         }
 
         private bool _inStateChange;
+        private int gestureCount = 0;
 
         public static double GyroPositionX { get; set; }
         public static double GyroPositionY { get; set; }

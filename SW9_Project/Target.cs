@@ -28,7 +28,7 @@ namespace SW9_Project {
 
         public static void Initialize() {
             List<Queue<Target>> list = new List<Queue<Target>>();
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 8; i++) {
                 list.Add(LoadSequence(i));
             }
             list.Shuffle();
@@ -75,7 +75,6 @@ namespace SW9_Project {
             Queue<Target> targets = new Queue<Target>();
             using (StreamReader sr = new StreamReader("sequences/" + sequenceNumber + "_sequence.txt")) {
                 string line = "";
-                int count = 0;
                 while((line = sr.ReadLine()) != null) { 
                     if(line == "") { break; }
                     string[] targetInfo = line.Split(',');
@@ -92,7 +91,6 @@ namespace SW9_Project {
                     }
                     Target t = new Target(x, y, size, length);
                     targets.Enqueue(t);
-                    if (++count >= 3) break;
                 }
             }
             return targets;

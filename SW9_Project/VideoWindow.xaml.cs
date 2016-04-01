@@ -7,109 +7,92 @@ using System.Windows.Forms;
 using DataSetGenerator;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using AxAXVLC;
 
-namespace SW9_Project
-{
+namespace SW9_Project {
     /// <summary>
     /// Interaction logic for VideoWindow.xaml
     /// </summary>
     public partial class VideoWindow : Window {
 
-        static VideoWindow currentVideoWindow;
+        static VideoWindow videoWindow;
+        AxVLCPlugin2 vlc;
 
-        public VideoWindow(GestureDirection direction, GestureType type, bool reopen = false)
-        {
-            if(currentVideoWindow != null) {
-                currentVideoWindow.CloseWindow();
-                currentVideoWindow = this;
-            }
-            else {
-                currentVideoWindow = this;
-            }
-            GestureParser.Pause(!reopen);
+        public static void PlayVideo(GestureDirection direction, GestureType type) {
+            videoWindow?.Close();
+            videoWindow = new VideoWindow(direction, type);
+        }
+
+        public VideoWindow(GestureDirection direction, GestureType type) {
+
             InitializeComponent();
             this.Title = type + " " + direction;
-            this.Show();
 
-            videoMediaElement.LoadedBehavior = System.Windows.Controls.MediaState.Manual;
-            videoMediaElement.UnloadedBehavior = System.Windows.Controls.MediaState.Manual;
-            string videoDirectory = @"techniques/";
-            string video = direction.ToString() + "_" + type.ToString() + ".mp4";
+            vlc = new AxVLCPlugin2();
+            formHost.Child = vlc;
+            vlc.CreateControl();
 
+
+            var videoPath = CreateUriTo(type, direction);
+            MoveScreen(true);
+            GestureParser.Pause(true);
+            vlc.playlist.add(videoPath);
+            vlc.playlist.play();
+
+            EventHandler handler = null;
+
+            handler = (sender, e) => {
+                vlc.MediaPlayerEndReached -= handler;
+                GestureParser.Pause(false);
+                MoveScreen(false);
+                canvasWindow.Activate();
+                vlc.playlist.play();
+                vlc.MediaPlayerEndReached += (senderI, eI) => {
+                    vlc.playlist.play();
+                };
+
+            };
+
+            vlc.MediaPlayerEndReached += handler;
+        }
+
+        private void MoveScreen(bool primaryScreen) {
 
             if (Screen.AllScreens.Length > 1) {
                 int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
                 int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
-                Screen s = reopen ? Screen.AllScreens[secScreen] : Screen.AllScreens[mainScreen];
-                System.Drawing.Rectangle r = s.WorkingArea;
-                this.Top = r.Top;
-                this.Left = r.Left;
-                this.Topmost = true;
-                this.Show();
-                this.WindowStyle = WindowStyle.None;
-                this.WindowState = WindowState.Maximized;
+                Screen s = primaryScreen ? Screen.AllScreens[mainScreen] : Screen.AllScreens[secScreen];
+                System.Drawing.Rectangle r = s.Bounds;
+                Topmost = true;
+                Top = r.Top;
+                Left = r.Left;
+                Width = r.Width;
+                Height = r.Height;
+                Show();
             }
             else {
                 Screen s = Screen.AllScreens[0];
                 System.Drawing.Rectangle r = s.WorkingArea;
-                this.Top = r.Top;
-                this.Left = r.Left;
-                this.Show();
-            }
-            String videoPath = CreateAbsolutePathTo(videoDirectory + video);
-            if (File.Exists(videoPath)) {
-                Uri videoUri = new Uri(videoPath, UriKind.Relative);
-                videoMediaElement.Source = videoUri;
+                Top = r.Top;
+                Left = r.Left;
+                Show();
             }
 
-
-            if (reopen) {
-                this.Activate();
-                canvasWindow.Activate();
-                videoMediaElement.MediaEnded += (sender, args) => {
-                    videoMediaElement.Stop();
-                    videoMediaElement.Position = TimeSpan.Zero;
-                };
-            } else {
-                videoMediaElement.MediaEnded += (sender, args) => {
-                    this.CloseWindow();
-                    var t = new VideoWindow(direction, type, true);
-                };
-            }
-            videoMediaElement.Play();
-
-            Task task = Task.Factory.StartNew(() =>
-            {
-                while(GetMediaState(videoMediaElement) != MediaState.Play)
-                {
-                    videoMediaElement.Play();
-                }
-            });
         }
-
-        private MediaState GetMediaState(MediaElement myMedia)
-        {
-            FieldInfo hlp = typeof(MediaElement).GetField("_helper", BindingFlags.NonPublic | BindingFlags.Instance);
-            object helperObject = hlp.GetValue(myMedia);
-            FieldInfo stateField = helperObject.GetType().GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
-            MediaState state = (MediaState)stateField.GetValue(helperObject);
-            return state;
-        }
-
         static CanvasWindow canvasWindow;
         public static void SetCanvasWindow(CanvasWindow window) {
             canvasWindow = window;
         }
-        
-        private static string CreateAbsolutePathTo(string mediaFile) {
-            return Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, mediaFile);
+
+        private static string CreateUriTo(GestureType type, GestureDirection direction) {
+
+            string videoDirectory = @"techniques/" + direction.ToString() + "_" + type.ToString() + ".mp4";
+            string path = Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName, videoDirectory);
+            return new Uri(path).AbsoluteUri;
+
         }
 
-        private void CloseWindow() {
-            videoMediaElement.Stop();
-            videoMediaElement.Close();
-            this.Close();
-        }
 
     }
 }

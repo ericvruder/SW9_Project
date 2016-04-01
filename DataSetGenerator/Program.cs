@@ -8,17 +8,12 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
-            DataGenerator.TargetPracticeComputer();
+            var oldTest = DataGenerator.GetTests(DataSource.Old);
+            var targetTest = DataGenerator.GetTests(DataSource.Target);
+            var fieldTest = DataGenerator.GetTests(DataSource.Field);
 
-            DataGenerator.OldData = true;
-            DataGenerator.SaveOldTestToDatabase();
-
-            DataGenerator.VerifyTests();
-            DataGenerator.GenerateJSONDocument();
-            DataGenerator.CreateSPSSDocument();
-            DataGenerator.CreateCSVDocument();
-            HitboxDrawer.CreateHitboxes();
+            Console.Read();
+            
         }
-
     }
 }

@@ -22,15 +22,14 @@ namespace SW9_Project {
 
 
         public MainWindow() {
-            DataGenerator.SaveStatus = DatabaseSaveStatus.Success;
+            AttemptRepository.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
 
             Task.Factory.StartNew(() => {
                 AllocConsole();
                 Connection.StartService();
             });
-
-            /*
+            
             //TODO: Implement at preprossor definition :D - JK
             if (System.Environment.GetCommandLineArgs().Length > 0)
             {
@@ -46,9 +45,9 @@ namespace SW9_Project {
 
                     }
                 }
-            }*/
+            }
 
-            isBuletinBoard = !DataGenerator.TargetPracticeComputer();
+            Target.Initialize();
 
             StartCanvasWindow(isBuletinBoard);
             

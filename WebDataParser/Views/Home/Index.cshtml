@@ -1,104 +1,92 @@
-﻿@model WebDataParser.Models.TestDataViewModel
-@{
-    ViewBag.Title = "User ID: " + Model.ID;
+﻿@{
+    ViewBag.Title = "LiveView";
 }
-<script>
+<script type="text/javascript">
 
-    $(this).keydown(function (e) {
-        if (e.which == 37) { // left
-            window.location.href = "@Url.Action("Index", "Home", new { testId = ViewBag.PrevLink })";
-        }
-        else if (e.which == 39) { // right
-            window.location.href = "@Url.Action("Index", "Home", new { testId = ViewBag.NextLink })";
-        }
+    $(document).ready(function () {
+
+        $.ajax({
+
+            type: "GET",
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            url: '/Home/GetTechniqueData/?source=@ViewBag.Source',
+            error: function (asd, errorText) {
+                alert("An error occurred: " + errorText);
+            },
+            complete: function (data) {
+
+                var data = JSON.parse(data.responseText);
+                console.log(data["PushHitRate"]);
+
+                var options = {
+                    legend: { position: "sw", show: true }, series: { lines: { show: false } },
+                    xaxis: { min: 0.5, max: 4.5, ticks: [[1, 'Pinch'], [2, 'Swipe'], [3, 'Throw'], [4, 'Tilt']] }
+                };
+
+                var std_bars = {
+                    //do not show points
+                    radius: 0,
+                    errorbars: "y",
+                    yerr: { show: true, upperCap: "-", lowerCap: "-", radius: 5 }
+                };
+
+                var hitData = [{ color: "green", lines: { show: true }, points: std_bars, data: data["PushHitRate"], label: "Push" },
+                                { color: "red", lines: { show: true }, points: std_bars, data: data["PullHitRate"], label: "Pull" }];
+
+                var timeData = [{ color: "green", lines: { show: true }, points: std_bars, data: data["PushTime"], label: "Push" },
+                                { color: "red", lines: { show: true }, points: std_bars, data: data["PullTime"], label: "Pull" }];
+
+                var accData = [{ color: "green", lines: { show: true }, points: std_bars, data: data["PushAccuracy"], label: "Push" },
+                                { color: "red", lines: { show: true }, points: std_bars, data: data["PullAccuracy"], label: "Pull" }];
+
+
+
+                options.yaxis = { min: 0, max: 1.5 }
+                $.plot("#HitPercentage", hitData, options);
+
+                options.yaxis = { min: 0, max: 16 }
+                $.plot("#TimeTaken", timeData, options);
+
+                options.yaxis = { min: -150, max: 300 }
+                $.plot("#Accuracy", accData, options);
+
+                $('#TotalUsers').append(data["TotalUsers"]);
+                $('#TotalAttempts').append(data["TotalAttempts"]);
+            }
+
+        });
+
+
     });
 
-    @Model.GestureInformation["tilt"].HitData
-    @Model.GestureInformation["tilt"].TimeData
-    @Model.GestureInformation["throw"].HitData
-    @Model.GestureInformation["throw"].TimeData
-    @Model.GestureInformation["swipe"].HitData
-    @Model.GestureInformation["swipe"].TimeData
-    @Model.GestureInformation["pinch"].HitData
-    @Model.GestureInformation["pinch"].TimeData
-
 </script>
-@Scripts.Render("~/bundles/documentready")
-<h1> UserID: @Model.ID</h1>
 
-<table id="hitPercentageGraph">
-    <tr>
-        <td></td>
-        <td>Hit percentage</td>
-        <td></td>
-    </tr>
+<div id="header">
+    <h2>LiveView Statistics</h2>
+</div>
 
-    <tr>
-        <td></td>
-        <td>
-            <div id="hitpercentage" class="graphContainer"> </div>
-        </td>
-        <td><div id="HitPercentlegend"></div></td>
-    </tr>
-</table>
+<div class="table-container">
+    <div class="row">
+        <div class="graph-container">
+            <p> Hit Percentage </p>
+            <div id="HitPercentage" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <p> Time Taken </p>
+            <div id="TimeTaken" class="graph"></div>
+        </div>
+    </div>
 
-<table id="timeGraph">
-    <tr>
-        <td></td>
-        <td>Time spent per target</td>
-        <td></td>
-    </tr>
+    <div class="row">
+        <div class="graph-container">
+            <p> Accuracy </p>
+            <div id="Accuracy" class="graph"></div>
+        </div>
+        <div>
+            <p id="TotalUsers">Total amount of users: </p>
+            <p id="TotalAttempts">Total amount of attempts: </p>
+        </div>
+    </div>
 
-    <tr>
-        <td></td>
-        <td>
-            <div id="timepertarget" class="graphContainer"> </div>
-        </td>
-        <td><div id="TimeLegend"></div></td>
-    </tr>
-</table>
-
-<br>
-
-<table id="hitPlot">
-    <tr class="description">
-        <th>Tilt</th>
-        <th>Throw</th>
-        <th>Swipe</th>
-        <th>Pinch</th>
-        <th></th>
-    </tr> <!-- 
-    <tr class="data"> 
-        <td><img src="@Url.Action("GetImage", "Home", new { testId = Model.ID, type = "tilt" })"></td>
-        <td><img src="@Url.Action("GetImage", "Home", new { testId = Model.ID, type = "throw" })"></td>
-        <td><img src="@Url.Action("GetImage", "Home", new { testId = Model.ID, type = "swipe" })"></td>
-        <td><img src="@Url.Action("GetImage", "Home", new { testId = Model.ID, type = "pinch" })"></td>
-        <td><p style="color:green">Green: Small grid</p><p style="color:red">Red: Large grid</p></td>
-    </tr>-->
-    <tr>
-        <td id="TiltInfo">
-            <p class="PracticeTime"> Practice Time: @Model.GestureInformation["tilt"].PracticeTime </p>
-            <p class="TotalTime"> Total Time: @Model.GestureInformation["tilt"].TotalTime </p>
-            <p class="FinalHit"> Final Hit %: @Model.GestureInformation["tilt"].HitPercentage </p>
-        </td>
-        <td id="ThrowInfo">
-            <p class="PracticeTime"> Practice Time: @Model.GestureInformation["throw"].PracticeTime </p>
-            <p class="TotalTime"> Total Time: @Model.GestureInformation["throw"].TotalTime </p>
-            <p class="FinalHit"> Final Hit %: @Model.GestureInformation["throw"].HitPercentage </p>
-        </td>
-        <td id="SwipeInfo">
-            <p class="PracticeTime"> Practice Time: @Model.GestureInformation["swipe"].PracticeTime </p>
-            <p class="TotalTime"> Total Time: @Model.GestureInformation["swipe"].TotalTime </p>
-            <p class="FinalHit"> Final Hit %: @Model.GestureInformation["swipe"].HitPercentage </p>
-        </td>
-        <td id="PinchInfo">
-            <p class="PracticeTime"> Practice Time: @Model.GestureInformation["pinch"].PracticeTime </p>
-            <p class="TotalTime"> Total Time: @Model.GestureInformation["pinch"].TotalTime </p>
-            <p class="FinalHit"> Final Hit %: @Model.GestureInformation["pinch"].HitPercentage </p>
-        </td>
-    </tr>
-
-</table>
-
-<a href="@Url.Action("Index", "Home", new { testId = ViewBag.PrevLink })" id="linkPrev">&#8678; Prev</a> |
-<a href="@Url.Action("Index", "Home", new { testId = ViewBag.NextLink })" id="linkNext">Next &#8680;</a>
+</div>

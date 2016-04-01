@@ -26,8 +26,10 @@ namespace SW9_Project {
         }
 
         IDrawingBoard board;
+        DataSource source;
 
-        public TestSuite(IDrawingBoard board) {
+        public TestSuite(IDrawingBoard board, DataSource source) {
+            this.source = source;
             this.board = board;
             UserID = Logger.CurrentLogger.NewUser();
         }
@@ -82,12 +84,11 @@ namespace SW9_Project {
 
         private void Finish() {
             Logger.CurrentLogger.EndUser();
-            Test currentTest = new Test(UserID);
-            DataGenerator.SaveTestToDatabase(currentTest);
+            Test currentTest = new Test(UserID, source);
+            AttemptRepository.SaveTestToDatabase(currentTest);
             board.EndTest();
         }
         
-        static VideoWindow techniquePlayer;
         public bool ChangeGesture() {
             if(gestureTypeList.Count == 0 && firstDirectionRun) {
                 GestureDirection direction = GestureParser.GetDirectionContext() == GestureDirection.Pull ? GestureDirection.Push : GestureDirection.Pull;
@@ -105,11 +106,9 @@ namespace SW9_Project {
             board.StartNewGesture();
             board.CreateTarget(practiceSequence.Dequeue());
             GestureParser.SetTypeContext(gestureTypeList.Dequeue());
-            if(techniquePlayer != null) {
-                techniquePlayer.Close();
-            }
+
             Logger.CurrentLogger.StartPracticeTime(GestureParser.GetTypeContext(), GestureParser.GetDirectionContext());
-            techniquePlayer = new VideoWindow(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
+            VideoWindow.PlayVideo(GestureParser.GetDirectionContext(), GestureParser.GetTypeContext());
             Console.WriteLine($"Changed to gesture: {GestureParser.GetTypeContext()} {GestureParser.GetDirectionContext()}");
             return true;
         }

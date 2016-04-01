@@ -16,24 +16,18 @@ namespace DataSetGenerator {
 
         static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984", "A44E31B190E4" , "485D60CA70DA" };
 
-        public static string TestFileDirectory {
-            get {
-                if (OldData) { return ".\\..\\..\\..\\Testlog.SW9/"; }
-                else {
-                    if (TargetPractice) {
-                        if (!Directory.Exists(".\\..\\..\\..\\TargetTestlog/")) {
-                            Directory.CreateDirectory(".\\..\\..\\..\\TargetTestlog/");
-                        }
-                        return ".\\..\\..\\..\\TargetTestlog/";
-                    }
-                    else {
-                        if (!Directory.Exists(".\\..\\..\\..\\FieldTestlog/")) {
-                            Directory.CreateDirectory(".\\..\\..\\..\\FieldTestlog/");
-                        }
-                        return ".\\..\\..\\..\\FieldTestlog/";
-                    }
-                }
+        public static string TestFileDirectory(DataSource source) {
+            string directory = "";
+            switch (source) {
+                case DataSource.Old: directory = ".\\..\\..\\..\\Testlog.SW9/"; break;
+                case DataSource.Field: directory = ".\\..\\..\\..\\FieldTestlog/"; break;
+                case DataSource.Target: directory = ".\\..\\..\\..\\TargetTestlog/"; break;
             }
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
+
+            return directory;
         }
 
         public static bool TargetPracticeComputer() {
@@ -41,34 +35,8 @@ namespace DataSetGenerator {
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
                 .Select(nic => nic.GetPhysicalAddress().ToString())
                 .FirstOrDefault();
-            TargetPractice = TargetPracticeComputers.Contains(mac);
             return TargetPracticeComputers.Contains(mac);
         }
-
-
-        private static AttemptContext database;
-        public static AttemptContext Database { get {
-                if(database == null) {
-                    database = new AttemptContext();
-                }
-                return database;
-            }
-        }
-
-        private static OldAttemptContext oldDatabase;
-        public static OldAttemptContext OldDatabase
-        {
-            get
-            {
-                if (oldDatabase == null) {
-                    oldDatabase = new OldAttemptContext();
-                }
-                return oldDatabase;
-            }
-        }
-
-        public static bool OldData { get; set; }
-        public static bool TargetPractice { get; set; }
 
         public static string DataDirectory
         {
@@ -81,132 +49,24 @@ namespace DataSetGenerator {
             }
         }
 
-        public static DatabaseSaveStatus SaveStatus { get; set; }
 
-        public static void SaveOldTestToDatabase() {
-            bool t = OldData;
-            OldData = true;
-            List<Test> tests = GetTests();
 
-            Task.Factory.StartNew(() => {
-                foreach(var test in tests) {
-                    try {
-                        Console.WriteLine($"Searching for {test.ID} in database...");
-                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-
-                        if (testFound) {
-                            Console.WriteLine($"Test ID {test.ID} already exists in database");
-                            continue;
-                        }
-                        else {
-                            Console.WriteLine($"Not found, saving {test.ID} to database...");
-                        }
-                        foreach (var technique in AllTechniques) {
-                            OldDatabase.Attempts.AddRange(test.Attempts[technique]);
-                        }
-
-                        Database.SaveChanges();
-                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
-                    } catch (Exception e) {
-                        Console.WriteLine("Message: " + e.Message);
-                    }
-                } 
-            });
-
-            OldData = t;
-        }
-
-        public static void SaveTestToDatabase(Test test) {
-            Task.Factory.StartNew(() => {
-                if (TargetPractice) {
-                    SaveStatus = DatabaseSaveStatus.Saving;
-                    int count = 0;
-                    bool success = false;
-                    try {
-                        var testFound = Database.Attempts.Where(z => z.ID == test.ID).Count() > 0;
-
-                        if (testFound) {
-                            Console.WriteLine($"Test ID {test.ID} already exists in database");
-                            SaveStatus = DatabaseSaveStatus.Failed;
-                            return;
-                        }
-                        foreach (var technique in AllTechniques) {
-                            Database.Attempts.AddRange(test.Attempts[technique]);
-                        }
-
-                        Database.SaveChanges();
-                        success = true;
-                        Console.WriteLine($"Successfully saved test number {test.ID} to database");
-                    }
-                    catch (Exception e) {
-                        Console.WriteLine("Failed saving to database, trying again. Try number: " + ++count);
-                        Console.WriteLine("Message: " + e.Message);
-                    }
-                    SaveStatus = success ? DatabaseSaveStatus.Success : DatabaseSaveStatus.Failed;
-                }
-                else {
-                    Console.WriteLine("Database saves only available to Target Practice");
-                }
-            });
-        }
-
-        public static List<Test> GetTests() {
+        public static List<Test> GetTests(DataSource source) {
             List<Test> tests = new List<Test>();
-            string[] files = Directory.GetFiles(TestFileDirectory, "*.test");
-            foreach (var file in files) {
-                string id = file.Split('/').Last().Split('.')[0];
-                Test test = null;
-                if (OldData) {
-                    test = new Test(file, OldData);
-                    FixTest(test);
-                }
-                else {
-                    test = new Test(file);
-                }
-                tests.Add(test);
+            int count = Directory.GetFiles(TestFileDirectory(source), "*.test").Count();
+            for(int i = 1; i <= count; i++) {
+                tests.Add(new Test(i, source));
             }
             return tests;
         }
 
-        static void FixTest(Test test) {
-            switch (test.ID) {
-                case "1":
-                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                    test.Attempts[GestureType.Swipe][5].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][5].Size = GridSize.Large;
-                    test.Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][11].Size = GridSize.Large;
-                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][13].Size = GridSize.Large;
-                    break;
-                case "2":
-                    test.Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                    break;
-                case "4":
-                    test.Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
-                    test.Attempts[GestureType.Throw][17].Size = GridSize.Large;
-                    test.Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
-                    test.Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
-                    test.Attempts[GestureType.Tilt][14].Size = GridSize.Small;
-                    break;
-                case "5":
-                    test.Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
-                    break;
-                case "8":
-                    test.Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                    test.Attempts[GestureType.Throw][4].Size = GridSize.Small;
-                    break;
-                default:
-                    break;
-            }
+        public static Test GetTest(int test, DataSource source) {
+            return new Test(test, source);
         }
 
         
         
-        public static void CreateCSVDocument() {
+        public static void CreateCSVDocument(DataSource source) {
 
             List<int> testing = new List<int>();
 
@@ -215,7 +75,7 @@ namespace DataSetGenerator {
                                        " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
                                        " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit TiltLargeDist TiltSmallDist TiltLargeXDist TiltSmallXDist TiltLargeYDist TiltSmallYDist");
-                List<Test> tests = GetTests();
+                List<Test> tests = GetTests(source);
 
                 foreach (var test in tests) {
 
@@ -256,7 +116,7 @@ namespace DataSetGenerator {
                                      select attempt;
 
                         foreach (var attempt in stList) {
-                            var distances = GetDistances(attempt);
+                            var distances = MathHelper.GetDistances(attempt);
                             sTimes[gesture].Add((int)attempt.Time.TotalSeconds);
                             sHits[gesture].Add(attempt.Hit ? "1" : "0");
                             sDist[gesture].Add(distances.Item1);
@@ -264,7 +124,7 @@ namespace DataSetGenerator {
                             syDist[gesture].Add(distances.Item3);
                         }
                         foreach (var attempt in ltList) {
-                            var distances = GetDistances(attempt);
+                            var distances = MathHelper.GetDistances(attempt);
                             lTimes[gesture].Add((int)attempt.Time.TotalSeconds);
                             lHits[gesture].Add(attempt.Hit ? "1" : "0");
                             lDist[gesture].Add(distances.Item1);
@@ -286,59 +146,10 @@ namespace DataSetGenerator {
             }
         }
 
-        private static Tuple<double, double, double> GetDistances(Attempt attempt) {
-            Tuple<double,double,double> result = new Tuple<double, double, double>(0,0,0);
-            if (!attempt.Hit) {
-                var distances = MathHelper.GetXYDistance(attempt);
-                var distance = MathHelper.DistanceToTargetCell(attempt);
-                if (distances.Item2 == 0 && distances.Item1 == 0) {
-                    distance = 1;
-                    distances = new Tuple<double, double>(1, 1);
-                }
-                result = new Tuple<double, double, double>(distance, distances.Item1, distances.Item2);
-            } 
-            return result;
-        }
 
-        public static void GetWrongTargetTests()
+        public static void VerifyTests(DataSource source)
         {
-            List<Test> tests = GetTests();
-            foreach (var test in tests)
-            {
-                foreach (var gesture in AllTechniques)
-                {
-                    bool show = false;
-                    Attempt t = test.Attempts[gesture].First();
-                    foreach (var attepmt in test.Attempts[gesture])
-                    {
-                        if (attepmt == t)
-                        {
-                            continue;
-                        }
-                        if (attepmt.TargetCell.X == t.TargetCell.X && attepmt.TargetCell.Y == t.TargetCell.Y)
-                        {
-                            Console.WriteLine(test.ID + " " + gesture + " " + test.Attempts[gesture].IndexOf(attepmt));
-                            show = true;
-                        }
-                        t = attepmt;
-                    }
-                    var listLarge = from attempt in test.Attempts[gesture]
-                                    where attempt.Size == GridSize.Large
-                                    select attempt;
-                    var listSmall = from attempt in test.Attempts[gesture]
-                                    where attempt.Size == GridSize.Small
-                                    select attempt;
-                    if (show)
-                        Console.WriteLine("largeGrid = " + listLarge.Count() + " smallGrid = " + listSmall.Count());
-                }
-
-            }
-            Console.ReadLine();
-        }
-
-        public static void VerifyTests()
-        {
-            List<Test> tests = GetTests();
+            List<Test> tests = GetTests(source);
             foreach (var test in tests)
             {
                 foreach (var gesture in AllTechniques)
@@ -361,14 +172,14 @@ namespace DataSetGenerator {
         }
 
 
-        public static void CreateSPSSDocument() {
+        public static void CreateSPSSDocument(DataSource source) {
 
             if (File.Exists(DataDirectory + "data.sav")) {
                 File.Delete(DataDirectory + "data.sav");
             }
 
 
-            List<Test> tests = DataGenerator.GetTests();
+            List<Test> tests = DataGenerator.GetTests(source);
 
             using (SpssDataDocument doc = SpssDataDocument.Create(DataDirectory + "data.sav")) {
                 CreateMetaData(doc);
@@ -454,8 +265,8 @@ namespace DataSetGenerator {
             return gestureAttempt;
         }
 
-        public static void GenerateJSONDocument() {
-            var tests = GetTests();
+        public static void GenerateJSONDocument(DataSource source) {
+            var tests = GetTests(source);
             List<string> jsonInfo = new List<string>();
 
             using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.js")) {

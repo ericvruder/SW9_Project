@@ -29,7 +29,8 @@ namespace WebDataParser {
                       "~/Scripts/jquery.flot.js",
                       "~/Scripts/jquery.flot.axislabels.js",
                       "~/Scripts/jquery.flot.categories.js",
-                      "~/Scripts/jquery.flot.orderBars.js"
+                      "~/Scripts/jquery.flot.orderBars.js",
+                      "~/Scripts/jquery.flot.errorbars.js"
 
                 ));
 

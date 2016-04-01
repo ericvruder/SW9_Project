@@ -133,7 +133,7 @@ public class UDPDiscover implements Runnable {
             long loopStart = System.nanoTime();
             while(cLoop) {
                 DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-                //TODO BLocking code, work around!
+
                 try {
                     c.receive(receivePacket);
                 }
