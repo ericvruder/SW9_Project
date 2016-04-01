@@ -83,9 +83,12 @@
             <p> Accuracy </p>
             <div id="Accuracy" class="graph"></div>
         </div>
-        <div>
+        <div> 
             <p id="TotalUsers">Total amount of users: </p>
             <p id="TotalAttempts">Total amount of attempts: </p>
+            @Html.ActionLink("Results (SPSS)", "GetData", new { data = "result", source = ViewBag.Source })
+            @Html.ActionLink("Data (SPSS)", "GetData", new { data = "data", source = ViewBag.Source })
+            @Html.ActionLink("Data (CSV)", "GetData", new { data = "datacsv", source = ViewBag.Source })
         </div>
     </div>
 

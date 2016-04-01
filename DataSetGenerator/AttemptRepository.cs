@@ -20,6 +20,16 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void RemoveTests(DataSource source) {
+            lock (Repository) {
+                var attempts = Repository.Attempts
+                    .Where(x => x.Source == source);
+
+                Repository.Attempts.RemoveRange(attempts);
+                Repository.SaveChanges();
+            }
+        }
+
         public AttemptRepository() : base("SW9_Project") { }
         public DbSet<Attempt> Attempts { get; set; }
 

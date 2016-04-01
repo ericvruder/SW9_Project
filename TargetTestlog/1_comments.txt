@@ -1,4 +1,0 @@
-[16:16:15]: First comment
-[16:16:25]: Second comment...
-[16:16:58]: After a couple seconds more - third comment
-[16:17:07]: final comment
