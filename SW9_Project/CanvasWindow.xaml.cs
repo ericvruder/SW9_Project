@@ -157,14 +157,33 @@ namespace SW9_Project {
             nextTarget = target;
             
         }
+
+        int sCount = 0; string lastShape = "";
+        private string GetNextShape() {
+
+            string shape = shapes[randomizer.Next(shapes.Count)];
+
+            if(shape != lastShape) {
+                sCount = 0;
+            }
+            else if(++sCount > 2) {
+                shape = shape == "square" ? "circle" : "square";
+                sCount = 0;                
+            }
+
+            if (!targetPractice) { shape = shapes_FT[randomizer.Next(shapes_FT.Count)]; }
+
+            return shape;
+
+        }
         JumpLength currentLength = JumpLength.NA;
         bool runningTest = false;
         public void DrawNextTargets() {
             if (runningTest && runningGesture) {
                 if(target == null) {
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
-                    string shape = shapes[randomizer.Next(shapes.Count)];
-                    if (!targetPractice){shape = shapes_FT[randomizer.Next(shapes_FT.Count)];}
+
+                    string shape = GetNextShape();
 
                     if (targetPractice)
                     {
