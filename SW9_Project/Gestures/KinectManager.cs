@@ -55,13 +55,7 @@ namespace SW9_Project {
             handChangeTimer.Interval = TimeSpan.FromSeconds(handChangeTime).TotalMilliseconds;
             handChangeTimer.Elapsed += HandChangeTimer_Elapsed;
 
-            Timer initializeTime = new Timer();
-            initializeTime.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
-            initializeTime.Elapsed += (sender, e) => {
-                initialized = true;
-                initializeTime.Dispose();
-            };
-            initializeTime.Start();
+            Recalibrate();
 
             return true;
 
@@ -69,6 +63,13 @@ namespace SW9_Project {
 
         public void Recalibrate() {
             initialized = false;
+            Timer initializeTime = new Timer();
+            initializeTime.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+            initializeTime.Elapsed += (sender, e) => {
+                initialized = true;
+                initializeTime.Dispose();
+            };
+            initializeTime.Start();
         }
 
         Queue<float> throwHandLocations = new Queue<float>();
@@ -82,9 +83,9 @@ namespace SW9_Project {
 
                     body.GetAndRefreshBodyData(bodies);
 
-                    Body playerBody = (from b in bodies
-                                       where b.IsTracked
-                                       select b).FirstOrDefault();
+                    Body playerBody = bodies
+                        .Where(b => b.IsTracked && (b.Joints[JointType.SpineShoulder].Position.X < 0.4) && (b.Joints[JointType.SpineShoulder].Position.X > -0.4))
+                        .FirstOrDefault();
 
                     if (playerBody != null) {
                         ParseBody(playerBody, (long)body.RelativeTime.TotalMilliseconds);
@@ -133,7 +134,7 @@ namespace SW9_Project {
             HandState handState = LeftHand ? playerBody.HandLeftState : playerBody.HandRightState;
 
             if (!initialized) {
-                center = joints[(int)JointType.SpineShoulder].Y;
+                center = joints[(int)JointType.SpineShoulder].Y + 0.15f;
                 LeftHand = joints[(int)JointType.HandLeft].Z < joints[(int)JointType.HandRight].Z;
                 board.PointAt(pointerLocation.X, pointerLocation.Y - center);
                 return;
