@@ -16,6 +16,33 @@ namespace WebDataParser.Controllers {
             return View();
         }
 
+        public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
+
+            string fileName = "", filePath = "";
+            switch (data) {
+                case "result": fileName = "AllResults.spv"; break;
+                case "data": fileName = "AllData.sav"; break;
+                case "datacsv": fileName = "target_data.csv";break;
+                default: fileName = "AllData.sav"; break;
+            }
+
+            switch (source) {
+                default: filePath = AppDomain.CurrentDomain.BaseDirectory + "/Data/SW9/" + fileName; break;
+            }
+            
+            byte[] filedata = System.IO.File.ReadAllBytes(filePath);
+            string contentType = MimeMapping.GetMimeMapping(filePath);
+
+            var cd = new System.Net.Mime.ContentDisposition {
+                FileName = fileName,
+                Inline = true,
+            };
+
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(filedata, contentType);
+        }
+
         public ActionResult UserInfo(string testId, DataSource source = DataSource.Old) {
 
             if (testId == null) {
