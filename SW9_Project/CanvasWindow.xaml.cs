@@ -101,6 +101,10 @@ namespace SW9_Project {
             foreach(var cell in grid) {
                 cell.GridCell.Fill = Brushes.White;
             }
+            if (!targetPractice)
+            {
+                this.canvas.Background = Brushes.Gray;
+            }
             runningGesture = false;
             this.Background = Brushes.Green;
         }

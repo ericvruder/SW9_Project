@@ -54,7 +54,7 @@ namespace SW9_Project {
         }
 
         private void StartCanvasWindow(bool targetPractice) {
-            CanvasWindow canvas = targetPractice ? new CanvasWindow(): new BulletinBoard() ;
+            CanvasWindow canvas = targetPractice ? new CanvasWindow(): BulletinBoard.Instance;
             if (Screen.AllScreens.Length > 1) {
                 int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
                 Screen s2 = Screen.AllScreens[mainScreen];
