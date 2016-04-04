@@ -266,7 +266,7 @@ public class Bboard extends BaseActivity {
         shape = null;
         int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
         DocumentView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.document));
-        mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResource);
+        mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResource));
     }
     //TODO overide, need to use different shape views.
     // can perhaps use super if image data can be overrided by the bboard xml file.
@@ -471,7 +471,7 @@ public class Bboard extends BaseActivity {
     }
 
     public void RandomDrawableImage(){
-       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky"."drawable/temple" ,"drawable/tiger"};
+       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger"};
 
         int imageId = (int) Math.round((Math.random() * uri.length));
 
