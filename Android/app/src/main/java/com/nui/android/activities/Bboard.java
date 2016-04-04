@@ -87,14 +87,14 @@ public class Bboard extends BaseActivity {
         pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
         touchDetector = new GestureDetectorCompat(this, touchGestureListener);
 
-        circleView = (ImageView) findViewById(R.id.circle);
-        squareView = (ImageView) findViewById(R.id.square);
+        //circleView = (ImageView) findViewById(R.id.circle);
+       // squareView = (ImageView) findViewById(R.id.square);
         pullShape = (ImageView) findViewById(R.id.pull_shape);
         DocumentView = (ImageView) findViewById(R.id.document);
         mImageView = (ImageView) findViewById(R.id.image);
         pullShape.setVisibility(View.INVISIBLE);
-        circleView.setVisibility(View.INVISIBLE);
-        squareView.setVisibility(View.INVISIBLE);
+      //  circleView.setVisibility(View.INVISIBLE);
+       // squareView.setVisibility(View.INVISIBLE);
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
@@ -160,25 +160,25 @@ public class Bboard extends BaseActivity {
         Network.initInstance(this);
     }
     //TODO not needed for fieldtest 1, return true?
-    public void StartPullTest(){
-        pushOrPull = false;
-        circleView.setVisibility(View.INVISIBLE);
-        squareView.setVisibility(View.INVISIBLE);
-        pullShape.setVisibility(View.VISIBLE);
-
-        pullShape.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                touchDetector.onTouchEvent(event);
-                swipeDetector.onTouchEvent(event);
-                pinchDetector.onTouchEvent(event);
-
-                return true;
-            }
-
-        });
-    }
+//    public void StartPullTest(){
+//        pushOrPull = false;
+//        circleView.setVisibility(View.INVISIBLE);
+//        squareView.setVisibility(View.INVISIBLE);
+//        pullShape.setVisibility(View.VISIBLE);
+//
+//        pullShape.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                touchDetector.onTouchEvent(event);
+//                swipeDetector.onTouchEvent(event);
+//                pinchDetector.onTouchEvent(event);
+//
+//                return true;
+//            }
+//
+//        });
+//    }
 
     String gesture = "";
     //TODO should just use SUPER
@@ -214,13 +214,13 @@ public class Bboard extends BaseActivity {
         pullShape.setVisibility(View.INVISIBLE);
         DocumentView.setVisibility(View.VISIBLE);
         mImageView.setVisibility(View.VISIBLE);
-        final int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
-        final int imageResourceStroke = getResources().getIdentifier(randomImageStroked, null, getPackageName());
+
 
         DocumentView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = Shape.Document;
+                int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
@@ -240,10 +240,12 @@ public class Bboard extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 shape = Shape.Image;
+                int imageResourceStroke = getResources().getIdentifier(randomImageStroked, null, getPackageName());
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
+
 
                 if(event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
                     mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResourceStroke));
