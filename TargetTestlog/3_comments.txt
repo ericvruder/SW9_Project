@@ -1,0 +1,13 @@
+[11:17:12]: Tilt 
+[11:17:20]: Again tilt 
+[11:17:50]: The technique is performed corecttly but jumps out of the target
+[11:18:36]: Tilt jumps from the target. The technique is performed correctly
+[11:20:49]: Participant was very quick to determine the target and move to it fast
+[11:22:32]: Participant uses the hand he is holding the phone in to touch the shape on the phone
+[11:22:47]: 
+[11:24:01]: Other tahn using the other hand than how the technique is described the grab went well with only few errors
+[11:25:15]: didn't register fast enough but the techniques were performed correctly
+[11:25:35]: error. Didnt see why
+[11:28:25]: No problems with the swipe technique. The attempts were pretty quick and precises
+[11:31:24]: When it took some time to do the tilt the participant did the technique correctly
+[11:32:04]: false positive 

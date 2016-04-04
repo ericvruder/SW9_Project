@@ -12,6 +12,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.io.PrintWriter;
+import java.net.SocketOptions;
 import java.security.spec.ECField;
 import java.sql.Time;
 import java.util.Timer;
@@ -71,7 +72,6 @@ public class Network implements IServer {
             }
         };
         connectionThread.start();
-
     }
 
     public void Reconnect() {
@@ -90,7 +90,7 @@ public class Network implements IServer {
 
     private void SetupConnection() {
         Log.d("NETWORK", "Setting up connection...");
-        try{
+        /*try{
             if(activity.nt != null)
                 synchronized(activity.nt) {
                     //activity.nt.wait();
@@ -110,7 +110,7 @@ public class Network implements IServer {
                 }
         }catch(Exception e) {
             Log.d("Datagram connection", e.toString());
-        }
+        }*/
         try {
             clientSocket = new Socket(host, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -198,19 +198,13 @@ public class Network implements IServer {
         }
     }
 
-    public boolean SendMessage(String message){
+    public void SendMessage(String message){
         try {
             out.println(message);
             out.flush();
-            return true;
         }catch (Exception e){
-            if(e instanceof IOException || e instanceof EOFException) {
-                Reconnect();
-                return false;
-            } else {
-                Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
-                return false;
-            }
+            Log.i(TAG, "Could not send message \"" + message + "\". Exception: " + e.getMessage());
+            Reconnect();
         }
     }
 
@@ -227,7 +221,6 @@ public class Network implements IServer {
             String t = gsonConverter.toJson(data);
             activity.ClearShapes();
             SendMessage(t);
-
         }
         catch (Exception e){
             Log.i("!", " " + e.getMessage()); // java.lang.NullPointerException: println needs a message

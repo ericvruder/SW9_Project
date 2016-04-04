@@ -9,6 +9,8 @@
     <string name="close_app_action">Close App</string>
     <string name="circle">Circle</string>
     <string name="square">Square</string>
+    <string name="document">Document</string>
+    <string name="image">Image</string>
     <string name="circle_pull">Circle Pull</string>
     <string name="square_pull">Square Pull</string>
     <string name="move_cursor">Move Cursor</string>

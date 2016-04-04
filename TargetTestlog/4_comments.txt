@@ -1,0 +1,16 @@
+[11:42:01]: The participant doesn't use the pointing hand to complete the grab pull technique
+[11:43:02]: jumps
+[11:43:10]: close
+[11:43:18]: the technique is performed correctly
+[11:43:41]: Jumps out of the target area
+[11:44:27]: The techniques and shapes are selected correctly but the tilting of the phone makes the cursor jump out of the target area
+[11:46:12]: The participant moves the cursor quickly towards the target and the technique is performed correctly
+[11:47:26]: Just moved out of the target area
+[11:48:12]: The technique is performed correctly 
+[11:48:31]: sometimes it makes a little bit of jitter
+[11:50:44]: All swipe techniques were performed fast and correctly
+[11:51:51]: Accidently opned hand
+[11:52:33]: The technique is performed correctlky and hits the target but is not registered
+[11:52:57]: Again, trouble with recognizing arm 
+[11:54:04]: The particpant did some of the grab attempts correctly even though the system didn't register the right away
+[11:54:51]: Error but Correct technique. Didn't see if the shape was correct

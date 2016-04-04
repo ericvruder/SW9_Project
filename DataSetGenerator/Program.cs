@@ -9,10 +9,11 @@ namespace DataSetGenerator {
         static void Main(string[] args) {
 
 
-            AttemptRepository.RemoveTests(DataSource.Target);
+            /*AttemptRepository.RemoveTests(DataSource.Target);
             var oldTest = DataGenerator.GetTests(DataSource.Old);
             var targetTest = DataGenerator.GetTests(DataSource.Target);
-            var fieldTest = DataGenerator.GetTests(DataSource.Field);
+            var fieldTest = DataGenerator.GetTests(DataSource.Field);*/
+            DataGenerator.CreateSPSSDocument();
 
             Console.Read();
             
