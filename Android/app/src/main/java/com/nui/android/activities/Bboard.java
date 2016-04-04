@@ -34,6 +34,7 @@ import java.util.Random;
 
 public class Bboard extends BaseActivity {
     //private Network network;
+    public static Bboard instance = null;
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
@@ -66,6 +67,7 @@ public class Bboard extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         setContentView(R.layout.activity_bboard);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -98,7 +100,7 @@ public class Bboard extends BaseActivity {
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
-        RandomDrawableImage();
+       // RandomDrawableImage();
 
     }
 
