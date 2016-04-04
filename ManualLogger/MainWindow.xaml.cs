@@ -16,6 +16,7 @@ namespace ManualLogger
         bool logging = false;
         int userID;
         private static string directory;
+        DateTime time;
 
         public MainWindow()
         {
@@ -37,12 +38,13 @@ namespace ManualLogger
                     commentLog.IsEnabled = true;
                     commentLog.Focus();
                     commentButton.Content = "End comment";
+                    time = DateTime.Now;
                 }
                 else
                 {
                     using (StreamWriter sw = File.AppendText(directory + userID + "_comments.txt"))
                     {
-                        sw.WriteLine("[{0}]: {1}", DateTime.Now.ToString("HH:mm:ss"), commentLog.Text);
+                        sw.WriteLine("[{0}]: {1}", time.ToString("HH:mm:ss"), commentLog.Text);
                     }
                     commentLog.Clear();
                     commentButton.Focus();

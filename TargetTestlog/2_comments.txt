@@ -1,0 +1,8 @@
+[15:53:15]: (Note: time is not correct) Tilt push: quick. A few false positives
+[15:54:12]: (Note: time is not correct) Swipe push: a bit jitter in lower center
+[15:54:41]: (Note: time is not correct) Throw push: overhand throw. Changed tto underhand - then changed back
+[15:55:23]: (Note: time is not correct) Pinch push: a few false positives
+[15:55:37]: (Note: time is not correct) pull throw: underhand
+[15:55:53]: (Note: time is not correct) pull tilt: Dropped the phone. A few untriggered attempts
+[15:56:27]: (Note: time is not correct) Grab pull: could not release after wrong attempt. 1 false recognition
+[15:57:05]: (Note: time is not correct) swipe pull: no comment
