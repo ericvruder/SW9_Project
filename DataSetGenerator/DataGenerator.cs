@@ -172,7 +172,7 @@ namespace DataSetGenerator {
         }
 
 
-        public static void CreateSPSSDocument(DataSource source) {
+        public static void CreateSPSSDocument(DataSource source = DataSource.Target) {
 
             if (File.Exists(DataDirectory + "data.sav")) {
                 File.Delete(DataDirectory + "data.sav");
