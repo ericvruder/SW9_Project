@@ -29,5 +29,7 @@ public static class GlobalVars
             }
         }
     }
-    
+
+    public static readonly List<string> docStrings = new List<string>(new string[] { "Job advertisement", "School regulations", "Party invitation", "Fitness brochure", "Study survey", "Cantina menu", "Health consulting", "Student offers in Aalborg", "Thesis final_v2", "Keys missing, help!”, ” Chocolate cake recipe", "Used books sale", "Free beer on Friday", "Student of the year", "Professor of the year", "Annual F-club meeting minutes"  });
+
 }

@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace SW9_Project {
 
-    class ScreenElement
+    public class ScreenElement
     {
         //Helpers
         public enum Type
@@ -68,7 +68,17 @@ namespace SW9_Project {
         public ScreenElement(string _label) //document
         {
             type = Type.document;
-            label = _label; //change to random selected string ?
+            if (_label == "" || _label == null)
+            {
+                Random r = new Random();
+                int num = r.Next(GlobalVars.docStrings.Count);
+                label = GlobalVars.docStrings[num];
+            }
+            else
+            {
+                label = _label;
+            }
+
             img = new System.Windows.Controls.Image();
             //TODO: change to default document image used for posting
             img.Source = new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute));
@@ -92,7 +102,7 @@ namespace SW9_Project {
 
     }
 
-    class ElementContainer
+    public class ElementContainer
     {
         private List<ScreenElement> ElementList;
         private int pos; // Queue, max 99
@@ -102,13 +112,14 @@ namespace SW9_Project {
             pos = 0;
         }
         //it is assumed that the image being added here is using a transformedbitmap as soruce
-        // and that the source has been verified though those methods.
+        // and that the source has been verified though the resize methods.
         public void AddElement(ScreenElement i)
         {
             //Allow for max 100
-            if (pos >= 99)
+            if (pos == 99)
             {
                 pos = 0;
+                //recycle here
             }
             if (ElementList[pos] != null)
             {
@@ -121,13 +132,21 @@ namespace SW9_Project {
         }
         //might be unsafe
         public void ClearList()
-        { ElementList.Clear(); }
+        {
+            //TODO: remove from canvas.
+          ElementList.Clear();
+          pos = 0;
+        }
+
+        public int GetPos()
+        { return pos; }
+
     }
 
     public class BulletinBoard : CanvasWindow {
 
         static BulletinBoard instance;
-        ElementContainer elementContainer;
+        public ElementContainer elementContainer;
         /// <summary>
         /// I skal hold styr på background, om det skal være et billede eller farve skal ordnes ellers forsvinder griddet ikke
         /// At kalde base med false fortæller canvas window at det er en bulletin board der arbejder, den sætter variable targetPractice = false
@@ -164,7 +183,7 @@ namespace SW9_Project {
 
 
         //Open a seperate port/thread for retriving stram data (should be moved to connection file if implemented)
-        //Down prioritized till resizeing code is in place.
+        //postponed till second FT
         public void MakeDataConnection()
         {
         }

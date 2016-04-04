@@ -376,8 +376,9 @@ namespace SW9_Project {
             Canvas.SetZIndex(t, 500);
             if (!targetPractice)
             {
-                //TODO: zorder = pos +1 (starts at 501) - Add a pushback in the imagecontainer code for recycling.
-                Canvas.SetZIndex(t, 500);
+                //DONE: zorder = pos +1 (starts at 501)
+                //TODO - Add a pushback in the imagecontainer code for recycling.
+                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 1);
             }
 
             canvas.Children.Add(t);
