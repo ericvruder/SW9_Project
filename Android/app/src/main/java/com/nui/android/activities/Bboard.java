@@ -34,6 +34,7 @@ import java.util.Random;
 
 public class Bboard extends BaseActivity {
     //private Network network;
+    public static Bboard instance = null;
     GestureDetectorCompat swipeDetector;
     ScaleGestureDetector pinchDetector;
     GestureDetectorCompat touchDetector;
@@ -45,9 +46,13 @@ public class Bboard extends BaseActivity {
 
     public static String shape;
     public static String nextShape;
+    public static String randomImage;
+    public static String randomImageStroked;
     //TODO ImageView - exchange (data?) with Document and Image
     private ImageView circleView;
     private ImageView squareView;
+    private ImageView mImageView;
+    private ImageView DocumentView;
 
     private ImageView pullShape;
     private Button moveCursor;
@@ -62,7 +67,8 @@ public class Bboard extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
+        instance = this;
+        setContentView(R.layout.activity_bboard);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -83,13 +89,18 @@ public class Bboard extends BaseActivity {
         pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
         touchDetector = new GestureDetectorCompat(this, touchGestureListener);
 
-        circleView = (ImageView) findViewById(R.id.circle);
-        squareView = (ImageView) findViewById(R.id.square);
+        //circleView = (ImageView) findViewById(R.id.circle);
+       // squareView = (ImageView) findViewById(R.id.square);
         pullShape = (ImageView) findViewById(R.id.pull_shape);
+        DocumentView = (ImageView) findViewById(R.id.document);
+        mImageView = (ImageView) findViewById(R.id.image);
         pullShape.setVisibility(View.INVISIBLE);
-        circleView.setVisibility(View.INVISIBLE);
-        squareView.setVisibility(View.INVISIBLE);
+      //  circleView.setVisibility(View.INVISIBLE);
+       // squareView.setVisibility(View.INVISIBLE);
+        DocumentView.setVisibility(View.INVISIBLE);
+        mImageView.setVisibility(View.INVISIBLE);
         count = 0;
+       // RandomDrawableImage();
 
     }
 
@@ -151,25 +162,25 @@ public class Bboard extends BaseActivity {
         Network.initInstance(this);
     }
     //TODO not needed for fieldtest 1, return true?
-    public void StartPullTest(){
-        pushOrPull = false;
-        circleView.setVisibility(View.INVISIBLE);
-        squareView.setVisibility(View.INVISIBLE);
-        pullShape.setVisibility(View.VISIBLE);
-
-        pullShape.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                touchDetector.onTouchEvent(event);
-                swipeDetector.onTouchEvent(event);
-                pinchDetector.onTouchEvent(event);
-
-                return true;
-            }
-
-        });
-    }
+//    public void StartPullTest(){
+//        pushOrPull = false;
+//        circleView.setVisibility(View.INVISIBLE);
+//        squareView.setVisibility(View.INVISIBLE);
+//        pullShape.setVisibility(View.VISIBLE);
+//
+//        pullShape.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                touchDetector.onTouchEvent(event);
+//                swipeDetector.onTouchEvent(event);
+//                pinchDetector.onTouchEvent(event);
+//
+//                return true;
+//            }
+//
+//        });
+//    }
 
     String gesture = "";
     //TODO should just use SUPER
@@ -203,21 +214,23 @@ public class Bboard extends BaseActivity {
 
         pushOrPull = true;
         pullShape.setVisibility(View.INVISIBLE);
-        circleView.setVisibility(View.VISIBLE);
-        squareView.setVisibility(View.VISIBLE);
+        DocumentView.setVisibility(View.VISIBLE);
+        mImageView.setVisibility(View.VISIBLE);
 
-        circleView.setOnTouchListener(new View.OnTouchListener() {
+
+        DocumentView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = Shape.Circle;
+                shape = Shape.Document;
+                int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
                 if(event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle_stroke));
-                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
+                    DocumentView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.document_stroke));
+                    mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResource));
                 }
 
                 return true;
@@ -225,18 +238,20 @@ public class Bboard extends BaseActivity {
 
         });
 
-        squareView.setOnTouchListener(new View.OnTouchListener() {
+        mImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                shape = Shape.Square;
+                shape = Shape.Image;
+                int imageResourceStroke = getResources().getIdentifier(randomImageStroked, null, getPackageName());
 
                 touchDetector.onTouchEvent(event);
                 swipeDetector.onTouchEvent(event);
                 pinchDetector.onTouchEvent(event);
 
+
                 if(event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
-                    squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square_stroke));
-                    circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+                    mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResourceStroke));
+                    DocumentView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.document));
                 }
 
                 return true;
@@ -253,8 +268,9 @@ public class Bboard extends BaseActivity {
     // can perhaps use super if image data can be overrided by the bboard xml file.
     public void ClearShapes(){
         shape = null;
-        squareView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.square));
-        circleView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.circle));
+        int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
+        DocumentView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.document));
+        mImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), imageResource));
     }
     //TODO overide, need to use different shape views.
     // can perhaps use super if image data can be overrided by the bboard xml file.
@@ -262,15 +278,15 @@ public class Bboard extends BaseActivity {
         ClearShapes();
         if(count > MAX_COUNT || random.nextBoolean()) {
             count = 0;
-            int TopShapeTop = circleView.getTop();
-            int TopShapeBottom = circleView.getBottom();
-            int BottomShapeTop = squareView.getTop();
-            int BottomShapeBottom = squareView.getBottom();
+            int TopShapeTop = DocumentView.getTop();
+            int TopShapeBottom = DocumentView.getBottom();
+            int BottomShapeTop = mImageView.getTop();
+            int BottomShapeBottom = mImageView.getBottom();
 
-            circleView.setTop(BottomShapeTop);
-            circleView.setBottom(BottomShapeBottom);
-            squareView.setTop(TopShapeTop);
-            squareView.setBottom(TopShapeBottom);
+            DocumentView.setTop(BottomShapeTop);
+            DocumentView.setBottom(BottomShapeBottom);
+            mImageView.setTop(TopShapeTop);
+            mImageView.setBottom(TopShapeBottom);
         } else {
             count++;
         }
@@ -456,6 +472,15 @@ public class Bboard extends BaseActivity {
             default:
                 return super.dispatchKeyEvent(event);
         }
+    }
+
+    public void RandomDrawableImage(){
+       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger"};
+
+        int imageId = (int) Math.round((Math.random() * uri.length));
+
+        randomImage = uri[imageId];
+        randomImageStroked = uri[imageId]+"_stroke";
     }
 
 }

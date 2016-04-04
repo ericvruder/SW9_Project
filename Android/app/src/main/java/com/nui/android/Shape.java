@@ -6,4 +6,7 @@ package com.nui.android;
 public final class Shape {
     public static final String Circle = "circle";
     public static final String Square = "square";
+    public static final String Document = "document";
+    public static final String Image = "image";
 }
+
