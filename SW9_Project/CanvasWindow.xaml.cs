@@ -410,6 +410,34 @@ namespace SW9_Project {
 
             
         }
+
+        private void FieldHit(Cell cell, bool hit) //like targethi but for field study- WIP
+        {
+            connection?.SwitchShapes();
+            //if (hit)
+            //{
+            //    sounds["hit"].Play();
+            //    cell.Shape.Fill = Brushes.Green;
+            //}
+            //else {
+            //    sounds["miss"].Play();
+            //    cell.Shape.Fill = Brushes.Red;
+            //}
+
+            DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
+            da.Completed += (sender, e) => Da_Completed(sender, e, target);
+            targetColor = Brushes.White;
+            cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
+
+            if (extraTarget != null)
+            {
+                canvas.Children.Remove(extraTarget.Shape);
+                extraTarget.Shape = null;
+            }
+
+
+        }
+
         private void Da_Completed(object sender, EventArgs e, Cell cell) {
             GestureParser.Pause(false);
             if (target == null)
