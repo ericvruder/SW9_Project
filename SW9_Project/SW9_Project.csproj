@@ -175,51 +175,47 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="techniques\Pull_Pinch.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="sequences\10_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="sequences\11_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sequences\8_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sequences\9_sequence.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="techniques\Pull_Pinch.mp4" />
     <Content Include="techniques\Pull_Pinch.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Pull_Swipe.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Pull_Swipe.mp4" />
     <Content Include="techniques\Pull_Swipe.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Pull_Throw.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Pull_Throw.mp4" />
     <Content Include="techniques\Pull_Throw.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Pull_Tilt.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Pull_Tilt.mp4" />
     <Content Include="techniques\Pull_Tilt.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Pinch.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Push_Pinch.mp4" />
     <Content Include="techniques\Push_Pinch.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Swipe.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Push_Swipe.mp4" />
     <Content Include="techniques\Push_Swipe.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Throw.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Push_Throw.mp4" />
     <Content Include="techniques\Push_Throw.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Tilt.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="techniques\Push_Tilt.mp4" />
     <Content Include="techniques\Push_Tilt.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
