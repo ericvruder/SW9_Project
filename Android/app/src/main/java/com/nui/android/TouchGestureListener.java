@@ -24,9 +24,10 @@ public class TouchGestureListener extends GestureDetector.SimpleOnGestureListene
             Log.d("TOUCH", "onTouch() " + Bboard.GetSelectedShape());
             server.SendData(new MobileGesture(Bboard.GetSelectedShape(), "Pinch", "Pull"));
             return true;
+        }else {
+            Log.d("TOUCH", "onTouch() " + BaseActivity.GetSelectedShape());
+            server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Pull"));
+            return true;
         }
-             Log.d("TOUCH", "onTouch() " + BaseActivity.GetSelectedShape());
-             server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Pull"));
-             return true;
     }
 }

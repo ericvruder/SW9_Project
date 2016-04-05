@@ -100,7 +100,7 @@ public class Bboard extends BaseActivity {
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
-       // RandomDrawableImage();
+       RandomDrawableImage();
 
     }
 

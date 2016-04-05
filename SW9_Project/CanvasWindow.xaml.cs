@@ -99,11 +99,14 @@ namespace SW9_Project {
         bool runningGesture = false;
         public void CurrentGestureDone() {
             foreach(var cell in grid) {
-                cell.GridCell.Fill = Brushes.White;
-            }
-            if (!targetPractice)
-            {
-                this.canvas.Background = Brushes.Gray;
+                if (targetPractice)
+                {
+                    cell.GridCell.Fill = Brushes.White;
+                }
+                else
+                {
+                    cell.GridCell.Fill = Brushes.Transparent;
+                }
             }
             runningGesture = false;
             this.Background = Brushes.Green;
@@ -353,7 +356,16 @@ namespace SW9_Project {
                     }
                     currentTest.TargetHit(hit, correctShape, target, pointer, currCell, currentLength);
                     if (hit && !correctShape) { hit = false; }
-                    TargetHit(target, hit);
+                    if (targetPractice)
+                    {
+                        TargetHit(target, hit);
+                    }
+                    else
+                    {
+                        FieldHit(target, currCell, hit);
+                    }
+
+
                 }
             }
             ExtendedDraw(gesture);
@@ -411,7 +423,7 @@ namespace SW9_Project {
             
         }
 
-        private void FieldHit(Cell cell, bool hit) //like targethi but for field study- WIP
+        private void FieldHit(Cell cell,Cell currCell, bool hit) //like targethit but for field study- WIP
         {
             connection?.SwitchShapes();
             //if (hit)
@@ -424,10 +436,26 @@ namespace SW9_Project {
             //    cell.Shape.Fill = Brushes.Red;
             //}
 
-            DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
-            da.Completed += (sender, e) => Da_Completed(sender, e, target);
+            //DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
+            //da.Completed += (sender, e) => Da_Completed(sender, e, target);
             targetColor = Brushes.White;
-            cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
+            //cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
+
+            // da complete
+            GestureParser.Pause(false);
+            if (target != null)
+            {
+                Cell t = target;
+                if (nextTarget == null)
+                {
+                    runningTest = false;
+                }
+                target = null;
+                t.GridCell.Fill = Brushes.Transparent;
+                targetColor = Brushes.DarkGray;
+                canvas.Children.Remove(cell.Shape);
+                cell.Shape = null;
+            }
 
             if (extraTarget != null)
             {
@@ -435,6 +463,16 @@ namespace SW9_Project {
                 extraTarget.Shape = null;
             }
 
+            //TODO: place image or document on screen. //TODO: Make complete.
+            // moved to elementContainer
+           // canvas.Children.Add(BulletinBoard.Instance.elementContainer.GetElement().img); //So freaking untested 8'x 
+            // for cell
+            double x = Canvas.GetLeft(currCell.GridCell) + (currCell.GridCell.Width / 2);
+            double y = Canvas.GetBottom(currCell.GridCell) + (currCell.GridCell.Height / 2);
+            Point f = new Point(x, y); //point of the current grid or pointer position
+            //TODO: Get mobileGesture info to make element
+            //BulletinBoard.Instance.elementContainer.AddElement()
+            //MoveShape(cell.Shape, f); //we have to move the image to the place.
 
         }
 
