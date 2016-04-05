@@ -1,0 +1,15 @@
+[14:33:46]: Reminding participant to use the pointing hand to touch the phone shape
+[14:36:11]: The first technique registered some unintended wrong hits
+[14:37:02]: A few misses for the pull throw
+[14:38:00]: Jumped out of the target :/
+[14:38:27]: Participant mentions that the technique is hard to perform without missing the target
+[14:38:53]: The cursor jumps from the correctly selected target when the tilt technique is performed
+[14:40:47]: All pull swipes were done swiping towards the screen and not away from the screen
+[14:42:26]: Participant found a way to activate the accelorometer with minimal amount of jump from the cursor.
+[14:43:42]: close
+[14:45:39]: Close
+[14:46:24]: Took some tries to get that attempt to register
+[14:48:12]: Wrong shape?
+[14:48:17]: It look pretty spot on
+[14:48:29]: Small jump out of the target area when the hand opened
+[14:49:16]: Last one too a little extra time

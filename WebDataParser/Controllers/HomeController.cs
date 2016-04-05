@@ -21,6 +21,7 @@ namespace WebDataParser.Controllers {
 
         public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
 
+
             DataGenerator.GenerateSPSSDocument(source, System.IO.Path.GetTempPath());
 
             string fileName = "", filePath = "";
