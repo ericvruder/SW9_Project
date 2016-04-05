@@ -1,0 +1,10 @@
+[13:44:32]: 
+[13:46:19]: 
+[13:46:29]: participant changes between pulling under and above shoulder
+[13:48:26]: cursor jumps out of the target area
+[13:49:23]: No issues during the last attempts of tilt
+[13:50:46]: Accidently locked
+[13:55:24]: hmm? Something looked not right
+[13:55:57]: Releases the shape but nothing happens.
+[13:57:39]: Took some time to get it to activate even though the tilt was done correctly
+[14:00:59]: 100% throw push :)

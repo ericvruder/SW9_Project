@@ -21,8 +21,6 @@ namespace WebDataParser.Controllers {
 
         public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
 
-            DataGenerator.GenerateSPSSDocument(source, Server.MapPath(@"Content/"));
-
             string fileName = "", filePath = "";
             switch (data) {
                 case "result": fileName = "AllResults.spv"; break;

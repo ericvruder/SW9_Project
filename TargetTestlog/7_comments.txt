@@ -1,0 +1,17 @@
+[13:20:25]: Bit of jitter
+[13:20:52]: Big jitter jump. Looked really strange??!
+[13:22:39]: Accidental activation
+[13:23:39]: Not many issues with grab push
+[13:25:34]: hand just slightly drifted down 
+[13:27:11]: Throw sometimes doesnt activate first time
+[13:27:34]: That looked like at hit. Might be wrong shape
+[13:28:41]: Tilt pull :O
+[13:29:35]: cursor jumped out
+[13:29:53]: something very wrong
+[13:30:11]: Minor fuck up with the previous targets 
+[13:32:03]: 
+[13:32:41]: Jitter caused that one
+[13:33:19]: close
+[13:34:41]: Again, some attempts doesn't register first or second attempt
+[13:36:45]: Jumped out of the target area
+[13:38:05]: No notable problems with the last technique
