@@ -47,11 +47,10 @@ namespace DataSetGenerator {
                 }
                 return ".\\..\\..\\..\\Data/";
             }
-        }
-
-
+        } 
 
         public static List<Test> GetTests(DataSource source) {
+            
             List<Test> tests = new List<Test>();
             int count = Directory.GetFiles(TestFileDirectory(source), "*.test").Count();
             for(int i = 1; i <= count; i++) {
@@ -172,14 +171,14 @@ namespace DataSetGenerator {
         }
 
 
-        public static void CreateSPSSDocument(DataSource source) {
+        public static void CreateSPSSDocument(DataSource source = DataSource.Target) {
 
             if (File.Exists(DataDirectory + "data.sav")) {
                 File.Delete(DataDirectory + "data.sav");
             }
 
 
-            List<Test> tests = DataGenerator.GetTests(source);
+            List<Test> tests = AttemptRepository.GetTests(source);
 
             using (SpssDataDocument doc = SpssDataDocument.Create(DataDirectory + "data.sav")) {
                 CreateMetaData(doc);

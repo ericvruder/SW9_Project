@@ -7,6 +7,6 @@ import java.net.DatagramPacket;
  */
 public interface IServer {
     public void SendData(MobileGesture data);
-    public boolean SendMessage(String message);
+    public void SendMessage(String message);
     public String GetHost();
 }
