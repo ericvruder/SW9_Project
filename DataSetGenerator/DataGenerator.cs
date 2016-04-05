@@ -171,16 +171,21 @@ namespace DataSetGenerator {
         }
 
 
-        public static void GenerateSPSSDocument(DataSource source, string path) {
+        public static string GenerateSPSSDocument(DataSource source, string path) {
 
             List<Test> tests = AttemptRepository.GetTests(source);
             string fPath = $"{path}{source}data.sav";
+            if (File.Exists(fPath)) {
+                File.Delete(fPath);
+            }
             using (SpssDataDocument doc = SpssDataDocument.Create(fPath)) {
                 CreateMetaData(doc);
                 foreach (var test in tests) {
                     ParseTest(doc, test);
                 }
             }
+
+            return fPath;
 
         }
 
