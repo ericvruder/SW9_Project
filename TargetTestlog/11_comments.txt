@@ -1,0 +1,6 @@
+[15:19:49]: havde lidt problemer med hvordan grab fungerede
+[15:20:17]: lå vil gerne bruge den anden jånd til at aktiverer grab
+[15:20:37]: skiftede hånd halvvejs igennem grab
+[15:21:23]: havde lidt problemer med at få tilt til at fungerer, forsøgt uforgaves til at aktiverer det
+[15:25:54]: definantly believes that the swipe function is faster
+[15:27:52]: påvirket af tidligere forsøge hvor det blev kaldt pinch, forsøgt at pinche figureren
