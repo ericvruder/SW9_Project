@@ -171,16 +171,11 @@ namespace DataSetGenerator {
         }
 
 
-        public static void CreateSPSSDocument(DataSource source = DataSource.Target) {
-
-            if (File.Exists(DataDirectory + "data.sav")) {
-                File.Delete(DataDirectory + "data.sav");
-            }
-
+        public static void GenerateSPSSDocument(DataSource source, string path) {
 
             List<Test> tests = AttemptRepository.GetTests(source);
-
-            using (SpssDataDocument doc = SpssDataDocument.Create(DataDirectory + "data.sav")) {
+            string fPath = $"{path}{source}data.sav";
+            using (SpssDataDocument doc = SpssDataDocument.Create(fPath)) {
                 CreateMetaData(doc);
                 foreach (var test in tests) {
                     ParseTest(doc, test);

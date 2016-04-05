@@ -30,12 +30,15 @@ namespace WebDataParser {
                       "~/Scripts/jquery.flot.axislabels.js",
                       "~/Scripts/jquery.flot.categories.js",
                       "~/Scripts/jquery.flot.orderBars.js",
-                      "~/Scripts/jquery.flot.errorbars.js"
-
+                      "~/Scripts/jquery.flot.errorbars.js",
+                      "~/Scripts/loadGraphs.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/documentready").Include(
                     "~/Scripts/documentready.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/cookies").Include(
+                    "~/Scripts/cookies.js"));
         }
     }
 }

@@ -20,6 +20,8 @@ namespace WebDataParser.Models {
         public int TotalUsers { get; set; }
         public int TotalAttempts { get; set; }
 
+        public int AttemptsPerTechnique { get; set; }
+
         public TechniqueInformationViewModel(IEnumerable<Attempt> attempts, int count) {
 
             List<Attempt> pushAttempts = (from attempt in attempts
@@ -31,6 +33,7 @@ namespace WebDataParser.Models {
 
             TotalUsers = count;
             TotalAttempts = pushAttempts.Count;
+            AttemptsPerTechnique = pushAttempts.Count / 4;
 
             PullTime = GetTimeInformation(pullAttempts);
             PushTime = GetTimeInformation(pushAttempts);

@@ -11,12 +11,17 @@ using WebDataParser.Models;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
-        public ActionResult Index(DataSource source = DataSource.Old) {
-            ViewBag.Source = source;
+        public ActionResult Index(DataSource? source) {
+            if (source == null)
+                ViewBag.Source = "";
+            else 
+                ViewBag.Source = source;
             return View();
         }
 
         public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
+
+            DataGenerator.GenerateSPSSDocument(source, Server.MapPath(@"Content/"));
 
             string fileName = "", filePath = "";
             switch (data) {
