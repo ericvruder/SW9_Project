@@ -31,6 +31,7 @@ import com.nui.android.TouchGestureListener;
 
 import java.net.DatagramPacket;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Bboard extends BaseActivity {
     //private Network network;
@@ -46,8 +47,8 @@ public class Bboard extends BaseActivity {
 
     public static String shape;
     public static String nextShape;
-    public static String randomImage;
-    public static String randomImageStroked;
+    public  String randomImage;
+    public  String randomImageStroked;
     //TODO ImageView - exchange (data?) with Document and Image
     private ImageView circleView;
     private ImageView squareView;
@@ -100,7 +101,7 @@ public class Bboard extends BaseActivity {
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
-       // RandomDrawableImage();
+       RandomDrawableImage();
 
     }
 
@@ -275,6 +276,7 @@ public class Bboard extends BaseActivity {
     //TODO overide, need to use different shape views.
     // can perhaps use super if image data can be overrided by the bboard xml file.
     public void SwitchPosition() {
+        RandomDrawableImage();
         ClearShapes();
         if(count > MAX_COUNT || random.nextBoolean()) {
             count = 0;
@@ -384,7 +386,7 @@ public class Bboard extends BaseActivity {
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
     }
 
@@ -479,8 +481,16 @@ public class Bboard extends BaseActivity {
 
         int imageId = (int) Math.round((Math.random() * uri.length));
 
-        randomImage = uri[imageId];
-        randomImageStroked = uri[imageId]+"_stroke";
+        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 4));
+        randomImage = uri[rdnint];
+        randomImageStroked = uri[rdnint]+"_stroke";
+    }
+
+    public int getRandomImageId (){
+        if (shape.equals(Shape.Document)) {
+            return 0;
+        }
+        return getResources().getIdentifier(randomImage, null, getPackageName());
     }
 
 }
