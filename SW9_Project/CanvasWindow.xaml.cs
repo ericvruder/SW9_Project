@@ -362,7 +362,7 @@ namespace SW9_Project {
                     }
                     else
                     {
-                        FieldHit(target, currCell, hit);
+                        FieldHit(target, pointer, hit, gesture);
                     }
 
 
@@ -389,8 +389,7 @@ namespace SW9_Project {
             if (!targetPractice)
             {
                 //DONE: zorder = pos +1 (starts at 501)
-                //TODO - Add a pushback in the imagecontainer code for recycling.
-                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 1 + 500);
+                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 1 + 501);
             }
 
             canvas.Children.Add(t);
@@ -423,8 +422,9 @@ namespace SW9_Project {
             
         }
 
-        private void FieldHit(Cell cell,Cell currCell, bool hit) //like targethit but for field study- WIP
+        private void FieldHit(Cell cell,Point pointer, bool hit, KinectGesture gesture) //like targethit but for field study- WIP
         {
+            Cell currCell = GetCell(pointer);
             connection?.SwitchShapes();
             //if (hit)
             //{
@@ -463,16 +463,23 @@ namespace SW9_Project {
                 extraTarget.Shape = null;
             }
 
-            //TODO: place image or document on screen. //TODO: Make complete.
-            // moved to elementContainer
-           // canvas.Children.Add(BulletinBoard.Instance.elementContainer.GetElement().img); //So freaking untested 8'x 
+            //TODO: place image or document on screen. //TODO: Make complete.  //TODO: Verify
             // for cell
             double x = Canvas.GetLeft(currCell.GridCell) + (currCell.GridCell.Width / 2);
             double y = Canvas.GetBottom(currCell.GridCell) + (currCell.GridCell.Height / 2);
-            Point f = new Point(x, y); //point of the current grid or pointer position
-            //TODO: Get mobileGesture info to make element
-            //BulletinBoard.Instance.elementContainer.AddElement()
-            //MoveShape(cell.Shape, f); //we have to move the image to the place.
+            Point CellCenter = new Point(x, y); //point of the current grid or pointer position
+
+            ScreenElement se;
+            if (gesture.Shape == "image")
+            {
+                se = new ScreenElement(gesture.ImgID);
+            }
+            else //document or default - 
+            {
+                se = new ScreenElement(""); //random string is given in constructor.
+            }
+
+            BulletinBoard.Instance.elementContainer.AddElement(se, CellCenter); // for center at pointer, simply use pointer instead.
 
         }
 
@@ -516,6 +523,8 @@ namespace SW9_Project {
             CreateGrid(currentSize);
             TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
             Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
+            GlobalVars.canvasWidth = canvas.ActualWidth;
+            GlobalVars.canvasHeight = canvas.ActualHeight;
         }
         
 

@@ -47,6 +47,7 @@ namespace SW9_Project
             {
                 canvasWindow.UnlockScreen();
                 currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
+                currentVideoWindow.WindowState = WindowState.Minimized;
                 canvasWindow.Activate();
             }
         }

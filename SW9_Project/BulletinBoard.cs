@@ -11,7 +11,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 
 namespace SW9_Project {
-    //TODO: initialize label control - Set Zindex, - Recycle
     public class ScreenElement
     {
         //Helpers
@@ -25,7 +24,7 @@ namespace SW9_Project {
         // set image.souce = ResizeImage( bitmap_image);
         public static TransformedBitmap ResizeImage(BitmapImage image)
         {
-            //TODO: get canvas size automaticly
+            double maxSize = Math.Min(GlobalVars.canvasWidth, GlobalVars.canvasHeight); //max size allowed is based on the smalest size.
             //canvas width 1113.6
             //canvas height 574.4
             double _H = image.PixelHeight;
@@ -37,8 +36,8 @@ namespace SW9_Project {
                 //ugly assumation that we can resize 50% no matter what
                 _H = Math.Floor(_H / 2d);
                 _W = Math.Floor(_W / 2d);
-                if (_W > 574) { _W = 574; }
-                if (_H > 574) { _H = 574; } // make sure nothing is above 960 (half of 1920)
+                if (_W > maxSize) { _W = maxSize; }
+                if (_H > maxSize) { _H = maxSize; } // make sure nothing is above max allowed size
                 //ensure ratio is kept in case the image was oversized
                 if (ratio != (_W/_H))
                 {
@@ -70,17 +69,32 @@ namespace SW9_Project {
         //Members
 
         public readonly Type type;  // used to identify if it is image or document - not sure if needed.
-        public readonly string label; //used with document
+        public readonly string label; //used with document - Consider using label.content instead and replace contructors with a label controler.
         public readonly Image img; // the image, the image is based on the imgID - imgID is not stored.
         public readonly Label lbl; //label control, place right under document image
+                                   
         //Constructors
+
+        public ScreenElement(int imgid) //image
+        {
+            BitmapImage _bitmap;
+            img = new Image();
+            if ( GlobalVars.imgDict.TryGetValue(imgid,out _bitmap ) ) //fetch image if imgid matches.
+            {}
+            else{ GlobalVars.imgDict.TryGetValue(0, out _bitmap);  } //otherwise fetch the default image
+
+            img.Source = ResizeImage(_bitmap); //notice that source is now TransformedBitmap whether transformed or not.
+            type = Type.image;
+            label = "";
+
+        }
+
         public ScreenElement( Image _image ) //image
         {
             type = Type.image;
             label = "";
             img = _image;
             img.Source = ResizeImage((BitmapImage)img.Source); //notice that source is now TransformedBitmap whether transformed or not.
-
 
         }
 
@@ -90,27 +104,31 @@ namespace SW9_Project {
             if (_label == "" || _label == null)
             {
                 Random r = new Random();
-                int num = r.Next(GlobalVars.docStrings.Count);
+                int num = r.Next(GlobalVars.docStrings.Count-1);
                 label = GlobalVars.docStrings[num];
             }
             else
             {
                 label = _label;
             }
-
-            img = new System.Windows.Controls.Image();
-            //TODO: change to default document image used for posting
-            img.Source = new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute));
+            BitmapImage _bitmap;
+            GlobalVars.imgDict.TryGetValue(0, out _bitmap);
+            img = new Image();
+            img.Source = _bitmap;
             // transform to a transformedBitmap object ?
+            lbl = new Label();
+            lbl.Content = label; //only place where label is read, consider deprecating label!
 
         }
         //in case someone wants to define everything, ex: image with a label perhaps.
         //Perform manual manipulation of image before adding.
-        public ScreenElement(Type _type, string _label , System.Windows.Controls.Image _image) //document
+        public ScreenElement(Type _type, Image _image, Label _lbl) //document
         {
             type = _type;
-            label = _label; 
+            //label = _label; 
             img = _image;
+            lbl = _lbl;
+            
         }
 
         //TODO: Run a test to determine whether a desctuctor is need to prevent memory leak
@@ -121,21 +139,35 @@ namespace SW9_Project {
 
     }
 
+
+
     public class ElementContainer
     {
         private List<ScreenElement> ElementList;
         private int pos; // Queue, max 99 - where you are about to add a element
         private Canvas canvasRef;
+
+        //constructor
         public ElementContainer(Canvas c)
         {
             ElementList = new List<ScreenElement>();
             pos = 0;
             canvasRef = c;
         }
+
+        //Methods
+
         //it is assumed that the image being added here is using a transformedbitmap as soruce
         // and that the source has been verified though the resize methods.
+        //it was originally assumed there would allways be an image - since the constructor allows for no image, I have tried to check for it.
+        //it is however not validated to be secure without an image.
+        //TODO: check width and height of label before adding to canvas, if the size is realistic, then use that in as extra space in GetSafeCoordinate.
         public void AddElement(ScreenElement element, System.Windows.Point p)
         {
+            if (element.img == null && element.lbl == null)
+            {
+                return; //at least one UIelement must be available.
+            }
             //Allow for max 100
             if (pos == 99)
             {
@@ -152,21 +184,47 @@ namespace SW9_Project {
             }
             if (ElementList[pos] != null)
             {
-                canvasRef.Children.Remove(ElementList[pos].img);
+                if (ElementList[pos].lbl != null)
+                {
+                    canvasRef.Children.Remove(ElementList[pos].lbl);
+                }
+                if (ElementList[pos].img != null) //Its expected the image is available, but constructors allows for image not to be.
+                {
+                    canvasRef.Children.Remove(ElementList[pos].img);
+                }
+                
+
                 //Clear the image in this position. - probably overkill
                 //ElementList[pos].img.Source = null;
                 ElementList[pos] = null;
             }
             ElementList[pos] = element;
             // Add to canvas with the center as close to P as possible, without breaking borders.
-            canvasRef.Children.Add(element.img);
-            //TODO: Add function to calculate the extra space which is needed.
-            Point sp=
-            element.type == ScreenElement.Type.document ? GetSafeCoordinate(element.img, p, 0, 20) : GetSafeCoordinate(element.img, p);
-            GetSafeCoordinate(element.img, p);
-            Canvas.SetLeft(element.img, sp.X);
-            Canvas.SetBottom(element.img, sp.Y);
-            
+            if (element.img != null)
+            {
+                canvasRef.Children.Add(element.img);
+                //to check for lbl != null might be better
+                Point sp = element.type == ScreenElement.Type.document ? GetSafeCoordinate(element.img, p, 0, 20) : GetSafeCoordinate(element.img, p);
+                Canvas.SetLeft(element.img, sp.X);
+                Canvas.SetBottom(element.img, sp.Y);
+                Canvas.SetZIndex(element.img, 501 + pos);
+                if (element.lbl != null)
+                {
+                    canvasRef.Children.Add(element.lbl);
+                    Canvas.SetTop(element.lbl, sp.Y);
+                    Canvas.SetLeft(element.lbl, sp.X + element.img.Width / 2 - element.lbl.Width / 2);
+                    Canvas.SetZIndex(element.lbl, 501 + pos);
+                }
+            }
+            else
+            {
+                //Notice that this doesn't have a safe coordinate
+                canvasRef.Children.Add(element.lbl);
+                Canvas.SetBottom(element.lbl, p.Y + element.lbl.Height/2 );
+                Canvas.SetLeft(element.lbl, p.X - element.lbl.Width / 2);
+                Canvas.SetZIndex(element.lbl, 501 + pos);
+            }
+
             //Element added, increment position.
             pos++;
         }
@@ -181,12 +239,20 @@ namespace SW9_Project {
             return ElementList[i];
         }
 
-        //might be unsafe
+
         public void ClearList()
         {
             foreach (var item in ElementList)
             {
-                canvasRef.Children.Remove(item.img);
+                if (item.img != null)
+                {
+                    canvasRef.Children.Remove(item.img);
+                }
+                if (item.lbl != null)
+                {
+                    canvasRef.Children.Remove(item.lbl);
+                }
+
             }
             ElementList.Clear();
           pos = 0;
