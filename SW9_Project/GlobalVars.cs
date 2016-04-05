@@ -14,23 +14,16 @@ public static class GlobalVars
     static bool TP_lock;
     static bool _targetPractice;
     public static double canvasHeight, canvasWidth;
-    //TODO dictionary for imgID lookup
-    /*
-    Cat: 2130837566
-    Tiger: 2130837580
-    Japan: 2130837578
-    Sky: 2130837574
-    Flower: 2130837572
-    */
+
     public static readonly Dictionary<int,BitmapImage > imgDict =
         new Dictionary<int, BitmapImage>
         {
-            { 0, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }, //document / default
-            { 2130837566, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }, //cat
-            { 2130837572, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }, //flower
-            { 2130837574, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }, //sky
-            { 2130837578, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }, //japan
-            { 2130837580, new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute)) }  //tiger
+            { 0,          new BitmapImage(new Uri("resources/DocumentImage.png", UriKind.RelativeOrAbsolute)) }, //document / default
+            { 2130837566, new BitmapImage(new Uri("resources/cat.jpg", UriKind.RelativeOrAbsolute)) }, //cat
+            { 2130837572, new BitmapImage(new Uri("resources/flower.jpg", UriKind.RelativeOrAbsolute)) }, //flower
+            { 2130837574, new BitmapImage(new Uri("resources/sky.jpg", UriKind.RelativeOrAbsolute)) }, //sky
+            { 2130837578, new BitmapImage(new Uri("resources/china.jpg", UriKind.RelativeOrAbsolute)) }, //china
+            { 2130837580, new BitmapImage(new Uri("resources/tiger.jpg", UriKind.RelativeOrAbsolute)) }  //tiger
 
 
         };
