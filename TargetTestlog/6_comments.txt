@@ -1,0 +1,18 @@
+[10:51:05]: 
+[10:52:14]: The technique is not performed as described. Participant uses the same hand that hold the phone to touch the shape.
+[10:54:47]: 
+[10:54:52]: accident
+[10:55:00]: technique performed correctly but the somethimes the system seems to register the technique when it shouldn't
+[10:55:54]: participant tried to counter aim to compensate for the tilt jump
+[10:58:05]: No remarks for the swipe
+[11:00:07]: No comments for the throw pull. Very efficient
+[11:02:08]: Very efficient and no issues for the that technique
+[11:03:02]: Now it's push tilt time
+[11:03:43]: Jumps
+[11:04:27]: Close :)
+[11:06:12]: Technique is performed correctly but didn't register first try
+[11:07:26]: Sometimes the grab technique don't register on the first or second release and this add to the time for that attempts
+[11:08:29]: just missed it
+[11:08:40]: again just missed 
+[11:09:04]: Small jitter in the bottonm there
+[11:09:20]: Just missed. Small amount of jitter
