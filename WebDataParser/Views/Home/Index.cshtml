@@ -1,6 +1,7 @@
 ﻿@{
-    ViewBag.Title = "LiveView";
+    ViewBag.Title = "LiveView for " + ViewBag.Source;
 }
+
 @Scripts.Render("~/bundles/cookies")
 
 <script type="text/javascript">
@@ -18,16 +19,16 @@
 
         loadGraphs(source);
 
-
     });
 
 </script>
 
 <div id="header">
-    <h2>LiveView Statistics</h2>
+    <h2>LiveView Statistics for @ViewBag.Source</h2>
 </div>
 
 <div class="table-container">
+
     <div class="row">
         <div class="graph-container">
             <p> Hit Percentage </p>
@@ -51,9 +52,8 @@
 
             <hr />
 
-            @Html.ActionLink("Results (SPSS)", "GetData", new { data = "result", source = ViewBag.Source })
-            @Html.ActionLink("Data (SPSS)", "GetData", new { data = "data", source = ViewBag.Source })
-            @Html.ActionLink("Data (CSV)", "GetData", new { data = "datacsv", source = ViewBag.Source })
+            @Html.ActionLink("Data (SPSS)", "GetData", new { data = "spss", source = ViewBag.Source })
+            @Html.ActionLink("Data (CSV)", "GetData", new { data = "csv", source = ViewBag.Source })
 
             <hr />
 

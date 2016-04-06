@@ -65,11 +65,11 @@ namespace DataSetGenerator {
 
         
         
-        public static void CreateCSVDocument(DataSource source) {
+        public static string GenerateCSVDocument(DataSource source, string path) {
 
             List<int> testing = new List<int>();
-
-            using (StreamWriter datawriter = new StreamWriter(DataDirectory + "target_data.csv")) {
+            string fPath = $"{path}{source}data.csv";
+            using (StreamWriter datawriter = new StreamWriter(fPath)) {
                 datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
                                        " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
                                        " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
@@ -143,6 +143,7 @@ namespace DataSetGenerator {
 
                 }
             }
+            return fPath;
         }
 
 
@@ -262,36 +263,6 @@ namespace DataSetGenerator {
             gestureAttempt[$"{type}Direction"] = attempt.Direction;
 
             return gestureAttempt;
-        }
-
-        public static void GenerateJSONDocument(DataSource source) {
-            var tests = GetTests(source);
-            List<string> jsonInfo = new List<string>();
-
-            using (StreamWriter jsonFile = new StreamWriter(DataDirectory + "techniqueinfo.js")) {
-                string total = "";
-                foreach (var technique in AllTechniques) {
-
-                    var attemptsPush = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Push).ToList();
-                    var attemptsPull = tests.SelectMany(x => x.Attempts[technique].ToList()).Where(x => x.Direction == GestureDirection.Pull).ToList();
-
-                    if (attemptsPull.Count != 0) {
-                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
-                        var aPullS = new TechniqueInfo(attemptsPull).ToJson();
-
-                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS},  \n \"Pull\": {aPullS} }},\n";
-
-                    } else { 
-                        var aPushS = new TechniqueInfo(attemptsPush).ToJson();
-
-                        total += $"\"{technique}\": {{ \n \"Push\": {aPushS} }},\n";
-                    }
-
-                }
-
-
-                jsonFile.WriteLine("var data = {\n" + total.Remove(total.Length - 2) + "\n}");
-            }
         }
     }
 }
