@@ -488,7 +488,7 @@ public class Bboard extends BaseActivity {
     }
 
     public int getRandomImageId (){
-        if (shape.equals(Shape.Document)) {
+        if (shape == null ||  shape.equals(Shape.Document)) {
             return 0;
         }
         return getResources().getIdentifier(randomImage, null, getPackageName());
