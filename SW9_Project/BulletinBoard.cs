@@ -169,7 +169,7 @@ namespace SW9_Project {
                 return; //at least one UIelement must be available.
             }
             //Allow for max 100
-            if (pos == 99)
+            if (pos == 100)
             {
                 pos = 0;
                 //Recycle
@@ -182,7 +182,7 @@ namespace SW9_Project {
                     }
                 }
             }
-            if (ElementList[pos] != null)
+            if (ElementList.Count > pos && ElementList[pos] != null)
             {
                 if (ElementList[pos].lbl != null)
                 {
@@ -198,7 +198,15 @@ namespace SW9_Project {
                 //ElementList[pos].img.Source = null;
                 ElementList[pos] = null;
             }
-            ElementList[pos] = element;
+            if (ElementList.Count > pos)
+            {
+                ElementList[pos] = element;
+            }
+            else
+            {
+                ElementList.Add(element);
+            }
+            
             // Add to canvas with the center as close to P as possible, without breaking borders.
             if (element.img != null)
             {
