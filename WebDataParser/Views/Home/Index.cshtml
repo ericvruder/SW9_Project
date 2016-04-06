@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "LiveView for " + ViewBag.Source;
 }
+
 @Scripts.Render("~/bundles/cookies")
 
 <script type="text/javascript">
@@ -18,7 +19,6 @@
 
         loadGraphs(source);
 
-
     });
 
 </script>
@@ -28,6 +28,7 @@
 </div>
 
 <div class="table-container">
+
     <div class="row">
         <div class="graph-container">
             <p> Hit Percentage </p>
