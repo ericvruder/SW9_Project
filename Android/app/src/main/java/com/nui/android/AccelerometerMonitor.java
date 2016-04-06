@@ -7,6 +7,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 import com.nui.android.activities.BaseActivity;
+import com.nui.android.activities.Bboard;
 
 import java.text.DecimalFormat;
 
@@ -49,8 +50,13 @@ public class AccelerometerMonitor extends SensorMonitor {
                 }
             }
             else if(!tilt && IsThrow(x,y,z, curTime)){
-                MobileGesture data = new MobileGesture(BaseActivity.GetSelectedShape(), "Throw");
-                server.SendData(data);
+                if (Bboard.instance != null){
+                    MobileGesture data = new MobileGesture(Bboard.GetSelectedShape(), "Throw", Bboard.instance.getRandomImageId());
+                    server.SendData(data);
+                }else{
+                    MobileGesture data = new MobileGesture(BaseActivity.GetSelectedShape(), "Throw");
+                    server.SendData(data);
+                }
             }
         }
     }
@@ -103,11 +109,19 @@ public class AccelerometerMonitor extends SensorMonitor {
         lastAccel[2] = accelZ;
 
         if(t>3.0f){
-            return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Push");
+            if (Bboard.instance != null){
+                return new MobileGesture(Bboard.GetSelectedShape(),"Tilt", "Push",  Bboard.instance.getRandomImageId());
+            }else{
+                return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Push");
+            }
         }
 
         else if(t< -3.0f){
-            return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Pull");
+            if (Bboard.instance != null){
+                return new MobileGesture(Bboard.GetSelectedShape(),"Tilt", "Pull",  Bboard.instance.getRandomImageId());
+            }else{
+                return new MobileGesture(BaseActivity.GetSelectedShape(), "Tilt", "Pull");
+            }
         }
 
         return null;
