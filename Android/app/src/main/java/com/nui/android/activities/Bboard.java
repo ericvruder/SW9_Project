@@ -214,6 +214,7 @@ public class Bboard extends BaseActivity {
     public void StartPushTest(){
 
         pushOrPull = true;
+        ClearShapes();
         pullShape.setVisibility(View.INVISIBLE);
         DocumentView.setVisibility(View.VISIBLE);
         mImageView.setVisibility(View.VISIBLE);
