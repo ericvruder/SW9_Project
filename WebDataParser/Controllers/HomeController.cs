@@ -12,28 +12,33 @@ using WebDataParser.Models;
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
         public ActionResult Index(DataSource? source) {
-            if (source == null)
-                ViewBag.Source = "";
-            else 
+            if (source == null) {
+                var cookie = Request.Cookies["source"];
+                if (IsValidCookie(cookie)) {
+                    ViewBag.Source = cookie.Value;
+                }
+                else {
+                    ViewBag.Source = "Old";
+                }
+            }
+            else
                 ViewBag.Source = source;
             return View();
         }
 
+        private bool IsValidCookie(HttpCookie cookie) {
+            if (cookie == null) return false;
+            if (cookie.Value == "Old") return true;
+            if (cookie.Value == "Target") return true;
+            if (cookie.Value == "Field") return true;
+            return false;
+        }
+
         public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
-
-
-            DataGenerator.GenerateSPSSDocument(source, System.IO.Path.GetTempPath());
-
-            string fileName = "", filePath = "";
+            string fileName = $"{source}data", filePath = "";
             switch (data) {
-                case "result": fileName = "AllResults.spv"; break;
-                case "data": fileName = "AllData.sav"; break;
-                case "datacsv": fileName = "target_data.csv";break;
-                default: fileName = "AllData.sav"; break;
-            }
-
-            switch (source) {
-                default: filePath = AppDomain.CurrentDomain.BaseDirectory + "/Data/SW9/" + fileName; break;
+                case "spss": default: filePath = DataGenerator.GenerateSPSSDocument(source, Path.GetTempPath()); fileName += ".sav"; break;
+                case "csv": fileName = DataGenerator.GenerateCSVDocument(source, Path.GetTempPath()); fileName += ".csv";  break;
             }
             
             byte[] filedata = System.IO.File.ReadAllBytes(filePath);
