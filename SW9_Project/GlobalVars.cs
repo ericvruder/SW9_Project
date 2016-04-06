@@ -15,15 +15,25 @@ public static class GlobalVars
     static bool _targetPractice;
     public static double canvasHeight, canvasWidth;
 
+    //The keys changes every time a image is added to the java part
+    //TODO: Get an id printer for the java part
+    //WARNING: Duplicate keys causes runtime error, but is not caught on compile time.
     public static readonly Dictionary<int,BitmapImage > imgDict =
         new Dictionary<int, BitmapImage>
         {
             { 0,          new BitmapImage(new Uri("resources/DocumentImage.png", UriKind.RelativeOrAbsolute)) }, //document / default
-            { 2130837566, new BitmapImage(new Uri("resources/cat.jpg", UriKind.RelativeOrAbsolute)) }, //cat
-            { 2130837572, new BitmapImage(new Uri("resources/flower.jpg", UriKind.RelativeOrAbsolute)) }, //flower
-            { 2130837574, new BitmapImage(new Uri("resources/sky.jpg", UriKind.RelativeOrAbsolute)) }, //sky
-            { 2130837578, new BitmapImage(new Uri("resources/china.jpg", UriKind.RelativeOrAbsolute)) }, //china
-            { 2130837580, new BitmapImage(new Uri("resources/tiger.jpg", UriKind.RelativeOrAbsolute)) }  //tiger
+            { 2130837568, new BitmapImage(new Uri("resources/cat.jpg", UriKind.RelativeOrAbsolute)) }, //cat
+            { 2130837576, new BitmapImage(new Uri("resources/flower.jpg", UriKind.RelativeOrAbsolute)) }, //flower
+            { 2130837582, new BitmapImage(new Uri("resources/sky.jpg", UriKind.RelativeOrAbsolute)) }, //sky
+            { 2130837586, new BitmapImage(new Uri("resources/china.jpg", UriKind.RelativeOrAbsolute)) }, //china
+            { 2130837588, new BitmapImage(new Uri("resources/tiger.jpg", UriKind.RelativeOrAbsolute)) },  //tiger
+            //additional pictures (06 april)
+            { 2130837590, new BitmapImage(new Uri("resources/ad.png", UriKind.RelativeOrAbsolute)) },  //ad -
+            { 2130837566, new BitmapImage(new Uri("resources/batman.jpg", UriKind.RelativeOrAbsolute)) },  //batman
+            { 2130837570, new BitmapImage(new Uri("resources/church.jpg", UriKind.RelativeOrAbsolute)) },  //church
+            { 2130837578, new BitmapImage(new Uri("resources/heart.jpg", UriKind.RelativeOrAbsolute)) },  //heart
+            { 2130837580, new BitmapImage(new Uri("resources/marilyn.jpg", UriKind.RelativeOrAbsolute)) }  //marilyn
+
 
 
         };

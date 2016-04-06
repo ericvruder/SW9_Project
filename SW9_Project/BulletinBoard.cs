@@ -229,30 +229,67 @@ namespace SW9_Project {
             if (element.img != null)
             {
                 canvasRef.Children.Add(element.img);
+                
+                Size lblSize = new Size(0, 0);
+                if (element.lbl != null)
+                {
+                    lblSize = FitLabelWidth(element.lbl, element.img.Source.Width);
+                }
                 //to check for lbl != null might be better
-                Point sp = element.type == ScreenElement.Type.document ? GetSafeCoordinate(element.img, p, 0, 20) : GetSafeCoordinate(element.img, p);
+                //extra width is set to 0, as label is fit to be inside img width.
+                Point sp = GetSafeCoordinate(element.img, p, 10, lblSize.Height);
                 Canvas.SetLeft(element.img, sp.X);
                 Canvas.SetBottom(element.img, sp.Y);
                 Canvas.SetZIndex(element.img, 501 + pos);
                 if (element.lbl != null)
                 {
                     canvasRef.Children.Add(element.lbl);
-                    Canvas.SetTop(element.lbl, sp.Y);
-                    Canvas.SetLeft(element.lbl, sp.X + element.img.Width / 2 - element.lbl.Width / 2);
+                    Canvas.SetBottom(element.lbl, sp.Y - lblSize.Height);
+                    Canvas.SetLeft(element.lbl, (sp.X + element.img.Source.Width/2) - lblSize.Width/2 - 5);
                     Canvas.SetZIndex(element.lbl, 501 + pos);
                 }
             }
             else
             {
+                
+                Size lblSize = FitLabelWidth(element.lbl, 200);
+
                 //Notice that this doesn't have a safe coordinate
                 canvasRef.Children.Add(element.lbl);
-                Canvas.SetBottom(element.lbl, p.Y + element.lbl.Height/2 );
-                Canvas.SetLeft(element.lbl, p.X - element.lbl.Width / 2);
+                Canvas.SetBottom(element.lbl, p.Y - lblSize.Height/2 );
+                Canvas.SetLeft(element.lbl, p.X - lblSize.Width / 2);
                 Canvas.SetZIndex(element.lbl, 501 + pos);
             }
 
             //Element added, increment position.
             pos++;
+        }
+
+        private Size FitLabelWidth(Label lbl,double maxWidth )
+        {
+
+            Double fontSize = 17;
+            Size textSize;
+            String text = lbl.Content.ToString();
+            do
+            {
+                fontSize--;
+
+                Typeface myTypeface = new Typeface("Segoe UI");
+                FormattedText ft = new FormattedText(text,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    myTypeface, fontSize, Brushes.Black);
+
+                textSize = new Size(ft.Width, ft.Height);
+
+            } while (fontSize > 1 && textSize.Width > maxWidth || textSize.Height >30 );
+
+            lbl.FontSize = fontSize;
+            lbl.Background = Brushes.LightGray;
+            Size textBackground = new Size(textSize.Width, textSize.Height + 10); //10 above and below.
+
+            return textBackground;
         }
 
         public ScreenElement GetElement()
@@ -291,7 +328,7 @@ namespace SW9_Project {
         // without breaking the borders of the canvas
         // - I would love to use UIElement instead of Image, but i'm not sure about what numbers Rendersize are based on.
         // extrax and extra y is used to add more space than the image itself. - this is for documents with a label
-        public Point GetSafeCoordinate(Image img, Point p, int extraX = 0, int extraY = 0 )
+        public Point GetSafeCoordinate(Image img, Point p, double extraX = 0, double extraY = 0 )
         {
             double left = 0;
             double buttom = 0;
@@ -315,11 +352,11 @@ namespace SW9_Project {
             //resolve buttom (y)
             if (p.Y <= imgCY) //clamp buttom
             {
-                buttom = Math.Ceiling((extraY / 2d));
+                buttom = Math.Ceiling((extraY));
             }
             else if (p.Y >= (GlobalVars.canvasHeight - imgCY)) //clamp top
             {
-                buttom = (GlobalVars.canvasHeight - Math.Ceiling(img.Source.Height + (extraY / 2d)));
+                buttom = (GlobalVars.canvasHeight - Math.Ceiling(img.Source.Height));
             }
             else // no need for clamping
             {

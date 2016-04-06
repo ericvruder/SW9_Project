@@ -469,7 +469,6 @@ namespace SW9_Project {
                 extraTarget.Shape = null;
             }
 
-            //TODO: place image or document on screen. //TODO: Make complete.  //TODO: Verify
             // for cell
             double x = Canvas.GetLeft(currCell.GridCell) + (currCell.GridCell.Width / 2);
             double y = Canvas.GetBottom(currCell.GridCell) + (currCell.GridCell.Height / 2);
