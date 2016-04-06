@@ -1,0 +1,21 @@
+[13:43:25]: The phone is very close to his body
+[13:47:27]: Doesn't recognize the lower rows as quickly and good as the higher rows on the screen
+[13:49:01]: It didnt register even though he did it correctly
+[13:50:21]: Overhand throw
+[13:50:39]: Just jumped out of the target
+[13:50:54]: Consistently uses the overhand throw
+[13:51:48]: Something doesn't register right
+[13:51:59]: the technique was done quicker but didn't register right away
+[13:52:20]: Just jumped below the target when thrown
+[13:54:01]: very light tilt
+[13:54:14]: Needs to be faster. Jumped out of the target
+[13:55:27]: Second to last attempt jumped below target
+[14:00:18]: Jumped to the right of the target
+[14:00:51]: Jumped out of the target
+[14:01:05]: That one was crazy 
+[14:01:26]: The last one also need to be removed
+[14:01:36]: The tilt had some false positives where it activated the tilt without the participant wanting to.
+[14:02:27]: Uses underhand throw pull technique
+[14:02:38]: 
+[14:03:44]: The throw looked fairly smooth without much to comment on
+[14:06:01]: Very good swipe :)
