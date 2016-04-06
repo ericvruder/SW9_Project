@@ -32,7 +32,7 @@ public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGest
                 if (Bboard.instance != null){
                     lastUpdate = curTime;
                     server.SendData(new MobileGesture(Bboard.GetSelectedShape(), "Pinch", "Push",  Bboard.instance.getRandomImageId()));
-                    Log.d("PINCH", "OnScale() " + Bboard.GetSelectedShape() + "ImageID "+  Bboard.instance.getRandomImageId());
+                    Log.d("PINCH", "OnScale() " + Bboard.GetSelectedShape() + "ImageID " +  Bboard.instance.getRandomImageId());
                 }else{
                     lastUpdate = curTime;
                     server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));

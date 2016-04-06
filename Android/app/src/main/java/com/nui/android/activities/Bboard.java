@@ -478,11 +478,11 @@ public class Bboard extends BaseActivity {
     }
 
     public void RandomDrawableImage(){
-       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger"};
+       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
 
         int imageId = (int) Math.round((Math.random() * uri.length));
 
-        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 4));
+        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 10));
         randomImage = uri[rdnint];
         randomImageStroked = uri[rdnint]+"_stroke";
     }
