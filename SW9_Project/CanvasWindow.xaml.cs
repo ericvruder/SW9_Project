@@ -426,15 +426,15 @@ namespace SW9_Project {
         {
             Cell currCell = GetCell(pointer);
             connection?.SwitchShapes();
-            //if (hit)
-            //{
-            //    sounds["hit"].Play();
-            //    cell.Shape.Fill = Brushes.Green;
-            //}
-            //else {
-            //    sounds["miss"].Play();
-            //    cell.Shape.Fill = Brushes.Red;
-            //}
+            if (hit)
+            {
+                sounds["hit"].Play();
+                //cell.Shape.Fill = Brushes.Green;
+            }
+            else {
+                sounds["miss"].Play();
+                //cell.Shape.Fill = Brushes.Red;
+            }
 
             //DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             //da.Completed += (sender, e) => Da_Completed(sender, e, target);

@@ -20,11 +20,29 @@ namespace SW9_Project {
             image // 1
         };
 
+        //TODO: fix this converter for future usage.
+        // OUT OF MEMORY ERROR
+        public static BitmapSource ConvertBitmapTo96DPI(BitmapImage bitmapImage)
+        {
+            double dpi = 96;
+            int width = bitmapImage.PixelWidth;
+            int height = bitmapImage.PixelHeight;
+
+            int stride = width * bitmapImage.Format.BitsPerPixel;
+            byte[] pixelData = new byte[stride * height];
+            bitmapImage.CopyPixels(pixelData, stride, 0);
+
+            return BitmapSource.Create(width, height, dpi, dpi, bitmapImage.Format, null, pixelData, stride);
+        }
+
         //This functon checks if resizeing is necesary. It resizes to 50% if it holds true and clamps the image.
         // set image.souce = ResizeImage( bitmap_image);
+        //System only support 96 DPI images
         public static TransformedBitmap ResizeImage(BitmapImage image)
         {
+            
             double maxSize = Math.Min(GlobalVars.canvasWidth, GlobalVars.canvasHeight); //max size allowed is based on the smalest size.
+            maxSize = Math.Floor(maxSize / 2d);
             //canvas width 1113.6
             //canvas height 574.4
             double _H = image.PixelHeight;
@@ -277,8 +295,8 @@ namespace SW9_Project {
         {
             double left = 0;
             double buttom = 0;
-            double imgCX = (img.Width + extraX) / 2;
-            double imgCY = (img.Height + extraY) / 2;
+            double imgCX = (img.Source.Width + extraX) / 2;
+            double imgCY = (img.Source.Height + extraY) / 2;
 
             //resolve left (x)
             if (p.X <= imgCX) //clamp left
@@ -297,7 +315,7 @@ namespace SW9_Project {
             //resolve buttom (y)
             if (p.Y <= imgCY) //clamp top
             {
-                buttom = Math.Ceiling(img.Height + (extraY / 2d));
+                buttom = Math.Ceiling(img.Source.Height + (extraY / 2d));
             }
             else if (p.Y >= (canvasRef.Height - imgCY)) //clamp buttom
             {
