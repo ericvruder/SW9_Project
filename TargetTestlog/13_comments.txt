@@ -1,0 +1,6 @@
+[11:17:15]: curious as to how the system works
+[11:20:33]: holds the telefone pointing directly up during swipe
+[11:21:26]: did not feel unconfortable when switching arms to use as a pointing arms
+[11:28:04]: one attempt where user did not trigger the attempt because he was not making the gesture hard enough during tilt pull
+[11:30:59]: was slightly confused about wether or not he had to press the button during a pull throw gesture
+[11:31:24]: second attempt misreading during grab pull

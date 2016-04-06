@@ -1,0 +1,11 @@
+[10:50:12]: ver carefull after first miss
+[10:51:02]: not using enough power doing a tilt
+[10:51:40]: very confortable with swipe
+[10:54:40]: selected wrong shape during throw
+[10:54:50]: doing relatively small movements, and sometimes failing. When that happens, test person adds more force to the throw
+[10:59:11]: swapped hands during throw to pointing with right hand. Used left hand during push
+[11:00:23]: sometimes does do the movement large enough, still applies more force to technique
+[11:01:47]: got rather fast confident with tilt pull
+[11:02:39]: does smaller, not as strong movements when doing the pull tilt on a small screen
+[11:04:21]: after a few attempts of swipe pull, put the tempo up and tried to complete each technique faster and faster
+[11:06:17]: got a misreading of the hand, and took a bit to understand that the pointer was locked and that he needed to press the screen to continue

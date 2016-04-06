@@ -1,0 +1,9 @@
+[11:33:48]: 
+[11:47:54]: held phone directly up during swipe pull
+[11:50:53]: has not run the experiment before, so does not attempt to do a pinch release: tries a full on grab release from the get go
+[11:55:04]: gra release misreading
+[11:55:29]: grab release misreading
+[11:56:18]: tried to close hand during throw after doing a grab gesture. possibly to try to lock the pointer
+[12:00:50]: slow moving gesture while doing tilt push led to a more stable pointer
+[12:01:26]: sometimes it is not hard enough
+[12:01:49]: lifts himself up while trying to reach the corner of the screen
