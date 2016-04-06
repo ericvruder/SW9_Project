@@ -42,7 +42,7 @@ namespace SW9_Project {
         {
             
             double maxSize = Math.Min(GlobalVars.canvasWidth, GlobalVars.canvasHeight); //max size allowed is based on the smalest size.
-            maxSize = Math.Floor(maxSize / 2d);
+            maxSize = Math.Floor(maxSize / 3d);
             //canvas width 1113.6
             //canvas height 574.4
             double _H = image.PixelHeight;
@@ -65,7 +65,7 @@ namespace SW9_Project {
                     }
                     else
                     {
-                        _W = Math.Floor(_H / ratio);
+                        _W = Math.Floor(_H * ratio);
                     }
                 }
                 if (_W < 1) { _W = 1; }
@@ -303,9 +303,9 @@ namespace SW9_Project {
             {
                 left = Math.Ceiling ( extraX/2d);
             }
-            else if (p.X >= (canvasRef.Width - imgCX)) //clamp right
+            else if (p.X >= (GlobalVars.canvasWidth - imgCX)) //clamp right
             {
-                left = (canvasRef.Width - Math.Ceiling(img.Width + (extraX / 2d)));
+                left = (GlobalVars.canvasWidth - Math.Ceiling(img.Source.Width + (extraX / 2d)));
             }
             else //no need for clamping
             {
@@ -313,13 +313,13 @@ namespace SW9_Project {
             }
 
             //resolve buttom (y)
-            if (p.Y <= imgCY) //clamp top
+            if (p.Y <= imgCY) //clamp buttom
             {
-                buttom = Math.Ceiling(img.Source.Height + (extraY / 2d));
+                buttom = Math.Ceiling((extraY / 2d));
             }
-            else if (p.Y >= (canvasRef.Height - imgCY)) //clamp buttom
+            else if (p.Y >= (GlobalVars.canvasHeight - imgCY)) //clamp top
             {
-                buttom = (canvasRef.Height - Math.Ceiling(extraY / 2d));
+                buttom = (GlobalVars.canvasHeight - Math.Ceiling(img.Source.Height + (extraY / 2d)));
             }
             else // no need for clamping
             {

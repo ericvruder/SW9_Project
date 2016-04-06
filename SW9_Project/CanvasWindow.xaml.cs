@@ -156,6 +156,10 @@ namespace SW9_Project {
         private void CreateGrid(int width, int height, bool includeBorders) {
             if(grid != null) {
                 canvas.Children.Clear();
+                if (!targetPractice)
+                {
+                    BulletinBoard.Instance.elementContainer.ClearList();
+                }
             }
             if(pointerFigure != null) {
                canvas.Children.Add(pointerFigure);
@@ -204,7 +208,7 @@ namespace SW9_Project {
                     }
                     else
                     {
-                        CreateGrid(GridSize.Large); //we need large all the time for FieldTest
+                        //CreateGrid(GridSize.Large); //we need large all the time for FieldTest
                     }
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
@@ -262,9 +266,11 @@ namespace SW9_Project {
             
             if (currentCell != null) {
                 currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
+                Canvas.SetZIndex(currentCell, 0);
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
+            if (!targetPractice) { Canvas.SetZIndex(currentCell, 501 + 1 + BulletinBoard.Instance.elementContainer.GetPos()); }
             //currentCell.Fill.Opacity = 0.5;
         }
         
@@ -388,8 +394,8 @@ namespace SW9_Project {
             Canvas.SetZIndex(t, 500);
             if (!targetPractice)
             {
-                //DONE: zorder = pos +1 (starts at 501)
-                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 1 + 501);
+                //DONE: zorder = pos +1 (starts at 501) , +1 due to yellow brush
+                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 2 + 501);
             }
 
             canvas.Children.Add(t);
@@ -479,7 +485,7 @@ namespace SW9_Project {
                 se = new ScreenElement(""); //random string is given in constructor.
             }
 
-            BulletinBoard.Instance.elementContainer.AddElement(se, CellCenter); // for center at pointer, simply use pointer instead.
+            BulletinBoard.Instance.elementContainer.AddElement(se, pointer); // for center at pointer, simply use pointer instead.
 
         }
 
