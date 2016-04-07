@@ -493,12 +493,12 @@ public class Bboard extends BaseActivity {
     }
 
     public void  PopulateRandomDrawable(){
-        String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
-        List<String> random = Arrays.asList(uri);
+        List<String> random = new ArrayList<>();
+        Collections.addAll(random,"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman");
         Collections.shuffle(random);
-                for (String s : random) {
-                    randomDrawablePool.add(s);
-                }
+        for (String s : random) {
+            randomDrawablePool.add(s);
+        }
     }
 
 }
