@@ -483,8 +483,12 @@ public class Bboard extends BaseActivity {
         int imageId = (int) Math.round((Math.random() * uri.length));
 
         int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 10));
-        randomImage = uri[rdnint];
-        randomImageStroked = uri[rdnint]+"_stroke";
+        if (randomImage == null || randomImage.equals(uri[rdnint])){
+            RandomDrawableImage();
+        }else{
+            randomImage = uri[rdnint];
+            randomImageStroked = uri[rdnint]+"_stroke";
+        }
     }
 
     public int getRandomImageId (){
