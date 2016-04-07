@@ -105,6 +105,7 @@ public class Bboard extends BaseActivity {
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
+        PopulateRandomDrawable();
        RandomDrawableImage();
 
     }
@@ -503,7 +504,7 @@ public class Bboard extends BaseActivity {
         return getResources().getIdentifier(randomImage, null, getPackageName());
     }
 
-    public List<String> PopulateRandomDrawable(){
+    public void  PopulateRandomDrawable(){
         randomDrawablePool = new ArrayList<String>();
         String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
         for (int i =0; i<uri.length; i++){
@@ -511,7 +512,6 @@ public class Bboard extends BaseActivity {
         }
         Collections.shuffle(randomDrawablePool);
 
-        return  randomDrawablePool;
     }
 
 }
