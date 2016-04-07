@@ -1,6 +1,5 @@
 package com.nui.android.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
@@ -29,12 +28,14 @@ import com.nui.android.Shape;
 import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
+import java.lang.reflect.Array;
 import java.net.DatagramPacket;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Bboard extends BaseActivity {
     //private Network network;
@@ -52,10 +53,8 @@ public class Bboard extends BaseActivity {
     public static String nextShape;
     public  String randomImage;
     public  String randomImageStroked;
-    public List<String> randomDrawablePool;
+    public ArrayDeque<String> randomDrawablePool;
     //TODO ImageView - exchange (data?) with Document and Image
-    private ImageView circleView;
-    private ImageView squareView;
     private ImageView mImageView;
     private ImageView DocumentView;
 
@@ -94,19 +93,16 @@ public class Bboard extends BaseActivity {
         pinchDetector = new ScaleGestureDetector(this, pinchGestureListener);
         touchDetector = new GestureDetectorCompat(this, touchGestureListener);
 
-        //circleView = (ImageView) findViewById(R.id.circle);
-       // squareView = (ImageView) findViewById(R.id.square);
+
         pullShape = (ImageView) findViewById(R.id.pull_shape);
         DocumentView = (ImageView) findViewById(R.id.document);
         mImageView = (ImageView) findViewById(R.id.image);
         pullShape.setVisibility(View.INVISIBLE);
-      //  circleView.setVisibility(View.INVISIBLE);
-       // squareView.setVisibility(View.INVISIBLE);
         DocumentView.setVisibility(View.INVISIBLE);
         mImageView.setVisibility(View.INVISIBLE);
         count = 0;
-        PopulateRandomDrawable();
-       RandomDrawableImage();
+        randomDrawablePool = new ArrayDeque<String>();
+        RandomDrawableImage();
 
     }
 
@@ -189,7 +185,6 @@ public class Bboard extends BaseActivity {
 //    }
 
     String gesture = "";
-    //TODO should just use SUPER
     public void SetGesture(String gesture){
         this.gesture = gesture;
         sendGyroData = false;
@@ -209,13 +204,12 @@ public class Bboard extends BaseActivity {
             default: break;
         }
     }
-    //TODO should just use SUPER
+
     public String GetGesture(){
         return gesture;
     }
 
-    //TODO overide, need to use different shape views.
-    // can perhaps use super if image data can be overrided by the bboard xml file.
+
     public void StartPushTest(){
 
         pushOrPull = true;
@@ -266,13 +260,12 @@ public class Bboard extends BaseActivity {
 
         });
     }
-    //TODO use super
+
     boolean pullPinchWaiting = false;
     public void AwaitingPullPinch(boolean waiting){
         pullPinchWaiting = waiting;
     }
-    //TODO overide, need to use different shape views.
-    // can perhaps use super if image data can be overrided by the bboard xml file.
+
     public void ClearShapes(){
         shape = null;
         int imageResource = getResources().getIdentifier(randomImage, null, getPackageName());
@@ -299,7 +292,7 @@ public class Bboard extends BaseActivity {
             count++;
         }
     }
-    //TODO not needed for 1.st FS , return true?
+
     public void SetShape(String shape) {
         ClearShapes();
 
@@ -318,7 +311,7 @@ public class Bboard extends BaseActivity {
     public static String GetSelectedShape(){
         return shape;
     }
-    //TODO: fix crash?
+
     public void CloseApp(){
         this.finish();
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -483,16 +476,11 @@ public class Bboard extends BaseActivity {
     }
 
     public void RandomDrawableImage(){
-//       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
-//        int imageId = (int) Math.round((Math.random() * uri.length));
-//
-//        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 10));
         if (randomDrawablePool.isEmpty()){
             PopulateRandomDrawable();
             RandomDrawableImage();
         }else{
-            randomImage = randomDrawablePool.get(randomDrawablePool.size() - 1);
-            randomDrawablePool.remove(randomDrawablePool.size() - 1);
+            randomImage = randomDrawablePool.removeFirst();
             randomImageStroked = randomImage+"_stroke";
         }
     }
@@ -505,13 +493,12 @@ public class Bboard extends BaseActivity {
     }
 
     public void  PopulateRandomDrawable(){
-        randomDrawablePool = new ArrayList<String>();
         String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
-        for (int i =0; i<uri.length; i++){
-            randomDrawablePool.add(uri[i]);
-        }
-        Collections.shuffle(randomDrawablePool);
-
+        List<String> random = Arrays.asList(uri);
+        Collections.shuffle(random);
+                for (String s : random) {
+                    randomDrawablePool.add(s);
+                }
     }
 
 }
