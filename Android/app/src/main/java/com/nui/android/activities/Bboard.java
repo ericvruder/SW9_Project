@@ -30,6 +30,9 @@ import com.nui.android.SwipeGestureListener;
 import com.nui.android.TouchGestureListener;
 
 import java.net.DatagramPacket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -49,6 +52,7 @@ public class Bboard extends BaseActivity {
     public static String nextShape;
     public  String randomImage;
     public  String randomImageStroked;
+    public List<String> randomDrawablePool;
     //TODO ImageView - exchange (data?) with Document and Image
     private ImageView circleView;
     private ImageView squareView;
@@ -478,16 +482,17 @@ public class Bboard extends BaseActivity {
     }
 
     public void RandomDrawableImage(){
-       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
-
-        int imageId = (int) Math.round((Math.random() * uri.length));
-
-        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 10));
-        if (randomImage == null || randomImage.equals(uri[rdnint])){
+//       String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
+//        int imageId = (int) Math.round((Math.random() * uri.length));
+//
+//        int rdnint = Math.round(ThreadLocalRandom.current().nextInt(0, 10));
+        if (randomDrawablePool.isEmpty()){
+            PopulateRandomDrawable();
             RandomDrawableImage();
         }else{
-            randomImage = uri[rdnint];
-            randomImageStroked = uri[rdnint]+"_stroke";
+            randomImage = randomDrawablePool.get(randomDrawablePool.size() - 1);
+            randomDrawablePool.remove(randomDrawablePool.size() - 1);
+            randomImageStroked = randomImage+"_stroke";
         }
     }
 
@@ -496,6 +501,17 @@ public class Bboard extends BaseActivity {
             return 0;
         }
         return getResources().getIdentifier(randomImage, null, getPackageName());
+    }
+
+    public List<String> PopulateRandomDrawable(){
+        randomDrawablePool = new ArrayList<String>();
+        String[] uri = new String[] {"drawable/cat","drawable/flower","drawable/sky","drawable/temple" ,"drawable/tiger", "drawable/hearth", "drawable/mery","drawable/weight","drawable/church","drawable/batman"};
+        for (int i =0; i<uri.length; i++){
+            randomDrawablePool.add(uri[i]);
+        }
+        Collections.shuffle(randomDrawablePool);
+
+        return  randomDrawablePool;
     }
 
 }
