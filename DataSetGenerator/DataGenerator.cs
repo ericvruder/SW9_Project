@@ -191,8 +191,6 @@ namespace DataSetGenerator {
         }
 
         private static void AddVariableForTechnique(SpssDataDocument doc, GestureType type) {
-
-
             SpssNumericVariable time = new SpssNumericVariable();
             time.Name = $"{type}Time";
             time.Label = $"Time taken in seconds for the attempt using {type}";
@@ -221,36 +219,121 @@ namespace DataSetGenerator {
             direction.ValueLabels.Add(0, "Push");
             direction.ValueLabels.Add(1, "Pull");
             doc.Variables.Add(direction);
-
         }
 
-        public static void CreateMetaData(SpssDataDocument doc) {
+        public static void CreateMetaData(SpssDataDocument doc, SpssFormat format = SpssFormat.Long) {
 
             SpssNumericVariable vID = new SpssNumericVariable();
             vID.Name = "ID";
             vID.Label = "User ID";
+            vID.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
             doc.Variables.Add(vID);
 
-            foreach (var technique in AllTechniques) {
-                AddVariableForTechnique(doc, technique);
+            if (format == SpssFormat.Short)
+            {
+                foreach (var technique in AllTechniques)
+                {
+                    AddVariableForTechnique(doc, technique);
+                }
+            }
+            else if(format == SpssFormat.Long)
+            {
+                //SpssNumericVariable overallAttemptNo = new SpssNumericVariable();
+                //overallAttemptNo.Name = $"OverallAttemptNo";
+                //overallAttemptNo.Label = $"The overall attempt number";
+                //overallAttemptNo.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                //doc.Variables.Add(overallAttemptNo);
+
+                //SpssNumericVariable techniqueAttemptNo = new SpssNumericVariable();
+                //techniqueAttemptNo.Name = $"TechniqueAttemptNo";
+                //techniqueAttemptNo.Label = $"The attempt number for the technique";
+                //techniqueAttemptNo.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                //doc.Variables.Add(techniqueAttemptNo);
+
+                SpssNumericVariable time = new SpssNumericVariable();
+                time.Name = $"Time";
+                time.Label = $"Time taken in seconds for the attempt";
+                time.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                doc.Variables.Add(time);
+
+                SpssNumericVariable hit = new SpssNumericVariable();
+                hit.Name = $"Hit";
+                hit.Label = $"Whether the user hit the target or not";
+                hit.ValueLabels.Add(0, "Miss");
+                hit.ValueLabels.Add(1, "Hit");
+                hit.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                doc.Variables.Add(hit);
+
+                SpssNumericVariable accuracy = new SpssNumericVariable();
+                accuracy.Name = $"Accuracy";
+                accuracy.Label = $"Distance in pixels from target";
+                accuracy.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                doc.Variables.Add(accuracy);
+
+                SpssNumericVariable gridSize = new SpssNumericVariable();
+                gridSize.Name = $"Size";
+                gridSize.Label = $"Target (grid) size for attempt";
+                gridSize.ValueLabels.Add(0, "Small");
+                gridSize.ValueLabels.Add(1, "Large");
+                gridSize.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                doc.Variables.Add(gridSize);
+
+                SpssNumericVariable direction = new SpssNumericVariable();
+                direction.Name = $"Direction";
+                direction.Label = $"Direction for attempt";
+                direction.ValueLabels.Add(0, "Push");
+                direction.ValueLabels.Add(1, "Pull");
+                direction.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                doc.Variables.Add(direction);
+
+                SpssNumericVariable technique = new SpssNumericVariable();
+                technique.Name = $"Technique";
+                technique.Label = $"The technique used for the attempt";
+                technique.ValueLabels.Add(0, "Pinch");
+                technique.ValueLabels.Add(1, "Swipe");
+                technique.ValueLabels.Add(2, "Throw");
+                technique.ValueLabels.Add(3, "Tilt");
+                technique.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                doc.Variables.Add(technique);
             }
 
             doc.CommitDictionary();
         }
 
-        public static void ParseTest(SpssDataDocument doc, Test test) {
+        public static void ParseTest(SpssDataDocument doc, Test test, SpssFormat format = SpssFormat.Long) {
             int id = int.Parse(test.ID);
             int nAttempts = test.Attempts[GestureType.Pinch].Count;
+            //int overallAttempt = 0;
 
-            // GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt 
-            for (int i = 0; i < nAttempts; i++) {
-                SpssCase gestureAttempts = doc.Cases.New();
-                gestureAttempts["ID"] = id;
-                foreach (var type in AllTechniques) {
-                    gestureAttempts = AddTechniqueData(gestureAttempts, type, test.Attempts[type][i]);
+            if (format == SpssFormat.Short)
+            {
+                // GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt 
+                for (int i = 0; i < nAttempts; i++) {
+                    SpssCase gestureAttempts = doc.Cases.New();
+                    gestureAttempts["ID"] = id;
+
+                    foreach (var type in AllTechniques)
+                    {
+                        gestureAttempts = AddTechniqueData(gestureAttempts, type, test.Attempts[type][i]);
+                    }
+                    gestureAttempts.Commit();
                 }
-                gestureAttempts.Commit();
-
+            }
+            else if (format == SpssFormat.Long)
+            {
+                for (int i = 0; i < test.Attempts[GestureType.Pinch].Count; i++)
+                {
+                    foreach (var type in AllTechniques)
+                    {
+                        SpssCase gestureAttempts = doc.Cases.New();
+                        gestureAttempts[$"ID"] = id;
+                        //gestureAttempts[$"OverallAttemptNo"] = ++overallAttempt;
+                        //gestureAttempts[$"TargetAttemptNo"] = targetAttempt;
+                        gestureAttempts = AddTechniqueDataLong(gestureAttempts, type, test.Attempts[type][i]);
+                        gestureAttempts[$"Technique"] = type;
+                        gestureAttempts.Commit();
+                    }
+                }
             }
         }
 
@@ -261,6 +344,17 @@ namespace DataSetGenerator {
             gestureAttempt[$"{type}Accuracy"] = MathHelper.DistanceToTargetCell(attempt);
             gestureAttempt[$"{type}Size"] = attempt.Size;
             gestureAttempt[$"{type}Direction"] = attempt.Direction;
+
+            return gestureAttempt;
+        }
+
+        public static SpssCase AddTechniqueDataLong(SpssCase gestureAttempt, GestureType type, Attempt attempt)
+        {
+            gestureAttempt[$"Time"] = attempt.Time.TotalSeconds;
+            gestureAttempt[$"Hit"] = attempt.Hit;
+            gestureAttempt[$"Accuracy"] = MathHelper.DistanceToTargetCell(attempt);
+            gestureAttempt[$"Size"] = attempt.Size;
+            gestureAttempt[$"Direction"] = attempt.Direction;
 
             return gestureAttempt;
         }
