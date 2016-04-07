@@ -1,0 +1,11 @@
+[14:24:08]: I knew this was the wrong shape once he looked at it again
+[14:24:30]: lock :(
+[14:25:50]: Only a faw problems in the beginning with that grab test
+[14:27:22]: Just right of the shape
+[14:30:23]: Few misses for the tilt. And sometimes the system doesn't register the first, or first couple of tries to activate the technique.
+[14:32:46]: No problems with swipe :D
+[14:35:32]: Throw went alright :)
+[14:40:08]: missed just outside
+[14:40:18]: He was not happy with the last to attempts of the tilt that missed
+[14:43:23]: second to last grab attempt: The system didn't recieve a grab gesture from the phone
+[14:43:56]: This took a little extra time

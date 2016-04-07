@@ -1,0 +1,20 @@
+[13:19:44]: Quick and efficient pull swipe 
+[13:20:00]: small amounts of jitter fir the swipe but it didn't have an impact on hitting the target or not
+[13:21:05]: The cursor jumps out of the target area, just slightly
+[13:21:55]: Participant stretching his arm to minimize the jitter, it works
+[13:22:14]: no unintended tilts
+[13:22:31]: Just the fact that the cursor jumps out of the target 
+[13:23:40]: locks again unintended
+[13:24:03]: just missed the target
+[13:24:11]: again 
+[13:24:22]: just outside the target
+[13:25:01]: Just missed it :)
+[13:26:21]: Wrong shape?
+[13:27:02]: He had no problems activating the throw pull technique
+[13:28:43]: Just jumped out
+[13:29:33]: Jumped out again
+[13:30:44]: 
+[13:30:57]: Lokked like it was unintended 
+[13:31:40]: just right of the target
+[13:33:17]: Small error. The shape was not selected properly from the phone
+[13:36:09]: Effective swipe
