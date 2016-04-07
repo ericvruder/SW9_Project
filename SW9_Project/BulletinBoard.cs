@@ -43,8 +43,8 @@ namespace SW9_Project {
             
             double maxSize = Math.Min(GlobalVars.canvasWidth, GlobalVars.canvasHeight); //max size allowed is based on the smalest size.
             maxSize = Math.Floor(maxSize / 3d);
-            //canvas width 1113.6
-            //canvas height 574.4
+            //canvas width 1852,8
+            //canvas height 969,6
             double _H = image.PixelHeight;
             double _W = image.PixelWidth;
             bool wider = Math.Max(_W, _H) == _W;
