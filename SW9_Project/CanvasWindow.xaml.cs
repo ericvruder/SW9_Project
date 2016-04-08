@@ -547,7 +547,7 @@ namespace SW9_Project {
         public void EndTest() {
             currentTest = null;
             gestureCount = 0;
-            //Thank you for testing label = visible;
+            ThanksLabel.Visibility = Visibility.Visible;
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -573,6 +573,7 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
+                    ThanksLabel.Visibility = Visibility.Collapsed;
                     currentTest = new TestSuite(this, source);
                     kinectManager.Recalibrate();
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
@@ -585,8 +586,11 @@ namespace SW9_Project {
                     currentTest.StartTest(GestureDirection.Push);
                 }
             } else if (e.Key == System.Windows.Input.Key.Down) {
-                if (currentTest != null) {
-                    currentTest.StartTest(GestureDirection.Pull);
+                if (targetPractice)
+                {
+                    if (currentTest != null) {
+                        currentTest.StartTest(GestureDirection.Pull);
+                    }
                 }
             } 
             

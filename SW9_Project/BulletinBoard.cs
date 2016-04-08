@@ -268,7 +268,7 @@ namespace SW9_Project {
         private Size FitLabelWidth(Label lbl,double maxWidth )
         {
 
-            Double fontSize = 17;
+            Double fontSize = 21;
             Size textSize;
             String text = lbl.Content.ToString();
             do
@@ -380,7 +380,11 @@ namespace SW9_Project {
         private BulletinBoard() : base(false) {
             canvas.Background = Brushes.Gray;
             elementContainer = new ElementContainer(canvas); //used for storing images/documents on the screen.
-            
+            progressLabel.VerticalAlignment = VerticalAlignment.Bottom;
+            progressLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            Thickness margin = new Thickness(0, 0, 0, 10);
+            progressLabel.Margin = margin;
+
         }
 
         public static BulletinBoard Instance
