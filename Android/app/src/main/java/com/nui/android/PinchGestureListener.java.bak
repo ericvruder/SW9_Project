@@ -4,7 +4,6 @@ import android.util.Log;
 import android.view.ScaleGestureDetector;
 
 import com.nui.android.activities.BaseActivity;
-import com.nui.android.activities.Bboard;
 
 /**
  * Created by ericv on 11/2/2015.
@@ -29,15 +28,9 @@ public class PinchGestureListener extends ScaleGestureDetector.SimpleOnScaleGest
         if(running) {
             long curTime = System.currentTimeMillis();
             if (curTime - lastUpdate > 500) {
-                if (Bboard.instance != null){
-                    lastUpdate = curTime;
-                    server.SendData(new MobileGesture(Bboard.GetSelectedShape(), "Pinch", "Push",  Bboard.instance.getRandomImageId()));
-                    Log.d("PINCH", "OnScale() " + Bboard.GetSelectedShape() + "ImageID " +  Bboard.instance.getRandomImageId());
-                }else{
-                    lastUpdate = curTime;
-                    server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
-                    Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
-                }
+                lastUpdate = curTime;
+                server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Pinch", "Push"));
+                Log.d("PINCH", "OnScale() " + BaseActivity.GetSelectedShape());
             }
 
         }

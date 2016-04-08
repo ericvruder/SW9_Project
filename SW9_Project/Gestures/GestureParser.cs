@@ -73,12 +73,12 @@ namespace SW9_Project {
                     case GestureType.Swipe: {
                             if (receivedGesture.Direction != GetDirectionContext()) return;
                             ClearGestures();
-                            AwaitingGesture = new KinectGesture(receivedGesture.Shape);
+                            AwaitingGesture = new KinectGesture(receivedGesture.Shape,receivedGesture.ImgID);
                         }
                         break;
                     case GestureType.Tilt: {
                             ClearGestures();
-                            AwaitingGesture = new KinectGesture(receivedGesture.Shape);
+                            AwaitingGesture = new KinectGesture(receivedGesture.Shape,receivedGesture.ImgID);
                         }
                         break;
                     case GestureType.Pinch: {
@@ -105,7 +105,7 @@ namespace SW9_Project {
                     case GestureType.Throw:
                         if (waitingKinectGesture?.Type == GestureType.Throw) {
                             ClearGestures();
-                            AwaitingGesture = new KinectGesture(receivedGesture.Shape);
+                            AwaitingGesture = new KinectGesture(receivedGesture.Shape,receivedGesture.ImgID);
                         } else {
                             ClearGestures();
                             waitingMobileGesture = receivedGesture;
@@ -144,7 +144,7 @@ namespace SW9_Project {
                                     ClearGestures();
                                     waitingKinectGesture = gesture;
                                 } else if (waitingMobileGesture != null) {
-                                    KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape);
+                                    KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape, waitingMobileGesture.ImgID);
                                     ClearGestures();
                                     AwaitingGesture = gesture;
                                 }
@@ -163,7 +163,7 @@ namespace SW9_Project {
                                 ClearGestures();
                                 waitingKinectGesture = receivedGesture;
                             } else if (waitingMobileGesture?.Type == GestureType.Throw) {
-                                KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape);
+                                KinectGesture gesture = new KinectGesture(waitingMobileGesture.Shape,waitingMobileGesture.ImgID);
                                 ClearGestures();
                                 AwaitingGesture = gesture;
                             } else {

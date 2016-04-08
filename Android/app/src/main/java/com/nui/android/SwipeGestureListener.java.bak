@@ -5,7 +5,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import com.nui.android.activities.BaseActivity;
-import com.nui.android.activities.Bboard;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,22 +55,13 @@ public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListene
         if(running) {
             if (!pinching) {
                 float diff = firstEvent.getY() - secondEvent.getY();
-                if (Bboard.instance != null){
-                    if (diff >= 100f) {
-                        server.SendData(new MobileGesture(Bboard.GetSelectedShape(), "Swipe", "Push", Bboard.instance.getRandomImageId()));
-                        Log.d("SWIPE", "onFling() push " + Bboard.GetSelectedShape());
-                    } else if (diff <= -100f) {
-                        server.SendData(new MobileGesture(Bboard.GetSelectedShape(), "Swipe", "Pull", Bboard.instance.getRandomImageId()));
-                        Log.d("SWIPE", "onFling() pull " + Bboard.GetSelectedShape());
-                    }
-                }
-                    if (diff >= 100f) {
+                if (diff >= 100f) {
                     server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Push"));
                     Log.d("SWIPE", "onFling() push " + BaseActivity.GetSelectedShape());
-                    } else if (diff <= -100f) {
+                } else if (diff <= -100f) {
                     server.SendData(new MobileGesture(BaseActivity.GetSelectedShape(), "Swipe", "Pull"));
                     Log.d("SWIPE", "onFling() pull " + BaseActivity.GetSelectedShape());
-                    }
+                }
             }
         }
         return true;

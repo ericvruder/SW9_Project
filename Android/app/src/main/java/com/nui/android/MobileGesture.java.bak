@@ -17,9 +17,6 @@ public class MobileGesture {
         Direction = direction;
         ImgID = imgid;
     }
-    public MobileGesture(String shape, String type,  Integer imgid){
-        this(shape, type, "", imgid);
-    }
 
     public MobileGesture(String shape, String type){
         this(shape, type, "", 0);

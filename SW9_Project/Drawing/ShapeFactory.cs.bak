@@ -99,7 +99,7 @@ namespace SW9_Project {
         public static Rectangle CreateSquareTextured(string name, double size, Image bitimage)
         {
             Rectangle square = new Rectangle();
-            if (((BitmapImage)bitimage.Source).UriSource != null) //This is slightly overkill, better safe than sory
+            if (((BitmapImage)bitimage.Source).UriSource == null) //This is slightly overkill, better safe than sory
             {
                 ImageBrush brush = new ImageBrush(bitimage.Source);
                 brush.TileMode = TileMode.None;
@@ -107,7 +107,7 @@ namespace SW9_Project {
             }
             else
             {
-                square.Fill = Brushes.Indigo; //Debug, image was null or file not found.
+                square.Fill = Brushes.Indigo; //Debug, image var null or file not found.
             }
                       
             square.StrokeThickness = 1;
