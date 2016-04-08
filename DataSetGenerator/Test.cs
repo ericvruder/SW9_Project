@@ -30,6 +30,7 @@ namespace DataSetGenerator {
                 GestureType type = GestureType.Pinch;
                 GestureDirection direction = GestureDirection.Push;
                 TimeSpan currentTime = TimeSpan.Zero;
+                int count = 1;
                 while ((line = sr.ReadLine()) != null) {
                     if(line == "") { continue; }
                     string[] time = line.Trim().Split('[', ']')[1].Split(':');
@@ -69,7 +70,7 @@ namespace DataSetGenerator {
                         currentTime = entryTime;
                         
 
-                        Attempt attempt = new Attempt(ID, line, attemptTime, size, direction, type, source);
+                        Attempt attempt = new Attempt(ID, count++, line, attemptTime, size, direction, type, source);
                         Attempts[type].Add(attempt);
                     }
                 }

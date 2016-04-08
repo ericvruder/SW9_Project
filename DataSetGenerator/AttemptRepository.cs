@@ -33,9 +33,8 @@ namespace DataSetGenerator {
         public AttemptRepository() : base("SW9_Project") { }
         public DbSet<Attempt> Attempts { get; set; }
 
-        public static void SaveOldTestToDatabase() {
-
-            List<Test> tests = DataGenerator.GetTests(DataSource.Old);
+        public static void SaveTestsToDatabase(List<Test> tests) {
+            
 
             foreach (var test in tests) {
                 SaveTest(test); 
