@@ -35,7 +35,8 @@ namespace SW9_Project
             if (File.Exists(videoPath)) {
                 currentVideoWindow.videoMediaElement.Source = new Uri(videoPath, UriKind.Relative);
                 currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
-                
+                currentVideoWindow.WindowState = WindowState.Maximized;
+
                 currentVideoWindow.videoMediaElement.MediaEnded += (sender, e) => {
                     canvasWindow.UnlockScreen();
                     currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero; 
@@ -47,8 +48,8 @@ namespace SW9_Project
             {
                 canvasWindow.UnlockScreen();
                 currentVideoWindow.videoMediaElement.Position = TimeSpan.Zero;
-                //currentVideoWindow.WindowState = WindowState.Minimized;
-                canvasWindow.Activate();
+                currentVideoWindow.WindowState = WindowState.Minimized;
+                 canvasWindow.Activate();
             }
         }
         
@@ -63,8 +64,8 @@ namespace SW9_Project
         private void MoveWindow(bool primaryScreen) {
 
             if (Screen.AllScreens.Length > 1) {
-                int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
-                int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
+                int secScreen = Screen.AllScreens.Length - 2;
+                int mainScreen = Screen.AllScreens.Length - 1;
                 Screen s = primaryScreen ? Screen.AllScreens[mainScreen] : Screen.AllScreens[secScreen];
                 System.Drawing.Rectangle r = s.Bounds;
                 this.Topmost = true;

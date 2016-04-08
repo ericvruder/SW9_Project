@@ -256,7 +256,9 @@
     <Content Include="techniques\Push_Swipe.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="techniques\Push_Throw.mp4" />
+    <Content Include="techniques\Push_Throw.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="techniques\Push_Throw.wmv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

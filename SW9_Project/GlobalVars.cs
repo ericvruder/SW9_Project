@@ -34,23 +34,7 @@ public static class GlobalVars
             { 2130837578, new BitmapImage(new Uri("resources/heart.jpg", UriKind.RelativeOrAbsolute)) },  //heart
             { 2130837580, new BitmapImage(new Uri("resources/marilyn.jpg", UriKind.RelativeOrAbsolute)) }  //marilyn
 
-
-
         };
-
-    //static Dictionary<string, string> _dict = new Dictionary<string, string>
-    //{
-    //{"entry", "entries"},
-    //{"image", "images"},
-    //{"view", "views"},
-    //{"file", "files"},
-    //{"result", "results"},
-    //{"word", "words"},
-    //{"definition", "definitions"},
-    //{"item", "items"},
-    //{"megabyte", "megabytes"},
-    //{"game", "games"}
-    //};
 
     public static bool isTargetPractice
     {
@@ -68,6 +52,22 @@ public static class GlobalVars
         }
     }
 
-    public static readonly List<string> docStrings = new List<string>(new string[] { "Job advertisement", "School regulations", "Party invitation", "Fitness brochure", "Study survey", "Cantina menu", "Health consulting", "Student offers in Aalborg", "Thesis final_v2", "Keys missing, help!”, ” Chocolate cake recipe", "Used books sale", "Free beer on Friday", "Student of the year", "Professor of the year", "Annual F-club meeting minutes"  });
+    public static readonly List<string> docStrings = new List<string>(new string[] 
+    {   "Job advertisement",
+        "School regulations",
+        "Party invitation",
+        "Fitness brochure",
+        "Study survey",
+        "Cantina menu",
+        "Health consulting",
+        "Student offers",
+        "Thesis final_v2",
+        "Keys missing!",
+        "Cake recipe",
+        "Used books sale",
+        "Free beer on Friday",
+        "Student of the year",
+        "Professor of the year",
+        "F-club announcement"  });
 
 }
