@@ -456,7 +456,7 @@ namespace SW9_Project {
         }
 
         public void EndTest() {
-
+            currentTest = null;
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -483,6 +483,7 @@ namespace SW9_Project {
                 }
                 if (currentTest == null) {
                     currentTest = new TestSuite(this, source);
+                    kinectManager.Recalibrate();
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
                 } else if (runningTest && !runningGesture) {
