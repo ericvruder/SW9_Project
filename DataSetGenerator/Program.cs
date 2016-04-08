@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
-
             
+            var tTests = DataGenerator.GetTests(DataSource.Target);
+            AttemptRepository.SaveTestsToDatabase(tTests);
         }
     }
 }
