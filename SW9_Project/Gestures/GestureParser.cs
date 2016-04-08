@@ -72,6 +72,7 @@ namespace SW9_Project {
                 switch (receivedGesture.Type) {
                     case GestureType.Swipe:
                     case GestureType.Tilt: {
+                            if (receivedGesture.Direction != GetDirectionContext()) return;
                             ClearGestures();
                             AwaitingGesture = new KinectGesture(receivedGesture.Shape);
                         }
