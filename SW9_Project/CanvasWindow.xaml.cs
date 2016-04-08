@@ -113,7 +113,11 @@ namespace SW9_Project {
         }
 
         public void StartNewGesture() {
-            progressLabel.Content = $"Progress: {++gestureCount}/8";
+            if (GlobalVars.isTargetPractice)
+            { progressLabel.Content = $"Progress: {++gestureCount}/8"; }
+            else
+            { progressLabel.Content = $"Progress: {++gestureCount}/4"; }
+
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
             runningTest = true;
@@ -542,6 +546,8 @@ namespace SW9_Project {
 
         public void EndTest() {
             currentTest = null;
+            gestureCount = 0;
+            //Thank you for testing label = visible;
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
