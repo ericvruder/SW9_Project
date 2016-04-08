@@ -1,0 +1,9 @@
+[14:04:16]: Good swipe push
+[14:06:34]: Overhand throws. Worked well 
+[14:08:09]: Jumped out
+[14:08:21]: Jumped low when tilt
+[14:08:34]: jumped out of the area, again
+[14:08:55]: If the tilt didn't cause a jump, maybe using better sensors, we probably wouldn't get this jump that causes a lot of misses to happen
+[14:11:01]: Mentions that it feels natual
+[14:13:59]: A few jumps 
+[14:21:05]: A couple of misses with grab :) But mostly hits

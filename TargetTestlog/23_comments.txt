@@ -1,0 +1,22 @@
+[13:15:33]: Uses a little time with the kinect (moving the cursor around the screen)
+[13:16:14]: Little extra time goes by pointing around the screen (not for the shapes but explaining his thoughts)
+[13:18:15]: Explaining that he thinks the techniques (so far) are nice and easy to do
+[13:20:55]: Likes the technique as a technique for grabbing objects from the screen
+[13:21:14]: cool technique. Likes the fact that the corrolation beween picking somthing up in your everyday transfers to the digital technique also
+[13:23:01]: The technique is performed correct. But sometimes the system makes the pointer jump out of the target area.
+[13:25:56]: Big tilt motion makes the pointer jump
+[13:26:41]: Jumps
+[13:29:43]: Very well performed swipe. effective
+[13:30:50]: Takes some time to register 
+[13:31:05]: just left
+[13:31:15]: hmm
+[13:31:27]: trying underhand
+[13:31:35]: underhand is best. Registers every time
+[13:31:52]: shape??
+[13:31:56]: shape??
+[13:34:05]: jumps out
+[13:34:11]: time
+[13:34:14]: system error
+[13:35:25]: Good :)
+[13:35:26]: Missing video for this one. Forgot to turn it on and only noticed it when the test was done.
+
