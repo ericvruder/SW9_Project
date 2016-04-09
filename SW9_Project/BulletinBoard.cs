@@ -17,7 +17,8 @@ namespace SW9_Project {
         public enum Type
         {
             document, // 0
-            image // 1
+            image,
+            other// 1
         };
 
         //TODO: fix this converter for future usage.
@@ -87,7 +88,6 @@ namespace SW9_Project {
         //Members
 
         public readonly Type type;  // used to identify if it is image or document - not sure if needed.
-        public readonly string label; //used with document - Consider using label.content instead and replace contructors with a label controler.
         public readonly Image img; // the image, the image is based on the imgID - imgID is not stored.
         public readonly Label lbl; //label control, place right under document image
                                    
@@ -103,14 +103,11 @@ namespace SW9_Project {
 
             img.Source = ResizeImage(_bitmap); //notice that source is now TransformedBitmap whether transformed or not.
             type = Type.image;
-            label = "";
-
         }
 
         public ScreenElement( Image _image ) //image
         {
             type = Type.image;
-            label = "";
             img = _image;
             img.Source = ResizeImage((BitmapImage)img.Source); //notice that source is now TransformedBitmap whether transformed or not.
 
@@ -119,42 +116,32 @@ namespace SW9_Project {
         public ScreenElement(string _label) //document
         {
             type = Type.document;
+            lbl = new Label();
             if (_label == "" || _label == null)
             {
                 Random r = new Random();
                 int num = r.Next(GlobalVars.docStrings.Count-1);
-                label = GlobalVars.docStrings[num];
+                lbl.Content = GlobalVars.docStrings[num];
             }
             else
             {
-                label = _label;
+                lbl.Content = _label;
             }
             BitmapImage _bitmap;
             GlobalVars.imgDict.TryGetValue(0, out _bitmap);
             img = new Image();
             img.Source = _bitmap;
             // transform to a transformedBitmap object ?
-            lbl = new Label();
-            lbl.Content = label; //only place where label is read, consider deprecating label!
-
         }
         //in case someone wants to define everything, ex: image with a label perhaps.
         //Perform manual manipulation of image before adding.
-        public ScreenElement(Type _type, Image _image, Label _lbl) //document
+        public ScreenElement(Image _image, Label _lbl, Type _type = Type.other) //document
         {
             type = _type;
-            //label = _label; 
             img = _image;
             lbl = _lbl;
             
         }
-
-        //TODO: Run a test to determine whether a desctuctor is need to prevent memory leak
-        // Test should be to assest the memory at start.
-        // add 10000 elements in reursion (element container handles what is neccesary)
-        // assest memory and see if there are a significant memory leak.
-        //more info: #5 in https://blogs.msdn.microsoft.com/jgoldb/2008/02/04/finding-memory-leaks-in-wpf-based-applications/
-
     }
 
 
@@ -162,7 +149,7 @@ namespace SW9_Project {
     public class ElementContainer
     {
         private List<ScreenElement> ElementList;
-        private int pos; // Queue, max 99 - where you are about to add a element
+        private int pos; // Queue, max 100 - where you are about to add a element
         private Canvas canvasRef;
 
         //constructor
@@ -179,7 +166,6 @@ namespace SW9_Project {
         // and that the source has been verified though the resize methods.
         //it was originally assumed there would allways be an image - since the constructor allows for no image, I have tried to check for it.
         //it is however not validated to be secure without an image.
-        //TODO: check width and height of label before adding to canvas, if the size is realistic, then use that in as extra space in GetSafeCoordinate.
         public void AddElement(ScreenElement element, System.Windows.Point p)
         {
             if (element.img == null && element.lbl == null)
@@ -235,8 +221,7 @@ namespace SW9_Project {
                 {
                     lblSize = FitLabelWidth(element.lbl, element.img.Source.Width);
                 }
-                //to check for lbl != null might be better
-                //extra width is set to 0, as label is fit to be inside img width.
+                //extra width is set to 10, as label is fit to be inside img width.
                 Point sp = GetSafeCoordinate(element.img, p, 10, lblSize.Height);
                 Canvas.SetLeft(element.img, sp.X);
                 Canvas.SetBottom(element.img, sp.Y);
@@ -415,6 +400,17 @@ namespace SW9_Project {
         {
         }
 
+
+        //TODO: Run a test to determine whether a desctuctor is need to prevent memory leak
+        // Test should be to assest the memory at start.
+        // add 10000 elements in reursion (element container handles what is neccesary)
+        // assest memory and see if there are a significant memory leak.
+        //more info: #5 in https://blogs.msdn.microsoft.com/jgoldb/2008/02/04/finding-memory-leaks-in-wpf-based-applications/
+
+        private void PerformanceTest()
+        {
+
+        }
 
     }
 
