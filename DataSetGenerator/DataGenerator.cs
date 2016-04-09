@@ -295,6 +295,12 @@ namespace DataSetGenerator {
                 technique.ValueLabels.Add(3, "Tilt");
                 technique.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
                 doc.Variables.Add(technique);
+
+                SpssNumericVariable attemptNumber = new SpssNumericVariable();
+                attemptNumber.Name = $"AttemptNumber";
+                attemptNumber.Label = $"The continuous number of this attempt";
+                attemptNumber.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                doc.Variables.Add(attemptNumber);
             }
 
             doc.CommitDictionary();
@@ -355,6 +361,7 @@ namespace DataSetGenerator {
             gestureAttempt[$"Accuracy"] = MathHelper.DistanceToTargetCell(attempt);
             gestureAttempt[$"Size"] = attempt.Size;
             gestureAttempt[$"Direction"] = attempt.Direction;
+            gestureAttempt[$"AttemptNumber"] = attempt.AttemptNumber;
 
             return gestureAttempt;
         }
