@@ -16,9 +16,9 @@ namespace SW9_Project {
         //Helpers
         public enum Type
         {
-            document,
+            document, // 0
             image,
-            other
+            other// 1
         };
 
         //TODO: fix this converter for future usage.
