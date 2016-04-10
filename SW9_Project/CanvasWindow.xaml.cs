@@ -548,6 +548,10 @@ namespace SW9_Project {
             currentTest = null;
             gestureCount = 0;
             ThanksLabel.Visibility = Visibility.Visible;
+            if (!targetPractice)
+            {
+                kinectManager.StopVideoRecord();
+            }
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -578,6 +582,10 @@ namespace SW9_Project {
                     kinectManager.Recalibrate();
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
                     testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
+                    if (!targetPractice)
+                    {
+                        kinectManager.StartVideoRecord(currentTest.UserID);
+                    }
                 } else if (runningTest && !runningGesture) {
                     currentTest.ChangeGesture();
                 } 

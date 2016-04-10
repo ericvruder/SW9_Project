@@ -9,6 +9,8 @@ using System.Windows;
 using DataSetGenerator;
 using Point = System.Windows.Point;
 using System.Windows.Media.Imaging;
+using AForge.Video.FFMPEG;
+
 
 namespace SW9_Project {
     class KinectManager {
@@ -17,9 +19,14 @@ namespace SW9_Project {
         IDrawingBoard board;
         Body[] bodies;
         KinectJointFilter filter;
-
+        VideoFileWriter VFWriter;
         private Timer handChangeTimer;
         private double handChangeTime = 2; //seconds to wait for hand change
+
+        readonly System.Drawing.Imaging.PixelFormat PFORMAT = System.Drawing.Imaging.PixelFormat.Format32bppRgb;
+        readonly int BYTES_PER_PIXEL = 4;
+        byte[] _colorData;
+        System.Drawing.Bitmap _bitmap;
 
         public KinectManager(IDrawingBoard board) {
             
@@ -41,7 +48,20 @@ namespace SW9_Project {
             try {
                 kinectSensor = KinectSensor.GetDefault();
                 bodies = new Body[6];
-                msfr = kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Body);
+                if (GlobalVars.isTargetPractice)
+                {
+                    msfr = kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Body);
+                }
+
+                else
+	            {
+                    msfr = kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Body | FrameSourceTypes.Color);
+                    if (VFWriter== null)
+                    {
+                        VFWriter = new VideoFileWriter();
+                    }
+
+                }
                 msfr.MultiSourceFrameArrived += KinectManager_MultiSourceFrameArrived;
                 kinectSensor.Open();
             }
@@ -89,6 +109,34 @@ namespace SW9_Project {
 
                     if (playerBody != null) {
                         ParseBody(playerBody, (long)body.RelativeTime.TotalMilliseconds);
+                    }
+                }
+            }
+
+            if (!GlobalVars.isTargetPractice)
+            {
+                if (VFWriter.IsOpen)
+                {
+                    // Open color frame
+                    using (ColorFrame cFrame = msf.ColorFrameReference.AcquireFrame())
+                    {
+                        if (cFrame != null)
+                        {
+
+                            if (_bitmap == null)
+                            {
+                                _colorData = new byte[1920 * 1080 * BYTES_PER_PIXEL];
+                                _bitmap = new System.Drawing.Bitmap(1920, 1080, PFORMAT);
+                            }
+                            cFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
+                            
+                            using (var ms = new System.IO.MemoryStream(_colorData))
+                            {
+                                _bitmap = new System.Drawing.Bitmap(ms);
+                            }
+
+                            VFWriter.WriteVideoFrame(_bitmap);
+                        }
                     }
                 }
             }
@@ -195,5 +243,28 @@ namespace SW9_Project {
 
             return null;
         }
+
+        public void StartVideoRecord(int id)
+        {
+            if (VFWriter.IsOpen)
+                return;
+
+            string directory = ".\\..\\..\\..\\FieldTestlog/";
+            if (!System.IO.Directory.Exists(directory))
+                System.IO.Directory.CreateDirectory(directory);
+            VFWriter.Open(directory + id.ToString() + ".mp4", 1920, 1080, 30, VideoCodec.MPEG4);
+        }
+
+        public void StopVideoRecord()
+        {
+            if (!VFWriter.IsOpen)
+                return;
+
+            string directory = ".\\..\\..\\..\\FieldTestlog/";
+            if (!System.IO.Directory.Exists(directory))
+                System.IO.Directory.CreateDirectory(directory);
+            VFWriter.Close();
+        }
+
     }
 }
