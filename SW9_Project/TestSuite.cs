@@ -47,10 +47,6 @@ namespace SW9_Project {
         public void StartTest(GestureDirection direction) {
             GestureParser.SetDirectionContext(direction);
             gestureTypeList = GetRandomGestureList();
-            if (!GlobalVars.isTargetPractice)
-            {
-                done = true;
-            }
             ChangeGesture();
         }
 
@@ -90,10 +86,6 @@ namespace SW9_Project {
             Logger.CurrentLogger.EndUser();
             Test currentTest = new Test(UserID, source);
             AttemptRepository.SaveTestToDatabase(currentTest);
-            if (!GlobalVars.isTargetPractice)
-            {
-                done = false;
-            }
             board.EndTest();
         }
         

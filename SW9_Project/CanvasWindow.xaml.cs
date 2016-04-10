@@ -99,25 +99,14 @@ namespace SW9_Project {
         bool runningGesture = false;
         public void CurrentGestureDone() {
             foreach(var cell in grid) {
-                if (targetPractice)
-                {
-                    cell.GridCell.Fill = Brushes.White;
-                }
-                else
-                {
-                    cell.GridCell.Fill = Brushes.Transparent;
-                }
+                cell.GridCell.Fill = Brushes.White;
             }
             runningGesture = false;
             this.Background = Brushes.Green;
         }
 
         public void StartNewGesture() {
-            if (GlobalVars.isTargetPractice)
-            { progressLabel.Content = $"Progress: {++gestureCount}/8"; }
-            else
-            { progressLabel.Content = $"Progress: {++gestureCount}/4"; }
-
+            progressLabel.Content = $"Progress: {++gestureCount}/8";
             this.Background = Brushes.DarkGoldenrod;
             runningGesture = true;
             runningTest = true;
@@ -139,10 +128,6 @@ namespace SW9_Project {
         private void CreateGrid(int width, int height, bool includeBorders) {
             if(grid != null) {
                 canvas.Children.Clear();
-                if (!targetPractice)
-                {
-                    BulletinBoard.Instance.elementContainer.ClearList();
-                }
             }
             if(pointerFigure != null) {
                canvas.Children.Add(pointerFigure);
@@ -210,7 +195,7 @@ namespace SW9_Project {
                     }
                     else
                     {
-                        //CreateGrid(GridSize.Large); //we need large all the time for FieldTest
+                        CreateGrid(GridSize.Large); //we need large all the time for FieldTest
                     }
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
@@ -268,11 +253,9 @@ namespace SW9_Project {
             
             if (currentCell != null) {
                 currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
-                Canvas.SetZIndex(currentCell, 0);
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
-            if (!targetPractice) { Canvas.SetZIndex(currentCell, 501 + 1 + BulletinBoard.Instance.elementContainer.GetPos()); }
             //currentCell.Fill.Opacity = 0.5;
         }
         
@@ -364,16 +347,7 @@ namespace SW9_Project {
                     }
                     currentTest.TargetHit(hit, correctShape, target, pointer, currCell, currentLength);
                     if (hit && !correctShape) { hit = false; }
-                    if (targetPractice)
-                    {
-                        TargetHit(target, hit);
-                    }
-                    else
-                    {
-                        FieldHit(target, pointer, hit, gesture);
-                    }
-
-
+                    TargetHit(target, hit);
                 }
             }
             ExtendedDraw(gesture);
@@ -396,8 +370,8 @@ namespace SW9_Project {
             Canvas.SetZIndex(t, 500);
             if (!targetPractice)
             {
-                //DONE: zorder = pos +1 (starts at 501) , +1 due to yellow brush
-                Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 2 + 501);
+                //TODO: zorder = pos +1 (starts at 501) - Add a pushback in the imagecontainer code for recycling.
+                Canvas.SetZIndex(t, 500);
             }
 
             canvas.Children.Add(t);
@@ -429,67 +403,6 @@ namespace SW9_Project {
 
             
         }
-
-        private void FieldHit(Cell cell,Point pointer, bool hit, KinectGesture gesture) //like targethit but for field study- WIP
-        {
-            Cell currCell = GetCell(pointer);
-            connection?.SwitchShapes();
-            if (hit)
-            {
-                sounds["hit"].Play();
-                //cell.Shape.Fill = Brushes.Green;
-            }
-            else {
-                sounds["miss"].Play();
-                //cell.Shape.Fill = Brushes.Red;
-            }
-
-            //DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
-            //da.Completed += (sender, e) => Da_Completed(sender, e, target);
-            targetColor = Brushes.White;
-            //cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
-
-            // da complete
-            GestureParser.Pause(false);
-            if (target != null)
-            {
-                Cell t = target;
-                if (nextTarget == null)
-                {
-                    runningTest = false;
-                }
-                target = null;
-                t.GridCell.Fill = Brushes.Transparent;
-                targetColor = Brushes.DarkGray;
-                canvas.Children.Remove(cell.Shape);
-                cell.Shape = null;
-            }
-
-            if (extraTarget != null)
-            {
-                canvas.Children.Remove(extraTarget.Shape);
-                extraTarget.Shape = null;
-            }
-
-            // for cell
-            double x = Canvas.GetLeft(currCell.GridCell) + (currCell.GridCell.Width / 2);
-            double y = Canvas.GetBottom(currCell.GridCell) + (currCell.GridCell.Height / 2);
-            Point CellCenter = new Point(x, y); //point of the current grid or pointer position
-
-            ScreenElement se;
-            if (gesture.Shape == "image")
-            {
-                se = new ScreenElement(gesture.ImgID);
-            }
-            else //document or default - 
-            {
-                se = new ScreenElement(""); //random string is given in constructor.
-            }
-
-            BulletinBoard.Instance.elementContainer.AddElement(se, pointer); // for center at pointer, simply use pointer instead.
-
-        }
-
         private void Da_Completed(object sender, EventArgs e, Cell cell) {
             GestureParser.Pause(false);
             if (target == null)
@@ -530,8 +443,6 @@ namespace SW9_Project {
             CreateGrid(currentSize);
             TestSuite.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth);
             Logger.Intialize(sgHeight, sgWidth, lgHeight, lgWidth, canvas.ActualHeight, canvas.ActualWidth, source);
-            GlobalVars.canvasWidth = canvas.ActualWidth;
-            GlobalVars.canvasHeight = canvas.ActualHeight;
         }
         
 
@@ -546,8 +457,6 @@ namespace SW9_Project {
 
         public void EndTest() {
             currentTest = null;
-            gestureCount = 0;
-            ThanksLabel.Visibility = Visibility.Visible;
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -573,7 +482,6 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
-                    ThanksLabel.Visibility = Visibility.Collapsed;
                     currentTest = new TestSuite(this, source);
                     kinectManager.Recalibrate();
                     testIDLabel.Content = "User ID: " + currentTest.UserID;
@@ -586,11 +494,8 @@ namespace SW9_Project {
                     currentTest.StartTest(GestureDirection.Push);
                 }
             } else if (e.Key == System.Windows.Input.Key.Down) {
-                if (targetPractice)
-                {
-                    if (currentTest != null) {
-                        currentTest.StartTest(GestureDirection.Pull);
-                    }
+                if (currentTest != null) {
+                    currentTest.StartTest(GestureDirection.Pull);
                 }
             } 
             

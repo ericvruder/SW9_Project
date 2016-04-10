@@ -16,20 +16,18 @@ namespace SW9_Project {
         public GestureDirection Direction;
         public Point Pointer;
         public DateTime Timestamp;
-        public int ImgID;
 
         public KinectGesture(GestureType type, GestureDirection direction): this(null) {
             Type = type;
             Direction = direction;
         }
 
-        public KinectGesture(string shape, int imgid = 0) {
+        public KinectGesture(string shape) {
             Shape = shape;
             Type = GestureParser.GetTypeContext();
             Direction = GestureParser.GetDirectionContext();
             Pointer = CanvasWindow.GetCurrentPoint();
             Timestamp = DateTime.Now;
-            ImgID = imgid;
         }
     }
 }

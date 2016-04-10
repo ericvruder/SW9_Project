@@ -72,14 +72,5 @@
                Width="287" Height="46" 
                Foreground ="White" 
                FontSize="26.667" />
-        <Label x:Name="ThanksLabel" 
-               Content="Thank you for testing!" 
-               HorizontalAlignment="Center" 
-               Margin="0,0,0,0" 
-               VerticalAlignment="Center" 
-               Width="400" Height="62" 
-               Foreground ="White" 
-               FontSize="40"
-               Visibility="Collapsed"/>
     </Grid>
 </Window>

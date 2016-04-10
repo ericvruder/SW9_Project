@@ -37,8 +37,6 @@ namespace SW9_Project {
             var videoPath = CreateUriTo(type, direction);
             MoveScreen(true);
             GestureParser.Pause(true);
-            if (!GlobalVars.isTargetPractice)
-            {   this.WindowState = WindowState.Maximized;}
             vlc.playlist.add(videoPath);
             vlc.playlist.play();
 
@@ -46,12 +44,8 @@ namespace SW9_Project {
 
             handler = (sender, e) => {
                 vlc.MediaPlayerEndReached -= handler;
-                if (!GlobalVars.isTargetPractice)
-                { this.WindowState = WindowState.Normal; }
                 GestureParser.Pause(false);
                 MoveScreen(false);
-                if (!GlobalVars.isTargetPractice)
-                { this.WindowState = WindowState.Maximized; }
                 canvasWindow.Activate();
                 vlc.playlist.play();
                 vlc.MediaPlayerEndReached += (senderI, eI) => {
