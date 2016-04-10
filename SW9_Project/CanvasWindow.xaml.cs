@@ -619,11 +619,6 @@ namespace SW9_Project {
             } else if (e.Key == System.Windows.Input.Key.S) {
                 ShowStatusMessage("Pull");
                 GestureParser.SetDirectionContext(GestureDirection.Pull);
-            } else if (e.Key == System.Windows.Input.Key.P && e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Shift) {
-                if (!targetPractice)
-                {
-                    BulletinBoard.Instance.PerformanceTest();
-                }
             }
         }
 

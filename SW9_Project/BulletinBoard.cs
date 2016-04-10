@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace SW9_Project {
     public class ScreenElement
@@ -408,75 +407,9 @@ namespace SW9_Project {
         // assest memory and see if there are a significant memory leak.
         //more info: #5 in https://blogs.msdn.microsoft.com/jgoldb/2008/02/04/finding-memory-leaks-in-wpf-based-applications/
 
-        public void PerformanceTest()
+        private void PerformanceTest()
         {
-            List<int> IL = Enumerable.ToList(GlobalVars.imgDict.Keys);
-            int size = IL.Count;
-            System.Diagnostics.Process proc = System.Diagnostics.Process.GetCurrentProcess();
-            Point p;
-            Random rnd = new Random();
-            int initialSize = 0, LoadedSize = 0, memsize = 0, memsize2 = 0, memsize3 = 0; // memsize in Megabyte
-            System.Diagnostics.PerformanceCounter PC = new System.Diagnostics.PerformanceCounter();
-            PC.CategoryName = "Process";
-            PC.CounterName = "Working Set - Private";
-            PC.InstanceName = proc.ProcessName;
-            initialSize = Convert.ToInt32(PC.NextValue()) / (int)(1024);
 
-            foreach (var item in GlobalVars.imgDict)
-            {
-                p = new Point((double)rnd.Next((int)GlobalVars.canvasWidth), (double)rnd.Next((int)GlobalVars.canvasHeight));
-                this.PointAt(p.X, p.Y);
-                ScreenElement se = new ScreenElement(item.Key);
-                elementContainer.AddElement(se, p);
-                ProcessUITasks();
-            }
-
-            this.Activate();
-
-            LoadedSize = Convert.ToInt32(PC.NextValue()) / (int)(1024);
-            elementContainer.ClearList();
-            ProcessUITasks();
-            this.Activate();
-            Console.WriteLine("initial size=" + initialSize);
-            Console.WriteLine("Loaded size=" + LoadedSize);
-
-            for (int i = 1; i < 11; i++)
-            {
-                for (int j = 0; j < 1000; j++)
-                {
-                    p = new Point((double)rnd.Next((int)GlobalVars.canvasWidth), (double)rnd.Next((int)GlobalVars.canvasHeight));
-                    this.PointAt(p.X, p.Y);
-                    ScreenElement se = new ScreenElement(IL[rnd.Next(size)]);
-                    elementContainer.AddElement(se, p);
-                    ProcessUITasks();
-                }
-                memsize = Convert.ToInt32(PC.NextValue()) / (int)(1024);
-                Console.WriteLine("size at " + i + "000 =" + memsize);
-            }
-            this.Activate();
-            memsize2 = Convert.ToInt32(PC.NextValue()) / (int)(1024);
-            elementContainer.ClearList();
-            ProcessUITasks();
-            this.Activate();
-            memsize3 = Convert.ToInt32(PC.NextValue()) / (int)(1024);
-
-
-
-            Console.WriteLine("After 10000=" + memsize2);
-            Console.WriteLine("After Cleared=" + memsize3);
-
-            PC.Close();
-            PC.Dispose();
-        }
-
-        private static void ProcessUITasks()
-        {
-            DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(delegate (object parameter) {
-                frame.Continue = false;
-                return null;
-            }), null);
-            Dispatcher.PushFrame(frame);
         }
 
     }
