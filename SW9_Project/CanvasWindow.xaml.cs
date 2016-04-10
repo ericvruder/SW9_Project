@@ -685,5 +685,14 @@ namespace SW9_Project {
             }
             base.OnStateChanged(e);
         }
+        public void _StartVideoRecording(int id)
+        {
+            kinectManager.StartVideoRecord(id);
+        }
+
+        public void _StopVideoRecording()
+        {
+            kinectManager.StopVideoRecord();
+        }
     }
 }

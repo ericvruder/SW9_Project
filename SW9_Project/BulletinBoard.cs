@@ -415,13 +415,14 @@ namespace SW9_Project {
             System.Diagnostics.Process proc = System.Diagnostics.Process.GetCurrentProcess();
             Point p;
             Random rnd = new Random();
-            int initialSize = 0, LoadedSize = 0, memsize = 0, memsize2 = 0, memsize3 = 0; // memsize in Megabyte
+            int initialSize = 0, LoadedSize = 0, memsize = 0, memsize2 = 0, memsize3 = 0; // memsize in KB
             System.Diagnostics.PerformanceCounter PC = new System.Diagnostics.PerformanceCounter();
             PC.CategoryName = "Process";
             PC.CounterName = "Working Set - Private";
             PC.InstanceName = proc.ProcessName;
             initialSize = Convert.ToInt32(PC.NextValue()) / (int)(1024);
-
+            ThanksLabel.Content = "TEST 1";
+            ThanksLabel.Visibility = Visibility.Visible;
             foreach (var item in GlobalVars.imgDict)
             {
                 p = new Point((double)rnd.Next((int)GlobalVars.canvasWidth), (double)rnd.Next((int)GlobalVars.canvasHeight));
@@ -439,7 +440,7 @@ namespace SW9_Project {
             this.Activate();
             Console.WriteLine("initial size=" + initialSize);
             Console.WriteLine("Loaded size=" + LoadedSize);
-
+            ThanksLabel.Content = "TEST 2";
             for (int i = 1; i < 11; i++)
             {
                 for (int j = 0; j < 1000; j++)
@@ -450,6 +451,7 @@ namespace SW9_Project {
                     elementContainer.AddElement(se, p);
                     ProcessUITasks();
                 }
+                ThanksLabel.Content = $"TEST 2:{i}";
                 memsize = Convert.ToInt32(PC.NextValue()) / (int)(1024);
                 Console.WriteLine("size at " + i + "000 =" + memsize);
             }
@@ -460,10 +462,35 @@ namespace SW9_Project {
             this.Activate();
             memsize3 = Convert.ToInt32(PC.NextValue()) / (int)(1024);
 
-
-
             Console.WriteLine("After 10000=" + memsize2);
             Console.WriteLine("After Cleared=" + memsize3);
+
+            ProcessUITasks();
+
+            int frames = 0;
+            int maxframes = 30 * 10; //10 seconds
+
+            this._StartVideoRecording(9999999);
+            while (frames < maxframes)
+            {
+                ThanksLabel.Content = $"KinectRecording: {frames} / {maxframes}";
+                ProcessUITasks();
+                frames++;
+            }
+            memsize2 = Convert.ToInt32(PC.NextValue()) / (int)(1024);
+            _StopVideoRecording();
+            ProcessUITasks();
+            frames = 0;
+            while (frames < 90)
+            {
+                ProcessUITasks();
+                frames++;
+            }
+            ThanksLabel.Content = "Thank you for testing!";
+            ThanksLabel.Visibility = Visibility.Collapsed;
+            memsize3 = Convert.ToInt32(PC.NextValue()) / (int)(1024);
+            Console.WriteLine("After recording = " + memsize2);
+            Console.WriteLine("After closed = " + memsize3);
 
             PC.Close();
             PC.Dispose();
