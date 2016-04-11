@@ -65,7 +65,7 @@ public class Bboard extends BaseActivity {
     private final Random random = new Random();
     private int count;
     private static int MAX_COUNT = 2;
-    private boolean menuActive = true;
+    private boolean menuActive = false;
     public boolean calibrated = false;
 
     @Override
