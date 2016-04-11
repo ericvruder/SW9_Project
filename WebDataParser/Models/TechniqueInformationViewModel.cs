@@ -32,7 +32,7 @@ namespace WebDataParser.Models {
                                                 select attempt).ToList();
 
             TotalUsers = count;
-            TotalAttempts = pushAttempts.Count;
+            TotalAttempts = pushAttempts.Count + pullAttempts.Count;
             AttemptsPerTechnique = pushAttempts.Count / 4;
 
             PullTime = GetTimeInformation(pullAttempts);
