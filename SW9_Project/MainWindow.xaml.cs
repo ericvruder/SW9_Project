@@ -22,6 +22,7 @@ namespace SW9_Project {
 
 
         public MainWindow() {
+            //Somestuff
             AttemptRepository.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
 
