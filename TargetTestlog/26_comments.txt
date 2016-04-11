@@ -1,0 +1,28 @@
+[10:53:37]: Overhand throw. Throwing left hand
+[10:53:47]: The system recognizing false positives
+[10:54:26]: Hmm
+[10:54:50]: Correct technique performed but system doesn't recognize
+[10:55:10]: A few errors
+[10:56:11]: Tells the participant to try only using the joint of his hand as a pivot point
+[10:56:46]: Doing the right gesture but not recognized
+[10:57:29]: That look ok. Maybe wrong shape?
+[10:58:00]: Just jumped right
+[10:59:26]: Doing the swipe doesn't seem to register
+[10:59:40]: 
+[11:00:53]: Again, doing the swipe but only registers 2nd, 3rd or 4th time
+[11:02:51]: Very good so far
+[11:03:13]: 
+[11:03:20]: fist little problem but he got it
+[11:03:35]: System error
+[11:04:08]: Jumped out
+[11:05:17]: Good
+[11:05:41]: Jumpoed out of the target
+[11:06:35]: Two last was centered on the target but jumped out when the tilt technique was performed
+[11:08:20]: Good so far
+[11:08:28]: 
+[11:09:48]: Very good grab pull
+[11:11:40]: Underhand throw pull
+[11:12:00]: No misses
+[11:13:09]: Understood all the techniques from the videos. Only a small comment about the first tilt, where he was told that smaller motions with the tilt would help
+[11:14:14]: No swipe issues
+[11:14:21]: He says that there is a little fatigue after the test 

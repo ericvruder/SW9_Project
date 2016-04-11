@@ -1,0 +1,20 @@
+[11:22:58]: did not quite understand that there needed to be some kind of motion to activate the gesture
+[11:23:57]: there was an attempt that took quite a few tries to activate
+[11:24:14]: 
+[11:24:16]: misread attempt
+[11:24:24]: user held the selected shape throughout the entire push tilt attempt
+[11:24:52]: another missread attempt
+[11:26:02]: sometimes the phone would activate even though it was obious the user was attempting to trigger the effect
+[11:27:45]: had a hard time understanding that two hands were needed to perform the two handend motion
+[11:28:42]: was not paying that much attention to the phone since she had not noticed nothing was selected
+[11:29:08]: did not notice if she selected the correct shape during one of the misses in throw push
+[11:34:18]: had a bit of trouble with the swipe, hard to understand why. Believe it was because the swipe was not big enough, or maybe was starting outside the shape
+[11:35:46]: pinched the figure, and showed that she believed she was carrying the figure with her two fingers. this could be seen by the way she held her hand during the grab pull test
+[11:38:35]: changed hands during the pinch push test
+[11:39:15]: makes a small jabbing motion with her hand when she releases the shape during pinch push
+[11:42:57]: there was small jitter in one of the attempts, leading to a fail
+[11:43:12]: one attempt was misread 
+[11:43:19]: during pull throw
+[11:48:17]: did not use her finger to thouch the sceen during the grab pull test, used her finger joint instead
+[11:48:50]: later on changed to using her finger instead
+[11:51:00]: sometimes, the phone would not register a touch gesture after she performed a grab gesture
