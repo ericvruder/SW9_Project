@@ -50,6 +50,7 @@ namespace SW9_Project {
         
         double xPoint = 0;
         double yPoint = 0;
+        bool sessionCompleted = false;
 
         public CanvasWindow(bool targetPractice = true) {
             
@@ -272,6 +273,7 @@ namespace SW9_Project {
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
+            currentCell.Opacity = 0.25;
             if (!targetPractice) { Canvas.SetZIndex(currentCell, 501 + 1 + BulletinBoard.Instance.elementContainer.GetPos()); }
             //currentCell.Fill.Opacity = 0.5;
         }
@@ -548,6 +550,7 @@ namespace SW9_Project {
             currentTest = null;
             gestureCount = 0;
             ThanksLabel.Visibility = Visibility.Visible;
+            sessionCompleted = true;
         }
 
         private DoubleAnimation CreateAnimation(int seconds, double from, double to) {
@@ -573,6 +576,10 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
+                    if (sessionCompleted)
+                    {
+                        System.Windows.Application.Current.Shutdown();
+                    }
                     ThanksLabel.Visibility = Visibility.Collapsed;
                     currentTest = new TestSuite(this, source);
                     kinectManager.Recalibrate();

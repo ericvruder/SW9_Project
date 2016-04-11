@@ -51,7 +51,7 @@ namespace SW9_Project {
             double _W = image.PixelWidth;
             bool wider = Math.Max(_W, _H) == _W;
             double ratio = _W / _H;
-            if (_H > 200 || _W > 200) // makes no sense to resize if lower than 200 x 200
+            if (_H > 100 || _W > 100) // makes no sense to resize if lower than 200 x 200
             { //need to resize
                 //ugly assumation that we can resize 50% no matter what
                 _H = Math.Floor(_H / 2d);
@@ -131,7 +131,7 @@ namespace SW9_Project {
             BitmapImage _bitmap;
             GlobalVars.imgDict.TryGetValue(0, out _bitmap);
             img = new Image();
-            img.Source = _bitmap;
+            img.Source = ResizeImage(_bitmap);
             // transform to a transformedBitmap object ?
         }
         //in case someone wants to define everything, ex: image with a label perhaps.
@@ -368,8 +368,9 @@ namespace SW9_Project {
             elementContainer = new ElementContainer(canvas); //used for storing images/documents on the screen.
             progressLabel.VerticalAlignment = VerticalAlignment.Bottom;
             progressLabel.HorizontalAlignment = HorizontalAlignment.Center;
-            Thickness margin = new Thickness(0, 0, 0, 10);
+            Thickness margin = new Thickness(0, 0, 0, 15);
             progressLabel.Margin = margin;
+            
 
         }
 
