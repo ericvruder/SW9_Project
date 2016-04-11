@@ -45,7 +45,7 @@ namespace SW9_Project {
         TestSuite currentTest;
         List<String> shapes;
         List<String> shapes_FT; //shapes for field testing
-        Brush targetColor = Brushes.DarkGray;
+        Brush targetColor = Brushes.Lime;
         Point lastGyroPoint { get; set; }
         
         double xPoint = 0;
@@ -268,8 +268,26 @@ namespace SW9_Project {
         private void ColorCell(Point toColor) {
             
             if (currentCell != null) {
-                currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
-                Canvas.SetZIndex(currentCell, 0);
+                currentCell.Opacity = 1;
+                if (target!= null)
+                {
+                    if (currentCell == target.GridCell)
+                    {
+                        currentCell.Fill = targetPractice ? Brushes.White : targetColor;
+                        
+                    }
+                    else
+                    {
+                        currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
+                        Canvas.SetZIndex(currentCell, 0);
+                    }
+                }
+                else
+                {
+                    currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
+                    Canvas.SetZIndex(currentCell, 0);
+                }
+
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
@@ -399,6 +417,8 @@ namespace SW9_Project {
             if (!targetPractice)
             {
                 //DONE: zorder = pos +1 (starts at 501) , +1 due to yellow brush
+                Canvas.SetZIndex(cell.GridCell, BulletinBoard.Instance.elementContainer.GetPos() + 1 + 501);
+                cell.GridCell.Fill = targetColor;
                 Canvas.SetZIndex(t, BulletinBoard.Instance.elementContainer.GetPos() + 2 + 501);
             }
 
@@ -434,6 +454,8 @@ namespace SW9_Project {
 
         private void FieldHit(Cell cell,Point pointer, bool hit, KinectGesture gesture) //like targethit but for field study- WIP
         {
+            Canvas.SetZIndex(cell.GridCell, 0);
+            cell.GridCell.Fill = Brushes.Transparent;
             Cell currCell = GetCell(pointer);
             connection?.SwitchShapes();
             if (hit)
@@ -448,7 +470,7 @@ namespace SW9_Project {
 
             //DoubleAnimation da = new DoubleAnimation(0, TimeSpan.FromSeconds(1));
             //da.Completed += (sender, e) => Da_Completed(sender, e, target);
-            targetColor = Brushes.White;
+            ;
             //cell.Shape.BeginAnimation(Canvas.OpacityProperty, da);
 
             // da complete
@@ -462,7 +484,7 @@ namespace SW9_Project {
                 }
                 target = null;
                 t.GridCell.Fill = Brushes.Transparent;
-                targetColor = Brushes.DarkGray;
+               // targetColor = Brushes.DarkGray;
                 canvas.Children.Remove(cell.Shape);
                 cell.Shape = null;
             }
