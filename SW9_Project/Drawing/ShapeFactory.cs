@@ -32,14 +32,14 @@ namespace SW9_Project {
         {
             Image img = new Image();
             img.Source = new BitmapImage(new Uri("resources/DocumentShape.png", UriKind.RelativeOrAbsolute));
-            return CreateSquareTextured("document", size * 0.8, img);
+            return CreateSquareTextured("document", size * 0.9, img);
         }
 
         public static Shape CreateImage(double size)
         {
             Image img = new Image();
             img.Source = new BitmapImage(new Uri("resources/ImageShape.png", UriKind.RelativeOrAbsolute));
-            return CreateSquareTextured("image", size * 0.8, img);
+            return CreateSquareTextured("image", size * 0.9, img);
         }
 
         public static UIElement CreatePointer() {

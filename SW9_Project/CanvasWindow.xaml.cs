@@ -45,7 +45,7 @@ namespace SW9_Project {
         TestSuite currentTest;
         List<String> shapes;
         List<String> shapes_FT; //shapes for field testing
-        Brush targetColor = Brushes.Lime;
+        Brush targetColor = Brushes.Pink;//Brushes.Lime;
         Point lastGyroPoint { get; set; }
         
         double xPoint = 0;
