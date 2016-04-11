@@ -10,7 +10,9 @@ using DataSetGenerator;
 using Point = System.Windows.Point;
 using System.Windows.Media.Imaging;
 using AForge.Video.FFMPEG;
-
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Media;
 
 namespace SW9_Project {
     class KinectManager {
@@ -122,30 +124,80 @@ namespace SW9_Project {
                     {
                         if (cFrame != null)
                         {
+                            Bitmap bmap = BitmapFromSource(ToBitmap(cFrame));
+                            //if (_bitmap == null)
+                            //{
+                            //    _colorData = new byte[1920 * 1080 * BYTES_PER_PIXEL];
+                            //    _bitmap = new System.Drawing.Bitmap(1920, 1080, PFORMAT);
+                            //}
+                            //cFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
 
-                            if (_bitmap == null)
-                            {
-                                _colorData = new byte[1920 * 1080 * BYTES_PER_PIXEL];
-                                _bitmap = new System.Drawing.Bitmap(1920, 1080, PFORMAT);
-                            }
-                            cFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Rgba);
-                            
-                            using (var ms = new System.IO.MemoryStream(_colorData))
-                            {
-                                if (ms != null)
-                                {
-                                    ms.Seek(0, System.IO.SeekOrigin.Begin);
-                                     _bitmap = new System.Drawing.Bitmap(ms);
-                                    VFWriter.WriteVideoFrame(_bitmap);
-                                }
-                            }
+                            //using (var ms = new System.IO.MemoryStream(_colorData))
+                            //{
+                            //    if (ms != null)
+                            //    {
+                            //        ms.Seek(0, System.IO.SeekOrigin.Begin);
+                            //         _bitmap = new System.Drawing.Bitmap(ms);
+                            //        VFWriter.WriteVideoFrame(_bitmap);
+                            //    }
+                            //}
+                            VFWriter.WriteVideoFrame(bmap);
 
-                            
                         }
                     }
                 }
             }
 
+        }
+
+        //Bitmap ImageToBitmap(ColorFrame Image)
+        //{
+        //    byte[] pixeldata = new byte[Image.FrameDescription.LengthInPixels];
+        //    Image.CopyConvertedFrameDataToArray(pixeldata, ColorImageFormat.Rgba);
+
+        //    Bitmap bmap = new Bitmap(Image.FrameDescription.Width, Image.FrameDescription.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+        //    BitmapData bmapdata = bmap.LockBits(
+        //        new Rectangle(0, 0, Image.FrameDescription.Width, Image.FrameDescription.Height),
+        //        ImageLockMode.WriteOnly,
+        //        bmap.PixelFormat);
+        //    IntPtr ptr = bmapdata.Scan0;
+        //    System.Runtime.InteropServices.Marshal.Copy(pixeldata, 0, ptr, (int)Image.FrameDescription.LengthInPixels);
+        //    bmap.UnlockBits(bmapdata);
+        //    return bmap;
+        //}
+
+        private BitmapSource ToBitmap(ColorFrame frame)
+        {
+            int width = frame.FrameDescription.Width;
+            int height = frame.FrameDescription.Height;
+            System.Windows.Media.PixelFormat format = PixelFormats.Bgr32;
+            byte[] pixels = new byte[width * height * ((PixelFormats.Bgr32.BitsPerPixel + 7) / 8)];
+
+            if (frame.RawColorImageFormat == ColorImageFormat.Bgra)
+            {
+                frame.CopyRawFrameDataToArray(pixels);
+            }
+            else
+            {
+                frame.CopyConvertedFrameDataToArray(pixels, ColorImageFormat.Bgra);
+            }
+
+            int stride = width * format.BitsPerPixel / 8;
+
+            return BitmapSource.Create(width, height, 96, 96, format, null, pixels, stride);
+        }
+
+        public static Bitmap BitmapFromSource(BitmapSource bitmapsource)
+        {
+            Bitmap bitmap;
+            using (var outStream = new System.IO.MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapsource));
+                enc.Save(outStream);
+                bitmap = new Bitmap(outStream);
+            }
+            return bitmap;
         }
 
         private bool HandStateChanged(HandState handstate) {
@@ -257,7 +309,8 @@ namespace SW9_Project {
             string directory = ".\\..\\..\\..\\FieldTestlog/";
             if (!System.IO.Directory.Exists(directory))
                 System.IO.Directory.CreateDirectory(directory);
-            VFWriter.Open(directory + id.ToString() + ".mp4", 1920, 1080, 30, VideoCodec.MPEG4);
+            VFWriter.Open(directory + id.ToString() + ".mp4", 1920, 1080, 30, VideoCodec.MPEG4,5000);
+            
         }
 
         public void StopVideoRecord()

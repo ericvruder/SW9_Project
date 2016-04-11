@@ -473,7 +473,7 @@ namespace SW9_Project {
             this._StartVideoRecording(9999999);
             while (frames < maxframes)
             {
-                ThanksLabel.Content = $"KinectRecording: {frames} / {maxframes}";
+                ThanksLabel.Content = $"KR: {frames} / {maxframes}";
                 ProcessUITasks();
                 frames++;
             }
