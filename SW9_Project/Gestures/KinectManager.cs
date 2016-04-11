@@ -132,10 +132,15 @@ namespace SW9_Project {
                             
                             using (var ms = new System.IO.MemoryStream(_colorData))
                             {
-                                _bitmap = new System.Drawing.Bitmap(ms);
+                                if (ms != null)
+                                {
+                                    ms.Seek(0, System.IO.SeekOrigin.Begin);
+                                     _bitmap = new System.Drawing.Bitmap(ms);
+                                    VFWriter.WriteVideoFrame(_bitmap);
+                                }
                             }
 
-                            VFWriter.WriteVideoFrame(_bitmap);
+                            
                         }
                     }
                 }
