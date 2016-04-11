@@ -272,6 +272,7 @@ namespace SW9_Project {
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
+            currentCell.Opacity = 0.25;
             if (!targetPractice) { Canvas.SetZIndex(currentCell, 501 + 1 + BulletinBoard.Instance.elementContainer.GetPos()); }
             //currentCell.Fill.Opacity = 0.5;
         }

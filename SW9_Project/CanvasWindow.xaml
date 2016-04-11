@@ -80,6 +80,7 @@
                Width="400" Height="62" 
                Foreground ="White" 
                FontSize="40"
+               Background="LightGray"
                Visibility="Collapsed"/>
     </Grid>
 </Window>
