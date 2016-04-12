@@ -598,15 +598,18 @@ namespace SW9_Project {
                     return;
                 }
                 if (currentTest == null) {
-                    if (sessionCompleted)
+                    if (!sessionCompleted)
+                    {
+                        ThanksLabel.Visibility = Visibility.Collapsed;
+                        currentTest = new TestSuite(this, source);
+                        kinectManager.Recalibrate();
+                        testIDLabel.Content = "User ID: " + currentTest.UserID;
+                        testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
+                    }
+                    else
                     {
                         System.Windows.Application.Current.Shutdown();
                     }
-                    ThanksLabel.Visibility = Visibility.Collapsed;
-                    currentTest = new TestSuite(this, source);
-                    kinectManager.Recalibrate();
-                    testIDLabel.Content = "User ID: " + currentTest.UserID;
-                    testIDLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(10, 1, 0));
                 } else if (runningTest && !runningGesture) {
                     currentTest.ChangeGesture();
                 } 

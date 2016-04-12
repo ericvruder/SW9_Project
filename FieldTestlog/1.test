@@ -1,0 +1,45 @@
+[11:42:24]: Started new gesture practice. Type: Pinch Direction: Push
+[11:43:44]: Started new gesture test. Type: Pinch Direction: Push
+[11:43:50]: Target: Miss Shape: Correct TC: (09,00) CC: (06, 01) JL: Long Pointer position: (754.0,128.0).
+[11:43:55]: Target: Miss Shape: Correct TC: (02,04) CC: (05, 02) JL: Long Pointer position: (722.8,336.6).
+[11:43:58]: Target: Miss Shape: Correct TC: (06,00) CC: (03, 03) JL: Medium Pointer position: (459.0,436.6).
+[11:44:02]: Target: Miss Shape: Correct TC: (00,02) CC: (05, 01) JL: Long Pointer position: (639.7,173.5).
+[11:44:05]: Target: Miss Shape: Correct TC: (09,04) CC: (05, 01) JL: Medium Pointer position: (723.1,184.1).
+[11:44:08]: Target: Miss Shape: Wrong   TC: (02,00) CC: (04, 00) JL: Long Pointer position: (564.2,0.0).
+[11:44:09]: Target: Miss Shape: Wrong   TC: (07,04) CC: (05, 00) JL: Long Pointer position: (671.0,109.8).
+[11:44:12]: Target: Miss Shape: Wrong   TC: (06,03) CC: (05, 00) JL: Short Pointer position: (650.2,0.0).
+[11:44:18]: Target: Miss Shape: Correct TC: (01,02) CC: (04, 00) JL: Short Pointer position: (595.8,75.0).
+[11:45:29]: Started new gesture practice. Type: Throw Direction: Push
+[11:46:23]: Started new gesture test. Type: Throw Direction: Push
+[11:46:29]: Target: Miss Shape: Correct TC: (00,04) CC: (03, 01) JL: Long Pointer position: (380.6,244.2).
+[11:46:34]: Target: Miss Shape: Correct TC: (07,00) CC: (06, 01) JL: Long Pointer position: (801.9,220.6).
+[11:46:37]: Target: Miss Shape: Wrong   TC: (03,04) CC: (05, 00) JL: Medium Pointer position: (704.7,16.4).
+[11:46:41]: Target: Miss Shape: Wrong   TC: (09,02) CC: (06, 02) JL: Long Pointer position: (738.9,252.5).
+[11:46:44]: Target: Miss Shape: Correct TC: (00,00) CC: (04, 01) JL: Medium Pointer position: (501.9,127.2).
+[11:46:47]: Target: Miss Shape: Wrong   TC: (07,04) CC: (04, 01) JL: Long Pointer position: (505.9,132.7).
+[11:46:52]: Target: Miss Shape: Correct TC: (02,00) CC: (05, 01) JL: Long Pointer position: (707.7,160.9).
+[11:46:54]: Target: Miss Shape: Wrong   TC: (03,01) CC: (04, 01) JL: Short Pointer position: (546.8,130.6).
+[11:46:56]: Target: Miss Shape: Wrong   TC: (08,02) CC: (03, 00) JL: Short Pointer position: (458.5,53.7).
+[11:48:07]: Started new gesture practice. Type: Tilt Direction: Push
+[11:48:53]: Started new gesture test. Type: Tilt Direction: Push
+[11:48:54]: Target: Miss Shape: Correct TC: (03,00) CC: (05, 01) JL: Medium Pointer position: (649.7,240.3).
+[11:48:55]: Target: Miss Shape: Wrong   TC: (04,03) CC: (05, 01) JL: Short Pointer position: (632.9,243.7).
+[11:48:55]: Target: Miss Shape: Wrong   TC: (00,01) CC: (05, 02) JL: Long Pointer position: (607.4,250.6).
+[11:48:55]: Target: Miss Shape: Wrong   TC: (07,01) CC: (04, 02) JL: Long Pointer position: (604.1,250.6).
+[11:48:56]: Target: Miss Shape: Wrong   TC: (02,02) CC: (04, 02) JL: Long Pointer position: (587.3,253.2).
+[11:48:56]: Target: Miss Shape: Correct TC: (05,03) CC: (05, 01) JL: Medium Pointer position: (609.4,213.4).
+[11:48:59]: Target: Miss Shape: Wrong   TC: (06,02) CC: (02, 02) JL: Short Pointer position: (282.9,337.6).
+[11:49:02]: Target: Miss Shape: Wrong   TC: (01,00) CC: (03, 02) JL: Medium Pointer position: (453.9,250.8).
+[11:49:06]: Target: Miss Shape: Correct TC: (04,01) CC: (07, 02) JL: Short Pointer position: (961.6,321.8).
+[11:50:33]: Started new gesture practice. Type: Swipe Direction: Push
+[11:51:25]: Started new gesture test. Type: Swipe Direction: Push
+[11:51:27]: Target: Miss Shape: Wrong   TC: (06,00) CC: (02, 00) JL: Short Pointer position: (350.6,82.7).
+[11:51:30]: Target: Miss Shape: Wrong   TC: (05,02) CC: (03, 02) JL: Medium Pointer position: (420.7,260.8).
+[11:51:33]: Target: Miss Shape: Wrong   TC: (00,01) CC: (06, 02) JL: Long Pointer position: (799.8,246.6).
+[11:51:39]: Target: Miss Shape: Correct TC: (00,04) CC: (09, 01) JL: Long Pointer position: (1094.7,245.2).
+[11:51:43]: Target: Miss Shape: Correct TC: (02,01) CC: (06, 03) JL: Medium Pointer position: (833.1,383.5).
+[11:51:43]: Target: Miss Shape: Correct TC: (04,03) CC: (06, 03) JL: Short Pointer position: (829.7,378.6).
+[11:51:45]: Target: Miss Shape: Correct TC: (07,03) CC: (03, 02) JL: Short Pointer position: (467.7,278.7).
+[11:51:47]: Target: Miss Shape: Wrong   TC: (02,01) CC: (04, 02) JL: Medium Pointer position: (525.6,278.6).
+[11:51:50]: Target: Miss Shape: Correct TC: (00,03) CC: (06, 03) JL: Medium Pointer position: (785.3,439.0).
+[11:51:50]: Test session ended.
