@@ -51,6 +51,10 @@ namespace DataSetGenerator {
 
         }
 
+        public void HeatMap() {
+            // Color red to green -> http://stackoverflow.com/questions/6394304/algorithm-how-do-i-fade-from-red-to-green-via-yellow-using-rgb-values
+        }
+
         public static void CreateHitboxes(DataSource source) {
             var tests = DataGenerator.GetTests(source);
             if (tests.Count == 0) return;
