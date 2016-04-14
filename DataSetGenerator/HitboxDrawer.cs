@@ -51,8 +51,25 @@ namespace DataSetGenerator {
 
         }
 
-        public void HeatMap() {
+        
+
+        public Bitmap HeatMap(List<Attempt> attempts, GridSize size) {
             // Color red to green -> http://stackoverflow.com/questions/6394304/algorithm-how-do-i-fade-from-red-to-green-via-yellow-using-rgb-values
+            Bitmap heatMap = new Bitmap(100,100);
+            Graphics map = Graphics.FromImage(heatMap);
+
+            map.FillRectangle(Brushes.White, 0, 0, 100, 100);
+
+            int width = size == GridSize.Large ? 10 : 20;
+            int height = size == GridSize.Large ? 5 : 10;
+
+            for(int i = 0; i < height; i++) {
+                for(int j = 0; j < width; j++) {
+
+                }
+            }
+
+            return heatMap;
         }
 
         public static void CreateHitboxes(DataSource source) {
@@ -120,6 +137,10 @@ namespace DataSetGenerator {
                       where attempt.Size == GridSize.Small
                       select attempt;
             DrawHitBox(sth.ToList(), "throwsmall.png");
+
+        }
+
+        public static void DrawBellCurve() {
 
         }
 

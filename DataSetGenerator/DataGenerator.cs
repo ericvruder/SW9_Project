@@ -63,6 +63,61 @@ namespace DataSetGenerator {
             return new Test(test, source);
         }
 
+        public static void GenerateTestFileFromShorthand(string path) {
+            string largeGrid = "Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4";
+            string smallGrid = "Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7";
+            GridSize size = GridSize.Large;
+            using (StreamReader sr = new StreamReader(path))
+            using (StreamWriter sw = new StreamWriter(path + ".test")) {
+                string line = "", writeLine = "";
+                DateTime time = DateTime.Now;
+                while ((line = sr.ReadLine()) != null) {
+                    if (line == "") continue;
+                    string[] words = line.Split(' ');
+                    int seconds = (Int32.Parse(words[0].Split(':')[0]) * 60) + (Int32.Parse(words[0].Split(':')[1]));
+                    writeLine = $"[{(time + TimeSpan.FromSeconds(seconds)).ToString("HH:mm:ss")}]: ";
+                    string extra = "";
+                    switch (words[1]) {
+                        case "practice": extra = $"Started new gesture practice. Type: {words[3]} Direction: {words[2]}"; break;
+                        case "start": extra = $"Started new gesture test. Type: {words[3]} Direction: {words[2]}"; break;
+                        case "cg": extra = words[2] == "s" ? smallGrid : largeGrid; size = words[2] == "s" ? GridSize.Small : GridSize.Large; break;
+                        case "Hit": case "Miss": extra = GetLine(words, size);  break;
+                    }
+                    if(extra == "") {
+                        Console.WriteLine(line);
+                    }
+                    sw.WriteLine(writeLine + extra);
+
+                }
+            }
+        }
+
+        private static string GetLine(string[] words, GridSize size) {
+
+            //29:51 hit 2,4
+            //29:56 miss 9,0 8,0
+            string tc = $"({ words[2].Split(',')[0]},{ words[2].Split(',')[1]})";
+            string cc = "", pointer = "";
+            int cSize = size == GridSize.Large ? 121 : 61;
+            int index = 2;
+            if (words[1] == "Hit") {
+                cc = tc;
+            }
+            else {
+                cc = $"({words[3]})";
+                index = 3;
+            }
+
+            int x = Int32.Parse(words[index].Split(',')[0]);
+            int y = Int32.Parse(words[index].Split(',')[1]);
+            int px = x * cSize + (cSize / 2);
+            int py = y * cSize + (cSize / 2);
+            pointer = $"({px},{py})";
+            //Target: Hit  Shape: Correct TC: (01,02) CC: (01, 02) JL: Long Pointer position: (136.0,310.5).
+            return $"Target: {words[1]} Shape: Correct TC: {tc} CC: {cc} JL: Long Pointer position: {pointer}";
+
+        }
+
         
         
         public static string GenerateCSVDocument(DataSource source, string path) {
@@ -166,7 +221,7 @@ namespace DataSetGenerator {
                                     where attempt.Size == GridSize.Small
                                     select attempt;
                     if(listSmall.Count() != listLarge.Count())
-                        Console.WriteLine("Test ID: " + test.ID + " FAILED");
+                        Console.WriteLine("Test ID: " + test.ID + " FAILED on" + gesture + " " +listSmall.Count() + " "+  listLarge.Count());
                 }
             }
         }
@@ -179,6 +234,7 @@ namespace DataSetGenerator {
             if (File.Exists(fPath)) {
                 File.Delete(fPath);
             }
+            
             using (SpssDataDocument doc = SpssDataDocument.Create(fPath)) {
                 CreateMetaData(doc);
                 foreach (var test in tests) {
