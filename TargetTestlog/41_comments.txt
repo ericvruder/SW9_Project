@@ -1,0 +1,15 @@
+[12:25:08]: Sometimes it takes a little longer for the phone to register a touch
+[12:25:39]: System error. It locked
+[12:25:51]: Some locks
+[12:26:51]: System locked
+[12:27:19]: It moved just a pixel or two when he closed his hand
+[12:29:22]: Good. No problems with the pull throw
+[12:32:52]: system error
+[12:33:00]: Clearly that was not his intent
+[12:36:40]: good grab technique
+[12:37:29]: 
+[12:39:07]: Only a few misses for the swipe
+[12:40:52]: The pointer jumps a bit when the technique (tilt) is performed
+[12:41:09]: Just below the target
+[12:43:28]: Throw was done very well.
+[12:43:52]: Again, the majority of misses are for the tilt technique
