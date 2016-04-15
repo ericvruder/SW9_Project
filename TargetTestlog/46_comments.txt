@@ -1,0 +1,12 @@
+[15:11:12]: 
+[15:12:02]: performed very large tilt pull motions
+[15:12:32]: switched hand midways through tilt pull gesture
+[15:14:06]: had to perform swipe a couple of times in order to activate gesture
+[15:18:56]: 3 wrong attempts i think, all of a sudden it happened very fast. During pinch pull
+[15:20:30]: wrong shape during one of the throw pull gestures, was not paying attention to the phone
+[15:22:41]: one wrong pinch push
+[15:23:26]: seconds invalid attempt 
+[15:25:17]: performed swipe a few times before it finally activated
+[15:28:17]: has to perform two throws sometimes in order to activate the throw push
+[15:28:45]: very small motion with the throw push gesture
+[15:30:12]: holds down the shape wil performing the tilt throw gesture
