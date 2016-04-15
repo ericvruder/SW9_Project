@@ -26,10 +26,12 @@ namespace DataSetGenerator {
         public GestureType Type { get; set; }
         public DataSource Source { get; set; }
         public int AttemptNumber { get; set; }
+        public bool Valid { get; set; }
 
         public Attempt() { }
 
         public Attempt(string id, int attemptNumber, string attemptLine, TimeSpan time, GridSize size, GestureDirection direction, GestureType type, DataSource source) {
+            Valid = true;
             Size = size;
             Direction = direction;
             Source = source;

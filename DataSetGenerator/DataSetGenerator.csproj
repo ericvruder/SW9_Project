@@ -79,6 +79,7 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="Spss, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0e8b42805099a438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Spss.dll</HintPath>
@@ -103,8 +104,17 @@
     <Compile Include="AttemptRepository.cs" />
     <Compile Include="DataGenerator.cs" />
     <Compile Include="GestureType.cs" />
-    <Compile Include="HitboxDrawer.cs" />
+    <Compile Include="DataVisualizer.cs" />
     <Compile Include="MathHelper.cs" />
+    <Compile Include="Migrations\201604081101441_InitialCreate.cs" />
+    <Compile Include="Migrations\201604081101441_InitialCreate.Designer.cs">
+      <DependentUpon>201604081101441_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604150813370_AddValidProperty.cs" />
+    <Compile Include="Migrations\201604150813370_AddValidProperty.Designer.cs">
+      <DependentUpon>201604150813370_AddValidProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,6 +151,14 @@
     <Content Include="win64\spssio64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201604081101441_InitialCreate.resx">
+      <DependentUpon>201604081101441_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604150813370_AddValidProperty.resx">
+      <DependentUpon>201604150813370_AddValidProperty.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

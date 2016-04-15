@@ -91,10 +91,21 @@ namespace WebDataParser.Controllers {
             return Json(info, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetImage(string testId, string type) {
+        public ActionResult GetImage(string testId, GestureType type, DataSource source = DataSource.Old) {
+            List<Attempt> attempts = new List<Attempt>();
+            if(testId != "average") {
+                attempts = AttemptRepository.GetTest(testId, source).Attempts[type];
+            }
+            else {
+                var tests = AttemptRepository.GetTests(source);
+                foreach(var test in tests) {
+                    attempts.AddRange(test.Attempts[type]);
+                }
+            }
+            MemoryStream ms;
+            DataVisualizer.DrawHitBox(attempts, out ms);
+            return File(ms, "image/png");
 
-            return File(TestDataViewModelFactory.GetHitbox(testId, type).ToArray(), "image/png");
-           
         }
     }
 }

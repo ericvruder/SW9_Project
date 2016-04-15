@@ -4,10 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace DataSetGenerator {
-    class HitboxDrawer {
+    public class DataVisualizer {
         private static void DrawHitBox(List<Attempt> attempts, string fileName) {
+            Bitmap hitbox = DrawHitBox(attempts);
+            hitbox.Save(DataGenerator.DataDirectory + fileName);
+            hitbox.Dispose();
+        }
+
+        public static void DrawHitBox(List<Attempt> attempts, out MemoryStream stream) {
+            stream = new MemoryStream();
+            Bitmap hitbox = DrawHitBox(attempts);
+            hitbox.Save(stream, ImageFormat.Png);
+            hitbox.Dispose();
+        }
+
+        private static Bitmap DrawHitBox(List<Attempt> attempts) {
 
             //61 pixel sized squares, makes it better to look at
             int cellSize = 61;
@@ -43,29 +58,85 @@ namespace DataSetGenerator {
             }
 
             hBGraphic.Save();
-
-            hitbox.Save(DataGenerator.DataDirectory + fileName);
-
             hBGraphic.Dispose();
-            hitbox.Dispose();
+            return hitbox;
 
         }
 
+        /*
         
+            gridHeight = height;
+            gridWidth = width;
+            squareHeight = canvas.ActualHeight / height;
+            squareWidth = canvas.ActualWidth / width;
 
-        public Bitmap HeatMap(List<Attempt> attempts, GridSize size) {
+            grid = new Cell[width, height];
+
+            for(int i = 0; i < width; i++) {
+                for(int j = 0; j < height; j++) {
+                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight, includeBorders));
+                    grid[i, j].X = i; grid[i, j].Y = j;
+                    canvas.Children.Add(grid[i, j].GridCell);
+                    Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
+                    Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
+                    Canvas.SetZIndex(grid[i, j].GridCell, 0);
+                }
+            }
+
+         */
+
+        public static void DrawHeatMap(List<Attempt> attempts, GridSize size, out MemoryStream stream) {
+            stream = new MemoryStream();
+            Bitmap heatMap = HeatMap(attempts, size);
+            heatMap.Save(stream, ImageFormat.Png);
+            heatMap.Dispose();
+        }
+
+        public static void DrawHeatMap(List<Attempt> attempts, GridSize size, string filename) {
+            Bitmap heatMap = HeatMap(attempts, size);
+            heatMap.Save(DataGenerator.DataDirectory + filename);
+            heatMap.Dispose();
+        }
+
+
+        private static Bitmap HeatMap(List<Attempt> attempts, GridSize size) {
             // Color red to green -> http://stackoverflow.com/questions/6394304/algorithm-how-do-i-fade-from-red-to-green-via-yellow-using-rgb-values
-            Bitmap heatMap = new Bitmap(100,100);
-            Graphics map = Graphics.FromImage(heatMap);
-
-            map.FillRectangle(Brushes.White, 0, 0, 100, 100);
 
             int width = size == GridSize.Large ? 10 : 20;
             int height = size == GridSize.Large ? 5 : 10;
 
+            int sqSize = size == GridSize.Large ? 40 : 20;
+
+            Bitmap heatMap = new Bitmap(400,200);
+            Graphics map = Graphics.FromImage(heatMap);
+
+            map.FillRectangle(Brushes.White, 0, 0, 100, 100);
+
             for(int i = 0; i < height; i++) {
                 for(int j = 0; j < width; j++) {
+                    
+                    var rectangle = new Rectangle(j * sqSize, i * sqSize, sqSize, sqSize);
+                    var cellAttempts = attempts.Where(x => x.TargetCell.X == j && x.TargetCell.Y == i);
 
+                    /*
+                    RGB values for the colors:
+                        •Red 255, 0, 0
+                        •Yellow 255, 255, 0
+                        •Green 0, 255, 0
+
+                    Between Red and Yellow, equally space your additions to the green channel until it reaches 255. Between Yellow and Green, equally space your subtractions from the red channel.
+                    */
+
+                    float percentage = cellAttempts.Sum(x => x.Hit ? 1 : 0) / cellAttempts.Count();
+                    Brush brush = Brushes.White;
+                    if(cellAttempts.Count() != 0) {
+                        if(percentage < 0.5) {
+                            var t = percentage * 2.0f;
+                            int value = (int)Math.Round(255.0f / t);
+                            brush = new SolidBrush(Color.FromArgb(255, value, 0));
+                        }
+                    }
+                    map.FillRectangle(brush, rectangle);
                 }
             }
 

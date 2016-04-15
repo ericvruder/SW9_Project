@@ -49,17 +49,12 @@ namespace WebDataParser {
                 foreach(var test in tests) {
                     attempts.AddRange(test.Attempts[gesture]);
                 }
-                info.Img = DrawHitBox(attempts);
 
                 TestViewModels["average"].GestureInformation[GetGestureTypeString(gesture)] = info;
 
             }
 
             return TestViewModels["average"];
-        }
-
-        public static MemoryStream GetHitbox(string id, string type) {
-            return TestViewModels[id].GestureInformation[type].Img;
         }
 
         public static TestDataViewModel GetTest(string id, DataSource source) {
@@ -86,7 +81,6 @@ namespace WebDataParser {
                 info.HitData = GetJSPercentageArray(hitsPerTry, gesture);
                 info.TimeData = GetJSTimeArray(MathHelper.GetTimePerTarget(Tests[id].Attempts[gesture]), gesture);
                 info.HitPercentage = hitsPerTry.Last() * 100f;
-                info.Img = DrawHitBox(Tests[id].Attempts[gesture]);
 
                 TestViewModels[id].GestureInformation[GetGestureTypeString(gesture)] = info;
                 
@@ -158,51 +152,6 @@ namespace WebDataParser {
             }
 
             return averageTimePerGesture;
-        }
-
-        private static MemoryStream DrawHitBox(List<Attempt> attempts) {
-
-            //61 pixel sized squares, makes it better to look at
-            int cellSize = 61;
-            int bmsize = cellSize * 3;
-
-            Bitmap hitbox = new Bitmap(bmsize, bmsize);
-            Graphics hBGraphic = Graphics.FromImage(hitbox);
-            hBGraphic.FillRectangle(Brushes.White, 0, 0, bmsize, bmsize);
-            hBGraphic.DrawRectangle(new Pen(Brushes.Black, 1.0f), cellSize, cellSize, cellSize, cellSize);
-
-            foreach (var attempt in attempts) {
-                Brush brush = attempt.Size == GridSize.Large ? Brushes.Red : Brushes.Green;
-                float scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
-                Point p = new Point(attempt.TargetCell.X, attempt.TargetCell.Y);
-                p.X = p.X * scale; p.Y = p.Y * scale;
-                p.X = attempt.Pointer.X - p.X;
-                p.Y = attempt.Pointer.Y - p.Y;
-                if (attempt.Size == GridSize.Large) {
-                    p.X /= 2;
-                    p.Y /= 2;
-                }
-
-                p.X += cellSize;
-                p.Y += cellSize;
-
-                if (!((p.X < 0) && (p.X >= bmsize)) || !((p.Y < 0) && (p.Y >= bmsize))) {
-                    hBGraphic.FillRectangle(brush, (float)p.X, (float)p.Y, 2, 2);
-                }
-            }
-
-            hBGraphic.Save();
-
-
-            MemoryStream ms = new MemoryStream();
-
-            hitbox.Save(ms, ImageFormat.Png);
-
-            hBGraphic.Dispose();
-            hitbox.Dispose();
-
-            return ms;
-
         }
 
         private static string GetJSPercentageArray(float[] percentages, GestureType type) {
