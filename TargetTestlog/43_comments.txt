@@ -1,0 +1,26 @@
+[09:01:55]: 
+[09:02:27]: Only few misses
+[09:03:21]: Some flickering of the pointer when the phone is kept close to the body
+[09:04:03]: Jumping to the right when tilting
+[09:05:00]: On a couple of the tilts the technique took some tries before it was registered and sometimes, even though the aim and the technique was good, the tilt would make the pointer jump
+[09:06:07]: System lock on the practice target
+[09:07:07]: System error lock
+[09:07:25]: Lock again 
+[09:07:36]: Locked just to the NE target cell
+[09:07:59]: Locked again
+[09:08:04]: Again
+[09:09:20]: Over the shoulder didn't work too well
+[09:09:38]: But pull throw to the side is working
+[09:10:08]: Shape??
+[09:10:26]: There is some jitter here when the pointing hand crosses the body to get to the far bottom right corner
+[09:11:43]: 
+[09:11:57]: 
+[09:12:04]: Using speed and power :)
+[09:12:30]: Pointing hand moves when the throw is performed
+[09:15:19]: aim shifted to just below the target when the swipe happened
+[09:16:53]: Shape
+[09:17:22]: Pointer jumes down
+[09:18:06]: The technique is correct. Dosen't register right away
+[09:20:04]: System registered an open hand 
+[09:20:26]: Should have registered
+[09:21:09]: Good grab test
