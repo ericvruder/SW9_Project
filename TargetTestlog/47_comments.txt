@@ -1,0 +1,19 @@
+[12:41:01]: No problems during the pull throw.
+[12:42:43]: The first attempts were jumping left right and center, even though there was aim on the target and the tilt was performed.
+[12:43:42]: After that he started hitting (green shape after tilt)  when the tilt motion was smaller than in the start
+[12:45:11]: The pointer slided out of the target area when the grab was made
+[12:45:28]: Again that happended
+[12:46:41]: Only a few problems in the start of the grab pull. After that no issues
+[12:47:42]: swipe pull now
+[12:50:40]: Now for the swipe push
+[12:54:00]: Big motion tilt
+[12:54:05]: The pointer is jumping much
+[12:54:16]: Now doing smaller tilts
+[12:54:30]: The cursor is more still. Still moving a bit when tilting
+[12:54:49]: 
+[12:57:00]: Mixing the throws up a bit :)
+[12:57:16]: Overhand, underhand, from the side and what not
+[12:59:47]: Didn't release first time
+[13:00:22]: system release before the point moved to the target
+[13:00:45]: That one, also didn't release first time
+[13:00:57]: Good. Done
