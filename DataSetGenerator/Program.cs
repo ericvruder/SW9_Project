@@ -8,11 +8,10 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
-                DataGenerator.GenerateCSVDocument(DataSource.Old);
-            //    var attempts = AttemptRepository.GetAttempts(DataSource.Target);
-            //    var lAttempts = attempts.Where(x => x.Size == GridSize.Small);
-            //    DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Small, "heatmap.png");
-            //
+            
+            var attempts = AttemptRepository.GetAttempts(DataSource.Target).Where(x => x.Type == GestureType.Swipe).ToList();
+            var lAttempts = attempts.Where(x => x.Size == GridSize.Large);
+             DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Large, "heatmap.png");
         }
     }
 }

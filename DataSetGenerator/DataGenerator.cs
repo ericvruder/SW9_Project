@@ -14,6 +14,7 @@ namespace DataSetGenerator {
 
         public static List<GestureType> AllTechniques = new List<GestureType> { GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt };
         public static List<GestureDirection> AllDirections = new List<GestureDirection> { GestureDirection.Push, GestureDirection.Pull };
+        public static List<GridSize> AllSizes = new List<GridSize> { GridSize.Large, GridSize.Small };
 
         static private List<string> TargetPracticeComputers = new List<string>() { "5CF9DD74A984", "A44E31B190E4" , "485D60CA70DA" };
 
