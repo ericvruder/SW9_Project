@@ -63,28 +63,6 @@ namespace DataSetGenerator {
 
         }
 
-        /*
-        
-            gridHeight = height;
-            gridWidth = width;
-            squareHeight = canvas.ActualHeight / height;
-            squareWidth = canvas.ActualWidth / width;
-
-            grid = new Cell[width, height];
-
-            for(int i = 0; i < width; i++) {
-                for(int j = 0; j < height; j++) {
-                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight, includeBorders));
-                    grid[i, j].X = i; grid[i, j].Y = j;
-                    canvas.Children.Add(grid[i, j].GridCell);
-                    Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
-                    Canvas.SetLeft(grid[i, j].GridCell, i * squareWidth);
-                    Canvas.SetZIndex(grid[i, j].GridCell, 0);
-                }
-            }
-
-         */
-
         public static void DrawHeatMap(List<Attempt> attempts, GridSize size, out MemoryStream stream) {
             stream = new MemoryStream();
             Bitmap heatMap = HeatMap(attempts, size);
@@ -110,11 +88,42 @@ namespace DataSetGenerator {
             Bitmap heatMap = new Bitmap(400,200);
             Graphics map = Graphics.FromImage(heatMap);
 
-            map.FillRectangle(Brushes.White, 0, 0, 100, 100);
+            var list = new List<Tuple<float, int, int>>();
+            map.FillRectangle(Brushes.White, 0, 0, 400, 200);
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    var cellAttempts = attempts.Where(x => x.TargetCell.X == j && x.TargetCell.Y == i).ToList();
+                    float sum = cellAttempts.Sum(x => x.Hit ? 1 : 0);
+                    float count = cellAttempts.Count();
+                    float percent = sum / count;
+                    if(count != 0) {
+                        list.Add(new Tuple<float, int, int>(percent, j, i));
+                    }
+                }
+            }
+            list.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+            
+            int colorDegree = (int)Math.Round(255f / (list.Count() * 0.5)) - 1;
+            int half = (int)Math.Round((list.Count() * 0.5));
+            foreach(var cell in list) {
+                var rectangle = new Rectangle(cell.Item2 * sqSize, cell.Item3 * sqSize, sqSize, sqSize);
 
+                int value = (int)Math.Round(cell.Item1 * 255f);
+                SolidBrush brush = new SolidBrush(Color.FromArgb(255, value, 0));
+                map.FillRectangle(brush, rectangle);
+
+            }
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    var rectangle = new Rectangle(j * sqSize, i * sqSize, sqSize, sqSize);
+                    map.DrawRectangle(Pens.Black, rectangle);
+                }
+            }
+            map.Save();
+            /*
             for(int i = 0; i < height; i++) {
                 for(int j = 0; j < width; j++) {
-                    
+
                     var rectangle = new Rectangle(j * sqSize, i * sqSize, sqSize, sqSize);
                     var cellAttempts = attempts.Where(x => x.TargetCell.X == j && x.TargetCell.Y == i);
 
@@ -125,13 +134,13 @@ namespace DataSetGenerator {
                         •Green 0, 255, 0
 
                     Between Red and Yellow, equally space your additions to the green channel until it reaches 255. Between Yellow and Green, equally space your subtractions from the red channel.
-                    */
+
                     float sum = (float)cellAttempts.Sum(x => x.Hit ? 1 : 0);
                     float count = (float)cellAttempts.Count();
                     float percentage =  sum / count;
                     Brush brush = Brushes.White;
                     if(cellAttempts.Count() != 0) {
-                        
+
                         float adjust = percentage < 0.75 ? 0.5f : 0.75f;
 
                         int value = (int)Math.Round(255f / 0.25f * (percentage - adjust));
@@ -140,7 +149,7 @@ namespace DataSetGenerator {
                     map.FillRectangle(brush, rectangle);
                     map.DrawRectangle(Pens.Black, rectangle);
                 }
-            }
+            } */
 
             return heatMap;
         }
@@ -168,49 +177,22 @@ namespace DataSetGenerator {
                 }
             }
 
-            DrawHitBox(techAttempts[GestureType.Pinch], "pinch.png");
-            DrawHitBox(techAttempts[GestureType.Swipe], "swipe.png");
-            DrawHitBox(techAttempts[GestureType.Throw], "throw.png");
-            DrawHitBox(techAttempts[GestureType.Tilt], "tilt.png");
+            foreach(var t in DataGenerator.AllTechniques) {
+                DrawHitBox(techAttempts[t], t.ToString() + ".png");
+            }
 
-            DrawHitBox(sizeAttempts[GridSize.Large], "large.png");
-            DrawHitBox(sizeAttempts[GridSize.Small], "small.png");
+            foreach (var s in DataGenerator.AllSizes) {
+                DrawHitBox(sizeAttempts[s], s.ToString() + ".png");
+            }
 
-            var lp = from attempt in techAttempts[GestureType.Pinch]
-                     where attempt.Size == GridSize.Large
-                     select attempt;
-            DrawHitBox(lp.ToList(), "pinchlarge.png");
-            var sp = from attempt in techAttempts[GestureType.Pinch]
-                     where attempt.Size == GridSize.Small
-                     select attempt;
-            DrawHitBox(sp.ToList(), "pinchsmall.png");
-
-            var ls = from attempt in techAttempts[GestureType.Swipe]
-                     where attempt.Size == GridSize.Large
-                     select attempt;
-            DrawHitBox(ls.ToList(), "swipelarge.png");
-            var ss = from attempt in techAttempts[GestureType.Swipe]
-                     where attempt.Size == GridSize.Small
-                     select attempt;
-            DrawHitBox(ss.ToList(), "swipesmall.png");
-
-            var lti = from attempt in techAttempts[GestureType.Tilt]
-                      where attempt.Size == GridSize.Large
-                      select attempt;
-            DrawHitBox(lti.ToList(), "tiltlarge.png");
-            var sti = from attempt in techAttempts[GestureType.Tilt]
-                      where attempt.Size == GridSize.Small
-                      select attempt;
-            DrawHitBox(sti.ToList(), "tiltsmall.png");
-
-            var lth = from attempt in techAttempts[GestureType.Throw]
-                      where attempt.Size == GridSize.Large
-                      select attempt;
-            DrawHitBox(lth.ToList(), "throwlarge.png");
-            var sth = from attempt in techAttempts[GestureType.Throw]
-                      where attempt.Size == GridSize.Small
-                      select attempt;
-            DrawHitBox(sth.ToList(), "throwsmall.png");
+            foreach(var s in DataGenerator.AllSizes) {
+                foreach(var t in DataGenerator.AllTechniques) {
+                    var attempts = from attempt in techAttempts[t]
+                                   where attempt.Size == s
+                                   select attempt;
+                    DrawHitBox(attempts.ToList(), t.ToString() + s.ToString() + ".png");
+                }
+            }
 
         }
 

@@ -10,6 +10,11 @@ namespace DataSetGenerator {
         static void Main(string[] args)
         {
 
+            
+            var attempts = AttemptRepository.GetAttempts(DataSource.Target).Where(x => x.Type == GestureType.Swipe).ToList();
+            var lAttempts = attempts.Where(x => x.Size == GridSize.Large);
+             DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Large, "heatmap.png");
+
             //List<Validity> validities = new List<Validity>();
 
             //string[] files = System.IO.Directory.GetFiles(DataGenerator.DataDirectory, "*.invalid");
