@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
-
-using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -53,18 +48,18 @@ namespace DataSetGenerator {
         }
 
         private Point GetPoint(string segment) {
-            string para = segment.Trim().Split('(', ')')[1];
+            string parameter = segment.Trim().Split('(', ')')[1];
             double x = 0;
             double y = 0;
-            if (para.Count(t => t == ',') == 3) {
-                string temp = para.Split(',')[0] + "." + para.Split(',')[1];
+            if (parameter.Count(t => t == ',') == 3) {
+                string temp = parameter.Split(',')[0] + "." + parameter.Split(',')[1];
                 x = Double.Parse(temp);
-                temp = para.Split(',')[2] + "." + para.Split(',')[3];
+                temp = parameter.Split(',')[2] + "." + parameter.Split(',')[3];
                 y = Double.Parse(temp);
             }
             else {
-                x = Double.Parse(para.Split(',')[0].Replace(',', '.'), new CultureInfo("en-US"));
-                y = Double.Parse(para.Split(',')[1].Replace(',', '.'), new CultureInfo("en-US"));
+                x = Double.Parse(parameter.Split(',')[0].Replace(',', '.'), new CultureInfo("en-US"));
+                y = Double.Parse(parameter.Split(',')[1].Replace(',', '.'), new CultureInfo("en-US"));
 
             }
             return new Point(x, y);

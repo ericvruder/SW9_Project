@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 
 using Spss;
 using System.Threading.Tasks;
+using CsvHelper;
 
 namespace DataSetGenerator {
 
@@ -119,87 +120,29 @@ namespace DataSetGenerator {
         }
 
         
-        
-        public static string GenerateCSVDocument(DataSource source, string path) {
-
-            List<int> testing = new List<int>();
-            string fPath = $"{path}{source}data.csv";
-            using (StreamWriter datawriter = new StreamWriter(fPath)) {
-                datawriter.WriteLine("ID PinchLargeTime PinchSmallTime PinchLargeHit PinchSmallHit PinchLargeDist PinchSmallDist PinchLargeXDist PinchSmallXDist PinchLargeYDist PinchSmallYDist" +
-                                       " SwipeLargeTime SwipeSmallTime SwipeLargeHit SwipeSmallHit SwipeLargeDist SwipeSmallDist SwipeLargeXDist SwipeSmallXDist SwipeLargeYDist SwipeSmallYDist" +
-                                       " ThrowLargeTime ThrowSmallTime ThrowLargeHit ThrowSmallHit ThrowLargeDist ThrowSmallDist ThrowLargeXDist ThrowSmallXDist ThrowLargeYDist ThrowSmallYDist" +
-                                       " TiltLargeTime TiltSmallTime TiltLargeHit TiltSmallHit TiltLargeDist TiltSmallDist TiltLargeXDist TiltSmallXDist TiltLargeYDist TiltSmallYDist");
-                List<Test> tests = GetTests(source);
-
-                foreach (var test in tests) {
-
-                    Dictionary<GestureType, List<int>> sTimes = new Dictionary<GestureType, List<int>>();
-                    Dictionary<GestureType, List<string>> sHits = new Dictionary<GestureType, List<string>>();
-
-                    Dictionary<GestureType, List<int>> lTimes = new Dictionary<GestureType, List<int>>();
-                    Dictionary<GestureType, List<string>> lHits = new Dictionary<GestureType, List<string>>();
-
-                    Dictionary<GestureType, List<double>> lDist = new Dictionary<GestureType, List<double>>();
-                    Dictionary<GestureType, List<double>> lxDist = new Dictionary<GestureType, List<double>>();
-                    Dictionary<GestureType, List<double>> lyDist = new Dictionary<GestureType, List<double>>();
-
-                    Dictionary<GestureType, List<double>> sDist = new Dictionary<GestureType, List<double>>();
-                    Dictionary<GestureType, List<double>> sxDist = new Dictionary<GestureType, List<double>>();
-                    Dictionary<GestureType, List<double>> syDist = new Dictionary<GestureType, List<double>>();
-
-                    foreach (var gesture in AllTechniques) {
-                        if (!sTimes.ContainsKey(gesture)) {
-                            sTimes.Add(gesture, new List<int>());
-                            sHits.Add(gesture, new List<string>());
-                            sDist.Add(gesture, new List<double>());
-                            sxDist.Add(gesture, new List<double>());
-                            syDist.Add(gesture, new List<double>());
-                            lTimes.Add(gesture, new List<int>());
-                            lHits.Add(gesture, new List<string>());
-                            lDist.Add(gesture, new List<double>());
-                            lxDist.Add(gesture, new List<double>());
-                            lyDist.Add(gesture, new List<double>());
-                        }
-
-                        var stList = from attempt in test.Attempts[gesture]
-                                     where attempt.Size == GridSize.Small
-                                     select attempt;
-
-                        var ltList = from attempt in test.Attempts[gesture]
-                                     where attempt.Size == GridSize.Large
-                                     select attempt;
-
-                        foreach (var attempt in stList) {
-                            var distances = MathHelper.GetDistances(attempt);
-                            sTimes[gesture].Add((int)attempt.Time.TotalSeconds);
-                            sHits[gesture].Add(attempt.Hit ? "1" : "0");
-                            sDist[gesture].Add(distances.Item1);
-                            sxDist[gesture].Add(distances.Item2);
-                            syDist[gesture].Add(distances.Item3);
-                        }
-                        foreach (var attempt in ltList) {
-                            var distances = MathHelper.GetDistances(attempt);
-                            lTimes[gesture].Add((int)attempt.Time.TotalSeconds);
-                            lHits[gesture].Add(attempt.Hit ? "1" : "0");
-                            lDist[gesture].Add(distances.Item1);
-                            lxDist[gesture].Add(distances.Item2);
-                            lyDist[gesture].Add(distances.Item3);
-                        }
-                    }
-                    for(int tryN = 0; tryN < sTimes[GestureType.Pinch].Count(); tryN++) {
-                        string line = test.ID;
-
-                        foreach(var gesture in AllTechniques) {
-                            line += $" {lTimes[gesture][tryN]} {sTimes[gesture][tryN]} {lHits[gesture][tryN]} {sHits[gesture][tryN]} {lDist[gesture][tryN]} {sDist[gesture][tryN]} {lxDist[gesture][tryN]} {sxDist[gesture][tryN]} {lyDist[gesture][tryN]} {syDist[gesture][tryN]}";
-                        }
-                        
-                        datawriter.WriteLine(line);
-                    }
-
-                }
+        public static void GenerateCSVDocument(DataSource source)
+        {
+            var attempts = AttemptRepository.GetAttempts(source);
+            using (StreamWriter sr = new StreamWriter(DataDirectory + source + ".csv"))
+            using (CsvWriter wr = new CsvWriter(sr))
+            {
+                wr.WriteHeader(typeof(Attempt));
+                
+                wr.WriteRecords(attempts);
             }
-            return fPath;
         }
+        
+        //public static void GenerateCSVDocument(DataSource source) {
+        //    var attempts = AttemptRepository.GetAttempts(source);
+        //    using (StreamWriter sr = new StreamWriter(DataDirectory + source + ".csv"))
+        //    {
+        //        foreach (var attempt in attempts)
+        //        {
+        //            var line = $"{attempt.ID}, {attempt.AttemptNumber}, {attempt.Type}, {attempt.Direction}, {attempt.Size}, {attempt.Hit}, "+
+        //                       $"{attempt.TargetCell.X}, {attempt.TargetCell.Y}, {attempt.CurrentCell.X}, {";
+        //        }
+        //    }
+        //}
 
 
         public static void VerifyTests(DataSource source)

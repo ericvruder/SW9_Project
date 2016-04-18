@@ -8,9 +8,11 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
-            var attempts = AttemptRepository.GetAttempts(DataSource.Target);
-            var lAttempts = attempts.Where(x => x.Size == GridSize.Small);
-            DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Small, "heatmap.png");
+                DataGenerator.GenerateCSVDocument(DataSource.Old);
+            //    var attempts = AttemptRepository.GetAttempts(DataSource.Target);
+            //    var lAttempts = attempts.Where(x => x.Size == GridSize.Small);
+            //    DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Small, "heatmap.png");
+            //
         }
     }
 }
