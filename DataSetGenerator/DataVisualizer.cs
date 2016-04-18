@@ -126,22 +126,25 @@ namespace DataSetGenerator {
 
                     Between Red and Yellow, equally space your additions to the green channel until it reaches 255. Between Yellow and Green, equally space your subtractions from the red channel.
                     */
-
-                    float percentage = cellAttempts.Sum(x => x.Hit ? 1 : 0) / cellAttempts.Count();
+                    float sum = (float)cellAttempts.Sum(x => x.Hit ? 1 : 0);
+                    float count = (float)cellAttempts.Count();
+                    float percentage =  sum / count;
                     Brush brush = Brushes.White;
                     if(cellAttempts.Count() != 0) {
-                        if(percentage < 0.5) {
-                            var t = percentage * 2.0f;
-                            int value = (int)Math.Round(255.0f / t);
-                            brush = new SolidBrush(Color.FromArgb(255, value, 0));
-                        }
+                        
+                        float adjust = percentage < 0.75 ? 0.5f : 0.75f;
+
+                        int value = (int)Math.Round(255f / 0.25f * (percentage - adjust));
+                        brush = percentage < 0.75f ? new SolidBrush(Color.FromArgb(255, value, 0)) : new SolidBrush(Color.FromArgb(255, 255, 255 - value));
                     }
                     map.FillRectangle(brush, rectangle);
+                    map.DrawRectangle(Pens.Black, rectangle);
                 }
             }
 
             return heatMap;
         }
+
 
         public static void CreateHitboxes(DataSource source) {
             var tests = DataGenerator.GetTests(source);
