@@ -1,0 +1,29 @@
+[10:13:40]: Some start problems with the throw pull but she figured out how to use the technique
+[10:14:50]: Some system errors 
+[10:15:01]: The tilt motion is there but it doesn't seem to be fast enough to activate the tilt
+[10:15:42]: Sometimes the cursor jumps down  when the tilt is performed
+[10:16:06]: The aim seems to be okay and the tilt gesture is there 
+[10:16:34]: The tilt pull had a noticable amount of misses
+[10:17:33]: Got all the practice targets
+[10:17:46]: Some system errors activating the lock 
+[10:17:59]: Again
+[10:18:06]: What happend there?
+[10:18:21]: Again the system locks the cursor 
+[10:19:14]: She aimed and got the tile just left of the target :)
+[10:21:40]: Looked perfect (swipe pull)
+[10:22:54]: A LOT of jitter
+[10:25:03]: Looked pretty good with the throw push
+[10:26:29]: Trying to throw
+[10:26:41]: Now she's just opening her hand and it seems to work much better
+[10:27:15]: Slower motions with the pointing and grabbing hand seems to be working well for her. She's hitting almost all targets
+[10:29:16]: Some problems with getting the phone to register that swipe
+[10:29:37]: Again doesn't seem to register the swipe right away
+[10:30:11]: Again the swipe is done but not registered
+[10:30:32]: Some system errors with the swipe in that the swipe was not registered on the phone the first time everytime somehow. This adds some time to those attempts
+[10:32:25]: Jumped up
+[10:32:40]: Jumped down
+[10:32:52]: Jumped down
+[10:32:57]: Just below the target
+[10:33:04]: Above the target
+[10:33:20]: Jumped down
+[10:33:30]: Many times the aim is good the tilt is there the shape is correct but the tilt makes the cursor jump down or up or to the sides
