@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 using DataSetGenerator;
 using WebDataParser.Models;
+using Newtonsoft.Json;
 
 namespace WebDataParser.Controllers {
     public class HomeController : Controller {
@@ -38,7 +39,7 @@ namespace WebDataParser.Controllers {
             string fileName = $"{source}data", filePath = "";
             switch (data) {
                 case "spss": default: filePath = DataGenerator.GenerateSPSSDocument(source, Path.GetTempPath()); fileName += ".sav"; break;
-                case "csv": fileName = DataGenerator.GenerateCSVDocument(source, Path.GetTempPath()); fileName += ".csv";  break;
+                //case "csv": fileName = DataGenerator.GenerateCSVDocument(source, Path.GetTempPath()); fileName += ".csv";  break;
             }
             
             byte[] filedata = System.IO.File.ReadAllBytes(filePath);
@@ -89,6 +90,15 @@ namespace WebDataParser.Controllers {
             var count = AttemptRepository.GetTestCount(source);
             var info = new TechniqueInformationViewModel(attempts, count);
             return Json(info, JsonRequestBehavior.AllowGet);
+        }
+
+        public ContentResult GetAttemptData(DataSource source) {
+            var tests = AttemptRepository.GetTests(source);
+            var attemptInfos = new List<AttemptInfo>();
+            attemptInfos.Add(new AttemptInfo(tests, GestureDirection.Pull));
+            attemptInfos.Add(new AttemptInfo(tests, GestureDirection.Push));
+            var json = $"{{\"Pull\": {JsonConvert.SerializeObject(attemptInfos[0])}, \"Push\": {JsonConvert.SerializeObject(attemptInfos[1])}}}";
+            return Content(json, "application/json");
         }
 
         public ActionResult GetImage(string testId, GestureType type, DataSource source = DataSource.Old) {

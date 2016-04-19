@@ -1,5 +1,57 @@
 ﻿
 function loadGraphs(source) {
+
+    $.ajax({
+        
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        url: '/Home/GetAttemptData/',
+        data: { "source": source },
+        error: function (asd, errorText) {
+            alert("An error occurred: " + errorText);
+        },
+        complete: function (data) {
+            var data = JSON.parse(data.responseText);
+            console.log(data["Push"]["HitPercentage"]["Pinch"][0]);
+
+            for (var direction in data) {
+                for (var ditem in data[direction]) {
+                    for (var technique in data[direction][ditem]) {
+                        var count = 0;
+                        for (var number in data[direction][ditem][technique]) {
+                            data[direction][ditem][technique][number] = [1 + count++, data[direction][ditem][technique][number]];
+                        }
+                    }
+                }
+            }
+
+            var options = {
+                legend: { position: "sw", show: true }, series: { lines: { show: false } },
+                xaxis: { min: 1, max: 18, tickSize: 1 }
+            };
+
+            var dataitems = ["HitPercentage", "TimeTaken", "Accuracy"];
+            var directions = ["Push", "Pull"];
+
+            for (var direction in directions) {
+                for (var ditem in dataitems) {
+                    console.log(dataitems[ditem]);
+
+                    var graphData = [{ color: "green", lines: { show: true }, data: data[directions[direction]][dataitems[ditem]]["Pinch"], label: "Pinch" },
+                                     { color: "red", lines: { show: true }, data: data[directions[direction]][dataitems[ditem]]["Swipe"], label: "Swipe" },
+                                     { color: "blue", lines: { show: true }, data: data[directions[direction]][dataitems[ditem]]["Throw"], label: "Throw" },
+                                     { color: "yellow", lines: { show: true }, data: data[directions[direction]][dataitems[ditem]]["Tilt"], label: "Tilt" }];
+
+
+                    $.plot("#" + directions[direction] + "Attempt" + dataitems[ditem], graphData, options);
+
+                }
+            }
+        }
+
+    });
+
     $.ajax({
 
         type: "GET",
@@ -13,7 +65,6 @@ function loadGraphs(source) {
         complete: function (data) {
 
             var data = JSON.parse(data.responseText);
-            console.log(data["PushHitRate"]);
 
             var options = {
                 legend: { position: "sw", show: true }, series: { lines: { show: false } },
