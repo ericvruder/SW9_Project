@@ -15,23 +15,7 @@ namespace DataSetGenerator {
             var lAttempts = attempts.Where(x => x.Size == GridSize.Large);
              DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Large, "heatmap.png");
 
-            //List<Validity> validities = new List<Validity>();
-
-            //string[] files = System.IO.Directory.GetFiles(DataGenerator.DataDirectory, "*.invalid");
-            //foreach (var file in files)
-            //{
-            //    var filename = Path.GetFileNameWithoutExtension(file);
-            //    StreamReader sr = new StreamReader(file);
-            //    using (sr)
-            //    {
-            //        string line = "";
-            //        while ((line = sr.ReadLine()) != null)
-            //        {
-            //            Validity invalid = new Validity(filename, line);
-            //            validities.Add(invalid);
-            //        }
-            //    }
-            //}
+            Validity.ValidateAttempts();
 
             //    var attempts = AttemptRepository.GetAttempts(DataSource.Target);
             //    var lAttempts = attempts.Where(x => x.Size == GridSize.Small);

@@ -1,33 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DataSetGenerator
 {
     public class Validity
     {
-        private int _id;
+        private int _participantID;
         private GestureDirection _direction;
         private GestureType _type;
         private int _invalidAttempts;
+        private int _timeErrors;
 
-        public void ValidateAttempts(Test t)
-        {
-            var id = t.ID;
-            foreach (var tech in DataGenerator.AllTechniques)
-            {
-                //Get all miss attempts
-                //get number of invalid attempts from validity file
-                //Apply false to valid property in attempt class on database for for furthest attempts 
-            }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">The participant id</param>
+        /// <param name="line">Line to be parsed from file</param>
         public Validity(string id, string line)
         {
-            string[] info = line.Split(':');
+            string[] info = line.Split(',');
 
-            // push,pinch:3
-            _id = Int32.Parse(id);
-            switch (info[0].Split(',')[0])
+            // direction,type,invalidAttempts,timeErrors
+            // push,pinch,3,4
+            _participantID = Int32.Parse(id);
+            switch (info[0])
             {
                 case "push":
                     _direction = GestureDirection.Push;
@@ -38,7 +35,7 @@ namespace DataSetGenerator
                 default:
                     throw new Exception("Direction must be either: push, pull");
             }
-            switch (info[0].Split(',')[1])
+            switch (info[1])
             {
                 case "pinch":
                     _type = GestureType.Pinch;
@@ -58,8 +55,55 @@ namespace DataSetGenerator
                 default:
                     throw new Exception("Technique must be either: pinch (or grab), swipe, throw, tilt");
             }
-            _invalidAttempts = Int32.Parse(info[1]);
+            _invalidAttempts = Int32.Parse(info[2]);
+            _timeErrors = Int32.Parse(info[3]);
 
         }
+
+        public static void ValidateAttempts()
+        {
+            foreach (var tech in DataGenerator.AllTechniques)
+            {
+                //get number of invalid attempts from validity file
+                var validities = ValidityFilesList();
+
+                //Get all miss attempts
+                var tests = AttemptRepository.GetTests(DataSource.Field);
+                foreach (var test in tests)
+                {
+
+                }
+
+                //Apply false to valid property in attempt class on database for for furthest attempts 
+            }
+        }
+
+        /// <summary>
+        /// Parses the .invalid files to a List
+        /// </summary>
+        /// <returns>A list of validities with id, type, direction, number of invalid attempts, and time errors</returns>
+        public static List<Validity> ValidityFilesList()
+        {
+            List<Validity> results = new List<Validity>();
+
+            string[] files = Directory.GetFiles(DataGenerator.DataDirectory, "*.invalid");
+            foreach (var file in files)
+            {
+                var filename = Path.GetFileNameWithoutExtension(file);
+                StreamReader sr = new StreamReader(file);
+                using (sr)
+                {
+                    string line = "";
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        Validity invalid = new Validity(filename, line);
+                        results.Add(invalid);
+                    }
+                }
+            }
+
+            return results;
+
+        } 
     }
 }
