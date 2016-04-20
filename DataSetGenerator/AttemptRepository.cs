@@ -4,6 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.OData.Query;
+using Microsoft.Data.OData.Query.SemanticAst;
 
 namespace DataSetGenerator {
     public class AttemptRepository : DbContext {
@@ -32,6 +34,20 @@ namespace DataSetGenerator {
 
         public AttemptRepository() : base("SW9_Project") { }
         public DbSet<Attempt> Attempts { get; set; }
+
+        public static void UpdateAttempts(Attempt attempt)
+        {
+            UpdateAttempts(new List<Attempt>() {attempt});
+        }
+
+        public static void UpdateAttempts(List<Attempt> attempts)
+        {
+            foreach (var attempt in attempts)
+            {
+                Repository.Entry(attempt).State = EntityState.Modified;
+            }
+            Repository.SaveChanges();
+        }
 
         public static void SaveTestsToDatabase(List<Test> tests) {
             
@@ -72,6 +88,21 @@ namespace DataSetGenerator {
             }
 
             return new Test(attempts);
+        }
+
+        public static List<Attempt> GetMissedAttempts(DataSource source)
+        {
+            List<Attempt> attempts = null;
+
+            lock (Repository)
+            {
+                attempts = Repository.Attempts
+                    .Where(x => !x.Hit && x.Source == source)
+                    .ToList()
+                    .OrderByDescending(MathHelper.DistanceToTargetCell)
+                    .ToList();
+            }
+            return attempts;
         }
 
         public static List<Test> GetTests(DataSource source) {

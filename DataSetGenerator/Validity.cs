@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DataSetGenerator
 {
@@ -62,20 +63,31 @@ namespace DataSetGenerator
 
         public static void ValidateAttempts()
         {
-            foreach (var tech in DataGenerator.AllTechniques)
+            //get number of invalid attempts from validity file
+            var validities = ValidityFilesList();
+                
+
+            //Get all miss attempts
+            var missedAttempts = AttemptRepository.GetMissedAttempts(DataSource.Old);
+            Console.WriteLine(missedAttempts.Count);
+
+            var changedAttempts = new List<Attempt>();
+            foreach (var validity in validities)
             {
-                //get number of invalid attempts from validity file
-                var validities = ValidityFilesList();
-
-                //Get all miss attempts
-                var tests = AttemptRepository.GetTests(DataSource.Field);
-                foreach (var test in tests)
+                var tattempt = missedAttempts.Where(x => x.ID == validity._participantID.ToString() && x.Type == validity._type && x.Direction == validity._direction).ToList();
+                for (int i = 0; i < validity._invalidAttempts; i++)
                 {
-
+                    tattempt[i].Valid = false;
+                    changedAttempts.Add(tattempt[i]);
                 }
-
-                //Apply false to valid property in attempt class on database for for furthest attempts 
             }
+
+            AttemptRepository.UpdateAttempts(changedAttempts);
+
+
+            Console.WriteLine(missedAttempts.Count);
+
+            //Apply false to valid property in attempt class on database for for furthest attempts 
         }
 
         /// <summary>
@@ -86,7 +98,7 @@ namespace DataSetGenerator
         {
             List<Validity> results = new List<Validity>();
 
-            string[] files = Directory.GetFiles(DataGenerator.DataDirectory, "*.invalid");
+            string[] files = Directory.GetFiles(DataGenerator.TestFileDirectory(DataSource.Target), "/invalidity/*.invalidity");
             foreach (var file in files)
             {
                 var filename = Path.GetFileNameWithoutExtension(file);
