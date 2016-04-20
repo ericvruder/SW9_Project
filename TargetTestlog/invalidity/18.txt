@@ -1,0 +1,2 @@
+push, pinch, 2, 3
+pull, tilt, 0, 1

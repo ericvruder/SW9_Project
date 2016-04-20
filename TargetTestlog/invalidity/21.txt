@@ -1,0 +1,2 @@
+push, pinch, 6
+push, throw, 0, 1
