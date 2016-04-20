@@ -31,6 +31,36 @@
 
     <div class="row">
         <div class="graph-container">
+            <p> Push Attempt Hit Percentage </p>
+            <div id="PushAttemptHitPercentage" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <p> Push Attempt Time Taken </p>
+            <div id="PushAttemptTimeTaken" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <p> Push Attempt Accuracy </p>
+            <div id="PushAttemptAccuracy" class="graph"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="graph-container">
+            <p> Pull Attempt Hit Percentage </p>
+            <div id="PullAttemptHitPercentage" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <p> Pull Attempt Time Taken </p>
+            <div id="PullAttemptTimeTaken" class="graph"></div>
+        </div>
+        <div class="graph-container">
+            <p> Pull Attempt Accuracy </p>
+            <div id="PullAttemptAccuracy" class="graph"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="graph-container">
             <p> Hit Percentage </p>
             <div id="HitPercentage" class="graph"></div>
         </div>
@@ -38,30 +68,32 @@
             <p> Time Taken </p>
             <div id="TimeTaken" class="graph"></div>
         </div>
-    </div>
-
-    <div class="row">
         <div class="graph-container">
             <p> Accuracy </p>
             <div id="Accuracy" class="graph"></div>
         </div>
-        <div> 
-            <p id="TotalUsers">Total amount of users: </p>
-            <p id="TotalAttempts">Total amount of attempts: </p>
-            <p id="AttemptsPerTechnique"> Attempts per Technique: </p>
-
-            <hr />
-
-            @Html.ActionLink("Data (SPSS)", "GetData", new { data = "spss", source = ViewBag.Source })
-            @Html.ActionLink("Data (CSV)", "GetData", new { data = "csv", source = ViewBag.Source })
-
-            <hr />
-
-            @Html.ActionLink("Old Data", "Index", new { source = "Old" })
-            @Html.ActionLink("Target Data", "Index", new { source = "Target" })
-            @Html.ActionLink("Field Data", "Index", new { source = "Field" })
-
-        </div>
     </div>
 
+
+</div>
+
+
+<div>
+    <div>
+        <p id="TotalUsers">Total amount of users: </p>
+        <p id="TotalAttempts">Total amount of attempts: </p>
+        <p id="AttemptsPerTechnique"> Attempts per Technique: </p>
+
+        <hr />
+
+        @Html.ActionLink("Data (SPSS)", "GetData", new { data = "spss", source = ViewBag.Source })
+        @Html.ActionLink("Data (CSV)", "GetData", new { data = "csv", source = ViewBag.Source })
+
+        <hr />
+
+        @Html.ActionLink("Old Data", "Index", new { source = "Old" })
+        @Html.ActionLink("Target Data", "Index", new { source = "Target" })
+        @Html.ActionLink("Field Data", "Index", new { source = "Field" })
+
+    </div>
 </div>

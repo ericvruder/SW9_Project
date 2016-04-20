@@ -132,18 +132,6 @@ namespace DataSetGenerator {
                 wr.WriteRecords(attempts);
             }
         }
-        
-        //public static void GenerateCSVDocument(DataSource source) {
-        //    var attempts = AttemptRepository.GetAttempts(source);
-        //    using (StreamWriter sr = new StreamWriter(DataDirectory + source + ".csv"))
-        //    {
-        //        foreach (var attempt in attempts)
-        //        {
-        //            var line = $"{attempt.ID}, {attempt.AttemptNumber}, {attempt.Type}, {attempt.Direction}, {attempt.Size}, {attempt.Hit}, "+
-        //                       $"{attempt.TargetCell.X}, {attempt.TargetCell.Y}, {attempt.CurrentCell.X}, {";
-        //        }
-        //    }
-        //}
 
 
         public static void VerifyTests(DataSource source)
@@ -365,5 +353,7 @@ namespace DataSetGenerator {
 
             return gestureAttempt;
         }
+
+        
     }
 }
