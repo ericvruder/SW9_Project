@@ -1,0 +1,16 @@
+[13:49:31]: Pull grab starting
+[13:52:05]: no problems
+[13:52:33]: pull swipe
+[13:55:27]: starting pull tilt
+[13:57:20]: Some tilt problems, The normal stuff. No error readings by the system though
+[13:57:42]: Now starting pull throw
+[13:59:26]: No issuses with the pull throw
+[13:59:32]: Now stating the push swipe
+[14:01:15]: No problems with that one
+[14:01:22]: Now starting push tilt
+[14:04:47]: Now stating push throw
+[14:08:19]: This push throw took more time than others
+[14:08:41]: Looked like the phone was changing shape after every eattempt
+[14:09:37]: now starting push grab
+[14:11:01]: shape miss?
+[14:11:44]: No system errors for the last one

@@ -1,0 +1,23 @@
+[13:27:04]: Pull,tilt
+[13:29:27]: The normal tilt issues with the tilt
+[13:29:41]: pull,throw
+[13:31:56]: No real issues with the pull throw
+[13:32:04]: Starting pull swipe
+[13:33:43]: No swipe issues
+[13:33:49]: Starting pull grab
+[13:36:30]: There was one target where the pointer was sliding when the hand was closed
+[13:36:56]: Starting push throw
+[13:39:14]: Last attempt was and overhand throw :)
+[13:39:23]: starting push tilt
+[13:40:54]: 1 time
+[13:41:10]: 1 time
+[13:41:22]: 1 time
+[13:41:47]: 1 time
+[13:42:10]: shape miss?
+[13:42:28]: 1 time
+[13:42:59]: 1 time
+[13:43:07]: Starting push grab
+[13:43:36]: The tilt push almost never registered the first time. The hit rate looked to be good but it took some tries for it to register
+[13:46:00]: No issues with the push grab
+[13:46:06]: Now starting push swipe
+[13:47:55]: No issues with the last, push swipe

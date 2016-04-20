@@ -1,2 +1,2 @@
-pull, pinch: 2
-push, tilt: 1
+pull,tilt,1
+push,throw,1
