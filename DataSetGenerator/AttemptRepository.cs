@@ -40,6 +40,20 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void RemoveOutliers(Dictionary<string, int> outliers) {
+            using(var Repo = new AttemptRepository()) {
+                foreach (var entry in outliers) {
+                    var attempts = Repo.Attempts.Where(attempt => attempt.ID == entry.Key);
+                    foreach(var aNum in entry.Key) {
+                        var attempt = attempts.Where(att => att.AttemptNumber == aNum).Single();
+                        attempt.Valid = false;
+                        Repo.Entry(attempt).State = EntityState.Modified;
+                    }
+                }
+                Repo.SaveChanges();
+            }
+        }
+
         public static void SaveTestsToDatabase(List<Test> tests) {
             
 
