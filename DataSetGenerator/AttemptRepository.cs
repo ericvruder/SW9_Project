@@ -9,21 +9,10 @@ using Microsoft.Data.OData.Query.SemanticAst;
 
 namespace DataSetGenerator {
     public class AttemptRepository : DbContext {
-
-        static AttemptRepository attemptRepository;
         public  static DatabaseSaveStatus SaveStatus { get; set; }
 
-        static AttemptRepository Repository {
-            get {
-                if(attemptRepository == null) {
-                    attemptRepository = new AttemptRepository();
-                }
-                return attemptRepository;
-            }
-        }
-
         public static void RemoveTests(DataSource source) {
-            lock (Repository) {
+            using (var Repository = new AttemptRepository()) {
                 var attempts = Repository.Attempts
                     .Where(x => x.Source == source);
 
@@ -42,11 +31,12 @@ namespace DataSetGenerator {
 
         public static void UpdateAttempts(List<Attempt> attempts)
         {
-            foreach (var attempt in attempts)
-            {
-                Repository.Entry(attempt).State = EntityState.Modified;
+            using (var Repository = new AttemptRepository()) {
+                foreach (var attempt in attempts) {
+                    Repository.Entry(attempt).State = EntityState.Modified;
+                }
+                Repository.SaveChanges();
             }
-            Repository.SaveChanges();
         }
 
         public static void SaveTestsToDatabase(List<Test> tests) {
@@ -59,7 +49,7 @@ namespace DataSetGenerator {
 
         public static List<Attempt> GetAttempts(DataSource source) {
             List<Attempt> attempts = null;
-            lock (Repository) {
+            using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
                 .Where(x => x.Source == source).ToList();
             }
@@ -69,7 +59,7 @@ namespace DataSetGenerator {
         public static int GetTestCount(DataSource source) {
 
             int count = 0;
-            lock (Repository) {
+            using (var Repository = new AttemptRepository()) {
                 count = (from attempt in Repository.Attempts
                          where attempt.Source == source
                          group attempt by attempt.ID into testsFound
@@ -81,7 +71,7 @@ namespace DataSetGenerator {
 
         public static Test GetTest(string id, DataSource source) {
             List<Attempt> attempts = null;
-            lock(Repository) {
+            using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
                     .Where(x => x.Source == source && x.ID == id)
                     .ToList();
@@ -94,7 +84,7 @@ namespace DataSetGenerator {
         {
             List<Attempt> attempts = null;
 
-            lock (Repository)
+            using (var Repository = new AttemptRepository())
             {
                 attempts = Repository.Attempts
                     .Where(x => !x.Hit && x.Source == source)
@@ -109,7 +99,7 @@ namespace DataSetGenerator {
 
             List<Test> tests = new List<Test>();
 
-            lock (Repository) {
+            using (var Repository = new AttemptRepository()) {
                 var allTests = Repository.Attempts
                     .Where(attempt => attempt.Source == source)
                     .GroupBy(attempt => attempt.ID, attempt => attempt);
@@ -123,7 +113,7 @@ namespace DataSetGenerator {
         }
 
         private static void SaveTest(Test test) {
-            lock (Repository) {
+            using (var Repository = new AttemptRepository()) {
                 SaveStatus = DatabaseSaveStatus.Saving;
                 DataSource source = test.Attempts.First().Value.First().Source;
                 bool success = false;

@@ -42,7 +42,7 @@ namespace SW9_Project {
             return CreateSquareTextured("image", size * 0.8, img);
         }
 
-        public static UIElement CreatePointer() {
+        public static UIElement CreatePointer(bool accuracyExperiment) {
             if (pointer) {
                 Image pointer = new Image();
                 pointer.Source = new BitmapImage(new Uri("resources/pointer.png", UriKind.RelativeOrAbsolute));
@@ -56,17 +56,17 @@ namespace SW9_Project {
                 ellipse.Stroke = Brushes.Black;
                 ellipse.Height = 25;
                 ellipse.Width = 25;
-                
+                ellipse.Opacity = accuracyExperiment ? 0.75 : 1;
                 return ellipse;
             }
         }
 
-        public static Rectangle CreateGridCell(double width, double height, bool border) {
+        public static Rectangle CreateGridCell(double width, double height) {
             Rectangle rectangle = new Rectangle();
             rectangle.StrokeThickness = 1;
-            rectangle.Fill = border ? Brushes.White : Brushes.Transparent;
+            rectangle.Fill = Brushes.White;
 
-            rectangle.Stroke = border ? Brushes.Black : Brushes.Transparent;
+            rectangle.Stroke = Brushes.Black;
             rectangle.Height = height;
             rectangle.Width = width;
 
