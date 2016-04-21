@@ -28,19 +28,8 @@ namespace SW9_Project {
 
         public static void Initialize() {
             List<Queue<Target>> list = new List<Queue<Target>>();
-            if (GlobalVars.isTargetPractice)
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    list.Add(LoadSequence(i));
-                }
-            }
-            else
-            {
-                for (int i = 8; i < 12; i++)
-                {
-                    list.Add(LoadSequence(i));
-                }
+            for (int i = 0; i < 8; i++) {
+                list.Add(LoadSequence(i));
             }
             list.Shuffle();
             TargetSequences = new Queue<Queue<Target>>(list);

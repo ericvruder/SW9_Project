@@ -82,7 +82,7 @@ namespace WebDataParser.Models {
 
                 float tNum = (float)technique + 1;
 
-                float tMean = (float)techAttempts.Sum(attempt => attempt.Hit ? 0 : MathHelper.DistanceToTargetCell(attempt)) / techAttempts.Count();
+                float tMean = (float)techAttempts.Sum(attempt => MathHelper.DistanceToTargetCell(attempt)) / techAttempts.Count();
                 if (float.IsNaN(tMean)) tMean = 0;
 
                 float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow(MathHelper.DistanceToTargetCell(attempt) - tMean, 2)) / techAttempts.Count());

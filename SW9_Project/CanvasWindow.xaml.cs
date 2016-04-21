@@ -27,7 +27,7 @@ namespace SW9_Project {
 
         KinectManager kinectManager;
 
-        bool targetPractice = true; // this is Eric and Bjarke's test (true), else FieldTest(false);
+        bool accuracyTest = true; 
 
         Cell[,] grid;
         Cell target, extraTarget;
@@ -44,18 +44,19 @@ namespace SW9_Project {
         static Connection connection;
         TestSuite currentTest;
         List<String> shapes;
-        List<String> shapes_FT; //shapes for field testing
         Brush targetColor = Brushes.DarkGray;
         Point lastGyroPoint { get; set; }
         
         double xPoint = 0;
         double yPoint = 0;
 
-        public CanvasWindow(bool targetPractice = true) {
+        public CanvasWindow(bool accuracyTest = true) {
             
-            this.targetPractice = targetPractice;
+            this.accuracyTest = accuracyTest;
 
-            source = targetPractice ? DataSource.Target : DataSource.Field;
+            targetColor = accuracyTest ? Brushes.White : Brushes.DarkGray;
+
+            source = DataSource.Target;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));
@@ -63,15 +64,51 @@ namespace SW9_Project {
             shapes = new List<String>();
             shapes.Add("circle");
             shapes.Add("square");
-            shapes_FT = new List<String>();
-            shapes_FT.Add("document");
-            shapes_FT.Add("image");
             GestureParser.Initialize(this);
-            currentSize = targetPractice ? GridSize.Small : GridSize.Large;
+            currentSize = GridSize.Small;
             window = this;
             InitializeComponent();
             kinectManager = new KinectManager(this);
             VideoWindow.SetCanvasWindow(this);
+
+            
+        }
+
+        List<Line> cross = new List<Line>();
+        private void ClearCross() {
+            foreach(var c in cross) {
+                canvas.Children.Remove(c);
+            }
+        }
+        private List<Line> DrawCross(Cell cell) {
+
+            double x = cell.X * squareWidth + (squareWidth * 0.5);
+            double y = canvas.ActualHeight - (cell.Y * squareHeight + (squareHeight * 0.5));
+
+            
+            Line horLine = new Line(), verLine = new Line();
+
+            horLine.X1 = x - 12; horLine.Y1 = y;
+            horLine.X2 = x + 12; horLine.Y2 = y;
+
+            verLine.X1 = x; verLine.Y1 = y + 12;
+            verLine.X2 = x; verLine.Y2 = y - 12;
+
+            verLine.StrokeThickness = 2;
+            horLine.StrokeThickness = 2;
+            verLine.Stroke = Brushes.White;
+            horLine.Stroke = Brushes.White;
+
+            cross.Clear();
+            cross.Add(horLine); cross.Add(verLine);
+
+            canvas.Children.Add(horLine);
+            Canvas.SetZIndex(horLine, 600);
+
+            canvas.Children.Add(verLine);
+            Canvas.SetZIndex(verLine, 601);
+
+            return cross;
         }
 
         public static void SetConnection(Connection _connection) {
@@ -89,9 +126,9 @@ namespace SW9_Project {
 
         public void CreateGrid(GridSize size) {
             if(size == GridSize.Large) {
-                CreateGrid(lgWidth,lgHeight, targetPractice);
+                CreateGrid(lgWidth,lgHeight);
             } else {
-                CreateGrid(sgWidth, sgHeight, targetPractice);
+                CreateGrid(sgWidth, sgHeight);
             }
             currentSize = size;
         }
@@ -125,7 +162,7 @@ namespace SW9_Project {
             GyroPositionY = cy;
         }
 
-        private void CreateGrid(int width, int height, bool includeBorders) {
+        private void CreateGrid(int width, int height) {
             if(grid != null) {
                 canvas.Children.Clear();
             }
@@ -141,7 +178,7 @@ namespace SW9_Project {
 
             for(int i = 0; i < width; i++) {
                 for(int j = 0; j < height; j++) {
-                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight, includeBorders));
+                    grid[i, j] = new Cell(ShapeFactory.CreateGridCell(squareWidth, squareHeight));
                     grid[i, j].X = i; grid[i, j].Y = j;
                     canvas.Children.Add(grid[i, j].GridCell);
                     Canvas.SetBottom(grid[i, j].GridCell, j * squareHeight);
@@ -170,8 +207,7 @@ namespace SW9_Project {
                 shape = shape == "square" ? "circle" : "square";
                 sCount = 0;                
             }
-
-            if (!targetPractice) { shape = shapes_FT[randomizer.Next(shapes_FT.Count)]; }
+            
 
             return shape;
 
@@ -181,22 +217,15 @@ namespace SW9_Project {
         public void DrawNextTargets() {
             if (runningTest && runningGesture) {
                 if(target == null) {
+                    ClearCross();
                     double size = squareWidth > squareHeight ? squareHeight : squareWidth;
 
                     string shape = GetNextShape();
 
-                    if (targetPractice)
-                    {
-                        if (currentSize != nextTarget.Size)
-                        {
-                            Logger.CurrentLogger.ChangeSize(nextTarget.Size);
-                        }
-                        CreateGrid(nextTarget.Size);
+                    if (currentSize != nextTarget.Size) {
+                        Logger.CurrentLogger.ChangeSize(nextTarget.Size);
                     }
-                    else
-                    {
-                        CreateGrid(GridSize.Large); //we need large all the time for FieldTest
-                    }
+                    CreateGrid(nextTarget.Size);
 
                     if (GestureParser.GetDirectionContext() == GestureDirection.Pull) {
                         connection?.SetNextShape(shape);
@@ -220,16 +249,15 @@ namespace SW9_Project {
                         extraTarget.GridCell.Fill = targetColor;
                         PushShape(extraShape, extraTarget);
                         extraTarget.Shape.Fill = Brushes.Black;
+                        if (accuracyTest) { DrawCross(extraTarget); }
                     }
                     currentLength = nextTarget.Length;
                     target = grid[nextTarget.X, nextTarget.Y];
                     target.GridCell.Fill = targetColor;
                     PushShape(shape, target);
 
-                    if (targetPractice)
-                    {
-                        target.Shape.Fill = Brushes.Black;
-                    } 
+                    target.Shape.Fill = Brushes.Black;
+                    if (accuracyTest) { DrawCross(target); }
 
                 }
             }
@@ -252,7 +280,7 @@ namespace SW9_Project {
         private void ColorCell(Point toColor) {
             
             if (currentCell != null) {
-                currentCell.Fill = targetPractice ? Brushes.White : Brushes.Transparent;
+                currentCell.Fill = Brushes.White;
             }
             currentCell = GetCell(toColor).GridCell;
             currentCell.Fill = Brushes.Yellow;
@@ -287,7 +315,7 @@ namespace SW9_Project {
         public void PointAt(double xFromMid, double yFromMid) {
 
             if (pointerFigure == null) {
-                pointerFigure = ShapeFactory.CreatePointer();
+                pointerFigure = ShapeFactory.CreatePointer(accuracyTest);
                 canvas.Children.Add(pointerFigure);
                 Canvas.SetZIndex(pointerFigure, 10000);
                 xPoint = xFromMid;
@@ -325,7 +353,7 @@ namespace SW9_Project {
                 pointer = GetPoint(xPoint, yPoint);
             }
             MoveShape(pointerFigure, pointer);
-            ColorCell(pointer);
+            //ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
@@ -336,10 +364,6 @@ namespace SW9_Project {
                     bool correctShape = true;
                     
                     string shape = target.Shape is Ellipse ? "circle" : "square";
-                    if (!targetPractice)
-                    {
-                        shape = target.Shape.Name;
-                    }
                     GestureDirection direction = GestureParser.GetDirectionContext();
                     GestureType type = GestureParser.GetTypeContext();
                     if (direction == GestureDirection.Push) {
@@ -368,12 +392,6 @@ namespace SW9_Project {
             double x = Canvas.GetLeft(cell.GridCell) + (cell.GridCell.Width / 2);
             double y = Canvas.GetBottom(cell.GridCell) + (cell.GridCell.Height / 2);
             Canvas.SetZIndex(t, 500);
-            if (!targetPractice)
-            {
-                //TODO: zorder = pos +1 (starts at 501) - Add a pushback in the imagecontainer code for recycling.
-                Canvas.SetZIndex(t, 500);
-            }
-
             canvas.Children.Add(t);
             cell.Shape = t;
 
@@ -413,7 +431,7 @@ namespace SW9_Project {
             }
             target = null;
             t.GridCell.Fill = Brushes.White;
-            targetColor = Brushes.DarkGray;
+            targetColor = accuracyTest ? Brushes.White : Brushes.DarkGray;
             canvas.Children.Remove(cell.Shape);
             cell.Shape = null;
         }
