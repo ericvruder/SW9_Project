@@ -15,9 +15,10 @@ namespace DataSetGenerator {
             using (var Repository = new AttemptRepository()) {
                 var attempts = Repository.Attempts
                     .Where(x => x.Source == source);
-
+                Console.WriteLine("Found " + attempts.Count() + " attempts belonging to " + source + ", removing...");
                 Repository.Attempts.RemoveRange(attempts);
                 Repository.SaveChanges();
+                Console.WriteLine("Done");
             }
         }
 
@@ -47,11 +48,11 @@ namespace DataSetGenerator {
             }
         }
 
-        public static List<Attempt> GetAttempts(DataSource source) {
+        public static List<Attempt> GetAttempts(DataSource source, bool valid = true) {
             List<Attempt> attempts = null;
             using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
-                .Where(x => x.Source == source).ToList();
+                .Where(x => x.Source == source && x.Valid == valid).ToList();
             }
             return attempts;
         }
@@ -69,25 +70,25 @@ namespace DataSetGenerator {
 
         }
 
-        public static Test GetTest(string id, DataSource source) {
+        public static Test GetTest(string id, DataSource source, bool valid = true) {
             List<Attempt> attempts = null;
             using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
-                    .Where(x => x.Source == source && x.ID == id)
+                    .Where(x => x.Source == source && x.ID == id && x.Valid == valid)
                     .ToList();
             }
 
             return new Test(attempts);
         }
 
-        public static List<Attempt> GetMissedAttempts(DataSource source)
+        public static List<Attempt> GetMissedAttempts(DataSource source, bool valid = true)
         {
             List<Attempt> attempts = null;
 
             using (var Repository = new AttemptRepository())
             {
                 attempts = Repository.Attempts
-                    .Where(x => !x.Hit && x.Source == source)
+                    .Where(x => !x.Hit && x.Source == source && x.Valid == valid)
                     .ToList()
                     .OrderByDescending(MathHelper.DistanceToTargetCell)
                     .ToList();
@@ -95,13 +96,13 @@ namespace DataSetGenerator {
             return attempts;
         }
 
-        public static List<Test> GetTests(DataSource source) {
+        public static List<Test> GetTests(DataSource source, bool valid = true) {
 
             List<Test> tests = new List<Test>();
 
             using (var Repository = new AttemptRepository()) {
                 var allTests = Repository.Attempts
-                    .Where(attempt => attempt.Source == source)
+                    .Where(attempt => attempt.Source == source && attempt.Valid == valid)
                     .GroupBy(attempt => attempt.ID, attempt => attempt);
 
                 foreach (var testgrouping in allTests) {

@@ -96,6 +96,13 @@ namespace DataSetGenerator {
         private void FixTest() {
             switch (ID) {
                 case "1":
+
+                    Attempts[GestureType.Tilt][14].Valid = false;
+                    Attempts[GestureType.Throw][4].Valid = false;
+                    Attempts[GestureType.Swipe][5].Valid = false;
+                    Attempts[GestureType.Swipe][11].Valid = false;
+                    Attempts[GestureType.Swipe][13].Valid = false;
+                    /*
                     Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
                     Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
                     Attempts[GestureType.Throw][4].Size = GridSize.Small;
@@ -104,25 +111,37 @@ namespace DataSetGenerator {
                     Attempts[GestureType.Swipe][11].Time = TimeSpan.FromSeconds(6);
                     Attempts[GestureType.Swipe][11].Size = GridSize.Large;
                     Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
-                    Attempts[GestureType.Swipe][13].Size = GridSize.Large;
+                    Attempts[GestureType.Swipe][13].Size = GridSize.Large;*/
+
                     break;
                 case "2":
+                    Attempts[GestureType.Swipe][1].Valid = false;
+                    Attempts[GestureType.Swipe][13].Valid = false;
+                    /*
                     Attempts[GestureType.Swipe][1].Time = TimeSpan.FromSeconds(6);
-                    Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);
+                    Attempts[GestureType.Swipe][13].Time = TimeSpan.FromSeconds(6);*/
                     break;
                 case "4":
+                    Attempts[GestureType.Throw][17].Valid = false;
+                    Attempts[GestureType.Tilt][12].Valid = false;
+                    Attempts[GestureType.Tilt][14].Valid = false;
+                    /*
                     Attempts[GestureType.Throw][17].Time = TimeSpan.FromSeconds(7);
                     Attempts[GestureType.Throw][17].Size = GridSize.Large;
                     Attempts[GestureType.Tilt][12].Time = TimeSpan.FromSeconds(5);
                     Attempts[GestureType.Tilt][14].Time = TimeSpan.FromSeconds(6);
                     Attempts[GestureType.Tilt][14].Size = GridSize.Small;
+                    */
                     break;
                 case "5":
-                    Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
+                    Attempts[GestureType.Swipe][14].Valid = false;
+                    //Attempts[GestureType.Swipe][14].Time = TimeSpan.FromSeconds(4);
                     break;
                 case "8":
+                    Attempts[GestureType.Throw][4].Valid = false;
+                    /*
                     Attempts[GestureType.Throw][4].Time = TimeSpan.FromSeconds(8);
-                    Attempts[GestureType.Throw][4].Size = GridSize.Small;
+                    Attempts[GestureType.Throw][4].Size = GridSize.Small;*/
                     break;
                 default:
                     break;

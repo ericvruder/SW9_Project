@@ -31,31 +31,14 @@ namespace SW9_Project {
                 Connection.StartService();
             });
             
-            //TODO: Implement at preprossor definition :D - JK
-            if (System.Environment.GetCommandLineArgs().Length > 0)
-            {
-                string[] args = System.Environment.GetCommandLineArgs();
-                // Get command line arguments
-                foreach (string argument in args)
-                {
-                    switch (argument)
-                    {
-                        case "-BB":
-                            GlobalVars.isTargetPractice = false;
-                            break;
-
-                    }
-                }
-            }
-            GlobalVars.isTargetPractice = true;
             Target.Initialize();
 
-            StartCanvasWindow(GlobalVars.isTargetPractice);
+            StartCanvasWindow();
             
         }
 
-        private void StartCanvasWindow(bool targetPractice) {
-            CanvasWindow canvas = targetPractice ? new CanvasWindow(): new BulletinBoard() ;
+        private void StartCanvasWindow() {
+            CanvasWindow canvas = new CanvasWindow();
             if (Screen.AllScreens.Length > 1) {
                 int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
                 Screen s2 = Screen.AllScreens[mainScreen];

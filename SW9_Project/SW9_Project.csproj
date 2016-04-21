@@ -111,7 +111,6 @@
     <Compile Include="Gestures\KinectGesture.cs" />
     <Compile Include="Gestures\KinectJointFilter.cs" />
     <Compile Include="Gestures\MobileGesture.cs" />
-    <Compile Include="GlobalVars.cs" />
     <Compile Include="Gyroscope.cs" />
     <Compile Include="Drawing\Cell.cs" />
     <Compile Include="Communication\Connection.cs" />
