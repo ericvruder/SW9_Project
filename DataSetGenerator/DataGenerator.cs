@@ -215,8 +215,8 @@ namespace DataSetGenerator {
         public static void CreateMetaData(SpssDataDocument doc, SpssFormat format = SpssFormat.Long) {
 
             SpssNumericVariable vID = new SpssNumericVariable();
-            vID.Name = "ID";
-            vID.Label = "User ID";
+            vID.Name = "UserID";
+            vID.Label = "The user's ID";
             vID.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
             doc.Variables.Add(vID);
 
@@ -242,13 +242,13 @@ namespace DataSetGenerator {
                 //doc.Variables.Add(techniqueAttemptNo);
 
                 SpssNumericVariable time = new SpssNumericVariable();
-                time.Name = $"Time";
+                time.Name = $"Efficiency";
                 time.Label = $"Time taken in seconds for the attempt";
                 time.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
                 doc.Variables.Add(time);
 
                 SpssNumericVariable hit = new SpssNumericVariable();
-                hit.Name = $"Hit";
+                hit.Name = $"Effectiveness";
                 hit.Label = $"Whether the user hit the target or not";
                 hit.ValueLabels.Add(0, "Miss");
                 hit.ValueLabels.Add(1, "Hit");
@@ -262,7 +262,7 @@ namespace DataSetGenerator {
                 doc.Variables.Add(accuracy);
 
                 SpssNumericVariable gridSize = new SpssNumericVariable();
-                gridSize.Name = $"Size";
+                gridSize.Name = $"TargetSize";
                 gridSize.Label = $"Target (grid) size for attempt";
                 gridSize.ValueLabels.Add(0, "Small");
                 gridSize.ValueLabels.Add(1, "Large");
@@ -307,7 +307,7 @@ namespace DataSetGenerator {
                 // GestureType.Pinch, GestureType.Swipe, GestureType.Throw, GestureType.Tilt 
                 for (int i = 0; i < nAttempts; i++) {
                     SpssCase gestureAttempts = doc.Cases.New();
-                    gestureAttempts["ID"] = id;
+                    gestureAttempts["UserID"] = id;
 
                     foreach (var type in AllTechniques)
                     {
@@ -322,7 +322,7 @@ namespace DataSetGenerator {
                 foreach (var type in AllTechniques) {
                     for (int i = 0; i < test.Attempts[type].Count; i++) {
                         SpssCase gestureAttempts = doc.Cases.New();
-                        gestureAttempts[$"ID"] = id;
+                        gestureAttempts[$"UserID"] = id;
                         //gestureAttempts[$"OverallAttemptNo"] = ++overallAttempt;
                         //gestureAttempts[$"TargetAttemptNo"] = targetAttempt;
                         gestureAttempts = AddTechniqueDataLong(gestureAttempts, type, test.Attempts[type][i]);
@@ -335,10 +335,10 @@ namespace DataSetGenerator {
 
         public static SpssCase AddTechniqueData(SpssCase gestureAttempt, GestureType type, Attempt attempt) {
 
-            gestureAttempt[$"{type}Time"] = attempt.Time.TotalSeconds;
-            gestureAttempt[$"{type}Hit"] = attempt.Hit;
+            gestureAttempt[$"{type}Efficiency"] = attempt.Time.TotalSeconds;
+            gestureAttempt[$"{type}Effectiveness"] = attempt.Hit;
             gestureAttempt[$"{type}Accuracy"] = MathHelper.DistanceToTargetCell(attempt);
-            gestureAttempt[$"{type}Size"] = attempt.Size;
+            gestureAttempt[$"{type}TargetSize"] = attempt.Size;
             gestureAttempt[$"{type}Direction"] = attempt.Direction;
 
             return gestureAttempt;
@@ -346,10 +346,10 @@ namespace DataSetGenerator {
 
         public static SpssCase AddTechniqueDataLong(SpssCase gestureAttempt, GestureType type, Attempt attempt)
         {
-            gestureAttempt[$"Time"] = attempt.Time.TotalSeconds;
-            gestureAttempt[$"Hit"] = attempt.Hit;
+            gestureAttempt[$"Efficiency"] = attempt.Time.TotalSeconds;
+            gestureAttempt[$"Effectiveness"] = attempt.Hit;
             gestureAttempt[$"Accuracy"] = MathHelper.DistanceToTargetCell(attempt);
-            gestureAttempt[$"Size"] = attempt.Size;
+            gestureAttempt[$"TargetSize"] = attempt.Size;
             gestureAttempt[$"Direction"] = attempt.Direction;
             gestureAttempt[$"AttemptNumber"] = attempt.AttemptNumber;
 
