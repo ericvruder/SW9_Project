@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.IO;
 using System.Net.NetworkInformation;
@@ -354,6 +356,55 @@ namespace DataSetGenerator {
             return gestureAttempt;
         }
 
-        
+        public static void ReadSpssFile()
+        {
+
+
+            using (var doc = SpssDataDocument.Open("t.sav", SpssFileAccess.Append))
+            {
+                SpssNumericVariable accuracy = new SpssNumericVariable
+                {
+                    Name = $"Accuracy",
+                    Label = $"Distance in pixels from target",
+                    MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT
+                };
+                doc.Variables.Add(accuracy);
+
+                SpssStringVariable var = (SpssStringVariable)doc.Variables["someLabel"];
+
+                SpssCase row = doc.Cases.New();
+                row[$"Accuracy"] = new string('a', var.Length + 1);
+            }
+        }
+
+        public static List<string> GetAttemptsRemoved()
+        {
+            List<string> removed = new List<string>();
+            List<string> list = new List<string>();
+            var reader = new StreamReader(File.OpenRead(DataDirectory + "outliersRemoved.csv"));
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                var values = line.Split(',');
+
+                list.Add(values[0] + "," + values[1]);
+                
+            }
+
+            for (int i = 1; i <= 53; i++)
+            {
+                for (int j = 1; j < 72; j++)
+                {
+                    if (!list.Contains(i + "," + j))
+                    {
+                        removed.Add(i+","+j);
+                    }
+                }
+            }
+
+            return removed;
+        }
+
+
     }
 }

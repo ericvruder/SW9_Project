@@ -15,6 +15,8 @@ namespace DataSetGenerator {
             var lAttempts = attempts.Where(x => x.Size == GridSize.Large);
              DataVisualizer.DrawHeatMap(lAttempts.ToList(), GridSize.Large, "heatmap.png");
 
+            var removed = DataGenerator.GetAttemptsRemoved();
+
             //var mylist = AttemptRepository.GetMissedAttempts();
             //Validity.ValidateAttempts();
 
