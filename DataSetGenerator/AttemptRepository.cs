@@ -40,11 +40,11 @@ namespace DataSetGenerator {
             }
         }
 
-        public static void RemoveOutliers(Dictionary<string, int> outliers) {
+        public static void InvalidateAttempts(Dictionary<string, List<int>> outliers, DataSource source) {
             using(var Repo = new AttemptRepository()) {
                 foreach (var entry in outliers) {
-                    var attempts = Repo.Attempts.Where(attempt => attempt.ID == entry.Key);
-                    foreach(var aNum in entry.Key) {
+                    var attempts = Repo.Attempts.Where(attempt => attempt.ID == entry.Key && attempt.Source == source);
+                    foreach(var aNum in entry.Value) {
                         var attempt = attempts.Where(att => att.AttemptNumber == aNum).Single();
                         attempt.Valid = false;
                         Repo.Entry(attempt).State = EntityState.Modified;
@@ -66,7 +66,7 @@ namespace DataSetGenerator {
             List<Attempt> attempts = null;
             using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
-                .Where(x => x.Source == source && x.Valid == valid).ToList();
+                .Where(x => x.Source == source && (x.Valid == valid || x.Valid == true)).ToList();
             }
             return attempts;
         }
@@ -88,7 +88,7 @@ namespace DataSetGenerator {
             List<Attempt> attempts = null;
             using (var Repository = new AttemptRepository()) {
                 attempts = Repository.Attempts
-                    .Where(x => x.Source == source && x.ID == id && x.Valid == valid)
+                    .Where(x => x.Source == source && x.ID == id && (x.Valid == valid || x.Valid == true))
                     .ToList();
             }
 
@@ -102,7 +102,7 @@ namespace DataSetGenerator {
             using (var Repository = new AttemptRepository())
             {
                 attempts = Repository.Attempts
-                    .Where(x => !x.Hit && x.Source == source && x.Valid == valid)
+                    .Where(x => !x.Hit && x.Source == source && (x.Valid == valid || x.Valid == true))
                     .ToList()
                     .OrderByDescending(MathHelper.DistanceToTargetCell)
                     .ToList();
@@ -116,7 +116,7 @@ namespace DataSetGenerator {
 
             using (var Repository = new AttemptRepository()) {
                 var allTests = Repository.Attempts
-                    .Where(attempt => attempt.Source == source && attempt.Valid == valid)
+                    .Where(attempt => attempt.Source == source && (attempt.Valid == valid || attempt.Valid == true))
                     .GroupBy(attempt => attempt.ID, attempt => attempt);
 
                 foreach (var testgrouping in allTests) {

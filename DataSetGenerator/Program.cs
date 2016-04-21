@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace DataSetGenerator {
     class Program {
-        static void Main(string[] args)
-        {
-            var removed = DataGenerator.GetAttemptsRemoved();
+        static void Main(string[] args) {
 
+            DataGenerator.GenerateSPSSDocument(DataSource.Old, "fuck");
             //var mylist = AttemptRepository.GetMissedAttempts();
             //Validity.ValidateAttempts();
 

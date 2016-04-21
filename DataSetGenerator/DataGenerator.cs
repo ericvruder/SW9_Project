@@ -317,10 +317,9 @@ namespace DataSetGenerator {
             }
             else if (format == SpssFormat.Long)
             {
-                for (int i = 0; i < test.Attempts[GestureType.Pinch].Count; i++)
-                {
-                    foreach (var type in AllTechniques)
-                    {
+               
+                foreach (var type in AllTechniques) {
+                    for (int i = 0; i < test.Attempts[type].Count; i++) {
                         SpssCase gestureAttempts = doc.Cases.New();
                         gestureAttempts[$"ID"] = id;
                         //gestureAttempts[$"OverallAttemptNo"] = ++overallAttempt;
@@ -377,9 +376,27 @@ namespace DataSetGenerator {
             }
         }
 
-        public static Dictionary<string,List<string>> GetAttemptsRemoved()
+        public static void InvalidateOldTests() {
+            var removed = GetAttemptsRemoved();
+            Dictionary<string, List<int>> something = new Dictionary<string, List<int>>();
+
+            something.Add("1", new List<int>() { 69, 5, 42, 48, 50 });
+            something.Add("2", new List<int>() { 56, 68 });
+            something.Add("4", new List<int>() { 36, 67, 69 });
+            something.Add("5", new List<int>() { 15 });
+            something.Add("8", new List<int>() { 41 });
+
+            foreach (var s in something) {
+                if (removed.ContainsKey(s.Key)) {
+                    removed[s.Key] = removed[s.Key].Union(s.Value).ToList();
+                }
+            }
+            AttemptRepository.InvalidateAttempts(removed, DataSource.Old);
+        }
+
+        public static Dictionary<string,List<int>> GetAttemptsRemoved()
         {
-            Dictionary<string,List<string>> dictionary = new Dictionary<string, List<string>>();
+            Dictionary<string,List<int>> dictionary = new Dictionary<string, List<int>>();
             List<string> list = new List<string>();
             var reader = new StreamReader(File.OpenRead(DataDirectory + "outliersRemoved.csv"));
             while (!reader.EndOfStream)
@@ -393,12 +410,12 @@ namespace DataSetGenerator {
 
             for (int i = 1; i <= 53; i++)
             {
-                List<string> removed = new List<string>();
+                List<int> removed = new List<int>();
                 for (int j = 1; j < 72; j++)
                 {
                     if (!list.Contains(i + "," + j))
                     {
-                        removed.Add(j.ToString());
+                        removed.Add(j);
                     }
                 }
                 dictionary.Add(i.ToString(), removed);

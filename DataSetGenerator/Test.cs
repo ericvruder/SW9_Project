@@ -91,6 +91,13 @@ namespace DataSetGenerator {
             }
         }
 
+        public List<Attempt> GetAllAttempts() {
+            List<Attempt> attempts = new List<Attempt>();
+            foreach(var t in DataGenerator.AllTechniques) {
+                attempts.AddRange(Attempts[t]);
+            }
+            return attempts;
+        }
 
 
         private void FixTest() {
