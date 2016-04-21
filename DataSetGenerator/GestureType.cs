@@ -23,7 +23,7 @@ namespace DataSetGenerator {
     }
 
     public enum DataSource {
-        Target, Field, Old
+        Target, Field, Old, Accuracy
     }
 
     public enum SpssFormat

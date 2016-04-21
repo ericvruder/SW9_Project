@@ -26,6 +26,7 @@ namespace DataSetGenerator {
                 case DataSource.Old: directory = ".\\..\\..\\..\\Testlog.SW9/"; break;
                 case DataSource.Field: directory = ".\\..\\..\\..\\FieldTestlog/"; break;
                 case DataSource.Target: directory = ".\\..\\..\\..\\TargetTestlog/"; break;
+                case DataSource.Accuracy: directory = ".\\..\\..\\..\\AccuracyTestlog/"; break;
             }
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);

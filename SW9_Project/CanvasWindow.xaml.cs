@@ -56,7 +56,7 @@ namespace SW9_Project {
 
             targetColor = accuracyTest ? Brushes.White : Brushes.DarkGray;
 
-            source = DataSource.Target;
+            source = accuracyTest? DataSource.Accuracy : DataSource.Target;
 
             sounds.Add("hit", new SoundPlayer("resources/hit.wav"));
             sounds.Add("miss", new SoundPlayer("resources/miss.wav"));

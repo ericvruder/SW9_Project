@@ -11,32 +11,28 @@ namespace DataSetGenerator {
     public class AttemptRepository : DbContext {
         public  static DatabaseSaveStatus SaveStatus { get; set; }
 
-        public static void RemoveTests(DataSource source) {
-            using (var Repository = new AttemptRepository()) {
-                var attempts = Repository.Attempts
-                    .Where(x => x.Source == source);
-                Console.WriteLine("Found " + attempts.Count() + " attempts belonging to " + source + ", removing...");
-                Repository.Attempts.RemoveRange(attempts);
-                Repository.SaveChanges();
-                Console.WriteLine("Done");
-            }
-        }
-
         public AttemptRepository() : base("SW9_Project") { }
         public DbSet<Attempt> Attempts { get; set; }
 
-        public static void UpdateAttempts(Attempt attempt)
+        public static void UpdateAttempt(Attempt attempt)
         {
-            UpdateAttempts(new List<Attempt>() {attempt});
+            UpdateAttempt(new List<Attempt>() {attempt});
         }
 
-        public static void UpdateAttempts(List<Attempt> attempts)
+        public static void UpdateAttempt(List<Attempt> attempts)
         {
             using (var Repository = new AttemptRepository()) {
                 foreach (var attempt in attempts) {
                     Repository.Entry(attempt).State = EntityState.Modified;
                 }
                 Repository.SaveChanges();
+            }
+        }
+
+        public static Attempt GetAttempt(string id, int attemptN, DataSource source) {
+            using(var repo = new AttemptRepository()) {
+                var attempt = repo.Attempts.Where(att => att.ID == id && att.AttemptNumber == attemptN && att.Source == source);
+                return attempt.Single();
             }
         }
 

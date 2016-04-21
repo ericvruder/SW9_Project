@@ -9,7 +9,7 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args) {
 
-            DataGenerator.GenerateSPSSDocument(DataSource.Old, "fuck");
+            var t = AttemptRepository.GetAttempt("24", 59, DataSource.Old);
             //var mylist = AttemptRepository.GetMissedAttempts();
             //Validity.ValidateAttempts();
 
