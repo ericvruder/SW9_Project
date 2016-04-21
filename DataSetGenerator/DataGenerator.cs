@@ -377,9 +377,9 @@ namespace DataSetGenerator {
             }
         }
 
-        public static List<string> GetAttemptsRemoved()
+        public static Dictionary<string,List<string>> GetAttemptsRemoved()
         {
-            List<string> removed = new List<string>();
+            Dictionary<string,List<string>> dictionary = new Dictionary<string, List<string>>();
             List<string> list = new List<string>();
             var reader = new StreamReader(File.OpenRead(DataDirectory + "outliersRemoved.csv"));
             while (!reader.EndOfStream)
@@ -393,16 +393,18 @@ namespace DataSetGenerator {
 
             for (int i = 1; i <= 53; i++)
             {
+                List<string> removed = new List<string>();
                 for (int j = 1; j < 72; j++)
                 {
                     if (!list.Contains(i + "," + j))
                     {
-                        removed.Add(i+","+j);
+                        removed.Add(j.ToString());
                     }
                 }
+                dictionary.Add(i.ToString(), removed);
             }
 
-            return removed;
+            return dictionary;
         }
 
 
