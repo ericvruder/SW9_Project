@@ -82,7 +82,7 @@ namespace DataSetGenerator
                 }
             }
 
-            AttemptRepository.UpdateAttempts(changedAttempts);
+            AttemptRepository.UpdateAttempt(changedAttempts);
 
 
             Console.WriteLine(missedAttempts.Count);
