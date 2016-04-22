@@ -216,7 +216,7 @@ namespace DataSetGenerator {
             SpssNumericVariable vID = new SpssNumericVariable();
             vID.Name = "UserID";
             vID.Label = "The user's ID";
-            vID.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+            vID.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_ORD;
             doc.Variables.Add(vID);
 
             if (format == SpssFormat.Short)
@@ -243,7 +243,7 @@ namespace DataSetGenerator {
                 SpssNumericVariable time = new SpssNumericVariable();
                 time.Name = $"Efficiency";
                 time.Label = $"Time taken in seconds for the attempt";
-                time.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                time.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_ORD;
                 doc.Variables.Add(time);
 
                 SpssNumericVariable hit = new SpssNumericVariable();
@@ -257,7 +257,7 @@ namespace DataSetGenerator {
                 SpssNumericVariable accuracy = new SpssNumericVariable();
                 accuracy.Name = $"Accuracy";
                 accuracy.Label = $"Distance in pixels from target";
-                accuracy.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT;
+                accuracy.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
                 doc.Variables.Add(accuracy);
 
                 SpssNumericVariable gridSize = new SpssNumericVariable();
@@ -289,7 +289,7 @@ namespace DataSetGenerator {
                 SpssNumericVariable attemptNumber = new SpssNumericVariable();
                 attemptNumber.Name = $"AttemptNumber";
                 attemptNumber.Label = $"The continuous number of this attempt";
-                attemptNumber.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_NOM;
+                attemptNumber.MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_ORD;
                 doc.Variables.Add(attemptNumber);
             }
 
