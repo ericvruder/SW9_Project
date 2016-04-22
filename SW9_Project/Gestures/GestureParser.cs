@@ -34,7 +34,7 @@ namespace SW9_Project {
                 KinectGesture t = awaitingGesture;
                 awaitingGesture = null;
                 if(t != null) {
-                    Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: Activating gesture {t.Type} {t.Direction}");
+                    Console.WriteLine($"{DateTime.Now.ToString("h:mm:ss tt")}: Activating gesture {t.Type} {t.Direction}");
                 }
                 return t;
             }
@@ -65,7 +65,7 @@ namespace SW9_Project {
         }
         
         static public void AddMobileGesture(MobileGesture receivedGesture) {
-            Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: MOBILE: {receivedGesture.Type} {receivedGesture.Direction}");
+            Console.WriteLine($"{DateTime.Now.ToString("h:mm:ss tt")}: MOBILE: {receivedGesture.Type} {receivedGesture.Direction}");
             if (paused) return;
             Logger.CurrentLogger.AddNewMobileGesture(receivedGesture);
             if (receivedGesture.Type == typeContext) {
@@ -127,7 +127,7 @@ namespace SW9_Project {
         }
 
         static public void AddKinectGesture(KinectGesture receivedGesture) {
-            Console.WriteLine($"{DateTime.Now.ToString("d", new CultureInfo("da-dk"))}: KINECT: {receivedGesture.Type} {receivedGesture.Direction}");
+            Console.WriteLine($"{DateTime.Now.ToString("h:mm:ss tt")}: KINECT: {receivedGesture.Type} {receivedGesture.Direction}");
             if (paused) return;
             Logger.CurrentLogger.AddNewKinectGesture(receivedGesture, board.GetCell(receivedGesture.Pointer));
             if (typeContext == receivedGesture.Type) {

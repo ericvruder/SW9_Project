@@ -25,6 +25,13 @@ namespace DataSetGenerator {
 
         public Attempt() { }
 
+        public Attempt(bool hit, GridSize size, Point targetCell, Point pointer) {
+            Hit = hit;
+            Size = size;
+            TargetCell = targetCell;
+            Pointer = pointer;
+        }
+
         public Attempt(string id, int attemptNumber, string attemptLine, TimeSpan time, GridSize size, GestureDirection direction, GestureType type, DataSource source) {
             Valid = true;
             Size = size;

@@ -379,20 +379,41 @@ namespace DataSetGenerator {
 
         public static void InvalidateOldTests() {
             var removed = GetAttemptsRemoved();
-            Dictionary<string, List<int>> something = new Dictionary<string, List<int>>();
+            Dictionary<string, List<int>> tests = new Dictionary<string, List<int>>();
 
-            something.Add("1", new List<int>() { 69, 5, 42, 48, 50 });
-            something.Add("2", new List<int>() { 56, 68 });
-            something.Add("4", new List<int>() { 36, 67, 69 });
-            something.Add("5", new List<int>() { 15 });
-            something.Add("8", new List<int>() { 41 });
+            tests.Add("1", new List<int>() { 69, 5, 42, 48, 50 });
+            tests.Add("2", new List<int>() { 56, 68 });
+            tests.Add("4", new List<int>() { 36, 67, 69 });
+            tests.Add("5", new List<int>() { 15 });
+            tests.Add("8", new List<int>() { 41 });
 
-            foreach (var s in something) {
+            foreach (var s in tests) {
                 if (removed.ContainsKey(s.Key)) {
                     removed[s.Key] = removed[s.Key].Union(s.Value).ToList();
                 }
             }
             AttemptRepository.InvalidateAttempts(removed, DataSource.Old);
+        }
+
+        public static void FixAccuracyDocument(string path) {
+            using (StreamReader sr = new StreamReader(path))
+            using (StreamWriter sw = new StreamWriter(path + "-with-accuracy.csv")) {
+                string line = sr.ReadLine();
+                if (line == "") line = sr.ReadLine();
+                sw.WriteLine(line + "; Accuracy");
+                while((line = sr.ReadLine()) != null) {
+                    string[] lines = line.Split(';');
+                    GridSize size = lines[2] == "1" ? GridSize.Large : GridSize.Small;
+                    bool hit = lines[4] == "1";
+                    float x = float.Parse(lines[6]), y = float.Parse(lines[7]);
+                    Point t = new Point(x, y);
+                    x = float.Parse(lines[10]); y = float.Parse(lines[11]);
+                    Point p = new Point(x, y);
+                    var accuracy = MathHelper.DistanceToTargetCell(new Attempt(hit, size, t, p));
+                    line += ";" + accuracy;
+                    sw.WriteLine(line);
+                }
+            }
         }
 
         public static Dictionary<string,List<int>> GetAttemptsRemoved()
