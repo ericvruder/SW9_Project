@@ -1,3 +1,0 @@
-push, pinch 4
-push, throw, 0, 1
-pull, pinch, 1
