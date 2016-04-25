@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DataSetGenerator
 {
@@ -20,6 +21,10 @@ namespace DataSetGenerator
         /// <param name="line">Line to be parsed from file</param>
         public Validity(string id, string line)
         {
+            if(line == String.Empty)
+                return;
+
+            line = Regex.Replace(line, @"\s", "");
             string[] info = line.Split(',');
 
             // direction,type,invalidAttempts,timeErrors
@@ -56,8 +61,10 @@ namespace DataSetGenerator
                 default:
                     throw new Exception("Technique must be either: pinch (or grab), swipe, throw, tilt");
             }
-            _invalidAttempts = Int32.Parse(info[2]);
-            _timeErrors = Int32.Parse(info[3]);
+            if(info.Length > 2)
+                _invalidAttempts = Int32.Parse(info[2]);
+            if(info.Length > 3)
+                _timeErrors = Int32.Parse(info[3]);
 
         }
 
@@ -98,7 +105,7 @@ namespace DataSetGenerator
         {
             List<Validity> results = new List<Validity>();
 
-            string[] files = Directory.GetFiles(DataGenerator.TestFileDirectory(DataSource.Target), "/invalidity/*.invalidity");
+            string[] files = Directory.GetFiles(DataGenerator.TestFileDirectory(DataSource.Target), "invalidity/*.invalidity");
             foreach (var file in files)
             {
                 var filename = Path.GetFileNameWithoutExtension(file);
