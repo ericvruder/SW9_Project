@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using DataSetGenerator;
+using System.Diagnostics;
 
 namespace SW9_Project {
     /// <summary>
@@ -25,7 +26,6 @@ namespace SW9_Project {
             //Somestuff
             AttemptRepository.SaveStatus = DatabaseSaveStatus.Success;
             InitializeComponent();
-
             Task.Factory.StartNew(() => {
                 AllocConsole();
                 Connection.StartService();

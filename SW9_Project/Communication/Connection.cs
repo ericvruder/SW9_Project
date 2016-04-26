@@ -37,6 +37,7 @@ namespace SW9_Project {
                 ManageMobileConnection();
             });
 
+
         }
 
         static byte[] GetBytes(string str) {
