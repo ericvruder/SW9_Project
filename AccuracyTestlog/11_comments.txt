@@ -1,0 +1,32 @@
+push throw
+1 time (taking off jacket)
+no issues after that
+
+push grab
+1 error
+waving his pointing hand to try and get the kinect to register that it's this hand he wants to use.
+when he became more confident and familiar with the technique he was also faster and the kinect didn't change from the pointing hand to the hand holding the phone as much.
+
+push tilt
+a few unintended shape changes during this technique
+
+push swipe
+no issues so far
+sometimes the swipe has to be performed a couple of times before it registers but no issues or errors for the swipe technique
+
+pull swipe
+no issues with the swipe and it looked like it was very precises and center of target aiming.
+
+pull throw
+in the right bottom corner there is a little flickering with the pointer by the system. The target was hit but it becomes harder to aim for the center when the pointer is jumpping around
+When asked about how he's feeling with the arm mentions that it feels a little hard to hold the arm up.
+
+pull tilt
+Focused on trying to get as close to the middle as possible.
+Not many misses
+
+pull grab
+The pointer will move slightly from the center when closing the hand sometimes
+1 error
+1 error (waving hand)
+1 error

@@ -1,0 +1,24 @@
+push tilt
+Some jumps with the pointer initially but he became more precise later
+
+push throw
+No errors during the throw.
+
+push grab
+No real issues once he understood the technique and knew that the hand had to be closed and then open
+
+push swipe
+no issues with the swipe
+
+pull swipe
+Aiming for the center while still trying to be fast (it seems)
+1 error (wrong shape) for one of the last attempts (check video)
+
+pull tilt
+Aiming, which is good. When a corner target appears he doesn't just slide the pointer into the corner, some time is spent on aiming the pointer towards the center before activating the technique.
+
+pull grab
+Sometimes when the aim is perceft center, when the hand is closed it will jump slightly away from the center.
+
+pull throw
+no issues with this one :)
