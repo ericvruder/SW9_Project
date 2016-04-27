@@ -141,7 +141,6 @@
     <Compile Include="DataGenerator.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="DataVisualizer.cs" />
-    <Compile Include="IVideoLogger.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Migrations\201604081101441_InitialCreate.cs" />
     <Compile Include="Migrations\201604081101441_InitialCreate.Designer.cs">
