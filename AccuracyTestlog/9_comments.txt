@@ -1,0 +1,22 @@
+pull grab
+1 error
+1 time because the kinect wouldn't register her hand closing 
+
+pull tilt
+jumping a little for some of the attempts
+
+pull swipe
+good. no issues
+
+pull throw
+On the last practice target the pointer changed from one hand to the other
+All the pull throws were performed witout errors
+
+push grab
+no issues
+
+push swipe
+No issues with the swipe
+
+push tilt
+some jumps but no errors

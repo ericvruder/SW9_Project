@@ -1,0 +1,29 @@
+Pull Grab
+4 invalid
+1 time. the kinect wasn't registering that he was closing his hand
+
+Pull tilt
+Aiming at the center (also in the corners)
+No invalids
+
+Pull swipe
+No invalids
+
+Pull Throw
+Overhand pull
+Little to no movement on the pointing hand when he performed the throw.
+
+Push tilt
+The aim at the center is good but jumps.
+Sometimes not as much as could be the case.
+Sometimes the activation (the registration of the tilt) happens before the jump and therefore the target turns green instead of red.
+
+Push Throw
+Fore one target it didn't want to register his throw, and seems like it frustrated him a bit, and the target was missed.
+
+Push grab
+Changed hands for the last couple of targets
+Otherwise there were just a few problems grabbing the shape from the phone.
+
+Push swipe
+No problems
