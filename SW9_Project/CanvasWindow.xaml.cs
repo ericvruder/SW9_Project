@@ -353,7 +353,7 @@ namespace SW9_Project {
                 pointer = GetPoint(xPoint, yPoint);
             }
             MoveShape(pointerFigure, pointer);
-            //ColorCell(pointer);
+            if(!accuracyTest) ColorCell(pointer);
             KinectGesture gesture = GestureParser.AwaitingGesture;
             if (runningTest && runningGesture) {
                 if (gesture != null) {
