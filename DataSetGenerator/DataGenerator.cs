@@ -68,6 +68,14 @@ namespace DataSetGenerator {
             return new Test(test, source);
         }
 
+        public static void FixExtensionsInvalidity(DataSource source) {
+            string[] files = Directory.GetFiles(TestFileDirectory(source) + "/invalidity", "*txt");
+            foreach (var file in files) {
+                string n = TestFileDirectory(source) + "/invalidity/" + file.Split('\\').Last().Split('.')[0] + ".invalidity";
+                File.Move(file, n);
+            }
+        }
+
         public static void GenerateTestFileFromShorthand(string path) {
             string largeGrid = "Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4";
             string smallGrid = "Changed grid size. Grid height: 10 Grid width: 20 Cell height: 61.4 Cell width: 60.7";
