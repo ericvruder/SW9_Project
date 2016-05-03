@@ -25,9 +25,20 @@ namespace DataSetGenerator {
             return Math.Sqrt(DistanceToSegmentSquared(p, ls, le));
         }
 
+        public static double GetScale(GridSize size) {
+            return size == GridSize.Large ? 122.0f : 61.0f;
+        }
+
+        private static double DistanceToTargetCenter(Attempt attempt) {
+            double scale = GetScale(attempt.Size);
+            Point c = new Point((attempt.TargetCell.X * scale) + (scale * 0.5), (attempt.TargetCell.Y * scale) + (scale * 0.5));
+            return Math.Sqrt(DistanceSquare(c, attempt.Pointer));
+
+        }
+
         public static double DistanceToTargetCell(Attempt attempt) {
             if(attempt.Hit) { return 0; }
-            double scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
+            double scale = GetScale(attempt.Size);
             List<Tuple<Point, Point>> lineSegments = new List<Tuple<Point, Point>>();
             Point t = new Point(attempt.TargetCell.X * scale, attempt.TargetCell.Y * scale);
             Point u = new Point(t.X, t.Y + scale);
@@ -46,7 +57,7 @@ namespace DataSetGenerator {
         }
 
         public static Tuple<double, double> GetXYDistance(Attempt attempt) {
-            double scale = attempt.Size == GridSize.Large ? 122.0f : 61.0f;
+            double scale = GetScale(attempt.Size);
             double x = attempt.TargetCell.X * scale, y = attempt.TargetCell.Y * scale;
             double xDistance = 0, yDistance = 0;
 
