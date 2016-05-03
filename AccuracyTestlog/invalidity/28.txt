@@ -1,0 +1,2 @@
+pull, pinch, 2
+push, pinch, 4
