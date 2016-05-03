@@ -10,7 +10,7 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args)
         {
-            DataGenerator.FixExtensionsInvalidity(DataSource.Accuracy);
+            DataManipulator.ValidateAttempts(DataSource.Accuracy);
         }
     }
 }

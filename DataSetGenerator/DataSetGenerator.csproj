@@ -139,6 +139,7 @@
     <Compile Include="AttemptInfo.cs" />
     <Compile Include="AttemptRepository.cs" />
     <Compile Include="DataGenerator.cs" />
+    <Compile Include="DataManipulator.cs" />
     <Compile Include="GestureType.cs" />
     <Compile Include="DataVisualizer.cs" />
     <Compile Include="MathHelper.cs" />

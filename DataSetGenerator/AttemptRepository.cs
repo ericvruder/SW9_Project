@@ -50,6 +50,12 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void InvalidateAttempts(List<Validity> invalidities) {
+            foreach(var validity in invalidities) {
+                
+            }
+        }
+
         public static void SaveTestsToDatabase(List<Test> tests) {
             
 

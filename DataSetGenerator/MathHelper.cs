@@ -29,7 +29,7 @@ namespace DataSetGenerator {
             return size == GridSize.Large ? 122.0f : 61.0f;
         }
 
-        private static double DistanceToTargetCenter(Attempt attempt) {
+        public static double DistanceToTargetCenter(Attempt attempt) {
             double scale = GetScale(attempt.Size);
             Point c = new Point((attempt.TargetCell.X * scale) + (scale * 0.5), (attempt.TargetCell.Y * scale) + (scale * 0.5));
             return Math.Sqrt(DistanceSquare(c, attempt.Pointer));

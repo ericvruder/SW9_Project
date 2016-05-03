@@ -35,14 +35,6 @@ namespace DataSetGenerator {
             return directory;
         }
 
-        public static bool TargetPracticeComputer() {
-            var mac = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up)
-                .Select(nic => nic.GetPhysicalAddress().ToString())
-                .FirstOrDefault();
-            return TargetPracticeComputers.Contains(mac);
-        }
-
         public static string DataDirectory
         {
             get
@@ -68,13 +60,6 @@ namespace DataSetGenerator {
             return new Test(test, source);
         }
 
-        public static void FixExtensionsInvalidity(DataSource source) {
-            string[] files = Directory.GetFiles(TestFileDirectory(source) + "/invalidity", "*txt");
-            foreach (var file in files) {
-                string n = TestFileDirectory(source) + "/invalidity/" + file.Split('\\').Last().Split('.')[0] + ".invalidity";
-                File.Move(file, n);
-            }
-        }
 
         public static void GenerateTestFileFromShorthand(string path) {
             string largeGrid = "Changed grid size. Grid height: 5 Grid width: 10 Cell height: 122.8 Cell width: 121.4";
@@ -141,31 +126,6 @@ namespace DataSetGenerator {
                 wr.WriteHeader(typeof(Attempt));
                 
                 wr.WriteRecords(attempts);
-            }
-        }
-
-
-        public static void VerifyTests(DataSource source)
-        {
-            List<Test> tests = GetTests(source);
-            foreach (var test in tests)
-            {
-                foreach (var gesture in AllTechniques)
-                {
-                    foreach(var attempt in test.Attempts[gesture]) {
-                        if(attempt.Pointer.X > 1920 || attempt.Pointer.X < 0 || attempt.Pointer.Y > 1080 || attempt.Pointer.Y < 0) {
-                            Console.WriteLine(attempt.Pointer);
-                        }
-                    }
-                    var listLarge = from attempt in test.Attempts[gesture]
-                                    where attempt.Size == GridSize.Large
-                                    select attempt;
-                    var listSmall = from attempt in test.Attempts[gesture]
-                                    where attempt.Size == GridSize.Small
-                                    select attempt;
-                    if(listSmall.Count() != listLarge.Count())
-                        Console.WriteLine("Test ID: " + test.ID + " FAILED on" + gesture + " " +listSmall.Count() + " "+  listLarge.Count());
-                }
             }
         }
 
@@ -362,96 +322,6 @@ namespace DataSetGenerator {
             gestureAttempt[$"AttemptNumber"] = attempt.AttemptNumber;
 
             return gestureAttempt;
-        }
-
-        public static void ReadSpssFile()
-        {
-
-
-            using (var doc = SpssDataDocument.Open("t.sav", SpssFileAccess.Append))
-            {
-                SpssNumericVariable accuracy = new SpssNumericVariable
-                {
-                    Name = $"Accuracy",
-                    Label = $"Distance in pixels from target",
-                    MeasurementLevel = MeasurementLevelCode.SPSS_MLVL_RAT
-                };
-                doc.Variables.Add(accuracy);
-
-                SpssStringVariable var = (SpssStringVariable)doc.Variables["someLabel"];
-
-                SpssCase row = doc.Cases.New();
-                row[$"Accuracy"] = new string('a', var.Length + 1);
-            }
-        }
-
-        public static void InvalidateOldTests() {
-            var removed = GetAttemptsRemoved();
-            Dictionary<string, List<int>> tests = new Dictionary<string, List<int>>();
-
-            tests.Add("1", new List<int>() { 69, 5, 42, 48, 50 });
-            tests.Add("2", new List<int>() { 56, 68 });
-            tests.Add("4", new List<int>() { 36, 67, 69 });
-            tests.Add("5", new List<int>() { 15 });
-            tests.Add("8", new List<int>() { 41 });
-
-            foreach (var s in tests) {
-                if (removed.ContainsKey(s.Key)) {
-                    removed[s.Key] = removed[s.Key].Union(s.Value).ToList();
-                }
-            }
-            AttemptRepository.InvalidateAttempts(removed, DataSource.Old);
-        }
-
-        public static void FixAccuracyDocument(string path) {
-            using (StreamReader sr = new StreamReader(path))
-            using (StreamWriter sw = new StreamWriter(path + "-with-accuracy.csv")) {
-                string line = sr.ReadLine();
-                if (line == "") line = sr.ReadLine();
-                sw.WriteLine(line + "; Accuracy");
-                while((line = sr.ReadLine()) != null) {
-                    string[] lines = line.Split(';');
-                    GridSize size = lines[2] == "1" ? GridSize.Large : GridSize.Small;
-                    bool hit = lines[4] == "1";
-                    float x = float.Parse(lines[6]), y = float.Parse(lines[7]);
-                    Point t = new Point(x, y);
-                    x = float.Parse(lines[10]); y = float.Parse(lines[11]);
-                    Point p = new Point(x, y);
-                    var accuracy = MathHelper.DistanceToTargetCell(new Attempt(hit, size, t, p));
-                    line += ";" + accuracy;
-                    sw.WriteLine(line);
-                }
-            }
-        }
-
-        public static Dictionary<string,List<int>> GetAttemptsRemoved()
-        {
-            Dictionary<string,List<int>> dictionary = new Dictionary<string, List<int>>();
-            List<string> list = new List<string>();
-            var reader = new StreamReader(File.OpenRead(DataDirectory + "outliersRemoved.csv"));
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine();
-                var values = line.Split(',');
-
-                list.Add(values[0] + "," + values[1]);
-                
-            }
-
-            for (int i = 1; i <= 53; i++)
-            {
-                List<int> removed = new List<int>();
-                for (int j = 1; j < 72; j++)
-                {
-                    if (!list.Contains(i + "," + j))
-                    {
-                        removed.Add(j);
-                    }
-                }
-                dictionary.Add(i.ToString(), removed);
-            }
-
-            return dictionary;
         }
 
 
