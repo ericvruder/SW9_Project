@@ -1,0 +1,33 @@
+pull throw
+some jitter in the bottom right corner but noting that made her miss the target
+otherwise, looked like a pretty good run at the pull throw
+
+pull tilt
+some jitter
+pointer jumps 
+the tilt is done correctly and the pointer is centered 
+
+pull grab
+locks in the practice
+The technique is explained to her and now she understands the technique
+the first couple of tries were performed the "easy way"
+1 error
+going more for speed than accuracy at the end there
+
+pull swipe
+just seeing some jitter with the pointer
+
+push tilt
+Approx. half way through she's doing a pull (sometimes)
+
+push throw
+underhand throw 
+she's using a clearly detectable motion for the kinect. Swinging her arm backwards and then forward
+
+push grab
+The first two practice targets her hand was pinching with this pinch hand position that looks like an OK hand sign
+jitter
+Looks like it was the wrong shape
+
+push swipe
+Her initial aim for some targets is good but what happens is that her focus on the phone, and swiping the shape, makes the pointer move slightly. Still hitting the target but not compleatly on center.

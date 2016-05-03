@@ -1,0 +1,9 @@
+[15:13:55]: used two hands during push tilt to try and stabalize the phone a bit better
+[15:14:30]: 
+[15:14:33]: palm ended up changing shape selection on the phone
+[15:19:23]: had a problem with the phone showing a shape was selected when it was not during pinch pull
+[15:26:52]: learned the tilt pull rather quickly how to perform it in a stable way
+[15:29:07]: wrong shape for one of the pull throw motions
+[15:31:27]: pinch pull started
+[15:31:57]: used two hands for the pinch pull motion
+[15:32:37]: hand closed when aiming at target, only opened when she was ready to select

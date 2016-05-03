@@ -1,0 +1,5 @@
+push,throw,3
+push,pinch,1
+pull,pinch,1
+pull,tilt,1
+pull,throw,1

@@ -1,0 +1,25 @@
+[14:01:21]: push throw
+[14:03:21]: One wrong shape
+[14:03:32]: Other than that, good throw 
+[14:04:00]: underhand throws
+[14:04:10]: push tilt starting
+[14:05:15]: 
+[14:05:49]: more luck than skill with the tilt when it hits the center of the target :D
+[14:06:18]: push grab starting
+[14:08:11]: sometimes jumps a little when he opens his hand. 
+[14:08:29]: The technique was performed correctly
+[14:08:50]: push swipe starting
+[14:10:24]: no issues with the push swipe
+[14:10:31]: pull swipe starting
+[14:12:16]: no issues with the pull swipe
+[14:12:30]: pull tilt starting
+[14:14:18]: The pointer jumps around when the tilt is made
+[14:14:50]: pull throw start
+[14:16:04]: Aiming for the center of the target while also trying to be fast
+[14:16:41]: pull grab starting
+[14:17:05]: Understood the technique and what he had to do from the start
+[14:17:23]: 1 error 
+[14:17:30]: 1 error
+[14:17:43]: hand closing makes the pointer move almost one small cell
+[14:18:50]: good grab
+[14:18:54]: and done

@@ -1,0 +1,21 @@
+[11:35:00]: pull tilt start
+[11:35:56]: 1 inavalid
+[11:36:41]: pull throw start
+[11:38:46]: pull grab
+[11:39:29]: pull grab starts
+[11:40:26]: Closing his hand but doesn't register
+[11:41:09]: 1 error
+[11:42:12]: there was one time issue due to the kinect not registering a closed hand in the bottom right corner of the screen
+[11:42:44]: 1 time invalid for the pull grab
+[11:42:57]: pull swipe starting
+[11:44:08]: no problems for the swipe
+[11:44:16]: push tilt start
+[11:46:46]: very precises tilt test. He aimed for the center - even if the target was in a corner or along the edge of the screen
+[11:47:32]: push swipe
+[11:48:42]: no issues with the swipe push
+[11:48:50]: push throw starting
+[11:50:28]: Underhand throw
+[11:50:43]: No issues or problems with the throw push
+[11:51:02]: Last technique is hrab
+[11:51:10]: push grab starting
+[11:53:11]: no issues with the pus hgrab. Precise and good aim for the center

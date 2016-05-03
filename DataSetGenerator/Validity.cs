@@ -8,11 +8,11 @@ namespace DataSetGenerator
 {
     public class Validity
     {
-        private int _participantID;
-        private GestureDirection _direction;
-        private GestureType _type;
-        private int _invalidAttempts;
-        private int _timeErrors;
+        public int _participantID;
+        public GestureDirection _direction;
+        public GestureType _type;
+        public int _invalidAttempts;
+        public int _timeErrors;
 
         /// <summary>
         /// 
