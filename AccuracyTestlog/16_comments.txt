@@ -1,0 +1,2 @@
+[10:06:31]: participant was asked to take a step back during pinch pull because system was not capable of reading his hand gestures
+[10:08:13]: one misreading duing pinch pull

@@ -1,0 +1,22 @@
+[12:32:14]: push tilt start
+[12:34:56]: He had some trouble with the tilt in the beginning
+[12:35:13]: But when he found out that he should keep trying to do the tilt it was ok
+[12:36:07]: push grab starting
+[12:37:44]: 1 time
+[12:38:06]: he is doing a pinch (almost a pointing pinch) and it seems to work alright for him for the most part
+[12:38:58]: 1 time
+[12:39:02]: 1 error
+[12:39:12]: 1 error
+[12:39:51]: push swipe
+[12:41:06]: he is doing very good aiming at the center, not trying to be fast and get it done as quick as he can. Accuracy before speed
+[12:42:09]: push throw start
+[12:45:41]: pull tilt start
+[12:47:26]: no problems with errors
+[12:47:42]: some pointer jumping
+[12:47:54]: pull swipe start
+[12:49:49]: pull throw starting
+[12:51:27]: 1 error
+[12:52:11]: pull grab starting
+[12:53:21]: touching the phone with a closed hand. Using his thumb to touch the screen while the hand is closed
+[12:54:06]: All through the test he has been very precise and focused on getting the pointer as close to the center as possible
+[12:55:09]: finished

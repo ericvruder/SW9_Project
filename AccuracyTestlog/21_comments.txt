@@ -1,0 +1,24 @@
+[13:33:59]: I was not here for the first technique, sorry.
+[13:34:15]: pull throw starting now
+[13:35:29]: 1 time
+[13:35:33]: I doesn't register her throw pull
+[13:35:52]: 1 time, again the same
+[13:36:01]: 
+[13:37:21]: pull swipe
+[13:37:45]: 
+[13:40:15]: pull grab
+[13:41:42]: 1 error shape wrong
+[13:41:57]: 1 error lock
+[13:42:19]: 1 error lock
+[13:42:38]: Good aim for the grab and the technique was performed as described. Only a few error locks by the system
+[13:43:33]: push swipe start
+[13:45:39]: no problems with the swipe
+[13:45:50]: push throw starting
+[13:48:33]: aiming at the center and no problems performing the technique
+[13:48:56]: push tilt starting
+[13:50:44]: no real problems with the tilt. The normal small pointer jumps now and again, but not much
+[13:51:15]: push grab starting
+[13:51:47]: 
+[13:52:47]: 1 time
+[13:52:54]: much jitter because hand was close to her body.
+[13:53:32]: aiming at the center

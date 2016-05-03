@@ -20,7 +20,7 @@ namespace ManualLogger
 
         public MainWindow()
         {
-            directory = DataGenerator.TestFileDirectory(DataSource.Target);
+            directory = DataGenerator.TestFileDirectory(DataSource.Accuracy);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
