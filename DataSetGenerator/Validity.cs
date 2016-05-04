@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace DataSetGenerator
-{
+namespace DataSetGenerator {
+
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class Validity
     {
         public int ParticipantID { get; set; }
@@ -13,6 +15,7 @@ namespace DataSetGenerator
         public GestureType Type { get; set; }
         public int InvalidAttempts { get; set; }
         public int TimeErrors { get; set; }
+        private string DebuggerDisplay { get { return $"ID = {ParticipantID} Direction = {Direction} Type = {Type} Number of invalid attempts = {InvalidAttempts }"; } }
 
         /// <summary>
         /// 

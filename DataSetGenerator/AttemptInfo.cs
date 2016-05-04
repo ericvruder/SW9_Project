@@ -29,7 +29,7 @@ namespace DataSetGenerator {
                     foreach (var attempt in attempts) {
                         HitPercentage[technique][count] += attempt.Hit ? 1 : 0;
                         TimeTaken[technique][count] += attempt.Time.TotalSeconds;
-                        Accuracy[technique][count] += MathHelper.DistanceToTargetCell(attempt);
+                        Accuracy[technique][count] += MathHelper.GetDistance(attempt);
                         count++;
                     }
                 }

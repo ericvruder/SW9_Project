@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 namespace DataSetGenerator {
     public static class MathHelper {
 
+        public static double GetDistance(Attempt attempt) {
+            return attempt.Source == DataSource.Accuracy ? DistanceToTargetCenter(attempt) : DistanceToTargetCell(attempt);
+        }
+
         private static double DistanceSquare(Point v, Point w) {
             return Math.Pow(v.X - w.X, 2) + Math.Pow(v.Y - w.Y, 2);
         }
@@ -29,14 +33,14 @@ namespace DataSetGenerator {
             return size == GridSize.Large ? 122.0f : 61.0f;
         }
 
-        public static double DistanceToTargetCenter(Attempt attempt) {
+        private static double DistanceToTargetCenter(Attempt attempt) {
             double scale = GetScale(attempt.Size);
             Point c = new Point((attempt.TargetCell.X * scale) + (scale * 0.5), (attempt.TargetCell.Y * scale) + (scale * 0.5));
             return Math.Sqrt(DistanceSquare(c, attempt.Pointer));
 
         }
 
-        public static double DistanceToTargetCell(Attempt attempt) {
+        private static double DistanceToTargetCell(Attempt attempt) {
             if(attempt.Hit) { return 0; }
             double scale = GetScale(attempt.Size);
             List<Tuple<Point, Point>> lineSegments = new List<Tuple<Point, Point>>();

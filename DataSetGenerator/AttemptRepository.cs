@@ -19,7 +19,7 @@ namespace DataSetGenerator {
             UpdateAttempt(new List<Attempt>() {attempt});
         }
 
-        public static void UpdateAttempt(List<Attempt> attempts)
+        public static void UpdateAttempt(IEnumerable<Attempt> attempts)
         {
             using (var Repository = new AttemptRepository()) {
                 foreach (var attempt in attempts) {
@@ -106,7 +106,7 @@ namespace DataSetGenerator {
                 attempts = Repository.Attempts
                     .Where(x => !x.Hit && x.Source == source && (x.Valid == valid || x.Valid == true))
                     .ToList()
-                    .OrderByDescending(MathHelper.DistanceToTargetCell)
+                    .OrderByDescending(MathHelper.GetDistance)
                     .ToList();
             }
             return attempts;

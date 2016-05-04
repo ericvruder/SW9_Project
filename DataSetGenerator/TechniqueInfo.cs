@@ -16,11 +16,11 @@ namespace DataSetGenerator {
 
             HPM = (float)attempts.Sum(attemtp => attemtp.Hit ? 1 : 0) / (float)attempts.Count;
             TTM = (float)attempts.Sum(attempt => attempt.Time.TotalSeconds) / (float)attempts.Count;
-            ACCM = (float)attempts.Sum(attempt => MathHelper.DistanceToTargetCell(attempt)) / (float)attempts.Count;
+            ACCM = (float)attempts.Sum(attempt => MathHelper.GetDistance(attempt)) / (float)attempts.Count;
 
             HPSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow((attempt.Hit ? 1 : 0) - HPM, 2)) / attempts.Count);
             TTSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(attempt.Time.TotalSeconds - TTM, 2)) / attempts.Count);
-            ACCSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(MathHelper.DistanceToTargetCell(attempt) - ACCM, 2)) / attempts.Count);
+            ACCSTD = (float)Math.Sqrt(attempts.Sum(attempt => Math.Pow(MathHelper.GetDistance(attempt) - ACCM, 2)) / attempts.Count);
 
         }
 

@@ -38,7 +38,6 @@ namespace WebDataParser.Controllers {
         public ActionResult GetData(string data ="", DataSource source= DataSource.Old) {
             string fileName = $"{source}data", filePath = "";
             switch (data) {
-                case "spss": default: filePath = DataGenerator.GenerateSPSSDocument(source, Path.GetTempPath()); fileName += ".sav"; break;
                 //case "csv": fileName = DataGenerator.GenerateCSVDocument(source, Path.GetTempPath()); fileName += ".csv";  break;
             }
             

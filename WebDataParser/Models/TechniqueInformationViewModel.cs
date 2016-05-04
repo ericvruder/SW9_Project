@@ -82,10 +82,10 @@ namespace WebDataParser.Models {
 
                 float tNum = (float)technique + 1;
 
-                float tMean = (float)techAttempts.Sum(attempt => MathHelper.DistanceToTargetCell(attempt)) / techAttempts.Count();
+                float tMean = (float)techAttempts.Sum(attempt => MathHelper.GetDistance(attempt)) / techAttempts.Count();
                 if (float.IsNaN(tMean)) tMean = 0;
 
-                float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow(MathHelper.DistanceToTargetCell(attempt) - tMean, 2)) / techAttempts.Count());
+                float tStd = (float)Math.Sqrt(techAttempts.Sum(attempt => Math.Pow(MathHelper.GetDistance(attempt) - tMean, 2)) / techAttempts.Count());
                 if (float.IsNaN(tStd)) tStd = 0;
 
                 accuracyInfo[(int)technique] = new float[] { tNum, tMean, tStd };

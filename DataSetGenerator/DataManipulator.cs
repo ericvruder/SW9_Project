@@ -60,7 +60,7 @@ namespace DataSetGenerator {
                     Point t = new Point(x, y);
                     x = float.Parse(lines[10]); y = float.Parse(lines[11]);
                     Point p = new Point(x, y);
-                    var accuracy = MathHelper.DistanceToTargetCell(new Attempt(hit, size, t, p));
+                    var accuracy = MathHelper.GetDistance(new Attempt(hit, size, t, p));
                     line += ";" + accuracy;
                     sw.WriteLine(line);
                 }
@@ -135,13 +135,12 @@ namespace DataSetGenerator {
 
             //Get all miss attempts
             var missedAttempts = AttemptRepository.GetMissedAttempts(source);
-            Console.WriteLine(missedAttempts.Count);
 
             var changedAttempts = new List<Attempt>();
             foreach (var validity in validities) {
                 var tattempt = missedAttempts.Where(x => x.ID == validity.ParticipantID.ToString() && x.Type == validity.Type && x.Direction == validity.Direction).ToList();
-                tattempt.OrderByDescending(x => MathHelper.DistanceToTargetCenter(x));
-                var nAttempts = tattempt.Select(x => MathHelper.DistanceToTargetCenter(x));
+                tattempt.OrderByDescending(x => MathHelper.GetDistance(x));
+                var nAttempts = tattempt.Select(x => MathHelper.GetDistance(x));
                 for (int i = 0; i < validity.InvalidAttempts; i++) {
                     tattempt[i].Valid = false;
                     changedAttempts.Add(tattempt[i]);
@@ -150,10 +149,74 @@ namespace DataSetGenerator {
 
             AttemptRepository.UpdateAttempt(changedAttempts);
 
-
-            Console.WriteLine(missedAttempts.Count);
-
             //Apply false to valid property in attempt class on database for for furthest attempts 
+        }
+
+        public static void InvalidateTechniqueAttempts(DataSource source, int userId, GestureType type, GestureDirection direction) {
+            var attempts = AttemptRepository.GetAttempts(source, false);
+            var modified = from attempt in attempts
+                           where    attempt.ID == userId.ToString() &&
+                                    attempt.Type == type &&
+                                    attempt.Direction == direction &&
+                                    attempt.Source == source
+                           select attempt;
+
+
+            foreach(var attempt in modified) {
+                attempt.Valid = false;
+            }
+            AttemptRepository.UpdateAttempt(modified);
+
+        }
+
+        public static void InvalidateAttempts(DataSource source) {
+
+            if (source == DataSource.Target) {
+                var attempts = AttemptRepository.GetAttempts(source, false);
+                var modified = attempts.Where(x => x.Time >= TimeSpan.FromSeconds(18) && x.Source == source).ToList();
+                var invalids = GetInvalidAttempts(source);
+
+                foreach (var inv in invalids) {
+                    var attempt = attempts.Where(x => x.ID == inv.Item1.ToString() && x.AttemptNumber == inv.Item2 && x.Source == source).Single();
+                    if (!modified.Contains(attempt)) modified.Add(attempt);
+                }
+
+                foreach (var attempt in modified) {
+                    attempt.Valid = false;
+                }
+
+                AttemptRepository.UpdateAttempt(modified);
+            }
+
+            else {
+
+                var attempts = AttemptRepository.GetAttempts(source, false);
+                var modified = attempts.Where(x => x.Time >= TimeSpan.FromSeconds(23) && x.Source == source).ToList();
+
+                foreach (var attempt in modified) {
+                    attempt.Valid = false;
+                }
+
+                AttemptRepository.UpdateAttempt(modified);
+            }
+
+        }
+
+
+        public static List<Tuple<int, int>> GetInvalidAttempts(DataSource source) {
+            List<Tuple<int, int>> invalids = null;
+            if (source == DataSource.Target) {
+                invalids = new List<Tuple<int, int>> {
+                    new Tuple<int, int>(41,61),
+                    new Tuple<int, int>(28, 133),
+                    new Tuple<int, int>(22,123),
+                    new Tuple<int, int>(19,66),
+                    new Tuple<int, int>(19,62),
+                    new Tuple<int, int>(16,108)
+                };
+            }
+
+            return invalids;
         }
 
     }
