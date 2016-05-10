@@ -89,6 +89,21 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void GetInvalidCounts(DataSource source) {
+            var attempts = AttemptRepository.GetAttempts(source, false);
+            Console.WriteLine($"Information for {source} experiment\n");
+            foreach(var direction in AllDirections) {
+                foreach (var technique in AllTechniques) {
+                    var all = attempts.Where(x => x.Type == technique && x.Direction == direction);
+                    var invalid = attempts.Where(x => x.Type == technique && x.Direction == direction && x.Valid == false);
+                    Console.WriteLine($"{technique},{direction} : \t All: {all.Count()} \t Invalid: {invalid.Count()}");
+                }
+
+            }
+            Console.WriteLine("\n");
+
+        }
+
         private static string GetLine(string[] words, GridSize size) {
 
             //29:51 hit 2,4

@@ -10,8 +10,9 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args)
         {
-            DataGenerator.GenerateSPSSDocument(DataSource.Target);
-            DataGenerator.GenerateSPSSDocument(DataSource.Accuracy);
+            DataGenerator.GetInvalidCounts(DataSource.Target);
+            DataGenerator.GetInvalidCounts(DataSource.Accuracy);
+            Console.Read();
 
         }
     }
