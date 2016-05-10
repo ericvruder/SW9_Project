@@ -129,7 +129,6 @@ AutoTest.Net/
 /InfoPages/*
 !/InfoPages/template*.html
 !/InfoPages/flot/
-/Data
 
 
 # DocProject is a documentation generator add-in

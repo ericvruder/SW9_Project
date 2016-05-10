@@ -494,11 +494,11 @@ namespace SW9_Project {
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
 
             if (e.Key == System.Windows.Input.Key.Space) {
-                Background = Brushes.Black;
+                Background = Brushes.Black;/*
                 if (connection == null || !connection.Connected) {
                     connectedLabel.BeginAnimation(Canvas.OpacityProperty, CreateAnimation(5, 1, 0));
                     return;
-                }
+                }*/
                 if (currentTest == null) {
                     currentTest = new TestSuite(this, source);
                     kinectManager.Recalibrate();
@@ -516,6 +516,10 @@ namespace SW9_Project {
                     currentTest.StartTest(GestureDirection.Pull);
                 }
             } 
+
+            else if(e.Key == System.Windows.Input.Key.I) {
+                PointAt(0, 0);
+            }
             
             else if (e.Key == System.Windows.Input.Key.Q) {
                 StartDebugTest(GestureType.Swipe);
