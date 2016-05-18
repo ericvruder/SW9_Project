@@ -28,6 +28,20 @@ namespace DataSetGenerator {
                 Repository.SaveChanges();
             }
         }
+        public static void RemoveTests(DataSource source)
+        {
+            using (var Repository = new AttemptRepository())
+            {
+                lock (Repository)
+                {
+                    var attempts = Repository.Attempts
+                        .Where(x => x.Source == source);
+
+                    Repository.Attempts.RemoveRange(attempts);
+                    Repository.SaveChanges();
+                }
+            }
+        }
 
         public static Attempt GetAttempt(string id, int attemptN, DataSource source) {
             using(var repo = new AttemptRepository()) {

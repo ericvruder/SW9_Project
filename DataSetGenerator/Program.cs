@@ -10,10 +10,16 @@ namespace DataSetGenerator {
     class Program {
         static void Main(string[] args)
         {
-            DataGenerator.GetInvalidCounts(DataSource.Target);
-            DataGenerator.GetInvalidCounts(DataSource.Accuracy);
-            Console.Read();
+            DataSource ds = DataSource.Field;
+            AttemptRepository.RemoveTests(ds);
 
+            List<Test> tests = new List<Test>();
+
+            for (int i = 1; i < 25; i++)
+            {
+                tests.Add(new Test(i,ds));
+            }
+            AttemptRepository.SaveTestsToDatabase(tests);
         }
     }
 }
