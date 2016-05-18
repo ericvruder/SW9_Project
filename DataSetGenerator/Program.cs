@@ -20,7 +20,7 @@ namespace DataSetGenerator {
             //    tests.Add(new Test(i,ds));
             //}
             //AttemptRepository.SaveTestsToDatabase(tests);
-            Test test = new Test(25, ds);
+            Test test = new Test(26, ds);
             AttemptRepository.SaveTestToDatabase(test);
 
             while (AttemptRepository.SaveStatus == DatabaseSaveStatus.Saving)
