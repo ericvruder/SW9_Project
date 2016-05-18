@@ -11,15 +11,25 @@ namespace DataSetGenerator {
         static void Main(string[] args)
         {
             DataSource ds = DataSource.Field;
-            AttemptRepository.RemoveTests(ds);
+            //AttemptRepository.RemoveTests(ds);
 
-            List<Test> tests = new List<Test>();
+            //List<Test> tests = new List<Test>();
 
-            for (int i = 1; i < 25; i++)
+            //for (int i = 1; i < 25; i++)
+            //{
+            //    tests.Add(new Test(i,ds));
+            //}
+            //AttemptRepository.SaveTestsToDatabase(tests);
+            Test test = new Test(25, ds);
+            AttemptRepository.SaveTestToDatabase(test);
+
+            while (AttemptRepository.SaveStatus == DatabaseSaveStatus.Saving)
             {
-                tests.Add(new Test(i,ds));
+
             }
-            AttemptRepository.SaveTestsToDatabase(tests);
+
+            Console.WriteLine("save status = " + AttemptRepository.SaveStatus);
+            Console.Read();
         }
     }
 }
