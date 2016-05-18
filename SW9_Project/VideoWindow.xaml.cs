@@ -66,8 +66,8 @@ namespace SW9_Project {
         private void MoveScreen(bool primaryScreen) {
 
             if (Screen.AllScreens.Length > 1) {
-                int secScreen = Screen.AllScreens.Length == 2 ? 0 : 2;
-                int mainScreen = Screen.AllScreens.Length == 2 ? 1 : 0;
+                int secScreen = Screen.AllScreens.Length == 2 ? 1 : 2;
+                int mainScreen = Screen.AllScreens.Length == 2 ? 0 : 0;
                 Screen s = primaryScreen ? Screen.AllScreens[mainScreen] : Screen.AllScreens[secScreen];
                 System.Drawing.Rectangle r = s.Bounds;
                 Topmost = true;
