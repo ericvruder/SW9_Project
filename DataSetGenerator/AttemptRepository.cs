@@ -98,9 +98,19 @@ namespace DataSetGenerator {
 
         public static List<Attempt> GetAttempts(DataSource source, bool valid = true) {
             List<Attempt> attempts = null;
-            using (var Repository = new AttemptRepository()) {
-                attempts = Repository.Attempts
-                .Where(x => x.Source == source && (x.Valid == valid || x.Valid == true)).ToList();
+            try
+            {
+                using (var Repository = new AttemptRepository())
+                {
+                    attempts = Repository.Attempts
+                    .Where(x => x.Source == source && (x.Valid == valid || x.Valid == true)).ToList();
+                }
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("SQL ERROR");
+                return null;
             }
             return attempts;
         }

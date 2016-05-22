@@ -113,20 +113,38 @@ namespace DataSetGenerator {
 
         public void makeHitbox()
         {
+            Console.WriteLine("fetching data for hitboxes");
             string fileName = $"{ds}data";
             var attempts = AttemptRepository.GetAttempts(ds);
+            if (attempts == null)
+            {
+                return;
+            }
             var pinch = attempts.Where(x => x.Type == GestureType.Pinch).ToList();
             var tilt = attempts.Where(x => x.Type == GestureType.Tilt).ToList();
             var _throw = attempts.Where(x => x.Type == GestureType.Throw).ToList();
             var swipe = attempts.Where(x => x.Type == GestureType.Swipe).ToList();
+
+            Console.WriteLine("Making hitboxes");
+            Console.WriteLine("pinch");
             DataVisualizer.DrawHitBox(pinch, fileName + "/pinch.png");
+            Console.WriteLine("tilt");
             DataVisualizer.DrawHitBox(tilt, fileName + "/tilt.png");
+            Console.WriteLine("throw");
             DataVisualizer.DrawHitBox(_throw, fileName + "/throw.png");
+            Console.WriteLine("swipe");
             DataVisualizer.DrawHitBox(swipe, fileName + "/swipe.png");
+            Console.WriteLine("Making heatmaps");
+            Console.WriteLine("pinch");
             DataVisualizer.DrawHeatMap(pinch, GridSize.Large, fileName + "/heatmap/pinch.png");
+            Console.WriteLine("tilt");
             DataVisualizer.DrawHeatMap(tilt, GridSize.Large, fileName + "/heatmap/tilt.png");
+            Console.WriteLine("throw");
             DataVisualizer.DrawHeatMap(_throw, GridSize.Large, fileName + "/heatmap/throw.png");
+            Console.WriteLine("swipe");
             DataVisualizer.DrawHeatMap(swipe, GridSize.Large, fileName + "/heatmap/swipe.png");
+            Console.WriteLine("Done");
+            Console.WriteLine("");
         }
 
         private string ss;
@@ -199,7 +217,7 @@ namespace DataSetGenerator {
                         break;
                     case "2": s.remTests(s);
                         break;
-                    case "3":
+                    case "3": s.makeHitbox();
                         break;
                     case "4":
                         break;
