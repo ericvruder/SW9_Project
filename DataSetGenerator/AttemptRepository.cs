@@ -43,6 +43,24 @@ namespace DataSetGenerator {
             }
         }
 
+        public static void RemoveTests(DataSource source, int from , int to)
+        {
+            using (var Repository = new AttemptRepository())
+            {
+                lock (Repository)
+                {
+                    for (int i = from; i <= to; i++)
+                    {
+                        var attempts = Repository.Attempts
+                            .Where(x => x.Source == source && x.ID == i.ToString());
+
+                        Repository.Attempts.RemoveRange(attempts);
+                        Repository.SaveChanges();
+                    }
+                }
+            }
+        }
+
         public static Attempt GetAttempt(string id, int attemptN, DataSource source) {
             using(var repo = new AttemptRepository()) {
                 var attempt = repo.Attempts.Where(att => att.ID == id && att.AttemptNumber == attemptN && att.Source == source);

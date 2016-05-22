@@ -9,7 +9,7 @@ using System.Drawing.Imaging;
 
 namespace DataSetGenerator {
     public class DataVisualizer {
-        private static void DrawHitBox(List<Attempt> attempts, string fileName) {
+        public static void DrawHitBox(List<Attempt> attempts, string fileName) {
             Bitmap hitbox = DrawHitBox(attempts);
             hitbox.Save(DataGenerator.DataDirectory + fileName);
             hitbox.Dispose();
