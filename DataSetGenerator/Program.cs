@@ -39,6 +39,7 @@ namespace DataSetGenerator {
                             {
                                 Console.WriteLine("Proceeding wiil add items " + choice + " to " + tchoice + "both including, on repo: " + s.sds);
                                 Console.WriteLine("Do you want to continue? (y) / (n)");
+                                s.s = Console.ReadLine();
                                 switch (s.s)
                                 {
                                     case "y":
@@ -92,6 +93,7 @@ namespace DataSetGenerator {
                             {
                                 Console.WriteLine("Proceeding wiil delete items " + choice + " to " + tchoice + "both including, on repo: " + s.sds);
                                 Console.WriteLine("Do you want to continue? (y) / (n)");
+                                s.s = Console.ReadLine();
                                 switch (s.s)
                                 {
                                     case "y":
@@ -143,6 +145,8 @@ namespace DataSetGenerator {
             DataVisualizer.DrawHeatMap(_throw, GridSize.Large, fileName + "/heatmap/throw.png");
             Console.WriteLine("swipe");
             DataVisualizer.DrawHeatMap(swipe, GridSize.Large, fileName + "/heatmap/swipe.png");
+            Console.WriteLine("all");
+            DataVisualizer.DrawHeatMap(attempts, GridSize.Large, fileName + "/heatmap/all.png");
             Console.WriteLine("Done");
             Console.WriteLine("");
         }

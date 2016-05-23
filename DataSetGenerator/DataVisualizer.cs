@@ -11,7 +11,18 @@ namespace DataSetGenerator {
     public class DataVisualizer {
         public static void DrawHitBox(List<Attempt> attempts, string fileName) {
             Bitmap hitbox = DrawHitBox(attempts);
-            hitbox.Save(DataGenerator.DataDirectory + fileName);
+            using (MemoryStream memory = new MemoryStream())
+            {
+                using (FileStream fs = new FileStream(DataGenerator.DataDirectory + fileName, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    hitbox.Save(memory, ImageFormat.Jpeg);
+                    byte[] bytes = memory.ToArray();
+                    fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+
+            
+            //hitbox.Save(DataGenerator.DataDirectory + fileName);
             hitbox.Dispose();
         }
 
@@ -72,7 +83,16 @@ namespace DataSetGenerator {
 
         public static void DrawHeatMap(List<Attempt> attempts, GridSize size, string filename) {
             Bitmap heatMap = HeatMap(attempts, size);
-            heatMap.Save(DataGenerator.DataDirectory + filename);
+            using (MemoryStream memory = new MemoryStream())
+            {
+                using (FileStream fs = new FileStream(DataGenerator.DataDirectory + filename, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    heatMap.Save(memory, ImageFormat.Jpeg);
+                    byte[] bytes = memory.ToArray();
+                    fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+            //heatMap.Save(DataGenerator.DataDirectory + filename);
             heatMap.Dispose();
         }
 
