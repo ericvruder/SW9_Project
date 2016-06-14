@@ -126,6 +126,7 @@ AutoTest.Net/
 # Installshield output folder
 [Ee]xpress/
 
+/Data/*
 /InfoPages/*
 !/InfoPages/template*.html
 !/InfoPages/flot/
